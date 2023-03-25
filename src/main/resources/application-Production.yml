@@ -1,0 +1,31 @@
+spring:
+  profiles: Production
+  datasource:
+    url: jdbc:oracle:thin:@//srv-oraprd1.nicico.com:1521/pdb_prd01
+    username: n_base
+    password: ENC(EncryptedPassword)
+  redis:
+    host: apps.icico.net.ir
+    password: nicico
+  security:
+    oauth2:
+      client:
+        registration:
+          oserver:
+            client-id: ${spring.application.name}
+            client-secret: password
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: user_info
+        provider:
+          oserver:
+            authorization-uri: http://apps.icico.net.ir/oauth/authorize
+            token-uri: http://apps.icico.net.ir/oauth/token
+            user-info-uri: http://apps.icico.net.ir/user/info
+            user-name-attribute: username
+ui:
+  redirect:
+    address: http://devapp01.icico.net.ir/evaluation-frontend/auth-redirect
+
+  landing:
+    address: http://devapp01.icico.net.ir/evaluation-frontend

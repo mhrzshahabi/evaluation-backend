@@ -1,0 +1,35 @@
+spring:
+  profiles: Staging
+  datasource:
+    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_stg
+    username: stg_hse
+    password: stghse
+  redis:
+    host: redis
+    password: nicico
+  security:
+    oauth2:
+      client:
+        registration:
+          oserver:
+            client-id: ${spring.application.name}
+            client-secret: password
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: user_info
+        provider:
+          oserver:
+            authorization-uri: http://staging.icico.net.ir/oauth/authorize
+            token-uri: http://staging.icico.net.ir/oauth/token
+            user-info-uri: http://staging.icico.net.ir/user/info
+            user-name-attribute: username
+nicico:
+  upload:
+    dir: /var/nicico/${spring.application.name}/
+ui:
+  redirect:
+    address: http://staging.icico.net.ir/evaluation-frontend/auth-redirect
+
+  landing:
+    address: http://staging.icico.net.ir/evaluation-frontend
+
