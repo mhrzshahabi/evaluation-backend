@@ -42,7 +42,7 @@ deploy-dev:
         -v /var/log/nicico:/var/log/nicico \
         -v /var/nicico:/var/nicico \
         -l traefik.backend=$CI_PROJECT_NAME \
-        -l traefik.frontend.rule=PathPrefix:/training \
+        -l traefik.frontend.rule=PathPrefix:/evaluation-backend \
         -e PROFILE=Development \
         --restart=always \
         --name $CI_PROJECT_NAME \
@@ -93,7 +93,7 @@ deploy-prd:
           -l traefik.port=8080 \
           -l traefik.docker.network=web-net \
           -l traefik.backend=$CI_PROJECT_NAME \
-          -l traefik.frontend.rule=PathPrefix:/training \
+          -l traefik.frontend.rule=PathPrefix:/evaluation-backend \
           -e PROFILE=Production \
           -e JVM_ARGS=-Djasypt.encryptor.password=$G_JASYPT_PASSWORD \
           --name $CI_PROJECT_NAME \
