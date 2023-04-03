@@ -1,5 +1,13 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="h.montazeri" id="1680517090258">
+        <addForeignKeyConstraint baseColumnNames="f_catalog_type_id" baseTableName="tbl_catalog"
+                                 constraintName="FKkhd9bcn01y1vgtp4yorc13ti9" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog_type" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

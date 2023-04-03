@@ -2,4 +2,12 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
+    <changeSet id="1680515647692" author="h.montazeri">
+        <createSequence sequenceName="seq_catalog_type_id" />
+    </changeSet>
+
+    <changeSet id="1680519486172" author="h.montazeri">
+        <createSequence sequenceName="seq_catalog_id" />
+    </changeSet>
+
 </databaseChangeLog>
