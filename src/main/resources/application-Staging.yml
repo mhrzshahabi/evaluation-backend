@@ -1,9 +1,8 @@
 spring:
-  profiles: Staging
   datasource:
     url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_stg
-    username: stg_hse
-    password: stghse
+    username: stg_evaluation
+    password: stgevaluation
   redis:
     host: redis
     password: nicico

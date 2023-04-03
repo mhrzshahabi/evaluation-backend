@@ -1,9 +1,8 @@
 spring:
-  profiles: Development
   datasource:
     url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_dev
-    username: dev_hse
-    password: devhse
+    username: dev_evaluation
+    password: devevaluation
   redis:
     host: devapp01.icico.net.ir
     password: nicico
