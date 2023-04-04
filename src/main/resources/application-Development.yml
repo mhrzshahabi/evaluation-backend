@@ -27,7 +27,7 @@ ui:
     address: http://devapp01.icico.net.ir/evaluation-frontend/auth-redirect
 
   landing:
-    address: http://devapp01.icico.net.ir/evaluation-frontend
+    address: http://devapp01.icico.net.ir/evaluation-backend
 ---
 
 s
