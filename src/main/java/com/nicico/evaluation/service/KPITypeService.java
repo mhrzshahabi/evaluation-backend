@@ -18,5 +18,5 @@ public interface KPITypeService {
 
     KPITypeDTO.Info update(KPITypeDTO.Update dto);
 
-    void delete(KPITypeDTO.Delete dto);
+    void delete(Long id);
 }

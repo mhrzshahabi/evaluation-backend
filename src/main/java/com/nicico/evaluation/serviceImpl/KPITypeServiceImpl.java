@@ -70,8 +70,8 @@ public class KPITypeServiceImpl implements KPITypeService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('D_KPI_TYPE')")
-    public void delete(KPITypeDTO.Delete dto) {
-        KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("KPITType not  found"));
+    public void delete(Long id) {
+        KPIType kPIType = repository.findById(id).orElseThrow(() -> new RuntimeException("KPITType not  found"));
         repository.delete(kPIType);
     }
 

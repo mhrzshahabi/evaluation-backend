@@ -35,17 +35,16 @@ public class KPITypeController {
     @PostMapping
     public ResponseEntity<KPITypeDTO.Info> create(@Valid @RequestBody KPITypeDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
-
     }
 
-    @PutMapping(value = "")
+    @PutMapping
     public ResponseEntity<KPITypeDTO.Info> update(@Valid @RequestBody KPITypeDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "")
-    public ResponseEntity<String> remove(@Validated @RequestBody KPITypeDTO.Delete request) {
-        service.delete(request);
+    @DeleteMapping(value = {"/{id}"})
+    public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
+        service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

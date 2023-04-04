@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -24,7 +25,13 @@ public abstract class KPITypeDTO {
     @ApiModel("KPITypeInfo")
     public static class Info extends KPITypeDTO {
 
-        private Long id;
+        private Date deletedDate;
+        private Boolean updatable = true;
+        private String comment;
+        private Date createdDate;
+        private String createdBy;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
     }
 
     @Getter
@@ -32,6 +39,7 @@ public abstract class KPITypeDTO {
     @Accessors(chain = true)
     @ApiModel("KPITypeCreateRq")
     public static class Create extends KPITypeDTO {
+
     }
 
     @Getter
@@ -41,7 +49,6 @@ public abstract class KPITypeDTO {
     public static class Update extends KPITypeDTO {
 
         private Long id;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer version;

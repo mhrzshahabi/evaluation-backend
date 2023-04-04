@@ -2,15 +2,30 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <changeSet id="s-1680591476" author="semami">
-        <createSequence incrementBy="50" sequenceName="SEQ_KPI_TYPE_ID" startValue="1"/>
+    <changeSet id="1680591476" author="semami">
+        <createSequence incrementBy="50" sequenceName="seq_kpi_type_id" startValue="1"/>
         <createTable tableName="TBL_KPI_TYPE">
-            <column name="ID" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="PK_KPI_TYPE_ID"/>
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_kpi_type_id"/>
             </column>
-            <column name="C_CODE" type="VARCHAR2(255 CHAR)"/>
-            <column name="C_TITLE" type="VARCHAR2(255 CHAR)"/>
-            <column name="N_LEVEL_DEF" type="VARCHAR2(255 CHAR)">
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_level_def" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_updatable" type="BOOLEAN"/>
+            <column name="b_deleted" type="BOOLEAN"/>
+            <column name="c_comment" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="d_deleted_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

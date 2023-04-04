@@ -15,7 +15,7 @@ public class KPIType extends EvaluationAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "kpi_type_seq")
-    @SequenceGenerator(name = "kpi_type_seq", sequenceName = "SEQ_KPI_TYPE_ID", initialValue = 1, allocationSize = 1)
+    @SequenceGenerator(name = "kpi_type_seq", sequenceName = "seq_kpi_type_id", initialValue = 1, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
