@@ -1,6 +1,6 @@
 package com.nicico.evaluation.model;
 
-import com.nicico.copper.common.domain.Auditable;
+import com.nicico.evaluation.common.EvaluationAudit;
 import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(name = "TBL_KPI_TYPE")
 @Data
 @NoArgsConstructor
-public class KPIType extends Auditable {
+public class KPIType extends EvaluationAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "kpi_type_seq")

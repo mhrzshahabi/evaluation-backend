@@ -7,7 +7,7 @@ import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface KPITypeMapper  {
         KPIType dtoCreateToEntity(KPITypeDTO.Create dto);
         KPITypeDTO.Info entityToDtoInfo(KPIType entity);

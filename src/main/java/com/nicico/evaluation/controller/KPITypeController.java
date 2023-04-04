@@ -3,7 +3,8 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.DTO.KPITypeDTO;
-import com.nicico.evaluation.service.KPITypeService;
+import com.nicico.evaluation.serviceImpl.KPITypeServiceImpl;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,11 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Api(value = "KPI Type")
 @RestController
 @RequestMapping(value = "/rest/kpi-type")
 public class KPITypeController {
-    private final KPITypeService service;
+    private final KPITypeServiceImpl service;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) throws Exception {
