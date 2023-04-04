@@ -31,10 +31,10 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="h.montazeri" id="1680514042057">
-        <createTable tableName="tbl_catalog">
+    <changeSet author="h.montazeri" id="1680581214813">
+        <createTable tableName="tbl_catalog" >
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_parameter_valuePK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_catalog_PK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
