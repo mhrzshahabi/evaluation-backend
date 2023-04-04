@@ -10,7 +10,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/group")
+@RequestMapping("/api/group")
 @Validated
 @AllArgsConstructor
 public class GroupController {

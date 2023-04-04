@@ -15,8 +15,8 @@ import javax.persistence.*;
 public class Group {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "create_seq_tbl_group")
-    @SequenceGenerator(name = "create_seq_tbl_group", sequenceName = "group_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_seq")
+    @SequenceGenerator(name = "group_seq", sequenceName = "group_seq_id", allocationSize = 1)
     private Integer id;
 
     @Column(name = "C_CODE")

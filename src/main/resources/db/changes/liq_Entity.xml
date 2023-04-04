@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <changeSet id="create_tbl_group" author="a.lotfi">
+    <changeSet id="1680590045224" author="a.lotfi">
         <createTable tableName="tbl_group">
             <column name="ID" type="NUMBER(19, 0)">
                 <constraints nullable="false" unique="true" primaryKey="true"/>
