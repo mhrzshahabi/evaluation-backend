@@ -1,6 +1,20 @@
 {
-  "list":[
-
-
+  "list": [
+    {
+      "code": "R_KPI_TYPE",
+      "title": "نمایش نوع شاخص"
+    },
+    {
+      "code": "C_KPI_TYPE",
+      "title": "ایجاد نوع شاخص"
+    },
+    {
+      "code": "U_KPI_TYPE",
+      "title": "ویرایش نوع شاخص"
+    },
+    {
+      "code": "D_KPI_TYPE",
+      "title": "حذف نوع شاخص"
+    }
   ]
 }
