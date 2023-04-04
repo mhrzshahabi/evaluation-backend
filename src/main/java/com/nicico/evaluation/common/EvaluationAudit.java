@@ -16,20 +16,16 @@ import java.util.Date;
 @MappedSuperclass
 public class EvaluationAudit extends Auditable {
 
-    @Column(name = "is_deleted", columnDefinition = "NUMBER(1) default 0 not null")
+    @Column(name = "b_deleted", columnDefinition = "NUMBER(1) default 0 not null")
     private Boolean deleted = false;
 
-    @Column(name = "deleted_date")
+    @Column(name = "d_deleted_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedDate;
-    @Column(name = "c_updatable", columnDefinition = "NUMBER(1) default 1 not null")
+    @Column(name = "b_updatable", columnDefinition = "NUMBER(1) default 1 not null")
     private Boolean updatable = true;
 
     @Column(name = "c_comment", length = 4000)
     private String comment;
-
-    @Column(name = "c_description", length = 4000)
-    private String description;
-
 
 }

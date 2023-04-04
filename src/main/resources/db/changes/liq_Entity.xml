@@ -14,8 +14,7 @@
             <column name="d_created_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="e_deleted" type="NUMBER(19, 0)"/>
-            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="b_deleted" type="NUMBER(19, 0)"/>
             <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
             <column name="d_last_modified_date" type="TIMESTAMP"/>
             <column name="n_version" type="NUMBER(10, 0)">
@@ -31,7 +30,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="h.montazeri" id="1680581214813">
+    <changeSet author="h.montazeri" id="1680588691871">
         <createTable tableName="tbl_catalog" >
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_catalog_PK"/>
@@ -42,8 +41,7 @@
             <column name="d_created_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="e_deleted" type="NUMBER(19, 0)"/>
-            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="b_deleted" type="NUMBER(19, 0)"/>
             <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
             <column name="d_last_modified_date" type="TIMESTAMP"/>
             <column name="n_version" type="NUMBER(10, 0)">

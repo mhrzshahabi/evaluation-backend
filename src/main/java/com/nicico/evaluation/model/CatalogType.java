@@ -1,5 +1,6 @@
 package com.nicico.evaluation.model;
 
+import com.nicico.evaluation.common.EvaluationAudit;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_catalog_type")
-public class CatalogType extends Auditable {
+public class CatalogType extends EvaluationAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_catalog_type_id")
