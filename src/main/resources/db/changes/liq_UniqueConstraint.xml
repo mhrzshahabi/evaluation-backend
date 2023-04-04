@@ -9,4 +9,10 @@
                              tableName="tbl_catalog"/>
     </changeSet>
 
+    <changeSet author="h.montazeri" id="1680588905283">
+        <addUniqueConstraint columnNames="c_title, c_code"
+                             constraintName="uverjaduqhdeybfdyxzvicbekjwjdnjs"
+                             tableName="tbl_merit_component"/>
+    </changeSet>
+
 </databaseChangeLog>
