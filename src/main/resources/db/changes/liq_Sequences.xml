@@ -11,4 +11,8 @@
         <createSequence sequenceName="seq_catalog_id"/>
     </changeSet>
 
+    <changeSet id="1680588878764" author="h.montazeri">
+        <createSequence sequenceName="seq_merit_component_id"/>
+    </changeSet>
+
 </databaseChangeLog>
