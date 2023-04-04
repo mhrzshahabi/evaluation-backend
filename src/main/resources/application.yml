@@ -19,7 +19,7 @@ spring:
     database-change-log-table: Z_LIQ_CHANGELOG
     database-change-log-lock-table: Z_LIQ_CHANGELOG_LOCK
     change-log: classpath:/db/changelog-master.xml
-    enabled: false
+    enabled: true
   main:
     allow-bean-definition-overriding: true
   activiti:
