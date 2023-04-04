@@ -22,6 +22,7 @@ public class EvaluationAudit extends Auditable {
     @Column(name = "d_deleted_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedDate;
+
     @Column(name = "b_updatable", columnDefinition = "NUMBER(1) default 1 not null")
     private Boolean updatable = true;
 
