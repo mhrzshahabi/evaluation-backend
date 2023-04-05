@@ -1,4 +1,4 @@
-package com.nicico.evaluation.DTO;
+package com.nicico.evaluation.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;

@@ -1,6 +1,6 @@
 package com.nicico.evaluation.mapper;
 
-import com.nicico.evaluation.DTO.KPITypeDTO;
+import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.model.KPIType;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

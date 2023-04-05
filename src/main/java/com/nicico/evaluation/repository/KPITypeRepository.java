@@ -1,4 +1,4 @@
-package com.nicico.evaluation.Repository;
+package com.nicico.evaluation.repository;
 
 import com.nicico.evaluation.model.KPIType;
 import org.springframework.data.jpa.repository.JpaRepository;
