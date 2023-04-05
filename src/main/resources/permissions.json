@@ -15,6 +15,22 @@
     {
       "code": "D_KPI_TYPE",
       "title": "حذف نوع شاخص"
+    },
+    {
+      "code": "R_MERIT_COMPONENT",
+      "title": "نمایش مولفه شایستگی"
+    },
+    {
+      "code": "C_MERIT_COMPONENT",
+      "title": "ایجاد مولفه شایستگی"
+    },
+    {
+      "code": "U_MERIT_COMPONENT",
+      "title": "ویرایش مولفه شایستگی"
+    },
+    {
+      "code": "D_MERIT_COMPONENT",
+      "title": "حذف مولفه شایستگی"
     }
   ]
 }
