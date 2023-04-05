@@ -1,5 +1,6 @@
 package com.nicico.evaluation.model;
 
+import com.nicico.evaluation.common.EvaluationAudit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,12 +8,13 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity(name = "tbl_group")
+@Entity
+@Table(name = "tbl_group")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group {
+public class Group extends EvaluationAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_seq")
