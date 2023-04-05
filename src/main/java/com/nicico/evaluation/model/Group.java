@@ -21,14 +21,14 @@ public class Group extends EvaluationAudit {
     @SequenceGenerator(name = "group_seq", sequenceName = "group_seq_id", allocationSize = 1)
     private Integer id;
 
-    @Column(name = "C_CODE")
+    @Column(name = "c_code")
     private String code;
 
 
-    @Column(name = "C_TITLE")
+    @Column(name = "c_title")
     private String title;
 
-    @Column(name = "B_MERIT_DEFINITION_ALLOWED")
+    @Column(name = "b_merit_definition_allowed")
     private Boolean definitionAllowed;
 
 }
