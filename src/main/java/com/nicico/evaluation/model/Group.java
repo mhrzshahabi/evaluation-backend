@@ -1,5 +1,6 @@
 package com.nicico.evaluation.model;
 
+import com.nicico.copper.common.domain.Auditable;
 import com.nicico.evaluation.common.EvaluationAudit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group extends EvaluationAudit {
+public class Group extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_seq")
