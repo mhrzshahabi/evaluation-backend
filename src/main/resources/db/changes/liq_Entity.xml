@@ -84,4 +84,19 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="1680590045224" author="a.lotfi">
+        <createTable tableName="tbl_group">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="C_CODE" type="VARCHAR2(255 CHAR)">
+            </column>
+            <column name="C_TITLE" type="VARCHAR2(255 CHAR)">
+            </column>
+            <column name="B_MERIT_DEFINITION_ALLOWED" type="NUMBER(1)">
+            </column>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>
