@@ -8,21 +8,18 @@ import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.repository.GroupRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class GroupService implements IGroupService {
 
-    private GroupRepository groupRepository;
+    private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
 
     @Override

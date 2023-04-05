@@ -4,8 +4,6 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.CatalogTypeDTO;
-import com.nicico.evaluation.enums.ErrorType;
-import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.exception.NotFoundException;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +34,8 @@ public class CatalogTypeController {
         try {
             return new ResponseEntity<>(catalogTypeService.create(create), HttpStatus.OK);
         } catch (NotFoundException ex) {
-            throw new EvaluationHandleException(ErrorType.NotFound, "", ex.getMessage());
+            return null;
+//            throw new EvaluationHandleException(ErrorType.NotFound, "", ex.getMessage());
         }
     }
 

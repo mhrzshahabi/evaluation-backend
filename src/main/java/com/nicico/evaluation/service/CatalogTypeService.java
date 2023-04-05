@@ -1,8 +1,6 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.evaluation.dto.CatalogTypeDTO;
-import com.nicico.evaluation.enums.ErrorType;
-import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.exception.NotFoundException;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import com.nicico.evaluation.mapper.CatalogTypeBeanMapper;
@@ -30,7 +28,8 @@ public class CatalogTypeService implements ICatalogTypeService {
     @Transactional(readOnly = true)
     public CatalogTypeDTO.Info getById(Long id) {
         Optional<CatalogType> optionalCatalogType = catalogTypeRepository.findById(id);
-        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElseThrow(() -> new EvaluationHandleException(ErrorType.NotFound, "id", "message")));
+        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElse(null));
+//        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElseThrow(() -> new EvaluationHandleException(HttpStatus.NOT_FOUND, "message")));
     }
 
     @Override

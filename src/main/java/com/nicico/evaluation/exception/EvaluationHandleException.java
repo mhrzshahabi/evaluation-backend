@@ -1,36 +1,29 @@
 package com.nicico.evaluation.exception;
 
 
-import com.nicico.evaluation.enums.ErrorType;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
-public class EvaluationHandleException extends BaseException {
+public class EvaluationHandleException {
 
     public EvaluationHandleException() {
-        this(ErrorType.Unknown);
+        new ApiError(HttpStatus.BAD_REQUEST); //UnKnown
     }
 
-    public EvaluationHandleException(ErrorType errorType) {
-        this(errorType, null);
+    public EvaluationHandleException(HttpStatus httpStatus) {
+        new ApiError(httpStatus);
     }
 
-    public EvaluationHandleException(Exception innerException) {
-        this(innerException, ErrorType.Unknown, "", innerException.getMessage());
+//    public EvaluationHandleException(Exception innerException) {
+//        this(innerException, ErrorType.Unknown, "", innerException.getMessage());
+//    }
+
+    public EvaluationHandleException(HttpStatus httpStatus, String message) {
+        new ApiError(httpStatus, message);
     }
 
-    public EvaluationHandleException(ErrorType errorType, String field) {
-        this(errorType, field, null);
+    public EvaluationHandleException(HttpStatus httpStatus, String message, Exception innerException) {
+        new ApiError(httpStatus, message, innerException);
     }
-
-    public EvaluationHandleException(ErrorType errorType, String field, String message) {
-        this(null, errorType, field, message);
-    }
-
-    public EvaluationHandleException(Exception innerException, ErrorType errorType, String field, String message) {
-
-        super(innerException);
-        this.response = new ErrorResponse(errorType, field, message);
-    }
-
 }
