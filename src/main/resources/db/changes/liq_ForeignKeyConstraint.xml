@@ -9,5 +9,19 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_catalog_type" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1680686655">
+        <addForeignKeyConstraint baseColumnNames="kpi_type_id"
+                                 baseTableName="tbl_merit_component_type"
+                                 constraintName="f_merit_component_type_to_type" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_kpi_type" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1680686685">
+        <addForeignKeyConstraint baseColumnNames="merit_component_id"
+                                 baseTableName="tbl_merit_component_type"
+                                 constraintName="f_merit_component_type_to_merit_component" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_merit_component" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>
