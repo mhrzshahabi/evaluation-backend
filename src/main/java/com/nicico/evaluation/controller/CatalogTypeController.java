@@ -15,8 +15,8 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/catalog-type")
-public class CatalogTypeRestController {
+@RequestMapping(value = "/anonymous/api/catalog-type")
+public class CatalogTypeController {
 
     private final ICatalogTypeService catalogTypeService;
 
