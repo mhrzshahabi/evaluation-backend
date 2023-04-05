@@ -25,9 +25,6 @@ public abstract class KPITypeDTO {
     @ApiModel("KPITypeInfo")
     public static class Info extends KPITypeDTO {
 
-        private Date deletedDate;
-        private Boolean updatable = true;
-        private String comment;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
