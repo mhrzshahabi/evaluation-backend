@@ -1,6 +1,6 @@
 package com.nicico.evaluation.model;
 
-import com.nicico.evaluation.common.EvaluationAudit;
+import com.nicico.copper.common.domain.Auditable;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -14,7 +14,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_catalog", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_catalog_type_id", "c_title", "c_code"})})
-public class Catalog extends EvaluationAudit {
+public class Catalog extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_catalog_id")
