@@ -1,4 +1,4 @@
-package com.nicico.evaluation.group;
+package com.nicico.evaluation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

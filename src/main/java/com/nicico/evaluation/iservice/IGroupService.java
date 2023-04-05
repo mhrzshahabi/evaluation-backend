@@ -1,4 +1,6 @@
-package com.nicico.evaluation.group;
+package com.nicico.evaluation.iservice;
+
+import com.nicico.evaluation.model.Group;
 
 import java.util.List;
 

@@ -1,5 +1,7 @@
-package com.nicico.evaluation.group;
+package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.GroupDTO;
+import com.nicico.evaluation.model.Group;
 import org.mapstruct.Mapper;
 
 import java.util.List;

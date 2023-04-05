@@ -1,5 +1,8 @@
-package com.nicico.evaluation.group;
+package com.nicico.evaluation.service;
 
+import com.nicico.evaluation.iservice.IGroupService;
+import com.nicico.evaluation.model.Group;
+import com.nicico.evaluation.repository.GroupRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
