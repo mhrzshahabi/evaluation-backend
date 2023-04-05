@@ -105,4 +105,33 @@
             </column>
         </createTable>
     </changeSet>
+
+
+    <changeSet id="1680590045224" author="a.lotfi">
+        <createTable tableName="tbl_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_deleted" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+            </column>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+            </column>
+            <column name="b_merit_definition_allowed" type="NUMBER(1)">
+            </column>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>
