@@ -1,7 +1,12 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.grid.GridResponse;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.CatalogTypeDTO;
+import com.nicico.evaluation.enums.ErrorType;
+import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.exception.NotFoundException;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +25,18 @@ public class CatalogTypeController {
 
     private final ICatalogTypeService catalogTypeService;
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<CatalogTypeDTO.Info> get(@PathVariable Long id) {
+        return new ResponseEntity<>(catalogTypeService.getById(id), HttpStatus.OK);
+    }
+
     @Loggable
     @PostMapping
     public ResponseEntity create(@RequestBody CatalogTypeDTO.Create create) {
         try {
             return new ResponseEntity<>(catalogTypeService.create(create), HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        } catch (NotFoundException ex) {
+            throw new EvaluationHandleException(ErrorType.NotFound, "", ex.getMessage());
         }
     }
 
@@ -39,15 +49,15 @@ public class CatalogTypeController {
 
     @Loggable
     @GetMapping("/test")
-    public ResponseEntity<CatalogTypeDTO.SpecResponse> getTestAPI() {
+    public ResponseEntity<TotalResponse<CatalogTypeDTO.Info>> getTestAPI() {
         CatalogTypeDTO.Info info = new CatalogTypeDTO.Info();
         List<CatalogTypeDTO.Info> data = new ArrayList<>();
         info.setId(1L).setCode("ABC").setTitle("A Title");
         data.add(info);
-        CatalogTypeDTO.SpecResponse specResponse = new CatalogTypeDTO.SpecResponse();
-        CatalogTypeDTO.Response response = new CatalogTypeDTO.Response();
-        response.setData(data).setStartRow(0).setEndRow(1).setTotalRows(1);
-        specResponse.setResponse(response);
-        return new ResponseEntity<>(specResponse, HttpStatus.OK);
+
+        GridResponse<CatalogTypeDTO.Info> gridResponse = new GridResponse<>();
+        gridResponse.setData(data);
+        TotalResponse<CatalogTypeDTO.Info> totalResponse = new TotalResponse<>(gridResponse);
+        return new ResponseEntity<>(totalResponse, HttpStatus.OK);
     }
 }

@@ -27,7 +27,6 @@ public class KPITypeService implements IKPITypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_KPI_TYPE')")
-
     public KPITypeDTO.Info get(Long id) throws Exception {
         KPIType kpiType = repository.findById(id).orElseThrow(() -> new Exception("exception.main-desktop.record.not.found"));
         return mapper.entityToDtoInfo(kpiType);
