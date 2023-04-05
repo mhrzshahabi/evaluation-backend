@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,5 +40,25 @@ public class CatalogTypeDTO implements Serializable {
     public static class Update {
         private String title;
         private String description;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CatalogTypeDTO - SpecResponse")
+    public static class SpecResponse {
+        private Response response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CatalogTypeDTO - Response")
+    public static class Response {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

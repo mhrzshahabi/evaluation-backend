@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -32,5 +35,19 @@ public class CatalogTypeRestController {
     public ResponseEntity delete(@PathVariable Long id) {
         catalogTypeService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/test")
+    public ResponseEntity<CatalogTypeDTO.SpecResponse> getTestAPI() {
+        CatalogTypeDTO.Info info = new CatalogTypeDTO.Info();
+        List<CatalogTypeDTO.Info> data = new ArrayList<>();
+        info.setId(1L).setCode("ABC").setTitle("A Title");
+        data.add(info);
+        CatalogTypeDTO.SpecResponse specResponse = new CatalogTypeDTO.SpecResponse();
+        CatalogTypeDTO.Response response = new CatalogTypeDTO.Response();
+        response.setData(data).setStartRow(0).setEndRow(1).setTotalRows(1);
+        specResponse.setResponse(response);
+        return new ResponseEntity<>(specResponse, HttpStatus.OK);
     }
 }
