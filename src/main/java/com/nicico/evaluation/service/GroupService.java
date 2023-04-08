@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ public class GroupService implements IGroupService {
     private final ApplicationException<ServiceException> applicationException;
 
     @Override
+    @PreAuthorize("hasAuthority('R_GROUP')")
     public PageDTO list(Pageable page) {
         Page<Group> groups = groupRepository.findAll(page);
         List<GroupDTO.Info> groInfos = groupMapper.entityToDtoInfoList(groups.getContent());
@@ -41,19 +43,21 @@ public class GroupService implements IGroupService {
 
 
     @Override
+    @PreAuthorize("hasAuthority('R_GROUP')")
     public GroupDTO.Info get(Long id) {
         Group group = groupRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        GroupDTO.Info groupDtoInfo = groupMapper.entityToDtoInfo(group);
-        return groupDtoInfo;
+        return groupMapper.entityToDtoInfo(group);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('R_GROUP')")
     public TotalResponse<GroupDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(groupRepository, request, groupMapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('C_GROUP')")
     public GroupDTO.Info create(GroupDTO.Create dto) {
         Group group = groupMapper.dtoCreateToEntity(dto);
         group = groupRepository.save(group);
@@ -62,17 +66,19 @@ public class GroupService implements IGroupService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
-        Group group = groupRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        groupRepository.delete(group);
-    }
-
-    @Override
-    @Transactional
+    @PreAuthorize("hasAuthority('U_GROUP')")
     public GroupDTO.Info update(GroupDTO.Update dto) {
         Group group = groupRepository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         groupMapper.update(group, dto);
         Group save = groupRepository.save(group);
         return groupMapper.entityToDtoInfo(save);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('D_GROUP')")
+    public void delete(Long id) {
+        Group group = groupRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        groupRepository.delete(group);
     }
 }

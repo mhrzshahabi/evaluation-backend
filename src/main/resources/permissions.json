@@ -63,6 +63,38 @@
     {
       "code": "D_GROUP_TYPE",
       "title": "حذف گروه - نوع"
+    },
+    {
+      "code": "R_GROUP",
+      "title": "نمایش گروه"
+    },
+    {
+      "code": "C_GROUP",
+      "title": "ایجاد گروه"
+    },
+    {
+      "code": "U_GROUP",
+      "title": "ویرایش گروه"
+    },
+    {
+      "code": "D_GROUP",
+      "title": "حذف گروه"
+    },
+    {
+      "code": "R_INSTANCE",
+      "title": "نمایش مصداق"
+    },
+    {
+      "code": "C_INSTANCE",
+      "title": "ایجاد مصداق"
+    },
+    {
+      "code": "U_INSTANCE",
+      "title": "ویرایش مصداق"
+    },
+    {
+      "code": "D_INSTANCE",
+      "title": "حذف مصداق"
     }
   ]
 }

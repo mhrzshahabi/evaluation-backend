@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,36 +35,40 @@ public class InstanceService implements IInstanceService {
     private final ApplicationException<ServiceException> applicationException;
 
     @Override
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
     public PageDTO list(Pageable pageable) {
         Page<Instance> instances = instanceRepository.findAll(pageable);
-        List<InstanceDTO.Info> instanceDto =  instanceMapper.entityToDtoInfoList(instances.getContent());
+        List<InstanceDTO.Info> instanceDto = instanceMapper.entityToDtoInfoList(instances.getContent());
         return pageableMapper.toPageDto(instances, instanceDto);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
     public InstanceDTO.Info get(Long id) {
         Instance instance = instanceRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        InstanceDTO.Info instanceDtoInfo = instanceMapper.entityToDtoInfo(instance);
-        return instanceDtoInfo;
+        return instanceMapper.entityToDtoInfo(instance);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
     public TotalResponse<InstanceDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(instanceRepository, request, instanceMapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('C_INSTANCE')")
     public InstanceDTO.Info create(InstanceDTO.Create dto) {
         Instance instance = instanceMapper.dtoCreateToEntity(dto);
         instance = instanceRepository.save(instance);
-        return  instanceMapper.entityToDtoInfo(instance);
+        return instanceMapper.entityToDtoInfo(instance);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('U_INSTANCE')")
     public InstanceDTO.Info update(InstanceDTO.Update dto) {
-        Instance instance =  instanceRepository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Instance instance = instanceRepository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         instanceMapper.update(instance, dto);
         Instance save = instanceRepository.save(instance);
         return instanceMapper.entityToDtoInfo(save);
@@ -71,6 +76,7 @@ public class InstanceService implements IInstanceService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('D_INSTANCE')")
     public void delete(Long id) {
         Instance instance = instanceRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         instanceRepository.delete(instance);
