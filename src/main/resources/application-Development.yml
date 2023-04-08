@@ -22,12 +22,28 @@ spring:
             token-uri: http://devapp01.icico.net.ir/oauth/token
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+  config:
+    activate:
+      on-profile: Development
+nicico:
+  server:
+    url: http://devapp01.icico.net.ir/evaluation-backend
+  security:
+#    sys-password: password
+
+  upload:
+    dir: /var/nicico/${spring.application.name}/upload
+
 ui:
   redirect:
+    #address: http://devapp01.icico.net.ir/evaluation-frontend/auth-redirect
     address: http://devapp01.icico.net.ir/evaluation-frontend/
 
   landing:
     address: http://devapp01.icico.net.ir/evaluation-backend
----
+    #address: http://172.16.6.196:4200
 
-s
+
