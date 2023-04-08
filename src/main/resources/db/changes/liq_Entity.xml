@@ -153,6 +153,28 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="1680928838" author="semami">
+        <createTable tableName="tbl_group_type">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="seq_group_type_id"/>
+            </column>
+            <column name="kpi_type_id" type="NUMBER(10, 0)"/>
+            <column name="group_id" type="NUMBER(10, 0)"/>
+            <column name="n_weight" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="1680931286673" author="a.lotfi">
         <createTable tableName="tbl_instance">
             <column name="id" type="NUMBER(19, 0)">
