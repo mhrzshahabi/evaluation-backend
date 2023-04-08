@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -30,6 +32,12 @@ public class InstanceDTO {
     @ApiModel("InstanceInfo")
     public static class Info extends InstanceDTO{
         private Long id;
+
+        private Date createdDate;
+        private String createdBy;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
+        private Integer version;
     }
 
     @Getter
@@ -37,6 +45,8 @@ public class InstanceDTO {
     @Accessors(chain = true)
     @ApiModel("InstanceUpdateRq")
     public static class Update extends InstanceDTO {
+        @NotNull
+        @Min(1)
         private Long id;
         @NotNull
         @ApiModelProperty(required = true)
@@ -48,6 +58,8 @@ public class InstanceDTO {
     @Accessors(chain = true)
     @ApiModel("InstanceDeleteRq")
     public static class Delete {
+        @NotNull
+        @Min(1)
         private Long id;
     }
 

@@ -1,8 +1,6 @@
 package com.nicico.evaluation.mapper;
 
-import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
-import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.model.Instance;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

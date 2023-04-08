@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 
 @Getter
@@ -32,6 +34,12 @@ public class GroupDTO {
     @ApiModel("GroupInfo")
     public static class Info extends GroupDTO{
         private Long id;
+
+        private Date createdDate;
+        private String createdBy;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
+        private Integer version;
     }
 
     @Getter
@@ -39,6 +47,8 @@ public class GroupDTO {
     @Accessors(chain = true)
     @ApiModel("GroupUpdateRq")
     public static class Update extends GroupDTO {
+        @NotNull
+        @Min(1)
         private Long id;
         @NotNull
         @ApiModelProperty(required = true)
@@ -50,6 +60,8 @@ public class GroupDTO {
     @Accessors(chain = true)
     @ApiModel("GroupDeleteRq")
     public static class Delete {
+        @NotNull
+        @Min(1)
         private Long id;
     }
 }

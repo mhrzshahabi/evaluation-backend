@@ -2,14 +2,14 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.dto.GroupDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 
 public interface IGroupService {
 
-    List<GroupDTO.Info> list();
+    PageDTO list(Pageable page);
     GroupDTO.Info get(Long id);
     TotalResponse<GroupDTO.Info> search(NICICOCriteria request);
     GroupDTO.Info create(GroupDTO.Create dto);
