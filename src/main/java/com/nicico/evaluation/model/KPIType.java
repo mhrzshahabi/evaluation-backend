@@ -2,15 +2,19 @@ package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
 import com.sun.istack.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
+@Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "TBL_KPI_TYPE")
-@Data
-@NoArgsConstructor
 public class KPIType extends Auditable {
 
     @Id
@@ -29,5 +33,22 @@ public class KPIType extends Auditable {
     @NotNull
     @Column(name = "n_level_def")
     private Long levelDef;
+
+    @Setter(AccessLevel.NONE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "level_def_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_type_to_catalog"))
+    private Catalog levelDefCatalog;
+
+    @Column(name = "level_def_id")
+    private Long levelDefCatalogId;
+
+    @Setter(AccessLevel.NONE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "merit_component_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_merit_component_type_to_merit_component"))
+    private MeritComponent meritComponent;
+
+
+    @Column(name = "merit_component_id")
+    private Long meritComponentId;
 
 }

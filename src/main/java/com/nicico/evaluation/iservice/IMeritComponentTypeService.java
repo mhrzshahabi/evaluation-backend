@@ -3,13 +3,12 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
-import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 
 import java.util.List;
 
 public interface IMeritComponentTypeService {
 
-    MeritComponentTypeDTO.Info get(Long id) throws Exception;
+    MeritComponentTypeDTO.Info get(Long id) ;
 
     List<MeritComponentTypeDTO.Info> list();
 

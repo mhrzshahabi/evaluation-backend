@@ -13,6 +13,7 @@ import org.springframework.expression.EvaluationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,5 +63,12 @@ public class CatalogService implements ICatalogService {
         Optional<Catalog> optionalCatalog = catalogRepository.findById(id);
         optionalCatalog.orElseThrow(() -> null);
         catalogRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatalogDTO.Info> list(String code) {
+        List<Catalog> allByCatalogTypeCode = catalogRepository.findAllByCatalogTypeCode(code);
+        return catalogBeanMapper.catalogToInfoList(allByCatalogTypeCode);
     }
 }
