@@ -1,6 +1,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.evaluation.dto.CatalogTypeDTO;
+import com.nicico.evaluation.exception.NotFoundException;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import com.nicico.evaluation.mapper.CatalogTypeBeanMapper;
 import com.nicico.evaluation.model.CatalogType;
@@ -23,26 +24,34 @@ public class CatalogTypeService implements ICatalogTypeService {
     private final CatalogTypeRepository catalogTypeRepository;
     private final CatalogTypeBeanMapper catalogTypeBeanMapper;
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
+    public CatalogTypeDTO.Info getById(Long id) {
+        Optional<CatalogType> optionalCatalogType = catalogTypeRepository.findById(id);
+        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElse(null));
+//        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElseThrow(() -> new EvaluationHandleException(HttpStatus.NOT_FOUND, "message")));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public CatalogTypeDTO.Info getByCode(String code) {
         Optional<CatalogType> optionalCatalogType = catalogTypeRepository.findByCode(code);
         return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElse(null));
     }
 
-    @Transactional
     @Override
+    @Transactional
     public CatalogTypeDTO.Info create(CatalogTypeDTO.Create create) {
         CatalogType catalogType = catalogTypeBeanMapper.createToCatalogType(create);
         try {
             return catalogTypeBeanMapper.catalogTypeToInfo(catalogTypeRepository.saveAndFlush(catalogType));
-        } catch (Exception exception) {
-            return null;
+        } catch (NotFoundException notFoundException) {
+            throw new NotFoundException("not-message");
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public CatalogTypeDTO.Info update(Long id, CatalogTypeDTO.Update update) {
         Optional<CatalogType> optional = catalogTypeRepository.findById(id);
         CatalogType currentEntity = optional.orElseThrow(() -> new EvaluationException(""));
@@ -56,8 +65,8 @@ public class CatalogTypeService implements ICatalogTypeService {
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void delete(Long id) {
         Optional<CatalogType> optionalCatalogType = catalogTypeRepository.findById(id);
         optionalCatalogType.orElseThrow(() -> null);
