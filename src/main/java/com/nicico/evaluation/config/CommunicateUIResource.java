@@ -20,11 +20,13 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
@@ -33,18 +35,18 @@ import java.util.Objects;
 @Api(value = "communicate with Ui App on the start the project")
 public class CommunicateUIResource {
 
-
+    private final Logger log = LoggerFactory.getLogger(CommunicateUIResource.class);
+    private final OAuth2AuthorizedClientService clientService;
     @Value("${ui.redirect.address}")
     private String uiRedirectAddress;
     @Value("${ui.landing.address}")
     private String uiLandingAddress;
 
-    private final OAuth2AuthorizedClientService clientService;
-
     @Loggable
     @RequestMapping("/")
     @ApiOperation(value = "redirect to the Home page of application")
-    public ResponseEntity<Void> redirectToHomePage(@RegisteredOAuth2AuthorizedClient("oserver") OAuth2AuthorizedClient authorizedClient, HttpServletResponse httpServletResponse) throws URISyntaxException {
+    public ResponseEntity<Void> redirectToHomePage(HttpServletResponse httpServletResponse) throws URISyntaxException {
+
         Authentication authentication =
                 SecurityContextHolder
                         .getContext()
@@ -63,14 +65,12 @@ public class CommunicateUIResource {
                         oToken != null ? oToken.getName() : Objects.requireNonNull(userDetails).getUsername());
 
         String accessToken = client.getAccessToken().getTokenValue();
-
         httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, accessToken);
         httpServletResponse.setHeader(HttpHeaders.LOCATION, uiRedirectAddress +
-                "?token=bearer " + accessToken + "&" +
+                "?token= Bearer " + accessToken + "&" +
                 "landingAddress=" + uiLandingAddress + "&" +
-                "userId=" + SecurityUtil.getUserId());
+                "userNationalCode=" + SecurityUtil.getNationalCode());
         return new ResponseEntity<>(HttpStatus.MOVED_PERMANENTLY);
     }
-
 
 }
