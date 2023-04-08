@@ -23,5 +23,19 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_merit_component" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1680929038">
+        <addForeignKeyConstraint baseColumnNames="kpi_type_id"
+                                 baseTableName="tbl_group_type"
+                                 constraintName="f_group_type_to_type" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_kpi_type" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1680929039">
+        <addForeignKeyConstraint baseColumnNames="group_id"
+                                 baseTableName="tbl_group_type"
+                                 constraintName="f_group_type_to_group" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_group" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>
