@@ -27,6 +27,7 @@ public abstract class KPITypeDTO {
 
         CatalogDTO.Info levelDefCatalog;
 
+        private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
