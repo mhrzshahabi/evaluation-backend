@@ -21,7 +21,7 @@ public class CatalogController {
 
     private final ICatalogService service;
 
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/level-def-list")
     public ResponseEntity<List<CatalogDTO.Info>> list() {
         return new ResponseEntity<>(service.list(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
     }
