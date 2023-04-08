@@ -1,12 +1,15 @@
 package com.nicico.evaluation.controller;
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
-import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.iservice.IInstanceService;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +19,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/instance")
+@Api("Instance Api")
 @Validated
 @AllArgsConstructor
-public class InstatnceController {
+public class InstanceController {
 
     private final IInstanceService instanceService;
 
     @GetMapping(value = "/list")
     public ResponseEntity<List<InstanceDTO.Info>> list() {
         return new ResponseEntity<>(instanceService.list(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/spec-list")
+    public ResponseEntity<TotalResponse<InstanceDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
+        return new ResponseEntity<>(instanceService.search(nicicoCriteria), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
