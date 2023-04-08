@@ -20,4 +20,8 @@
         <createSequence sequenceName="group_seq_id" ></createSequence>
     </changeSet>
 
+    <changeSet id="1680590070656" author="a.lotfi">
+        <createSequence sequenceName="instance_seq_id" ></createSequence>
+    </changeSet>
+
 </databaseChangeLog>
