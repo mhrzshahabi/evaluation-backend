@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "KPI Type")
 @RestController
-@RequestMapping(value = "/api/kpi-type")
+@RequestMapping(value = "/anonymous/api/kpi-type")
 public class KPITypeController {
 
     private final KPITypeService service;
