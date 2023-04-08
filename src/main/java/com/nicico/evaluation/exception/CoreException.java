@@ -14,13 +14,25 @@ public enum CoreException implements Message {
             return this.name();
         }
     },
-    SERVER_DENY {
+    ENVIRONMENT_NOT_FOUND {
         @Override
         public String key() {
             return this.name();
         }
     },
     INTERNAL_SERVER {
+        @Override
+        public String key() {
+            return this.name();
+        }
+    },
+    SERVER_DENY {
+        @Override
+        public String key() {
+            return this.name();
+        }
+    },
+    ACCESS_DENIED {
         @Override
         public String key() {
             return this.name();
@@ -50,32 +62,10 @@ public enum CoreException implements Message {
             return this.name();
         }
     },
-    ACCESS_DENIED {
-        @Override
-        public String key() {
-            return this.name();
-        }
-    },
-    INVALID_DATA_INFORMATION{
-        @Override
-        public String key() {
-            return this.name();
-        }
-    },
-    DUPLICATE {
-        @Override
-        public String key(){return this.name();}
-    },
     FILE_NOT_FOUND {
         @Override
         public String key() {
             return this.name();
         }
     },
-    ENVIRONMENT_NOT_FOUND {
-        @Override
-        public String key() {
-            return this.name();
-        }
-    }
 }
