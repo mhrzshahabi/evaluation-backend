@@ -19,8 +19,8 @@ import javax.persistence.*;
 public class Grade {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grade_id_seq")
-    @SequenceGenerator(name = "grade_id_seq", sequenceName = "seq_grade_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_grade_id")
+    @SequenceGenerator(name = "seq_grade_id", sequenceName = "seq_grade_id", allocationSize = 1)
     private Long id;
 
     @Column(name = "c_code")
