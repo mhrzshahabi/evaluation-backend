@@ -7,11 +7,8 @@ import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.iservice.IMeritComponentService;
-import com.nicico.evaluation.iservice.IMeritComponentService;
-import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.MeritComponent;
-import com.nicico.evaluation.repository.MeritComponentRepository;
 import com.nicico.evaluation.repository.MeritComponentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +23,6 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class MeritComponentService implements IMeritComponentService {
 
     private final MeritComponentRepository repository;
@@ -37,7 +33,7 @@ public class MeritComponentService implements IMeritComponentService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
 
-    public MeritComponentDTO.Info get(Long id) throws Exception {
+    public MeritComponentDTO.Info get(Long id) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(meritComponent);
     }

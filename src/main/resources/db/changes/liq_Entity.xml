@@ -152,7 +152,6 @@
             </column>
         </createTable>
     </changeSet>
-
     <changeSet id="1680928838" author="semami">
         <createTable tableName="tbl_group_type">
             <column name="id" type="NUMBER(19, 0)">
@@ -173,6 +172,12 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="1680937495" author="semami">
+        <dropColumn tableName="tbl_kpi_type" columnName="n_level_def"/>
+        <addColumn tableName="tbl_kpi_type">
+            <column name="level_def_id" type="NUMBER(19, 2)"/>
+        </addColumn>
     </changeSet>
 
     <changeSet id="1680931286673" author="a.lotfi">
@@ -197,5 +202,4 @@
             </column>
         </createTable>
     </changeSet>
-
 </databaseChangeLog>

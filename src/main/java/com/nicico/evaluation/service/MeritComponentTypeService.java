@@ -23,7 +23,6 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     private final MeritComponentTypeRepository repository;
@@ -34,7 +33,7 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
 
-    public MeritComponentTypeDTO.Info get(Long id) throws Exception {
+    public MeritComponentTypeDTO.Info get(Long id) {
         MeritComponentType meritComponentType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(meritComponentType);
     }

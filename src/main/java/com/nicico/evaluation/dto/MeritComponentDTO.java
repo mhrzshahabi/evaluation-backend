@@ -24,6 +24,7 @@ public abstract class MeritComponentDTO {
     @ApiModel("MeritComponentInfo")
     public static class Info extends MeritComponentDTO {
 
+        private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;

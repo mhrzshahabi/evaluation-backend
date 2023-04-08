@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IGroupTypeService {
 
-    GroupTypeDTO.Info get(Long id) throws Exception;
+    GroupTypeDTO.Info get(Long id);
 
     List<GroupTypeDTO.Info> list();
 
