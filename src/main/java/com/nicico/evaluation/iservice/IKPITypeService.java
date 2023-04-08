@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IKPITypeService {
 
-    KPITypeDTO.Info get(Long id) throws Exception;
+    KPITypeDTO.Info get(Long id) ;
 
     List<KPITypeDTO.Info> list();
 

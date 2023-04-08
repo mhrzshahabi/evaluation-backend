@@ -24,7 +24,7 @@ public class KPITypeController {
     private final KPITypeService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) throws Exception {
+    public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 

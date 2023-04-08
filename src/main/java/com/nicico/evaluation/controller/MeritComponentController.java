@@ -24,7 +24,7 @@ public class MeritComponentController {
     private final IMeritComponentService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<MeritComponentDTO.Info> get(@PathVariable Long id) throws Exception {
+    public ResponseEntity<MeritComponentDTO.Info> get(@PathVariable Long id)  {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 

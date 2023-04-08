@@ -2,8 +2,8 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.evaluation.dto.MeritComponentDTO;
-import com.nicico.evaluation.iservice.IMeritComponentService;
+import com.nicico.evaluation.dto.MeritComponentTypeDTO;
+import com.nicico.evaluation.iservice.IMeritComponentTypeService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,25 +21,25 @@ import java.util.List;
 @RequestMapping(value = "/api/merit-Component-type")
 public class MeritComponentTypeController {
 
-    private final IMeritComponentService service;
+    private final IMeritComponentTypeService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<MeritComponentDTO.Info> get(@PathVariable Long id) throws Exception {
+    public ResponseEntity<MeritComponentTypeDTO.Info> get(@PathVariable Long id)  {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<MeritComponentDTO.Info>> list() {
+    public ResponseEntity<List<MeritComponentTypeDTO.Info>> list() {
         return new ResponseEntity<>(service.list(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<MeritComponentDTO.Info> create(@Valid @RequestBody MeritComponentDTO.Create request) {
+    public ResponseEntity<MeritComponentTypeDTO.Info> create(@Valid @RequestBody MeritComponentTypeDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<MeritComponentDTO.Info> update(@Valid @RequestBody MeritComponentDTO.Update request) {
+    public ResponseEntity<MeritComponentTypeDTO.Info> update(@Valid @RequestBody MeritComponentTypeDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
@@ -50,7 +50,7 @@ public class MeritComponentTypeController {
     }
 
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<TotalResponse<MeritComponentDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
+    public ResponseEntity<TotalResponse<MeritComponentTypeDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
         return new ResponseEntity<>(service.search(nicicoCriteria), HttpStatus.OK);
     }
