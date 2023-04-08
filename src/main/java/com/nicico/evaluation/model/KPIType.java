@@ -2,17 +2,19 @@ package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
+@Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "TBL_KPI_TYPE")
-@Data
-@NoArgsConstructor
 public class KPIType extends Auditable {
 
     @Id

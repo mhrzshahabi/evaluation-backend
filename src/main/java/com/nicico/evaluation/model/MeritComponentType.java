@@ -1,17 +1,19 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
+@Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_merit_component_type")
-@Data
-@NoArgsConstructor
 public class MeritComponentType extends Auditable {
 
     @Id
