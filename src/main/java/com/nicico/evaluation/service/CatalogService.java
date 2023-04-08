@@ -1,11 +1,9 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.evaluation.dto.CatalogDTO;
-import com.nicico.evaluation.dto.CatalogTypeDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.mapper.CatalogBeanMapper;
 import com.nicico.evaluation.model.Catalog;
-import com.nicico.evaluation.model.KPIType;
 import com.nicico.evaluation.repository.CatalogRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;

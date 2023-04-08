@@ -4,7 +4,6 @@ import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.utility.EvaluationConstant;
 import lombok.AllArgsConstructor;
-import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

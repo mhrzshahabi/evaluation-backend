@@ -32,7 +32,7 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public GroupTypeDTO.Info get(Long id) throws Exception {
+    public GroupTypeDTO.Info get(Long id) {
         GroupType groupType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(groupType);
     }
