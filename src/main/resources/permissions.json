@@ -31,6 +31,22 @@
     {
       "code": "D_MERIT_COMPONENT",
       "title": "حذف مولفه شایستگی"
+    },
+    {
+      "code": "R_MERIT_COMPONENT_TYPE",
+      "title": "نمایش مولفه شایستگی - نوع"
+    },
+    {
+      "code": "C_MERIT_COMPONENT_TYPE",
+      "title": "ایجاد مولفه شایستگی - نوع"
+    },
+    {
+      "code": "U_MERIT_COMPONENT_TYPE",
+      "title": "ویرایش مولفه شایستگی - نوع"
+    },
+    {
+      "code": "D_MERIT_COMPONENT_TYPE",
+      "title": "حذف مولفه شایستگی - نوع"
     }
   ]
 }

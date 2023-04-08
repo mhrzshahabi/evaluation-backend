@@ -18,8 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "MeritComponent")
 @RestController
-@RequestMapping(value = "/api/merit-Component")
-public class MeritComponentController {
+@RequestMapping(value = "/api/merit-Component-type")
+public class MeritComponentTypeController {
 
     private final IMeritComponentService service;
 

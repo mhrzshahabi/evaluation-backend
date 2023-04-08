@@ -14,16 +14,15 @@ import java.util.Date;
 @Setter
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class KPITypeDTO {
+public abstract class MeritComponentTypeDTO {
 
-    private String code;
-    private String title;
-    private Long levelDef;
+    private String meritComponentId;
+    private String kpiTypeId;
 
     @Getter
     @Setter
-    @ApiModel("KPITypeInfo")
-    public static class Info extends KPITypeDTO {
+    @ApiModel("MeritComponentTypeInfo")
+    public static class Info extends MeritComponentTypeDTO {
 
         private Date createdDate;
         private String createdBy;
@@ -34,16 +33,16 @@ public abstract class KPITypeDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("KPITypeCreateRq")
-    public static class Create extends KPITypeDTO {
+    @ApiModel("MeritComponentTypeCreateRq")
+    public static class Create extends MeritComponentTypeDTO {
 
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("KPITypeUpdateRq")
-    public static class Update extends KPITypeDTO {
+    @ApiModel("MeritComponentTypeUpdateRq")
+    public static class Update extends MeritComponentTypeDTO {
 
         private Long id;
         @NotNull
@@ -54,8 +53,8 @@ public abstract class KPITypeDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("KPITypeDeleteRq")
-    public static class Delete extends KPITypeDTO {
+    @ApiModel("MeritComponentTypeDeleteRq")
+    public static class Delete extends MeritComponentTypeDTO {
 
         private Long id;
     }

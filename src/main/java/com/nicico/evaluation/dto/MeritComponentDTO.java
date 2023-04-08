@@ -21,12 +21,9 @@ public abstract class MeritComponentDTO {
 
     @Getter
     @Setter
-    @ApiModel("KPITypeInfo")
+    @ApiModel("MeritComponentInfo")
     public static class Info extends MeritComponentDTO {
 
-        private Date deletedDate;
-        private Boolean updatable = true;
-        private String comment;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
@@ -36,7 +33,7 @@ public abstract class MeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("KPITypeCreateRq")
+    @ApiModel("MeritComponentCreateRq")
     public static class Create extends MeritComponentDTO {
 
     }
@@ -44,7 +41,7 @@ public abstract class MeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("KPITypeUpdateRq")
+    @ApiModel("MeritComponentUpdateRq")
     public static class Update extends MeritComponentDTO {
 
         private Long id;
@@ -56,7 +53,7 @@ public abstract class MeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("KPITypeDeleteRq")
+    @ApiModel("MeritComponentDeleteRq")
     public static class Delete extends MeritComponentDTO {
 
         private Long id;
