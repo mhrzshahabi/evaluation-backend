@@ -3,7 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.KPITypeDTO;
-import com.nicico.evaluation.service.KPITypeService;
+import com.nicico.evaluation.iservice.IKPITypeService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping(value = "/anonymous/api/kpi-type")
 public class KPITypeController {
 
-    private final KPITypeService service;
+    private final IKPITypeService service;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) {

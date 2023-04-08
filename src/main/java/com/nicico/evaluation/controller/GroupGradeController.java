@@ -2,8 +2,8 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.evaluation.dto.GroupTypeDTO;
-import com.nicico.evaluation.iservice.IGroupTypeService;
+import com.nicico.evaluation.dto.GroupGradeDTO;
+import com.nicico.evaluation.iservice.IGroupGradeService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,30 +16,30 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Api(value = "Group Type")
+@Api(value = "Group Grade")
 @RestController
-@RequestMapping(value = "/api/group-type")
-public class GroupTypeController {
+@RequestMapping(value = "/anonymous/api/group-grade")
+public class GroupGradeController {
 
-    private final IGroupTypeService service;
+    private final IGroupGradeService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<GroupTypeDTO.Info> get(@PathVariable Long id) {
+    public ResponseEntity<GroupGradeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<GroupTypeDTO.Info>> list() {
+    public ResponseEntity<List<GroupGradeDTO.Info>> list() {
         return new ResponseEntity<>(service.list(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<GroupTypeDTO.Info> create(@Valid @RequestBody GroupTypeDTO.Create request) {
+    public ResponseEntity<GroupGradeDTO.Info> create(@Valid @RequestBody GroupGradeDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<GroupTypeDTO.Info> update(@Valid @RequestBody GroupTypeDTO.Update request) {
+    public ResponseEntity<GroupGradeDTO.Info> update(@Valid @RequestBody GroupGradeDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
@@ -50,7 +50,7 @@ public class GroupTypeController {
     }
 
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<TotalResponse<GroupTypeDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
+    public ResponseEntity<TotalResponse<GroupGradeDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
         return new ResponseEntity<>(service.search(nicicoCriteria), HttpStatus.OK);
     }

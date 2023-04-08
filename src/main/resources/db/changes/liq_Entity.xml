@@ -177,4 +177,27 @@
             <column name="level_def_id" type="NUMBER(19, 2)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1680948748" author="semami">
+        <createTable tableName="tbl_group_grade">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_group_grade_PK"/>
+            </column>
+            <column name="grade_id" type="NUMBER(10, 0)"/>
+            <column name="group_id" type="NUMBER(10, 0)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="grade_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+            <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
