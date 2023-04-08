@@ -18,12 +18,14 @@ public abstract class KPITypeDTO {
 
     private String code;
     private String title;
-    private Long levelDef;
+    private Long levelDefCatalogId;
 
     @Getter
     @Setter
     @ApiModel("KPITypeInfo")
     public static class Info extends KPITypeDTO {
+
+        CatalogDTO.Info levelDefCatalog;
 
         private Date createdDate;
         private String createdBy;

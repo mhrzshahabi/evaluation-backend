@@ -105,8 +105,6 @@
             </column>
         </createTable>
     </changeSet>
-
-
     <changeSet id="1680590045224" author="a.lotfi">
         <createTable tableName="tbl_group">
             <column name="id" type="NUMBER(19, 0)">
@@ -172,5 +170,11 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="1680937495" author="semami">
+        <dropColumn tableName="tbl_kpi_type" columnName="n_level_def"/>
+        <addColumn tableName="tbl_kpi_type">
+            <column name="level_def_id" type="NUMBER(19, 2)"/>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

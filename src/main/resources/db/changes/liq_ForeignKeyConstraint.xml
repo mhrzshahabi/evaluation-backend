@@ -37,5 +37,12 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_group" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1680937115">
+        <addForeignKeyConstraint baseColumnNames="level_def_id"
+                                 baseTableName="tbl_kpi_type"
+                                 constraintName="f_type_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>
