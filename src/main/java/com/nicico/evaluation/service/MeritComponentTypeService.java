@@ -23,7 +23,6 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     private final MeritComponentTypeRepository repository;

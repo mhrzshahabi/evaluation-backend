@@ -1,9 +1,11 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.evaluation.dto.CatalogDTO;
+import com.nicico.evaluation.dto.CatalogTypeDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.mapper.CatalogBeanMapper;
 import com.nicico.evaluation.model.Catalog;
+import com.nicico.evaluation.model.KPIType;
 import com.nicico.evaluation.repository.CatalogRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -13,6 +15,7 @@ import org.springframework.expression.EvaluationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,5 +65,12 @@ public class CatalogService implements ICatalogService {
         Optional<Catalog> optionalCatalog = catalogRepository.findById(id);
         optionalCatalog.orElseThrow(() -> null);
         catalogRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatalogDTO.Info> list(String code) {
+        List<Catalog> allByCatalogTypeCode = catalogRepository.findAllByCatalogTypeCode(code);
+        return catalogBeanMapper.catalogToInfoList(allByCatalogTypeCode);
     }
 }

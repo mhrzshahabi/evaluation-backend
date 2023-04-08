@@ -23,7 +23,6 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class KPITypeService implements IKPITypeService {
 
     private final KPITypeRepository repository;
