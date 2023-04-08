@@ -25,7 +25,7 @@ public abstract class GroupTypeDTO {
     @ApiModel("GroupTypeInfo")
     public static class Info extends GroupTypeDTO {
 
-        private GroupTypeDTO.Info kpiType;
+        private KPITypeDTO.Info kpiType;
         private GroupDTO.Info group;
 
         private Date createdDate;
