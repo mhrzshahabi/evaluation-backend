@@ -12,7 +12,7 @@
     <parent>
         <groupId>com.nicico.copper</groupId>
         <artifactId>copper-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>5.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 

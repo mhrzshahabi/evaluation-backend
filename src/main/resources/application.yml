@@ -6,12 +6,14 @@ spring:
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
+      maximum-pool-size: 5
+      connection-timeout: 120000
   jpa:
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
-        dialect: com.nicico.copper.common.hibernate.CustomOracleDialect
+        dialect: org.hibernate.dialect.Oracle12cDialect
         hbm2ddl:
           schema_filter_provider: com.nicico.copper.common.hibernate.CustomSchemaFilterProvider
     open-in-view: false
@@ -19,19 +21,23 @@ spring:
     database-change-log-table: Z_LIQ_CHANGELOG
     database-change-log-lock-table: Z_LIQ_CHANGELOG_LOCK
     change-log: classpath:/db/changelog-master.xml
-    enabled: true
   main:
     allow-bean-definition-overriding: true
-  activiti:
-    rest-api-enabled: true
-    history-level: full
-    database-schema-update: true
-    db-history-used: true
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
   redis:
     port: 6379
   servlet:
     multipart:
-      max-file-size: 1000MB
+      max-file-size: 30MB
+      max-request-size: 30MB
+copper:
+  security:
+    policy:
+      json:
+        filePath: json.json
 
 server:
   port: 8080
@@ -40,16 +46,23 @@ server:
     session:
       cookie:
         name: App_${spring.application.name}
+      timeout: 30m
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
   endpoint:
+    prometheus:
+      enabled: true
     health:
       show-details: always
 
 nicico:
   jpa:
     entity:
-      package: com.nicico.evaluation-backend
+      package: com.nicico.evaluation.model
   google:
     mail:
       username:
@@ -59,17 +72,16 @@ nicico:
     url:
     username:
     password:
-  upload:
-    dir: /var/nicico/${spring.application.name}/
+  rest-api:
+    url: /var/nicico/${spring.application.name}/
   workflow:
     update:
-      mode: true
-  bpmn:
-    upload:
-      dir: /var/nicico/${spring.application.name}/
-#  security:
-#    sys-password: password
----
-logging :
-  level:
-   liquibase : INFO
+      mode: false
+  sms:
+    magfa:
+      username: 'maaden_81794'
+      password: 'DplSkqONgQcfymUb'
+  token:
+    revoke: false
+
+
