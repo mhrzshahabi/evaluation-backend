@@ -1,4 +1,4 @@
-FROM devops01.icico.net.ir/openjdk:17
+FROM devops01.icico.net.ir/amazoncorretto:17
 
 COPY target/*.jar /app.jar
 

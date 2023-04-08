@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/group")
+@RequestMapping("/anonymous/api/group")
 @Validated
 @AllArgsConstructor
 public class GroupController {

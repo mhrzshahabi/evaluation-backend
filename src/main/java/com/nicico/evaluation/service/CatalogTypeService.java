@@ -1,7 +1,9 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.evaluation.dto.CatalogTypeDTO;
+import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.NotFoundException;
+import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import com.nicico.evaluation.mapper.CatalogTypeBeanMapper;
 import com.nicico.evaluation.model.CatalogType;
@@ -11,10 +13,13 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.expression.EvaluationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +28,13 @@ public class CatalogTypeService implements ICatalogTypeService {
     private final ModelMapper modelMapper;
     private final CatalogTypeRepository catalogTypeRepository;
     private final CatalogTypeBeanMapper catalogTypeBeanMapper;
+    private final ApplicationException<ServiceException> applicationException;
 
     @Override
     @Transactional(readOnly = true)
     public CatalogTypeDTO.Info getById(Long id) {
         Optional<CatalogType> optionalCatalogType = catalogTypeRepository.findById(id);
-        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElse(null));
-//        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElseThrow(() -> new EvaluationHandleException(HttpStatus.NOT_FOUND, "message")));
+        return catalogTypeBeanMapper.catalogTypeToInfo(optionalCatalogType.orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND)));
     }
 
     @Override
