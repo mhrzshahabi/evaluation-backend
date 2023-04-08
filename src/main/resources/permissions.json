@@ -47,6 +47,22 @@
     {
       "code": "D_MERIT_COMPONENT_TYPE",
       "title": "حذف مولفه شایستگی - نوع"
+    },
+    {
+      "code": "R_GROUP_TYPE",
+      "title": "نمایش گروه - نوع"
+    },
+    {
+      "code": "C_GROUP_TYPE",
+      "title": "ایجاد گروه - نوع"
+    },
+    {
+      "code": "U_GROUP_TYPE",
+      "title": "ویرایش گروه - نوع"
+    },
+    {
+      "code": "D_GROUP_TYPE",
+      "title": "حذف گروه - نوع"
     }
   ]
 }
