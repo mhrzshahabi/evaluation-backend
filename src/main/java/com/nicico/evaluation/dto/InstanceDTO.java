@@ -11,28 +11,26 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GroupDTO {
+public class InstanceDTO {
 
     private String code;
     private String title;
-    private Boolean definitionAllowed;
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupCreateRq")
-    public static class Create extends GroupDTO{
+    @ApiModel("InstanceCreateRq")
+    public static class Create extends InstanceDTO{
     }
 
     @Getter
     @Setter
-    @ApiModel("GroupInfo")
-    public static class Info extends GroupDTO{
+    @ApiModel("InstanceInfo")
+    public static class Info extends InstanceDTO{
         private Long id;
 
         private Date createdDate;
@@ -45,8 +43,8 @@ public class GroupDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupUpdateRq")
-    public static class Update extends GroupDTO {
+    @ApiModel("InstanceUpdateRq")
+    public static class Update extends InstanceDTO {
         @NotNull
         @Min(1)
         private Long id;
@@ -58,10 +56,11 @@ public class GroupDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupDeleteRq")
+    @ApiModel("InstanceDeleteRq")
     public static class Delete {
         @NotNull
         @Min(1)
         private Long id;
     }
+
 }

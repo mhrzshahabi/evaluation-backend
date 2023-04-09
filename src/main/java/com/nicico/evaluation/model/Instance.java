@@ -13,12 +13,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tbl_group")
-public class Group extends Auditable {
+@Table(name = "tbl_instance")
+public class Instance extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_seq")
-    @SequenceGenerator(name = "group_seq", sequenceName = "group_seq_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "instance_seq")
+    @SequenceGenerator(name = "instance_seq", sequenceName = "instance_seq_id", allocationSize = 1)
     private Long id;
 
     @Column(name = "c_code")
@@ -27,8 +27,4 @@ public class Group extends Auditable {
 
     @Column(name = "c_title")
     private String title;
-
-    @Column(name = "b_merit_definition_allowed")
-    private Boolean definitionAllowed;
-
 }
