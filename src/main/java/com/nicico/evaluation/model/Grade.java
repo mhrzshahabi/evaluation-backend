@@ -13,8 +13,8 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select  hrm_tbl_post_grade.id,hrm_tbl_post_grade.c_title,hrm_tbl_post_grade.c_code from hrm_tbl_post_grade")
-@DiscriminatorValue("hrmTblPostGrade")
+@Subselect("select  * from syn_hrm_view_grade")
+@DiscriminatorValue("synHrmViewGrade")
 public class Grade {
 
     @Id
@@ -22,10 +22,10 @@ public class Grade {
     @SequenceGenerator(name = "seq_grade_id", sequenceName = "seq_grade_id", allocationSize = 1)
     private Long id;
 
-    @Column(name = "c_code")
+    @Column(name = "C_POST_GRADE_CODE")
     private String code;
 
-    @Column(name = "c_title")
+    @Column(name = "C_POST_GRADE_TITLE")
     private String title;
 
 }
