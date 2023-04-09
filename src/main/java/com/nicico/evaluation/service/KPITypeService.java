@@ -31,7 +31,7 @@ public class KPITypeService implements IKPITypeService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
     public KPITypeDTO.Info get(Long id) throws Exception {
         KPIType kpiType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(kpiType);
@@ -39,7 +39,7 @@ public class KPITypeService implements IKPITypeService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
     public List<KPITypeDTO.Info> list() {
         List<KPIType> kpiTypes = repository.findAll();
         return mapper.entityToDtoInfoList(kpiTypes);
@@ -47,14 +47,14 @@ public class KPITypeService implements IKPITypeService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
     public TotalResponse<KPITypeDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_KPI_TYPE')")
+//    @PreAuthorize("hasAuthority('C_KPI_TYPE')")
     public KPITypeDTO.Info create(KPITypeDTO.Create dto) {
         KPIType kpiType = mapper.dtoCreateToEntity(dto);
         KPIType save = repository.save(kpiType);
@@ -63,7 +63,7 @@ public class KPITypeService implements IKPITypeService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_KPI_TYPE')")
+//    @PreAuthorize("hasAuthority('U_KPI_TYPE')")
     public KPITypeDTO.Info update(KPITypeDTO.Update dto) {
         KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() ->  applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(kPIType, dto);
@@ -73,7 +73,7 @@ public class KPITypeService implements IKPITypeService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_KPI_TYPE')")
+//    @PreAuthorize("hasAuthority('D_KPI_TYPE')")
     public void delete(Long id) {
         KPIType kPIType = repository.findById(id).orElseThrow(() ->  applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(kPIType);
