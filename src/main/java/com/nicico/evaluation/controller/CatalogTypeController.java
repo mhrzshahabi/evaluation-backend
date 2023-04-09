@@ -1,10 +1,12 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogTypeDTO;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequestMapping(value = "/api/catalog-type")
 public class CatalogTypeController {
 
+    private final PageableMapper pageableMapper;
     private final ICatalogTypeService catalogTypeService;
 
     @GetMapping(value = "/{id}")
@@ -28,7 +31,8 @@ public class CatalogTypeController {
 
     @GetMapping(value = "/list")
     public ResponseEntity<List<CatalogTypeDTO.Info>> list(@RequestParam int count, @RequestParam int startIndex) {
-        return new ResponseEntity<>(catalogTypeService.list(), HttpStatus.OK);
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return new ResponseEntity<>(catalogTypeService.list(pageable), HttpStatus.OK);
     }
 
     @Loggable
