@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,6 +17,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class GroupGradeDTO {
 
+    private List<Long> gradeIds;
     private Long groupId;
     private String title;
     private String code;
@@ -25,7 +27,6 @@ public abstract class GroupGradeDTO {
     @ApiModel("GroupGradeInfo")
     public static class Info extends GroupGradeDTO {
 
-        private Long id;
         private GroupDTO.Info group;
         private GradeDTO.Info grade;
 
