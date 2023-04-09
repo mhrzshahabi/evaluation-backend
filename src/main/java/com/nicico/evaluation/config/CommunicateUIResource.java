@@ -66,7 +66,10 @@ public class CommunicateUIResource {
 
         String accessToken = client.getAccessToken().getTokenValue();
         httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, accessToken);
-        httpServletResponse.setHeader(HttpHeaders.LOCATION, uiRedirectAddress);
+        httpServletResponse.setHeader(HttpHeaders.LOCATION, uiRedirectAddress +
+                "?token= Bearer " + accessToken + "&" +
+                "landingAddress=" + uiLandingAddress + "&" +
+                "userNationalCode=" + SecurityUtil.getNationalCode());
         return new ResponseEntity<>(HttpStatus.MOVED_PERMANENTLY);
     }
 
