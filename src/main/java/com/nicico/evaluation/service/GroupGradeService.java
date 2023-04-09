@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
@@ -47,7 +49,12 @@ public class GroupGradeService implements IGroupGradeService {
     // @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
     public List<GroupGradeDTO.Info> list() {
         List<GroupGrade> groupGrades = repository.findAll();
-        return mapper.entityToDtoInfoList(groupGrades);
+        List<GroupGradeDTO.Info> infos = mapper.entityToDtoInfoList(groupGrades);
+        infos.forEach(groupGrade -> {
+            GradeDTO.Info gradeDTO = gradeService.getAllByCodeIn(Collections.singletonList(groupGrade.getGradeCode())).get(0);
+            groupGrade.setGrade(gradeDTO);
+        });
+        return infos;
     }
 
     @Override
@@ -57,6 +64,14 @@ public class GroupGradeService implements IGroupGradeService {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
+
+    @Override
+    @Transactional
+    //  @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
+    public List<GroupGradeDTO.Info> createAll(List<GroupGradeDTO.Create> requests) {
+        return requests.stream().map(this::create).toList();
+    }
+
     @Override
     @Transactional
     //  @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
@@ -64,6 +79,25 @@ public class GroupGradeService implements IGroupGradeService {
         GroupGrade groupGrade = mapper.dtoCreateToEntity(dto);
         GroupGrade save = repository.save(groupGrade);
         return mapper.entityToDtoInfo(save);
+    }
+
+    @Override
+    @Transactional
+    //  @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
+    public List<GroupGradeDTO.Info> createGroupGrade(GroupGradeDTO.CreateAll dto) {
+        List<GradeDTO.Info> grades = gradeService.getAllByCodeIn(dto.getGradeCodes());
+        List<GroupGradeDTO.Create> createAllDto = new ArrayList<>();
+        grades.forEach(grade -> {
+            GroupGradeDTO.Create createDto = new GroupGradeDTO.Create();
+            createDto.setGradeCode(grade.getCode());
+            createDto.setGradeId(grade.getId());
+            createDto.setGroupId(dto.getGroupId());
+            createDto.setTitle(dto.getTitle());
+            createDto.setCode(dto.getCode());
+
+            createAllDto.add(createDto);
+        });
+        return this.createAll(createAllDto);
     }
 
     @Override

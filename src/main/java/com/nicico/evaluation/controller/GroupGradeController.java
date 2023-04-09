@@ -34,8 +34,8 @@ public class GroupGradeController {
     }
 
     @PostMapping
-    public ResponseEntity<GroupGradeDTO.Info> create(@Valid @RequestBody GroupGradeDTO.Create request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    public ResponseEntity<List<GroupGradeDTO.Info>> create(@Valid @RequestBody GroupGradeDTO.CreateAll request) {
+        return new ResponseEntity<>(service.createGroupGrade(request), HttpStatus.CREATED);
     }
 
     @PutMapping

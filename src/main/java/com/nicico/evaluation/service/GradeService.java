@@ -47,6 +47,14 @@ public class GradeService implements IGradeService {
     @Override
     @Transactional(readOnly = true)
 //    @PreAuthorize("hasAuthority('R_GRADE')")
+    public List<GradeDTO.Info> getAllByCodeIn(List<String> codes) {
+        List<Grade> grades = repository.getAllByCodeIn(codes);
+        return mapper.entityToDtoInfoList(grades);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+//    @PreAuthorize("hasAuthority('R_GRADE')")
     public List<GradeDTO.Info> list() {
         List<Grade> gradeList = repository.findAll();
         return mapper.entityToDtoInfoList(gradeList);

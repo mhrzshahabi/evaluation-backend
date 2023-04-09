@@ -14,7 +14,11 @@ public interface IGroupGradeService {
 
     TotalResponse<GroupGradeDTO.Info> search(NICICOCriteria request);
 
+    List<GroupGradeDTO.Info> createAll(List<GroupGradeDTO.Create> requests);
+
     GroupGradeDTO.Info create(GroupGradeDTO.Create dto);
+
+    List<GroupGradeDTO.Info> createGroupGrade(GroupGradeDTO.CreateAll dto);
 
     GroupGradeDTO.Info update(GroupGradeDTO.Update dto);
 

@@ -12,6 +12,8 @@ public interface IGradeService {
 
     GradeDTO.Info getByCode(String code);
 
+    List<GradeDTO.Info> getAllByCodeIn(List<String> codes);
+
     List<GradeDTO.Info> list();
 
     TotalResponse<GradeDTO.Info> search(NICICOCriteria request);
