@@ -10,6 +10,8 @@ public interface IGradeService {
 
     GradeDTO.Info get(Long id) throws Exception;
 
+    GradeDTO.Info getByCode(String code);
+
     List<GradeDTO.Info> list();
 
     TotalResponse<GradeDTO.Info> search(NICICOCriteria request);

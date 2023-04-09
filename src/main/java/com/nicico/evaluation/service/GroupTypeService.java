@@ -65,9 +65,9 @@ public class GroupTypeService implements IGroupTypeService {
     @Transactional
 //    @PreAuthorize("hasAuthority('U_GROUP_TYPE')")
     public GroupTypeDTO.Info update(GroupTypeDTO.Update dto) {
-        GroupType kPIType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        mapper.update(kPIType, dto);
-        GroupType save = repository.save(kPIType);
+        GroupType groupType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        mapper.update(groupType, dto);
+        GroupType save = repository.save(groupType);
         return mapper.entityToDtoInfo(save);
     }
 
@@ -75,8 +75,8 @@ public class GroupTypeService implements IGroupTypeService {
     @Transactional
 //    @PreAuthorize("hasAuthority('D_GROUP_TYPE')")
     public void delete(Long id) {
-        GroupType kPIType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        repository.delete(kPIType);
+        GroupType groupType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        repository.delete(groupType);
     }
 
 }

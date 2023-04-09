@@ -27,4 +27,8 @@
         <createSequence sequenceName="seq_grade_id"/>
     </changeSet>
 
+    <changeSet id="1680948733" author="semami">
+        <createSequence sequenceName="seq_group_grade_id"/>
+    </changeSet>
+
 </databaseChangeLog>

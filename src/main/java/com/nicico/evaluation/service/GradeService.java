@@ -39,6 +39,14 @@ public class GradeService implements IGradeService {
     @Override
     @Transactional(readOnly = true)
 //    @PreAuthorize("hasAuthority('R_GRADE')")
+    public GradeDTO.Info getByCode(String code) {
+        Grade grade = repository.getByCode(code).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        return mapper.entityToDtoInfo(grade);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+//    @PreAuthorize("hasAuthority('R_GRADE')")
     public List<GradeDTO.Info> list() {
         List<Grade> gradeList = repository.findAll();
         return mapper.entityToDtoInfoList(gradeList);
@@ -50,4 +58,5 @@ public class GradeService implements IGradeService {
     public TotalResponse<GradeDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
+
 }

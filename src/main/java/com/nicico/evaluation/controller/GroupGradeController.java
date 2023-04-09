@@ -2,8 +2,8 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.evaluation.dto.MeritComponentDTO;
-import com.nicico.evaluation.iservice.IMeritComponentService;
+import com.nicico.evaluation.dto.GroupGradeDTO;
+import com.nicico.evaluation.iservice.IGroupGradeService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,30 +16,30 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Api(value = "MeritComponent")
+@Api(value = "Group Grade")
 @RestController
-@RequestMapping(value = "/anonymous/api/merit-Component")
-public class MeritComponentController {
+@RequestMapping(value = "/anonymous/api/group-grade")
+public class GroupGradeController {
 
-    private final IMeritComponentService service;
+    private final IGroupGradeService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<MeritComponentDTO.Info> get(@PathVariable Long id)  {
+    public ResponseEntity<GroupGradeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<MeritComponentDTO.Info>> list() {
+    public ResponseEntity<List<GroupGradeDTO.Info>> list() {
         return new ResponseEntity<>(service.list(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<MeritComponentDTO.Info> create(@Valid @RequestBody MeritComponentDTO.Create request) {
+    public ResponseEntity<GroupGradeDTO.Info> create(@Valid @RequestBody GroupGradeDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<MeritComponentDTO.Info> update(@Valid @RequestBody MeritComponentDTO.Update request) {
+    public ResponseEntity<GroupGradeDTO.Info> update(@Valid @RequestBody GroupGradeDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
@@ -50,7 +50,7 @@ public class MeritComponentController {
     }
 
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<TotalResponse<MeritComponentDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
+    public ResponseEntity<TotalResponse<GroupGradeDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
         return new ResponseEntity<>(service.search(nicicoCriteria), HttpStatus.OK);
     }

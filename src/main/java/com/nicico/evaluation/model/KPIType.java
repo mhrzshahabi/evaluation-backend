@@ -30,10 +30,6 @@ public class KPIType extends Auditable {
     @Column(name = "c_title")
     private String title;
 
-    @NotNull
-    @Column(name = "n_level_def")
-    private Long levelDef;
-
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_def_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_type_to_catalog"))
@@ -42,13 +38,5 @@ public class KPIType extends Auditable {
     @Column(name = "level_def_id")
     private Long levelDefCatalogId;
 
-    @Setter(AccessLevel.NONE)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "merit_component_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_merit_component_type_to_merit_component"))
-    private MeritComponent meritComponent;
-
-
-    @Column(name = "merit_component_id")
-    private Long meritComponentId;
 
 }

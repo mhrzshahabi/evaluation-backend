@@ -6,10 +6,10 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
-import com.nicico.evaluation.repository.KPITypeRepository;
+import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.mapper.KPITypeMapper;
 import com.nicico.evaluation.model.KPIType;
-import com.nicico.evaluation.iservice.IKPITypeService;
+import com.nicico.evaluation.repository.KPITypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,8 +31,8 @@ public class KPITypeService implements IKPITypeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
-    public KPITypeDTO.Info get(Long id) throws Exception {
+    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+    public KPITypeDTO.Info get(Long id) {
         KPIType kpiType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(kpiType);
     }
