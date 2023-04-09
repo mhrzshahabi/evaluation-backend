@@ -1,6 +1,5 @@
 package com.nicico.evaluation.model;
 
-import com.nicico.copper.common.domain.Auditable;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -26,9 +25,7 @@ public class Grade {
     @Column(name = "c_code")
     private String code;
 
-
     @Column(name = "c_title")
     private String title;
-
 
 }

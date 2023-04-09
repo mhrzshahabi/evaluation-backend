@@ -3,7 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.GroupTypeDTO;
-import com.nicico.evaluation.service.GroupTypeService;
+import com.nicico.evaluation.iservice.IGroupTypeService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "Group Type")
 @RestController
-@RequestMapping(value = "/api/group-type")
+@RequestMapping(value = "/anonymous/api/group-type")
 public class GroupTypeController {
 
-    private final GroupTypeService service;
+    private final IGroupTypeService service;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupTypeDTO.Info> get(@PathVariable Long id) throws Exception {
