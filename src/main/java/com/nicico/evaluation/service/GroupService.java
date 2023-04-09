@@ -33,16 +33,19 @@ public class GroupService implements IGroupService {
     private final PageableMapper pageableMapper;
     private final ApplicationException<ServiceException> applicationException;
 
+
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP')")
     public PageDTO list(Pageable page) {
         Page<Group> groups = groupRepository.findAll(page);
-        List<GroupDTO.Info> groInfos = groupMapper.entityToDtoInfoList(groups.getContent());
-        return pageableMapper.toPageDto(groups, groInfos);
+        List<GroupDTO.Info> groupInfoDto = groupMapper.entityToDtoInfoList(groups.getContent());
+        return pageableMapper.toPageDto(groups, groupInfoDto);
     }
 
 
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP')")
     public GroupDTO.Info get(Long id) {
         Group group = groupRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
@@ -50,6 +53,7 @@ public class GroupService implements IGroupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP')")
     public TotalResponse<GroupDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(groupRepository, request, groupMapper::entityToDtoInfo);

@@ -35,6 +35,7 @@ public class InstanceService implements IInstanceService {
     private final ApplicationException<ServiceException> applicationException;
 
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_INSTANCE')")
     public PageDTO list(Pageable pageable) {
         Page<Instance> instances = instanceRepository.findAll(pageable);
@@ -43,6 +44,7 @@ public class InstanceService implements IInstanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_INSTANCE')")
     public InstanceDTO.Info get(Long id) {
         Instance instance = instanceRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
@@ -50,6 +52,7 @@ public class InstanceService implements IInstanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_INSTANCE')")
     public TotalResponse<InstanceDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(instanceRepository, request, instanceMapper::entityToDtoInfo);

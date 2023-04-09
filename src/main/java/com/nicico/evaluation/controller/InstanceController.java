@@ -29,38 +29,63 @@ public class InstanceController {
 
     private final IInstanceService instanceService;
 
-    @ApiOperation("list of instance every page 10")
+    /**
+     * @param  page is the page number
+     * @param pageSize is the number of entity to every page
+     * @return PageDTO that contain list of instanceInfoDto and the number of total entity
+     */
     @GetMapping(value = "/list")
     public ResponseEntity<PageDTO> list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         return new ResponseEntity<>(instanceService.list(pageable), HttpStatus.OK);
     }
 
-    @ApiOperation("search instance")
+    /**
+     *
+     * @param request is the key value pair for criteria
+     * @return TotalResponse<InstanceDTO.Info> is the list of instanceInfo entity that match the criteria
+     */
     @GetMapping(value = "/spec-list")
     public ResponseEntity<TotalResponse<InstanceDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
         return new ResponseEntity<>(instanceService.search(nicicoCriteria), HttpStatus.OK);
     }
-    @ApiOperation("get single instance by id")
+
+    /**
+     *
+     * @param id is the instance id
+     * @return InstanceDTO.Info is the single instance entity
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<InstanceDTO.Info> get(@PathVariable @Min(1) Long id) {
         return new ResponseEntity<>(instanceService.get(id), HttpStatus.OK);
     }
 
-    @ApiOperation("create a instance")
+    /**
+     *
+     * @param request is the model of input for create instance entity
+     * @return GroupDTOInfo is the saved instance entity
+     */
     @PostMapping
     public ResponseEntity<InstanceDTO.Info> create(@Valid @RequestBody InstanceDTO.Create request) {
         return new ResponseEntity<>(instanceService.create(request), HttpStatus.CREATED);
     }
 
-    @ApiOperation("update a instance")
+    /**
+     *
+     * @param request is  the model of input for update instance entity
+     * @return GroupDTOInfo is the updated instance entity
+     */
     @PutMapping
     public ResponseEntity<InstanceDTO.Info> update(@Valid @RequestBody InstanceDTO.Update request) {
         return new ResponseEntity<>(instanceService.update(request), HttpStatus.OK);
     }
 
-    @ApiOperation("delete a instance")
+    /**
+     *
+     * @param id is the instance id for delete
+     * @return status code only
+     */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> remove(@PathVariable @Min(1) Long id) {
         instanceService.delete(id);
