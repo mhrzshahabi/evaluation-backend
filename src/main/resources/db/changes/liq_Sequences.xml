@@ -15,7 +15,6 @@
         <createSequence sequenceName="seq_merit_component_id"/>
     </changeSet>
 
-
     <changeSet id="1680590070656" author="a.lotfi">
         <createSequence sequenceName="group_seq_id"/>
     </changeSet>
@@ -26,6 +25,10 @@
 
     <changeSet id="1680938660" author="namdari">
         <createSequence sequenceName="seq_grade_id"/>
+    </changeSet>
+
+    <changeSet id="1680948733" author="semami">
+        <createSequence sequenceName="seq_group_grade_id"/>
     </changeSet>
 
     <changeSet id="1680590070656" author="a.lotfi">

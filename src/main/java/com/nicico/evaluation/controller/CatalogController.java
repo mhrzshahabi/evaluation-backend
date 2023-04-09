@@ -21,11 +21,6 @@ public class CatalogController {
 
     private final ICatalogService service;
 
-    @GetMapping(value = "/level-def-list")
-    public ResponseEntity<List<CatalogDTO.Info>> list() {
-        return new ResponseEntity<>(service.list(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/{id}")
     public ResponseEntity<CatalogDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.getById(id), HttpStatus.OK);
@@ -49,4 +44,8 @@ public class CatalogController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping(value = "/level-def-list")
+    public ResponseEntity<List<CatalogDTO.Info>> list() {
+        return new ResponseEntity<>(service.list(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
+    }
 }

@@ -24,7 +24,7 @@ public class GroupTypeController {
     private final IGroupTypeService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<GroupTypeDTO.Info> get(@PathVariable Long id) throws Exception {
+    public ResponseEntity<GroupTypeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 

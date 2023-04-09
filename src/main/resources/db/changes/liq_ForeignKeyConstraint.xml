@@ -44,5 +44,12 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_catalog" validate="true"/>
     </changeSet>
+     <changeSet author="semami" id="1680948722">
+        <addForeignKeyConstraint baseColumnNames="group_id"
+                                 baseTableName="tbl_group_grade"
+                                 constraintName="f_group_grade_to_group" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_group" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

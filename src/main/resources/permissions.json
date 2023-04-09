@@ -69,6 +69,22 @@
       "title": "نمایش رده"
     },
     {
+      "code": "R_GROUP_GRADE",
+      "title": "نمایش گروه - رده"
+    },
+    {
+      "code": "C_GROUP_GRADE",
+      "title": "ایجاد گروه - رده"
+    },
+    {
+      "code": "U_GROUP_GRADE",
+      "title": "ویرایش گروه - رده"
+    },
+    {
+      "code": "D_GROUP_GRADE",
+      "title": "حذف گروه - رده"
+    },
+    {
       "code": "R_GROUP",
       "title": "نمایش گروه"
     },

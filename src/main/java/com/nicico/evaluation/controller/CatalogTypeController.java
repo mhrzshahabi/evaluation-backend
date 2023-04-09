@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Slf4j
@@ -23,6 +24,11 @@ public class CatalogTypeController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<CatalogTypeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(catalogTypeService.getById(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/list")
+    public ResponseEntity<List<CatalogTypeDTO.Info>> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(catalogTypeService.list(), HttpStatus.OK);
     }
 
     @Loggable

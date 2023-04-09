@@ -31,7 +31,7 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+//    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public GroupTypeDTO.Info get(Long id) {
         GroupType groupType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(groupType);
@@ -39,7 +39,7 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+//    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public List<GroupTypeDTO.Info> list() {
         List<GroupType> groupTypes = repository.findAll();
         return mapper.entityToDtoInfoList(groupTypes);
@@ -47,14 +47,14 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+//    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public TotalResponse<GroupTypeDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
+//    @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
     public GroupTypeDTO.Info create(GroupTypeDTO.Create dto) {
         GroupType groupType = mapper.dtoCreateToEntity(dto);
         GroupType save = repository.save(groupType);
@@ -63,20 +63,20 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_GROUP_TYPE')")
+//    @PreAuthorize("hasAuthority('U_GROUP_TYPE')")
     public GroupTypeDTO.Info update(GroupTypeDTO.Update dto) {
-        GroupType kPIType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        mapper.update(kPIType, dto);
-        GroupType save = repository.save(kPIType);
+        GroupType groupType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        mapper.update(groupType, dto);
+        GroupType save = repository.save(groupType);
         return mapper.entityToDtoInfo(save);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_GROUP_TYPE')")
+//    @PreAuthorize("hasAuthority('D_GROUP_TYPE')")
     public void delete(Long id) {
-        GroupType kPIType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        repository.delete(kPIType);
+        GroupType groupType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        repository.delete(groupType);
     }
 
 }
