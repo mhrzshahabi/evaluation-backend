@@ -3,7 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.GradeDTO;
-import com.nicico.evaluation.service.GradeService;
+import com.nicico.evaluation.iservice.IGradeService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping(value = "/anonymous/api/grade")
 public class GradeController {
 
-    private final GradeService service;
+    private final IGradeService service;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<GradeDTO.Info> get(@PathVariable Long id) throws Exception {

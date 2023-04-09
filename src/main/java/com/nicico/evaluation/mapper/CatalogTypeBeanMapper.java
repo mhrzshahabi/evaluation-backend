@@ -9,7 +9,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface CatalogTypeBeanMapper {
 
-    CatalogType createToCatalogType (CatalogTypeDTO.Create create);
-
-    CatalogTypeDTO.Info catalogTypeToInfo (CatalogType catalogType);
+    CatalogType dtoCreateToEntity(CatalogTypeDTO.Create create);
+    CatalogTypeDTO.Info entityToDtoInfo(CatalogType catalogType);
 }

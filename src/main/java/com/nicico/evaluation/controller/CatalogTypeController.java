@@ -1,10 +1,7 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.grid.GridResponse;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.CatalogTypeDTO;
-import com.nicico.evaluation.exception.NotFoundException;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.Valid;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,12 +28,13 @@ public class CatalogTypeController {
     @Loggable
     @PostMapping
     public ResponseEntity create(@RequestBody CatalogTypeDTO.Create create) {
-        try {
-            return new ResponseEntity<>(catalogTypeService.create(create), HttpStatus.OK);
-        } catch (NotFoundException ex) {
-            return null;
-//            throw new EvaluationHandleException(ErrorType.NotFound, "", ex.getMessage());
-        }
+        return new ResponseEntity<>(catalogTypeService.create(create), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping
+    public ResponseEntity<CatalogTypeDTO.Info> update(@Valid @RequestBody CatalogTypeDTO.Update request) {
+        return new ResponseEntity<>(catalogTypeService.update(request), HttpStatus.OK);
     }
 
     @Loggable
@@ -44,19 +42,5 @@ public class CatalogTypeController {
     public ResponseEntity delete(@PathVariable Long id) {
         catalogTypeService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @GetMapping("/test")
-    public ResponseEntity<TotalResponse<CatalogTypeDTO.Info>> getTestAPI() {
-        CatalogTypeDTO.Info info = new CatalogTypeDTO.Info();
-        List<CatalogTypeDTO.Info> data = new ArrayList<>();
-        info.setId(1L).setCode("ABC").setTitle("A Title");
-        data.add(info);
-
-        GridResponse<CatalogTypeDTO.Info> gridResponse = new GridResponse<>();
-        gridResponse.setData(data);
-        TotalResponse<CatalogTypeDTO.Info> totalResponse = new TotalResponse<>(gridResponse);
-        return new ResponseEntity<>(totalResponse, HttpStatus.OK);
     }
 }

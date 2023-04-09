@@ -11,9 +11,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface CatalogBeanMapper {
 
-    Catalog createToCatalog (CatalogDTO.Create create);
-
-    CatalogDTO.Info catalogToInfo (Catalog catalog);
-
-    List<CatalogDTO.Info> catalogToInfoList (List<Catalog> catalog);
+    Catalog dtoCreateToEntity(CatalogDTO.Create create);
+    CatalogDTO.Info entityToDtoInfo(Catalog catalog);
+    List<CatalogDTO.Info> entityToDtoInfoList(List<Catalog> catalog);
 }
