@@ -14,6 +14,7 @@ import com.nicico.evaluation.model.GroupGrade;
 import com.nicico.evaluation.repository.GroupGradeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class GroupGradeService implements IGroupGradeService {
 
     @Override
     @Transactional(readOnly = true)
-    //   @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
+       @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
     public GroupGradeDTO.Info get(Long id) {
         GroupGrade groupGrade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         GradeDTO.Info gradeDTO = gradeService.getByCode(groupGrade.getGradeCode());
@@ -44,7 +45,7 @@ public class GroupGradeService implements IGroupGradeService {
 
     @Override
     @Transactional(readOnly = true)
-    // @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
+     @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
     public List<GroupGradeDTO.Info> list() {
         List<GroupGrade> groupGrades = repository.findAll();
         return mapper.entityToDtoInfoList(groupGrades);
@@ -52,14 +53,14 @@ public class GroupGradeService implements IGroupGradeService {
 
     @Override
     @Transactional(readOnly = true)
-    //  @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
+      @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
     public TotalResponse<GroupGradeDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-    //  @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
+      @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
     public GroupGradeDTO.Info create(GroupGradeDTO.Create dto) {
         GroupGrade groupGrade = mapper.dtoCreateToEntity(dto);
         GroupGrade save = repository.save(groupGrade);
@@ -68,7 +69,7 @@ public class GroupGradeService implements IGroupGradeService {
 
     @Override
     @Transactional
-    // @PreAuthorize("hasAuthority('U_GROUP_GRADE')")
+     @PreAuthorize("hasAuthority('U_GROUP_GRADE')")
     public GroupGradeDTO.Info update(GroupGradeDTO.Update dto) {
         GroupGrade groupGrade = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(groupGrade, dto);
@@ -78,7 +79,7 @@ public class GroupGradeService implements IGroupGradeService {
 
     @Override
     @Transactional
-    //  @PreAuthorize("hasAuthority('D_GROUP_GRADE')")
+      @PreAuthorize("hasAuthority('D_GROUP_GRADE')")
     public void delete(Long id) {
         GroupGrade groupGrade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(groupGrade);

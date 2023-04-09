@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/anonymous/api/catalog-type")
+@RequestMapping(value = "/api/catalog-type")
 public class CatalogTypeController {
 
     private final ICatalogTypeService catalogTypeService;
@@ -33,7 +33,7 @@ public class CatalogTypeController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity create(@RequestBody CatalogTypeDTO.Create create) {
+    public ResponseEntity<CatalogTypeDTO.Info> create(@RequestBody CatalogTypeDTO.Create create) {
         return new ResponseEntity<>(catalogTypeService.create(create), HttpStatus.OK);
     }
 
@@ -45,8 +45,8 @@ public class CatalogTypeController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         catalogTypeService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

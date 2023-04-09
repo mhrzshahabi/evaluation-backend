@@ -3,11 +3,9 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.common.PageDTO;
-import com.nicico.evaluation.dto.GradeDTO;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.iservice.IGroupService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/anonymous/api/group")
+@RequestMapping("/api/group")
 @Api("Group Api")
 @Validated
 @AllArgsConstructor

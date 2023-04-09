@@ -31,7 +31,7 @@ public class MeritComponentService implements IMeritComponentService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
     public MeritComponentDTO.Info get(Long id) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(meritComponent);
@@ -39,7 +39,7 @@ public class MeritComponentService implements IMeritComponentService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
     public List<MeritComponentDTO.Info> list() {
         List<MeritComponent> meritComponents = repository.findAll();
         return mapper.entityToDtoInfoList(meritComponents);
@@ -47,14 +47,14 @@ public class MeritComponentService implements IMeritComponentService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
     public TotalResponse<MeritComponentDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('C_MERIT_COMPONENT')")
+    @PreAuthorize("hasAuthority('C_MERIT_COMPONENT')")
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
         MeritComponent save = repository.save(meritComponent);
@@ -63,7 +63,7 @@ public class MeritComponentService implements IMeritComponentService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('U_MERIT_COMPONENT')")
+    @PreAuthorize("hasAuthority('U_MERIT_COMPONENT')")
     public MeritComponentDTO.Info update(MeritComponentDTO.Update dto) {
         MeritComponent meritComponent = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(meritComponent, dto);
@@ -73,7 +73,7 @@ public class MeritComponentService implements IMeritComponentService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('D_MERIT_COMPONENT')")
+    @PreAuthorize("hasAuthority('D_MERIT_COMPONENT')")
     public void delete(Long id) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(meritComponent);

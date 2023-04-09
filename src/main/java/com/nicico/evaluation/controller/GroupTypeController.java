@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "Group Type")
 @RestController
-@RequestMapping(value = "/anonymous/api/group-type")
+@RequestMapping(value = "/api/group-type")
 public class GroupTypeController {
 
     private final IGroupTypeService service;

@@ -6,7 +6,6 @@ import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.iservice.IInstanceService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

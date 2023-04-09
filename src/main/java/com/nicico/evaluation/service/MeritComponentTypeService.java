@@ -31,7 +31,7 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
     public MeritComponentTypeDTO.Info get(Long id) {
         MeritComponentType meritComponentType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(meritComponentType);
@@ -39,7 +39,7 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
     public List<MeritComponentTypeDTO.Info> list() {
         List<MeritComponentType> meritComponentTypes = repository.findAll();
         return mapper.entityToDtoInfoList(meritComponentTypes);
@@ -47,14 +47,14 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
     public TotalResponse<MeritComponentTypeDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('C_MERIT_COMPONENT_TYPE')")
+    @PreAuthorize("hasAuthority('C_MERIT_COMPONENT_TYPE')")
     public MeritComponentTypeDTO.Info create(MeritComponentTypeDTO.Create dto) {
         MeritComponentType meritComponentType = mapper.dtoCreateToEntity(dto);
         MeritComponentType save = repository.save(meritComponentType);
@@ -63,7 +63,7 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('U_MERIT_COMPONENT_TYPE')")
+    @PreAuthorize("hasAuthority('U_MERIT_COMPONENT_TYPE')")
     public MeritComponentTypeDTO.Info update(MeritComponentTypeDTO.Update dto) {
         MeritComponentType meritComponentType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(meritComponentType, dto);
@@ -73,7 +73,7 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('D_MERIT_COMPONENT_TYPE')")
+    @PreAuthorize("hasAuthority('D_MERIT_COMPONENT_TYPE')")
     public void delete(Long id) {
         MeritComponentType meritComponentType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(meritComponentType);

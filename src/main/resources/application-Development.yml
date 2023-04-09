@@ -19,6 +19,7 @@ spring:
         provider:
           oserver:
             authorization-uri: http://devapp01.icico.net.ir/oauth/authorize
+            token-uri-swagger: http://devapp01.icico.net.ir/oauth/token
             token-uri: http://devapp01.icico.net.ir/oauth/token
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
