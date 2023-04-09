@@ -34,10 +34,12 @@ public class GroupGradeService implements IGroupGradeService {
     @Override
     @Transactional(readOnly = true)
     //   @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
-    public GroupGradeDTO.Info get(Long id) throws Exception {
+    public GroupGradeDTO.Info get(Long id) {
         GroupGrade groupGrade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        GradeDTO.Info byCode = gradeService.getByCode(groupGrade.getGradeCode());
-        return mapper.entityToDtoInfo(groupGrade);
+        GradeDTO.Info gradeDTO = gradeService.getByCode(groupGrade.getGradeCode());
+        GroupGradeDTO.Info groupGradeDTO = mapper.entityToDtoInfo(groupGrade);
+        groupGradeDTO.setGrade(gradeDTO);
+        return groupGradeDTO;
     }
 
     @Override

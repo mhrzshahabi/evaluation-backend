@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IGroupGradeService {
 
-    GroupGradeDTO.Info get(Long id) throws Exception;
+    GroupGradeDTO.Info get(Long id);
 
     List<GroupGradeDTO.Info> list();
 
