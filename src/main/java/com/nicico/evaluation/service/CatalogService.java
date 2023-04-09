@@ -1,20 +1,22 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.evaluation.dto.CatalogDTO;
+import com.nicico.evaluation.exception.ApplicationException;
+import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.mapper.CatalogBeanMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.repository.CatalogRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.expression.EvaluationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.nicico.evaluation.exception.CoreException.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,45 +25,45 @@ public class CatalogService implements ICatalogService {
     private final ModelMapper modelMapper;
     private final CatalogRepository catalogRepository;
     private final CatalogBeanMapper catalogBeanMapper;
+    private final ApplicationException<ServiceException> applicationException;
 
     @Transactional(readOnly = true)
     @Override
     public CatalogDTO.Info getById(Long id) {
         Optional<Catalog> optionalCatalog = catalogRepository.findById(id);
-        return catalogBeanMapper.catalogToInfo(optionalCatalog.orElse(null));
+        return catalogBeanMapper.entityToDtoInfo(optionalCatalog.orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND)));
     }
 
     @Transactional
     @Override
     public CatalogDTO.Info create(CatalogDTO.Create create) {
-        Catalog catalog = catalogBeanMapper.createToCatalog(create);
+        Catalog catalog = catalogBeanMapper.dtoCreateToEntity(create);
         try {
-            return catalogBeanMapper.catalogToInfo(catalogRepository.saveAndFlush(catalog));
+            return catalogBeanMapper.entityToDtoInfo(catalogRepository.saveAndFlush(catalog));
         } catch (Exception exception) {
-            return null;
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @Transactional
     @Override
-    public CatalogDTO.Info update(Long id, CatalogDTO.Update update) {
-        Optional<Catalog> optional = catalogRepository.findById(id);
-        Catalog currentEntity = optional.orElseThrow(() -> new EvaluationException(""));
+    public CatalogDTO.Info update(CatalogDTO.Update update) {
+        Optional<Catalog> optional = catalogRepository.findById(update.getId());
+        Catalog currentEntity = optional.orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         Catalog entity = new Catalog();
         modelMapper.map(currentEntity, entity);
         modelMapper.map(update, entity);
         try {
-            return catalogBeanMapper.catalogToInfo(catalogRepository.save(entity));
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            return null;
+            return catalogBeanMapper.entityToDtoInfo(catalogRepository.save(entity));
+        } catch (Exception e) {
+            throw applicationException.createApplicationException(NOT_UPDATE, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        Optional<Catalog> optionalCatalog = catalogRepository.findById(id);
-        optionalCatalog.orElseThrow(() -> null);
+        catalogRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         catalogRepository.deleteById(id);
     }
 
@@ -69,6 +71,6 @@ public class CatalogService implements ICatalogService {
     @Transactional(readOnly = true)
     public List<CatalogDTO.Info> list(String code) {
         List<Catalog> allByCatalogTypeCode = catalogRepository.findAllByCatalogTypeCode(code);
-        return catalogBeanMapper.catalogToInfoList(allByCatalogTypeCode);
+        return catalogBeanMapper.entityToDtoInfoList(allByCatalogTypeCode);
     }
 }
