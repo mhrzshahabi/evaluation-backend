@@ -3,9 +3,11 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.evaluation.dto.GradeDTO;
 import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.iservice.IGradeService;
 import com.nicico.evaluation.iservice.IGroupGradeService;
 import com.nicico.evaluation.mapper.GroupGradeMapper;
 import com.nicico.evaluation.model.GroupGrade;
@@ -27,12 +29,14 @@ public class GroupGradeService implements IGroupGradeService {
     private final GroupGradeRepository repository;
     private final GroupGradeMapper mapper;
     private final ApplicationException<ServiceException> applicationException;
+    private final IGradeService gradeService;
 
     @Override
     @Transactional(readOnly = true)
     //   @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
-    public GroupGradeDTO.Info get(Long id) {
+    public GroupGradeDTO.Info get(Long id) throws Exception {
         GroupGrade groupGrade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        GradeDTO.Info byCode = gradeService.getByCode(groupGrade.getGradeCode());
         return mapper.entityToDtoInfo(groupGrade);
     }
 

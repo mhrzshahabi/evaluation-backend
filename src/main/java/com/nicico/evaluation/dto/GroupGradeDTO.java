@@ -16,8 +16,6 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class GroupGradeDTO {
 
-    private Long gradeId;
-    private String gradeCode;
     private Long groupId;
     private String title;
     private String code;
@@ -29,6 +27,7 @@ public abstract class GroupGradeDTO {
 
         private Long id;
         private GroupDTO.Info group;
+        private GradeDTO.Info grade;
 
         private Date createdDate;
         private String createdBy;
