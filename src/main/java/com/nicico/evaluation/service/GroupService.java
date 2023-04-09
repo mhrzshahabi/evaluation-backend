@@ -43,6 +43,12 @@ public class GroupService implements IGroupService {
         return pageableMapper.toPageDto(groups, groupInfoDto);
     }
 
+    @Override
+    public List<GroupDTO.Info> list() {
+        List<Group> groupList=   groupRepository.findAll();
+        return groupMapper.entityToDtoInfoList(groupList);
+    }
+
 
     @Override
     @Transactional(readOnly = true)

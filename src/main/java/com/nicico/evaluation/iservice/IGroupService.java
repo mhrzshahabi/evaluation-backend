@@ -6,10 +6,13 @@ import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.dto.GroupDTO;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 
 public interface IGroupService {
 
     PageDTO list(Pageable page);
+    List<GroupDTO.Info> list();
     GroupDTO.Info get(Long id);
     TotalResponse<GroupDTO.Info> search(NICICOCriteria request);
     GroupDTO.Info create(GroupDTO.Create dto);

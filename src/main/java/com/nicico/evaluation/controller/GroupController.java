@@ -3,6 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.common.PageDTO;
+import com.nicico.evaluation.dto.GradeDTO;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.iservice.IGroupService;
 import io.swagger.annotations.Api;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/anonymous/api/group")
@@ -33,7 +35,7 @@ public class GroupController {
      * @param pageSize is the number of entity to every page
      * @return PageDTO that contain list of groupInfoDto and the number of total entity
      */
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/list/v2")
     public ResponseEntity<PageDTO> list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         return new ResponseEntity<>(groupService.list(pageable), HttpStatus.OK);
@@ -89,5 +91,12 @@ public class GroupController {
     public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
         groupService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
+    @GetMapping(value = "/list")
+    public ResponseEntity<List<GroupDTO.Info>> listWithoutPagination() {
+        return new ResponseEntity<>(groupService.list(), HttpStatus.OK);
     }
 }
