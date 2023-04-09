@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.nicico.evaluation.exception.CoreException.*;
@@ -38,6 +39,13 @@ public class CatalogTypeService implements ICatalogTypeService {
     public CatalogTypeDTO.Info getByCode(String code) {
         Optional<CatalogType> optionalCatalogType = catalogTypeRepository.findByCode(code);
         return catalogTypeBeanMapper.entityToDtoInfo(optionalCatalogType.orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatalogTypeDTO.Info> list() {
+        List<CatalogType> catalogTypes = catalogTypeRepository.findAll();
+        return catalogTypeBeanMapper.entityToDtoInfoList(catalogTypes);
     }
 
     @Override
