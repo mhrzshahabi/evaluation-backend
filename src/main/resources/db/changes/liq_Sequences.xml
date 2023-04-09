@@ -31,7 +31,7 @@
         <createSequence sequenceName="seq_group_grade_id"/>
     </changeSet>
 
-    <changeSet id="1680590070656" author="a.lotfi">
+    <changeSet id="1680590070656-1" author="a.lotfi">
         <createSequence sequenceName="instance_seq_id" ></createSequence>
     </changeSet>
 
