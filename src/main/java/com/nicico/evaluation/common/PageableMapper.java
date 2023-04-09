@@ -2,6 +2,9 @@ package com.nicico.evaluation.common;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -18,6 +21,14 @@ public interface PageableMapper {
         pageDTO.setTotalItems(page.getTotalElements());
         pageDTO.setList(data);
         return pageDTO;
+    }
+
+    default Pageable toPageable(int count, int startIndex) {
+        int page = 0;
+        int size = count;
+        if (count != 0)
+            page = startIndex / count;
+        return PageRequest.of(page, size);
     }
 }
 

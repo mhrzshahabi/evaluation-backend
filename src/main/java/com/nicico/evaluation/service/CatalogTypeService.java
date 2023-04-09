@@ -9,6 +9,8 @@ import com.nicico.evaluation.model.CatalogType;
 import com.nicico.evaluation.repository.CatalogTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +45,9 @@ public class CatalogTypeService implements ICatalogTypeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CatalogTypeDTO.Info> list() {
-        List<CatalogType> catalogTypes = catalogTypeRepository.findAll();
-        return catalogTypeBeanMapper.entityToDtoInfoList(catalogTypes);
+    public List<CatalogTypeDTO.Info> list(Pageable pageable) {
+        Page<CatalogType> catalogTypes = catalogTypeRepository.findAll(pageable);
+        return catalogTypeBeanMapper.entityToDtoInfoList(catalogTypes.getContent());
     }
 
     @Override
