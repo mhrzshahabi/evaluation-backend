@@ -58,4 +58,5 @@ public class GradeService implements IGradeService {
     public TotalResponse<GradeDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
+
 }
