@@ -12,6 +12,7 @@ import com.nicico.evaluation.model.Grade;
 import com.nicico.evaluation.repository.GradeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,7 @@ public class GradeService implements IGradeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GRADE')")
+    @PreAuthorize("hasAuthority('R_GRADE')")
     public GradeDTO.Info get(Long id) throws Exception {
         Grade grade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(grade);
@@ -38,7 +39,7 @@ public class GradeService implements IGradeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GRADE')")
+    @PreAuthorize("hasAuthority('R_GRADE')")
     public GradeDTO.Info getByCode(String code) {
         Grade grade = repository.getByCode(code).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(grade);
@@ -46,7 +47,7 @@ public class GradeService implements IGradeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GRADE')")
+    @PreAuthorize("hasAuthority('R_GRADE')")
     public List<GradeDTO.Info> getAllByCodeIn(List<String> codes) {
         List<Grade> grades = repository.getAllByCodeIn(codes);
         return mapper.entityToDtoInfoList(grades);
@@ -54,7 +55,7 @@ public class GradeService implements IGradeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GRADE')")
+    @PreAuthorize("hasAuthority('R_GRADE')")
     public List<GradeDTO.Info> list() {
         List<Grade> gradeList = repository.findAll();
         return mapper.entityToDtoInfoList(gradeList);
@@ -62,7 +63,7 @@ public class GradeService implements IGradeService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GRADE')")
+    @PreAuthorize("hasAuthority('R_GRADE')")
     public TotalResponse<GradeDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }

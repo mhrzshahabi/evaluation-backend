@@ -17,8 +17,9 @@ import java.util.Date;
 public abstract class GroupTypeDTO {
 
     private Long weight;
-    private Long typeId;
+    private Long kpiTypeId;
     private Long groupId;
+    private String code;
 
     @Getter
     @Setter

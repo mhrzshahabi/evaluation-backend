@@ -32,7 +32,6 @@ public class MeritComponentService implements IMeritComponentService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
-
     public MeritComponentDTO.Info get(Long id) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(meritComponent);

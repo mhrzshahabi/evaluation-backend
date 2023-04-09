@@ -10,16 +10,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface GroupMapper {
 
-    Group toGroup(GroupDTO.Create groupCreateDto);
-
     Group dtoCreateToEntity(GroupDTO.Create dto);
     GroupDTO.Info entityToDtoInfo(Group entity);
     List<GroupDTO.Info> entityToDtoInfoList(List<Group> entities);
-
-
-
-
     void update(@MappingTarget Group entity, GroupDTO.Update dto);
-
-
 }

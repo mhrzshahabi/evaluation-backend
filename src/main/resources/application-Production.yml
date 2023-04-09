@@ -20,6 +20,7 @@ spring:
           oserver:
             authorization-uri: http://apps.icico.net.ir/oauth/authorize
             token-uri: http://apps.icico.net.ir/oauth/token
+            token-uri-swagger: https://apps.nicico.com/oauth/token
             user-info-uri: http://apps.icico.net.ir/user/info
             user-name-attribute: username
 ui:

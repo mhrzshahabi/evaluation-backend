@@ -9,10 +9,13 @@ import com.nicico.evaluation.model.CatalogType;
 import com.nicico.evaluation.repository.CatalogTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.nicico.evaluation.exception.CoreException.*;
@@ -38,6 +41,13 @@ public class CatalogTypeService implements ICatalogTypeService {
     public CatalogTypeDTO.Info getByCode(String code) {
         Optional<CatalogType> optionalCatalogType = catalogTypeRepository.findByCode(code);
         return catalogTypeBeanMapper.entityToDtoInfo(optionalCatalogType.orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatalogTypeDTO.Info> list(Pageable pageable) {
+        Page<CatalogType> catalogTypes = catalogTypeRepository.findAll(pageable);
+        return catalogTypeBeanMapper.entityToDtoInfoList(catalogTypes.getContent());
     }
 
     @Override

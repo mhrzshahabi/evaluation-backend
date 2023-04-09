@@ -1,23 +1,27 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogTypeDTO;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/anonymous/api/catalog-type")
+@RequestMapping(value = "/api/catalog-type")
 public class CatalogTypeController {
 
+    private final PageableMapper pageableMapper;
     private final ICatalogTypeService catalogTypeService;
 
     @GetMapping(value = "/{id}")
@@ -25,9 +29,15 @@ public class CatalogTypeController {
         return new ResponseEntity<>(catalogTypeService.getById(id), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/list")
+    public ResponseEntity<List<CatalogTypeDTO.Info>> list(@RequestParam int count, @RequestParam int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return new ResponseEntity<>(catalogTypeService.list(pageable), HttpStatus.OK);
+    }
+
     @Loggable
     @PostMapping
-    public ResponseEntity create(@RequestBody CatalogTypeDTO.Create create) {
+    public ResponseEntity<CatalogTypeDTO.Info> create(@RequestBody CatalogTypeDTO.Create create) {
         return new ResponseEntity<>(catalogTypeService.create(create), HttpStatus.OK);
     }
 
@@ -39,8 +49,8 @@ public class CatalogTypeController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         catalogTypeService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

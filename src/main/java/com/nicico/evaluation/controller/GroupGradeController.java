@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "Group Grade")
 @RestController
-@RequestMapping(value = "/anonymous/api/group-grade")
+@RequestMapping(value = "/api/group-grade")
 public class GroupGradeController {
 
     private final IGroupGradeService service;

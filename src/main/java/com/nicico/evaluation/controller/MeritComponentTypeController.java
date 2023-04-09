@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "MeritComponent")
 @RestController
-@RequestMapping(value = "/anonymous/api/merit-Component-type")
+@RequestMapping(value = "/api/merit-Component-type")
 public class MeritComponentTypeController {
 
     private final IMeritComponentTypeService service;

@@ -82,4 +82,10 @@
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1681027412">
+        <addColumn tableName="tbl_group_type">
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
