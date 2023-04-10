@@ -75,8 +75,8 @@ public class GroupTypeService implements IGroupTypeService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
     public GroupTypeDTO.Info create(GroupTypeDTO.Create dto) {
         GroupType groupType = mapper.dtoCreateToEntity(dto);
-        GroupType save = repository.save(groupType);
         try {
+            GroupType save = repository.save(groupType);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
@@ -89,8 +89,8 @@ public class GroupTypeService implements IGroupTypeService {
     public GroupTypeDTO.Info update(GroupTypeDTO.Update dto) {
         GroupType groupType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(groupType, dto);
-        GroupType save = repository.save(groupType);
         try {
+            GroupType save = repository.save(groupType);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);

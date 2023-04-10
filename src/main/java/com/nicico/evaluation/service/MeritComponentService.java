@@ -75,8 +75,8 @@ public class MeritComponentService implements IMeritComponentService {
     @PreAuthorize("hasAuthority('C_MERIT_COMPONENT')")
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
-        MeritComponent save = repository.save(meritComponent);
         try {
+            MeritComponent save = repository.save(meritComponent);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
@@ -89,8 +89,8 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info update(MeritComponentDTO.Update dto) {
         MeritComponent meritComponent = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(meritComponent, dto);
-        MeritComponent save = repository.save(meritComponent);
         try {
+            MeritComponent save = repository.save(meritComponent);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);

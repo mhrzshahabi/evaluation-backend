@@ -85,8 +85,8 @@ public class GroupGradeService implements IGroupGradeService {
     @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
     public GroupGradeDTO.Info create(GroupGradeDTO.Create dto) {
         GroupGrade groupGrade = mapper.dtoCreateToEntity(dto);
-        GroupGrade save = repository.save(groupGrade);
         try {
+            GroupGrade save = repository.save(groupGrade);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);

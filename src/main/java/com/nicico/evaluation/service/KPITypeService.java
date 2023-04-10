@@ -75,8 +75,8 @@ public class KPITypeService implements IKPITypeService {
     @PreAuthorize("hasAuthority('C_KPI_TYPE')")
     public KPITypeDTO.Info create(KPITypeDTO.Create dto) {
         KPIType kpiType = mapper.dtoCreateToEntity(dto);
-        KPIType save = repository.save(kpiType);
         try {
+            KPIType save = repository.save(kpiType);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
@@ -89,8 +89,8 @@ public class KPITypeService implements IKPITypeService {
     public KPITypeDTO.Info update(KPITypeDTO.Update dto) {
         KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(kPIType, dto);
-        KPIType save = repository.save(kPIType);
         try {
+            KPIType save = repository.save(kPIType);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
