@@ -38,9 +38,9 @@ public class GroupGradeController {
         return new ResponseEntity<>(service.createGroupGrade(request), HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<GroupGradeDTO.Info> update(@Valid @RequestBody GroupGradeDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = {"/{id}"})
+    public ResponseEntity<List<GroupGradeDTO.Info>> update(@Valid @RequestBody GroupGradeDTO.CreateAll request, @PathVariable Long id) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/{id}"})

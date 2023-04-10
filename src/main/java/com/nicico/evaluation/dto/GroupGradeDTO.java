@@ -17,9 +17,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class GroupGradeDTO {
 
+    @NotNull
     private Long groupId;
-    private String title;
-    private String code;
 
     @Getter
     @Setter
@@ -27,14 +26,10 @@ public abstract class GroupGradeDTO {
     public static class Info extends GroupGradeDTO {
 
         private Long id;
+        private String code;
+        private String title;
         private GroupDTO.Info group;
         private GradeDTO.Info grade;
-        private String gradeCode;
-
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
     }
 
     @Getter
@@ -53,7 +48,11 @@ public abstract class GroupGradeDTO {
     @ApiModel("GroupGradeCreateRq")
     public static class Create extends GroupGradeDTO {
 
-        private String gradeCode;
+        @NotNull
+        private String code;
+        @NotNull
+        private String title;
+        @NotNull
         private Long gradeId;
     }
 
@@ -64,9 +63,6 @@ public abstract class GroupGradeDTO {
     public static class Update extends GroupGradeDTO {
 
         private Long id;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     @Getter
