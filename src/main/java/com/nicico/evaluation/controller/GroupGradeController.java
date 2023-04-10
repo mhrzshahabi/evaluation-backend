@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Api(value = "Group Grade")
@@ -33,13 +34,13 @@ public class GroupGradeController {
     }
 
     @PostMapping
-    public ResponseEntity<GroupGradeDTO.Info> create(@Valid @RequestBody GroupGradeDTO.Create request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    public ResponseEntity<List<GroupGradeDTO.Info>> create(@Valid @RequestBody GroupGradeDTO.CreateAll request) {
+        return new ResponseEntity<>(service.createGroupGrade(request), HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<GroupGradeDTO.Info> update(@Valid @RequestBody GroupGradeDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = {"/{id}"})
+    public ResponseEntity<List<GroupGradeDTO.Info>> update(@Valid @RequestBody GroupGradeDTO.CreateAll request, @PathVariable Long id) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/{id}"})

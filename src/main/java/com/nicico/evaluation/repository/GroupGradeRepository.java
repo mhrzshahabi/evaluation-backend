@@ -5,6 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface GroupGradeRepository extends JpaRepository<GroupGrade, Long>, JpaSpecificationExecutor<GroupGrade> {
+    List<GroupGrade> findAllByGradeIdIn(List<Long> gradeIds);
+    List<GroupGrade> findAllByGroupId(Long gradeId);
 }
