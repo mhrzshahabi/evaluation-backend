@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nicico.evaluation.exception.CoreException.ENVIRONMENT_NOT_FOUND;
+import static com.nicico.evaluation.exception.CoreException.GRADE_IS_IN_ANOTHER_GROUP;
 import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 
 
@@ -81,7 +81,7 @@ public class GroupGradeService implements IGroupGradeService {
 
         Boolean validation = createValidation(grades);
         if (Boolean.FALSE.equals(validation))
-            throw applicationException.createApplicationException(ENVIRONMENT_NOT_FOUND, HttpStatus.CONFLICT);
+            throw applicationException.createApplicationException(GRADE_IS_IN_ANOTHER_GROUP, HttpStatus.CONFLICT);
 
         List<GroupGradeDTO.Create> createAllDto = new ArrayList<>();
         grades.forEach(grade -> {
