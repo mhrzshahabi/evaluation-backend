@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
+import static com.nicico.evaluation.exception.CoreException.NOT_SAVE;
 
 
 @RequiredArgsConstructor
@@ -74,25 +75,33 @@ public class KPITypeService implements IKPITypeService {
     @PreAuthorize("hasAuthority('C_KPI_TYPE')")
     public KPITypeDTO.Info create(KPITypeDTO.Create dto) {
         KPIType kpiType = mapper.dtoCreateToEntity(dto);
-        KPIType save = repository.save(kpiType);
-        return mapper.entityToDtoInfo(save);
+        try {
+            KPIType save = repository.save(kpiType);
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_KPI_TYPE')")
     public KPITypeDTO.Info update(KPITypeDTO.Update dto) {
-        KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() ->  applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(kPIType, dto);
-        KPIType save = repository.save(kPIType);
-        return mapper.entityToDtoInfo(save);
+        try {
+            KPIType save = repository.save(kPIType);
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('D_KPI_TYPE')")
     public void delete(Long id) {
-        KPIType kPIType = repository.findById(id).orElseThrow(() ->  applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        KPIType kPIType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(kPIType);
     }
 

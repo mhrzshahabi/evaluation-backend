@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
+import static com.nicico.evaluation.exception.CoreException.NOT_SAVE;
 
 
 @RequiredArgsConstructor
@@ -74,8 +75,12 @@ public class GroupTypeService implements IGroupTypeService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
     public GroupTypeDTO.Info create(GroupTypeDTO.Create dto) {
         GroupType groupType = mapper.dtoCreateToEntity(dto);
-        GroupType save = repository.save(groupType);
-        return mapper.entityToDtoInfo(save);
+        try {
+            GroupType save = repository.save(groupType);
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override
@@ -84,8 +89,12 @@ public class GroupTypeService implements IGroupTypeService {
     public GroupTypeDTO.Info update(GroupTypeDTO.Update dto) {
         GroupType groupType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(groupType, dto);
-        GroupType save = repository.save(groupType);
-        return mapper.entityToDtoInfo(save);
+        try {
+            GroupType save = repository.save(groupType);
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override
