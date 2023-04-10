@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Api(value = "Grade")
@@ -26,10 +25,9 @@ public class GradeController {
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<GradeDTO.Info>> list() {
-        return new ResponseEntity<>(service.list(), HttpStatus.OK);
+    public ResponseEntity<GradeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
-
 
     @GetMapping(value = "/spec-list")
     public ResponseEntity<TotalResponse<GradeDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {

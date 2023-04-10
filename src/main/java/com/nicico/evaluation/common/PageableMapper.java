@@ -28,7 +28,7 @@ public interface PageableMapper {
         int size = count;
         if (count != 0)
             page = startIndex / count;
-        return PageRequest.of(page, size);
+        return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
     }
 }
 

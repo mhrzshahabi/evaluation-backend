@@ -1,17 +1,15 @@
 package com.nicico.evaluation.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class GradeDTO {
     private Long id;
     private String code;
@@ -21,10 +19,25 @@ public abstract class GradeDTO {
     @Setter
     @ApiModel("GradeInfo")
     public static class Info extends GradeDTO {
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GradeSpecResponse")
+    public static class SpecResponse {
+        private Response response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GradeResponse")
+    public static class Response {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
 }

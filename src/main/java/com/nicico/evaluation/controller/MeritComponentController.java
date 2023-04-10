@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Api(value = "MeritComponent")
@@ -29,8 +28,8 @@ public class MeritComponentController {
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<MeritComponentDTO.Info>> list() {
-        return new ResponseEntity<>(service.list(), HttpStatus.OK);
+    public ResponseEntity<MeritComponentDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     @PostMapping

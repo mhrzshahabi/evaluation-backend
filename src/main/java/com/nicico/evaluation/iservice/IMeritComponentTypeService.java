@@ -4,13 +4,11 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 
-import java.util.List;
-
 public interface IMeritComponentTypeService {
 
-    MeritComponentTypeDTO.Info get(Long id) ;
+    MeritComponentTypeDTO.Info get(Long id);
 
-    List<MeritComponentTypeDTO.Info> list();
+    MeritComponentTypeDTO.SpecResponse list(int count, int startIndex);
 
     TotalResponse<MeritComponentTypeDTO.Info> search(NICICOCriteria request);
 
@@ -19,4 +17,5 @@ public interface IMeritComponentTypeService {
     MeritComponentTypeDTO.Info update(MeritComponentTypeDTO.Update dto);
 
     void delete(Long id);
+
 }

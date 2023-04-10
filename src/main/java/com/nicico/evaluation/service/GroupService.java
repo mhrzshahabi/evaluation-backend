@@ -3,7 +3,6 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.exception.ApplicationException;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,67 +26,72 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 @Service
 public class GroupService implements IGroupService {
 
-    private final GroupRepository groupRepository;
-    private final GroupMapper groupMapper;
+    private final GroupMapper mapper;
+    private final GroupRepository repository;
     private final PageableMapper pageableMapper;
     private final ApplicationException<ServiceException> applicationException;
 
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP')")
-    public PageDTO list(Pageable page) {
-        Page<Group> groups = groupRepository.findAll(page);
-        List<GroupDTO.Info> groupInfoDto = groupMapper.entityToDtoInfoList(groups.getContent());
-        return pageableMapper.toPageDto(groups, groupInfoDto);
-    }
+//    @PreAuthorize("hasAuthority('R_GROUP')")
+    public GroupDTO.SpecResponse list(int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<Group> groups = repository.findAll(pageable);
+        List<GroupDTO.Info> groupInfos = mapper.entityToDtoInfoList(groups.getContent());
 
-    @Override
-    public List<GroupDTO.Info> list() {
-        List<Group> groupList=   groupRepository.findAll();
-        return groupMapper.entityToDtoInfoList(groupList);
-    }
+        GroupDTO.Response response = new GroupDTO.Response();
+        GroupDTO.SpecResponse specResponse = new GroupDTO.SpecResponse();
 
+        if (groupInfos != null) {
+            response.setData(groupInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count)
+                    .setTotalRows((int) groups.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
+    }
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP')")
+//    @PreAuthorize("hasAuthority('R_GROUP')")
     public GroupDTO.Info get(Long id) {
-        Group group = groupRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        return groupMapper.entityToDtoInfo(group);
+        Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        return mapper.entityToDtoInfo(group);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP')")
+//    @PreAuthorize("hasAuthority('R_GROUP')")
     public TotalResponse<GroupDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(groupRepository, request, groupMapper::entityToDtoInfo);
+        return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_GROUP')")
+//    @PreAuthorize("hasAuthority('C_GROUP')")
     public GroupDTO.Info create(GroupDTO.Create dto) {
-        Group group = groupMapper.dtoCreateToEntity(dto);
-        group = groupRepository.save(group);
-        return groupMapper.entityToDtoInfo(group);
+        Group group = mapper.dtoCreateToEntity(dto);
+        group = repository.save(group);
+        return mapper.entityToDtoInfo(group);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_GROUP')")
+//    @PreAuthorize("hasAuthority('U_GROUP')")
     public GroupDTO.Info update(GroupDTO.Update dto) {
-        Group group = groupRepository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        groupMapper.update(group, dto);
-        Group save = groupRepository.save(group);
-        return groupMapper.entityToDtoInfo(save);
+        Group group = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        mapper.update(group, dto);
+        Group save = repository.save(group);
+        return mapper.entityToDtoInfo(save);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_GROUP')")
+//    @PreAuthorize("hasAuthority('D_GROUP')")
     public void delete(Long id) {
-        Group group = groupRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        groupRepository.delete(group);
+        Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        repository.delete(group);
     }
 }

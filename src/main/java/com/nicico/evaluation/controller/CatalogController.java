@@ -28,7 +28,7 @@ public class CatalogController {
 
     @Loggable
     @PostMapping
-    public  ResponseEntity<CatalogDTO.Info> create(@RequestBody CatalogDTO.Create create) {
+    public ResponseEntity<CatalogDTO.Info> create(@RequestBody CatalogDTO.Create create) {
         return new ResponseEntity<>(service.create(create), HttpStatus.OK);
     }
 
