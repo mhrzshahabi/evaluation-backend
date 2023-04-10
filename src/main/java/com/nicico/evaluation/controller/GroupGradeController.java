@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Api(value = "Group Grade")
@@ -29,8 +28,8 @@ public class GroupGradeController {
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<GroupGradeDTO.Info>> list() {
-        return new ResponseEntity<>(service.list(), HttpStatus.OK);
+    public ResponseEntity<GroupGradeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     @PostMapping

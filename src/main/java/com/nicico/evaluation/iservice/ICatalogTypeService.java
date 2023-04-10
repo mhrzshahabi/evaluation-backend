@@ -2,16 +2,19 @@ package com.nicico.evaluation.iservice;
 
 
 import com.nicico.evaluation.dto.CatalogTypeDTO;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface ICatalogTypeService {
 
     CatalogTypeDTO.Info getById(Long id);
+
     CatalogTypeDTO.Info getByCode(String code);
-    List<CatalogTypeDTO.Info> list(Pageable pageable);
+
+    CatalogTypeDTO.SpecResponse list(@RequestParam int count, @RequestParam int startIndex);
+
     CatalogTypeDTO.Info create(CatalogTypeDTO.Create create);
+
     CatalogTypeDTO.Info update(CatalogTypeDTO.Update update);
+
     void delete(Long id);
 }

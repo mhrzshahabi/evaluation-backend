@@ -4,13 +4,11 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.GroupGradeDTO;
 
-import java.util.List;
-
 public interface IGroupGradeService {
 
     GroupGradeDTO.Info get(Long id);
 
-    List<GroupGradeDTO.Info> list();
+    GroupGradeDTO.SpecResponse list(int count, int startIndex);
 
     TotalResponse<GroupGradeDTO.Info> search(NICICOCriteria request);
 
@@ -19,4 +17,5 @@ public interface IGroupGradeService {
     GroupGradeDTO.Info update(GroupGradeDTO.Update dto);
 
     void delete(Long id);
+
 }

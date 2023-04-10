@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
@@ -11,6 +12,8 @@ import com.nicico.evaluation.mapper.GroupTypeMapper;
 import com.nicico.evaluation.model.GroupType;
 import com.nicico.evaluation.repository.GroupTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,9 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 @Service
 public class GroupTypeService implements IGroupTypeService {
 
-    private final GroupTypeRepository repository;
     private final GroupTypeMapper mapper;
+    private final PageableMapper pageableMapper;
+    private final GroupTypeRepository repository;
     private final ApplicationException<ServiceException> applicationException;
 
     @Override
@@ -40,9 +44,22 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public List<GroupTypeDTO.Info> list() {
-        List<GroupType> groupTypes = repository.findAll();
-        return mapper.entityToDtoInfoList(groupTypes);
+    public GroupTypeDTO.SpecResponse list(int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<GroupType> groupTypes = repository.findAll(pageable);
+        List<GroupTypeDTO.Info> groupTypeInfos = mapper.entityToDtoInfoList(groupTypes.getContent());
+
+        GroupTypeDTO.Response response = new GroupTypeDTO.Response();
+        GroupTypeDTO.SpecResponse specResponse = new GroupTypeDTO.SpecResponse();
+
+        if (groupTypeInfos != null) {
+            response.setData(groupTypeInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count)
+                    .setTotalRows((int) groupTypes.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
     }
 
     @Override

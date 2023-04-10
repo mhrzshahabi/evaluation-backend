@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Api(value = "Group Type")
@@ -29,8 +28,8 @@ public class GroupTypeController {
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<List<GroupTypeDTO.Info>> list() {
-        return new ResponseEntity<>(service.list(), HttpStatus.OK);
+    public ResponseEntity<GroupTypeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     @PostMapping

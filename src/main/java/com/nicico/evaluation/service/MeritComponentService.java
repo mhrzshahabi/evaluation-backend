@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
@@ -11,6 +12,8 @@ import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.repository.MeritComponentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,9 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 @Service
 public class MeritComponentService implements IMeritComponentService {
 
-    private final MeritComponentRepository repository;
     private final MeritComponentMapper mapper;
+    private final PageableMapper pageableMapper;
+    private final MeritComponentRepository repository;
     private final ApplicationException<ServiceException> applicationException;
 
     @Override
@@ -40,9 +44,22 @@ public class MeritComponentService implements IMeritComponentService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
-    public List<MeritComponentDTO.Info> list() {
-        List<MeritComponent> meritComponents = repository.findAll();
-        return mapper.entityToDtoInfoList(meritComponents);
+    public MeritComponentDTO.SpecResponse list(int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<MeritComponent> meritComponents = repository.findAll(pageable);
+        List<MeritComponentDTO.Info> meritComponentInfos = mapper.entityToDtoInfoList(meritComponents.getContent());
+
+        MeritComponentDTO.Response response = new MeritComponentDTO.Response();
+        MeritComponentDTO.SpecResponse specResponse = new MeritComponentDTO.SpecResponse();
+
+        if (meritComponentInfos != null) {
+            response.setData(meritComponentInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count)
+                    .setTotalRows((int) meritComponents.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
     }
 
     @Override

@@ -2,14 +2,10 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.iservice.IGroupService;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -17,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/group")
@@ -26,17 +21,16 @@ import java.util.List;
 @AllArgsConstructor
 public class GroupController {
 
-    private final IGroupService groupService;
+    private final IGroupService service;
 
     /**
-     * @param  page is the page number
-     * @param pageSize is the number of entity to every page
-     * @return PageDTO that contain list of groupInfoDto and the number of total entity
+     * @param count is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @return GroupDTO.SpecResponse that contain list of groupInfoDto and the number of total entity
      */
-    @GetMapping(value = "/list/v2")
-    public ResponseEntity<PageDTO> list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        return new ResponseEntity<>(groupService.list(pageable), HttpStatus.OK);
+    @GetMapping(value = "/list")
+    public ResponseEntity<GroupDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
@@ -47,7 +41,7 @@ public class GroupController {
     @GetMapping(value = "/spec-list")
     public ResponseEntity<TotalResponse<GroupDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
-        return new ResponseEntity<>(groupService.search(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(service.search(nicicoCriteria), HttpStatus.OK);
     }
 
     /**
@@ -57,7 +51,7 @@ public class GroupController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(groupService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     /**
@@ -67,7 +61,7 @@ public class GroupController {
      */
     @PostMapping
     public ResponseEntity<GroupDTO.Info> create(@Valid @RequestBody GroupDTO.Create request) {
-        return new ResponseEntity<>(groupService.create(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
@@ -77,7 +71,7 @@ public class GroupController {
      */
     @PutMapping
     public ResponseEntity<GroupDTO.Info> update(@Valid @RequestBody GroupDTO.Update request) {
-        return new ResponseEntity<>(groupService.update(request), HttpStatus.OK);
+        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
     /**
@@ -87,14 +81,8 @@ public class GroupController {
      */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
-        groupService.delete(id);
+        service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-
-    @GetMapping(value = "/list")
-    public ResponseEntity<List<GroupDTO.Info>> listWithoutPagination() {
-        return new ResponseEntity<>(groupService.list(), HttpStatus.OK);
-    }
 }

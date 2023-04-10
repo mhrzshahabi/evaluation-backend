@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
@@ -11,6 +12,8 @@ import com.nicico.evaluation.mapper.KPITypeMapper;
 import com.nicico.evaluation.model.KPIType;
 import com.nicico.evaluation.repository.KPITypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,9 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 @Service
 public class KPITypeService implements IKPITypeService {
 
-    private final KPITypeRepository repository;
     private final KPITypeMapper mapper;
+    private final KPITypeRepository repository;
+    private final PageableMapper pageableMapper;
     private final ApplicationException<ServiceException> applicationException;
 
     @Override
@@ -40,9 +44,22 @@ public class KPITypeService implements IKPITypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_KPI_TYPE')")
-    public List<KPITypeDTO.Info> list() {
-        List<KPIType> kpiTypes = repository.findAll();
-        return mapper.entityToDtoInfoList(kpiTypes);
+    public KPITypeDTO.SpecResponse list(int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<KPIType> kpiTypes = repository.findAll(pageable);
+        List<KPITypeDTO.Info> kpiTypeInfos = mapper.entityToDtoInfoList(kpiTypes.getContent());
+
+        KPITypeDTO.Response response = new KPITypeDTO.Response();
+        KPITypeDTO.SpecResponse specResponse = new KPITypeDTO.SpecResponse();
+
+        if (kpiTypeInfos != null) {
+            response.setData(kpiTypeInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count)
+                    .setTotalRows((int) kpiTypes.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
     }
 
     @Override

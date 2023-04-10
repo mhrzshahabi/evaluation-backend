@@ -1,19 +1,15 @@
 package com.nicico.evaluation.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class GroupTypeDTO {
 
     private Long weight;
@@ -29,11 +25,6 @@ public abstract class GroupTypeDTO {
         private Long id;
         private KPITypeDTO.Info kpiType;
         private GroupDTO.Info group;
-
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
     }
 
     @Getter
@@ -51,9 +42,6 @@ public abstract class GroupTypeDTO {
     public static class Update extends GroupTypeDTO {
 
         private Long id;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     @Getter
@@ -63,6 +51,26 @@ public abstract class GroupTypeDTO {
     public static class Delete extends GroupTypeDTO {
 
         private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupTypeSpecResponse")
+    public static class SpecResponse {
+        private Response response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupTypeResponse")
+    public static class Response {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 
 }
