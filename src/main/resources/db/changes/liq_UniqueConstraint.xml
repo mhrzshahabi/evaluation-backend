@@ -3,16 +3,20 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="h.montazeri" id="1680516028187">
-        <addUniqueConstraint columnNames="f_catalog_type_id, c_title, c_code"
-                             constraintName="kmekvudtjajivehgswvvvolskvibmsdu"
+    <changeSet author="semami" id="1681112816">
+        <addUniqueConstraint columnNames="c_title, c_code"
+                             constraintName="uc_tbl_catalog_title_code"
                              tableName="tbl_catalog"/>
     </changeSet>
-
-    <changeSet author="h.montazeri" id="1680588905283">
+    <changeSet author="semami" id="1681112811">
         <addUniqueConstraint columnNames="c_title, c_code"
-                             constraintName="uverjaduqhdeybfdyxzvicbekjwjdnjs"
+                             constraintName="uc_tbl_merit_component_title_code"
                              tableName="tbl_merit_component"/>
+    </changeSet>
+    <changeSet author="semami" id="1681112285">
+        <addUniqueConstraint columnNames="c_code"
+                             constraintName="uc_tbl_kpi_type_code"
+                             tableName="tbl_kpi_type"/>
     </changeSet>
 
 </databaseChangeLog>
