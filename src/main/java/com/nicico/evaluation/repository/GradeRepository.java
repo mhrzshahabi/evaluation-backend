@@ -10,6 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long>, JpaSpecificationExecutor<Grade> {
-    Optional<Grade> getByCode(String code);
     List<Grade> getAllByCodeIn(List<String> codes);
 }

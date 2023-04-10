@@ -32,16 +32,8 @@ public class GradeService implements IGradeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GRADE')")
-    public GradeDTO.Info get(Long id) throws Exception {
+    public GradeDTO.Info get(Long id) {
         Grade grade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        return mapper.entityToDtoInfo(grade);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GRADE')")
-    public GradeDTO.Info getByCode(String code) {
-        Grade grade = repository.getByCode(code).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(grade);
     }
 

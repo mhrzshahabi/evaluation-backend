@@ -8,9 +8,7 @@ import java.util.List;
 
 public interface IGradeService {
 
-    GradeDTO.Info get(Long id) throws Exception;
-
-    GradeDTO.Info getByCode(String code);
+    GradeDTO.Info get(Long id);
 
     List<GradeDTO.Info> getAllByCodeIn(List<String> codes);
 
