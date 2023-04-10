@@ -18,5 +18,20 @@
                              constraintName="uc_tbl_kpi_type_code"
                              tableName="tbl_kpi_type"/>
     </changeSet>
+    <changeSet author="semami" id="1681112333">
+        <addUniqueConstraint columnNames="c_code"
+                             constraintName="uc_tbl_group_code"
+                             tableName="tbl_group"/>
+    </changeSet>
+    <changeSet author="semami" id="1681112440">
+        <addUniqueConstraint columnNames="c_code"
+                             constraintName="uc_tbl_group_type_code"
+                             tableName="tbl_group_type"/>
+    </changeSet>
+    <changeSet author="semami" id="1681112482">
+        <addUniqueConstraint columnNames="c_code"
+                             constraintName="uc_tbl_instance_code"
+                             tableName="tbl_instance"/>
+    </changeSet>
 
 </databaseChangeLog>

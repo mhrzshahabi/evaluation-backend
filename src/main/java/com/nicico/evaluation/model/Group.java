@@ -1,6 +1,7 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
