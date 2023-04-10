@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.exception.ApplicationException;
@@ -93,5 +94,12 @@ public class GroupService implements IGroupService {
     public void delete(Long id) {
         Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(group);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    //    @PreAuthorize("hasAuthority('R_GROUP')")
+    public SearchDTO.SearchRs<GroupDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 }

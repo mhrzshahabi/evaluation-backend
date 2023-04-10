@@ -1,7 +1,6 @@
 package com.nicico.evaluation.iservice;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
 
 public interface IKPITypeService {
@@ -10,7 +9,7 @@ public interface IKPITypeService {
 
     KPITypeDTO.SpecResponse list(int count, int startIndex);
 
-    TotalResponse<KPITypeDTO.Info> search(NICICOCriteria request);
+    SearchDTO.SearchRs<KPITypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     KPITypeDTO.Info create(KPITypeDTO.Create dto);
 

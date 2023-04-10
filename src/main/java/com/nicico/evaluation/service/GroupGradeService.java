@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GradeDTO;
 import com.nicico.evaluation.dto.GroupGradeDTO;
@@ -145,6 +146,13 @@ public class GroupGradeService implements IGroupGradeService {
     public void delete(Long id) {
         GroupGrade groupGrade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(groupGrade);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
+    public SearchDTO.SearchRs<GroupGradeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
 }

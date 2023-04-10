@@ -1,18 +1,19 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.iservice.IKPITypeService;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Api(value = "KPI Type")
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 public class KPITypeController {
 
     private final IKPITypeService service;
+
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) {
@@ -48,9 +50,25 @@ public class KPITypeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/spec-list")
-    public ResponseEntity<TotalResponse<KPITypeDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
-        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
-        return new ResponseEntity<>(service.search(nicicoCriteria), HttpStatus.OK);
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria is the key value pair for criteria
+     * @return TotalResponse<KPITypeDTO.Info> is the list of groupInfo entity that match the criteria
+     */
+    @PostMapping(value = "/spec-list")
+    public ResponseEntity<KPITypeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                          @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                          @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<KPITypeDTO.Info> data = service.search(request);
+        final KPITypeDTO.Response response = new KPITypeDTO.Response();
+        final KPITypeDTO.SpecResponse specRs = new KPITypeDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }

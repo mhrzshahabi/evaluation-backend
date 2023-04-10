@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.exception.ApplicationException;
@@ -104,5 +105,13 @@ public class GroupTypeService implements IGroupTypeService {
         GroupType groupType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(groupType);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository,  mapper::entityToDtoInfo, request);
+    }
+
 
 }

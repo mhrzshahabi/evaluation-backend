@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.exception.ApplicationException;
@@ -105,4 +106,12 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
         repository.delete(meritComponentType);
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
+    public SearchDTO.SearchRs<MeritComponentTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+
+    }
 }

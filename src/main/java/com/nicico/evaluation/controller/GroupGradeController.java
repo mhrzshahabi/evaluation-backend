@@ -2,8 +2,11 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.iservice.IGroupGradeService;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,9 +52,26 @@ public class GroupGradeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/spec-list")
-    public ResponseEntity<TotalResponse<GroupGradeDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
-        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
-        return new ResponseEntity<>(service.search(nicicoCriteria), HttpStatus.OK);
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria is the key value pair for criteria
+     * @return TotalResponse<GroupGradeDTO.Info> is the list of groupInfo entity that match the criteria
+     */
+    @PostMapping(value = "/spec-list")
+    public ResponseEntity<GroupGradeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                             @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<GroupGradeDTO.Info> data = service.search(request);
+        final GroupGradeDTO.Response response = new GroupGradeDTO.Response();
+        final GroupGradeDTO.SpecResponse specRs = new GroupGradeDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }
