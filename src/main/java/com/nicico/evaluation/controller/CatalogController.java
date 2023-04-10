@@ -27,6 +27,12 @@ public class CatalogController {
     }
 
     @Loggable
+    @GetMapping(value = "/list")
+    public ResponseEntity<CatalogDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping
     public ResponseEntity<CatalogDTO.Info> create(@RequestBody CatalogDTO.Create create) {
         return new ResponseEntity<>(service.create(create), HttpStatus.OK);
@@ -45,7 +51,7 @@ public class CatalogController {
     }
 
     @GetMapping(value = "/level-def-list")
-    public ResponseEntity<List<CatalogDTO.Info>> list() {
-        return new ResponseEntity<>(service.list(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
+    public ResponseEntity<List<CatalogDTO.Info>> levelDefList() {
+        return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
     }
 }

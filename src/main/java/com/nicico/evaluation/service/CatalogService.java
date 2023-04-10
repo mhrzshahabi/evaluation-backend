@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
@@ -9,9 +10,12 @@ import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.repository.CatalogRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +29,7 @@ public class CatalogService implements ICatalogService {
     private final ModelMapper modelMapper;
     private final CatalogBeanMapper mapper;
     private final CatalogRepository repository;
+    private final PageableMapper pageableMapper;
     private final ApplicationException<ServiceException> applicationException;
 
     @Transactional(readOnly = true)
@@ -32,6 +37,26 @@ public class CatalogService implements ICatalogService {
     public CatalogDTO.Info getById(Long id) {
         Optional<Catalog> optionalCatalog = repository.findById(id);
         return mapper.entityToDtoInfo(optionalCatalog.orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CatalogDTO.SpecResponse list(@RequestParam int count, @RequestParam int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<Catalog> catalogs = repository.findAll(pageable);
+        List<CatalogDTO.Info> catalogInfos = mapper.entityToDtoInfoList(catalogs.getContent());
+
+        CatalogDTO.Response response = new CatalogDTO.Response();
+        CatalogDTO.SpecResponse specResponse = new CatalogDTO.SpecResponse();
+
+        if (catalogInfos != null) {
+            response.setData(catalogInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count)
+                    .setTotalRows((int) catalogs.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
     }
 
     @Transactional
@@ -69,7 +94,7 @@ public class CatalogService implements ICatalogService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CatalogDTO.Info> list(String code) {
+    public List<CatalogDTO.Info> levelDefList(String code) {
         List<Catalog> allByCatalogTypeCode = repository.findAllByCatalogTypeCode(code);
         return mapper.entityToDtoInfoList(allByCatalogTypeCode);
     }
