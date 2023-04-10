@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
+import static com.nicico.evaluation.exception.CoreException.NOT_SAVE;
 
 
 @RequiredArgsConstructor
@@ -75,7 +76,11 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
         MeritComponent save = repository.save(meritComponent);
-        return mapper.entityToDtoInfo(save);
+        try {
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override
@@ -85,7 +90,11 @@ public class MeritComponentService implements IMeritComponentService {
         MeritComponent meritComponent = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(meritComponent, dto);
         MeritComponent save = repository.save(meritComponent);
-        return mapper.entityToDtoInfo(save);
+        try {
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override

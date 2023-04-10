@@ -24,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nicico.evaluation.exception.CoreException.GRADE_IS_IN_ANOTHER_GROUP;
-import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
+import static com.nicico.evaluation.exception.CoreException.*;
 
 
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class GroupGradeService implements IGroupGradeService {
 
     @Override
     @Transactional(readOnly = true)
-     @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
+    @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
     public GroupGradeDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<GroupGrade> groupGrades = repository.findAll(pageable);
@@ -87,7 +86,11 @@ public class GroupGradeService implements IGroupGradeService {
     public GroupGradeDTO.Info create(GroupGradeDTO.Create dto) {
         GroupGrade groupGrade = mapper.dtoCreateToEntity(dto);
         GroupGrade save = repository.save(groupGrade);
-        return mapper.entityToDtoInfo(save);
+        try {
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override
