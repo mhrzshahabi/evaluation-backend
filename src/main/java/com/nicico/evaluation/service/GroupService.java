@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class GroupService implements IGroupService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GROUP')")
+    @PreAuthorize("hasAuthority('R_GROUP')")
     public GroupDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<Group> groups = repository.findAll(pageable);
@@ -56,7 +57,7 @@ public class GroupService implements IGroupService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GROUP')")
+    @PreAuthorize("hasAuthority('R_GROUP')")
     public GroupDTO.Info get(Long id) {
         Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(group);
@@ -64,14 +65,14 @@ public class GroupService implements IGroupService {
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_GROUP')")
+    @PreAuthorize("hasAuthority('R_GROUP')")
     public TotalResponse<GroupDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('C_GROUP')")
+    @PreAuthorize("hasAuthority('C_GROUP')")
     public GroupDTO.Info create(GroupDTO.Create dto) {
         Group group = mapper.dtoCreateToEntity(dto);
         group = repository.save(group);
@@ -80,7 +81,7 @@ public class GroupService implements IGroupService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('U_GROUP')")
+    @PreAuthorize("hasAuthority('U_GROUP')")
     public GroupDTO.Info update(GroupDTO.Update dto) {
         Group group = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         mapper.update(group, dto);
@@ -90,7 +91,7 @@ public class GroupService implements IGroupService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('D_GROUP')")
+    @PreAuthorize("hasAuthority('D_GROUP')")
     public void delete(Long id) {
         Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         repository.delete(group);
@@ -98,7 +99,7 @@ public class GroupService implements IGroupService {
 
     @Override
     @Transactional(readOnly = true)
-    //    @PreAuthorize("hasAuthority('R_GROUP')")
+    @PreAuthorize("hasAuthority('R_GROUP')")
     public SearchDTO.SearchRs<GroupDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }

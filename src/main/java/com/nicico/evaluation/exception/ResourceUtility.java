@@ -1,8 +1,6 @@
 package com.nicico.evaluation.exception;
 
-
 /**
- * @author nima
  * @apiNote this class used for get all Data From Properties Resources
  */
 public interface ResourceUtility {
@@ -30,6 +28,5 @@ public interface ResourceUtility {
      * @return the Object Of Value
      */
     BaseDTO<String> getResourcesData(String resourceText);
-
 
 }
