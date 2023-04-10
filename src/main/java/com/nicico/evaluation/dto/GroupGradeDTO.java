@@ -1,11 +1,10 @@
 package com.nicico.evaluation.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -13,18 +12,29 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class GroupGradeDTO {
 
-    private List<Long> gradeIds;
+    @NotNull
     private Long groupId;
-    private String title;
-    private String code;
 
     @Getter
     @Setter
     @ApiModel("GroupGradeInfo")
     public static class Info extends GroupGradeDTO {
 
+        private Long id;
+        private String code;
+        private String title;
         private GroupDTO.Info group;
         private GradeDTO.Info grade;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupGradeCreateAllRq")
+    public static class CreateAll extends GroupGradeDTO {
+
+        @NotNull
+        private List<String> gradeCodes;
     }
 
     @Getter
@@ -33,6 +43,12 @@ public abstract class GroupGradeDTO {
     @ApiModel("GroupGradeCreateRq")
     public static class Create extends GroupGradeDTO {
 
+        @NotNull
+        private String code;
+        @NotNull
+        private String title;
+        @NotNull
+        private Long gradeId;
     }
 
     @Getter

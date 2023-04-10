@@ -68,4 +68,10 @@ public enum CoreException implements Message {
             return this.name();
         }
     },
+    GRADE_IS_IN_ANOTHER_GROUP {
+        @Override
+        public String key() {
+            return this.name();
+        }
+    },
 }

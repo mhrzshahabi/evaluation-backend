@@ -4,11 +4,13 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.GradeDTO;
 
+import java.util.List;
+
 public interface IGradeService {
 
-    GradeDTO.Info get(Long id) throws Exception;
+    GradeDTO.Info get(Long id);
 
-    GradeDTO.Info getByCode(String code);
+    List<GradeDTO.Info> getAllByCodeIn(List<String> codes);
 
     GradeDTO.SpecResponse list(int count, int startIndex);
 
