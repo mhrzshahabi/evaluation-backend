@@ -4,6 +4,8 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.evaluation.dto.GradeDTO;
 
+import java.util.List;
+
 public interface IGradeService {
 
     GradeDTO.Info get(Long id);
