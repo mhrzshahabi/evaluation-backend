@@ -1,12 +1,9 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.mapper.InstanceMapper;
-import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.repository.InstanceRepository;
 import org.junit.jupiter.api.Test;
@@ -14,8 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 
 import java.util.Arrays;
@@ -28,7 +23,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
-
 
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +48,7 @@ public class InstanceServiceTests {
 
         Instance instance = generateInstance("testCode", "testTitle");
 
-        InstanceDTO.Info instanceInfo = generateInstanceInfo(1L, "testCode","testTitle");
+        InstanceDTO.Info instanceInfo = generateInstanceInfo(1L, "testCode", "testTitle");
 
         //Action
         when(instanceRepository.save(any(Instance.class))).thenReturn(instance);
@@ -86,9 +80,9 @@ public class InstanceServiceTests {
         //Assert
         assertNotNull(specResponse);
         assertEquals(specResponse.getResponse().getData().size(), 2);
-        InstanceDTO.Info in0  = specResponse.getResponse().getData().get(0);
+        InstanceDTO.Info in0 = specResponse.getResponse().getData().get(0);
         assertEquals(in0.getCode(), "testCode1");
-        InstanceDTO.Info in1  = specResponse.getResponse().getData().get(1);
+        InstanceDTO.Info in1 = specResponse.getResponse().getData().get(1);
         assertEquals(in1.getCode(), "testCode2");
     }
 
@@ -108,9 +102,9 @@ public class InstanceServiceTests {
     }
 
     @Test
-    public void getByIdExceptionTest(){
+    public void getByIdExceptionTest() {
         //init
-        Instance  instance = generateInstance("testCode1", "testTitle1");
+        Instance instance = generateInstance("testCode1", "testTitle1");
         instance.setId(1L);
         Optional<Instance> instanceOP = Optional.of(instance);
         //act
@@ -158,7 +152,7 @@ public class InstanceServiceTests {
     }
 
     @Test
-    public void searchTest() throws IllegalAccessException, NoSuchFieldException{
+    public void searchTest() throws IllegalAccessException, NoSuchFieldException {
         //init
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         //act
@@ -196,9 +190,6 @@ public class InstanceServiceTests {
                 generateInstanceInfo(2L, "testCode2", "testTitle2")
         );
     }
-
-
-
 
 
 }

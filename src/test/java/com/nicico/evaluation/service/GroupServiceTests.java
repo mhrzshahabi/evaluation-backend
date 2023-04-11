@@ -1,11 +1,8 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
-import com.nicico.evaluation.dto.InstanceDTO;
-import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.repository.GroupRepository;
@@ -47,7 +44,7 @@ public class GroupServiceTests {
         groupCreate.setTitle("testTitle");
         groupCreate.setDefinitionAllowed(Boolean.TRUE);
 
-        Group group = generateGroup("testCode","testTitle",Boolean.TRUE);
+        Group group = generateGroup("testCode", "testTitle", Boolean.TRUE);
 
         GroupDTO.Info groupInfo = generateGroupInfo(1L, "testCode", "testTitle", Boolean.TRUE);
 
@@ -82,17 +79,17 @@ public class GroupServiceTests {
         //Assert
         assertNotNull(specResponse);
         assertEquals(specResponse.getResponse().getData().size(), 2);
-        GroupDTO.Info gi0  = specResponse.getResponse().getData().get(0);
+        GroupDTO.Info gi0 = specResponse.getResponse().getData().get(0);
         assertEquals(gi0.getCode(), "testCode1");
-        GroupDTO.Info gi1  = specResponse.getResponse().getData().get(1);
+        GroupDTO.Info gi1 = specResponse.getResponse().getData().get(1);
         assertEquals(gi1.getCode(), "testCode2");
     }
 
     @Test
-    public void getByIdTest(){
+    public void getByIdTest() {
         //init
         Optional<Group> group = Optional.of(generateGroup("testCode1", "testTitle1", Boolean.FALSE));
-        GroupDTO.Info groupInfo = generateGroupInfo(1L,"testCode1", "testTitle1", Boolean.FALSE);
+        GroupDTO.Info groupInfo = generateGroupInfo(1L, "testCode1", "testTitle1", Boolean.FALSE);
         //act
         when(groupRepository.findById(anyLong())).thenReturn(group);
         when(groupMapper.entityToDtoInfo(any(Group.class))).thenReturn(groupInfo);
@@ -104,9 +101,9 @@ public class GroupServiceTests {
     }
 
     @Test
-    public void getByIdExceptionTest(){
+    public void getByIdExceptionTest() {
         //init
-        Group  group = generateGroup("testCode1", "testTitle1", Boolean.FALSE);
+        Group group = generateGroup("testCode1", "testTitle1", Boolean.FALSE);
         group.setId(1L);
         Optional<Group> groupOP = Optional.of(group);
         //act
@@ -118,7 +115,7 @@ public class GroupServiceTests {
     }
 
     @Test
-    public  void updateTest(){
+    public void updateTest() {
         //init
         GroupDTO.Update groupUpdate = new GroupDTO.Update();
         groupUpdate.setId(1L).setCode("NEWtestCode1").setTitle("NEWtestTitle1").setDefinitionAllowed(Boolean.TRUE);
@@ -142,7 +139,7 @@ public class GroupServiceTests {
     }
 
     @Test
-    public void deleteTest(){
+    public void deleteTest() {
         //init
         Optional<Group> group = Optional.of(generateGroup("deleteCode", "deleteTitle", Boolean.TRUE));
         //act
@@ -150,11 +147,11 @@ public class GroupServiceTests {
         doNothing().when(groupRepository).delete(any(Group.class));
         groupService.delete(1L);
         //assert
-        verify(groupRepository , times(1)).delete(group.get());
+        verify(groupRepository, times(1)).delete(group.get());
     }
 
     @Test
-    public void searchTest() throws IllegalAccessException, NoSuchFieldException{
+    public void searchTest() throws IllegalAccessException, NoSuchFieldException {
         //init
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         //act
@@ -174,18 +171,20 @@ public class GroupServiceTests {
 
     private List<Group> generateGroupList() {
         return Arrays.asList(
-                generateGroup("testCode1", "testTitle1",Boolean.TRUE),
-                generateGroup("testCode2","testTitle2",Boolean.FALSE)
+                generateGroup("testCode1", "testTitle1", Boolean.TRUE),
+                generateGroup("testCode2", "testTitle2", Boolean.FALSE)
         );
     }
+
     private GroupDTO.Info generateGroupInfo(Long id, String code, String title, Boolean definitionAllowed) {
         GroupDTO.Info groupInfo1 = new GroupDTO.Info();
         groupInfo1.setId(id);
         groupInfo1.setCode(code);
         groupInfo1.setTitle(title);
         groupInfo1.setDefinitionAllowed(definitionAllowed);
-        return  groupInfo1;
+        return groupInfo1;
     }
+
     private List<GroupDTO.Info> generateGroupInfoList() {
         return Arrays.asList(
                 generateGroupInfo(1L, "testCode1", "testTitle1", Boolean.TRUE),
