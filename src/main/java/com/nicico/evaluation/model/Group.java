@@ -1,7 +1,6 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,6 @@ public class Group extends Auditable {
 
     @Column(name = "c_code")
     private String code;
-
 
     @Column(name = "c_title")
     private String title;

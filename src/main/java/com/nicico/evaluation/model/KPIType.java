@@ -38,5 +38,4 @@ public class KPIType extends Auditable {
     @Column(name = "level_def_id")
     private Long levelDefCatalogId;
 
-
 }

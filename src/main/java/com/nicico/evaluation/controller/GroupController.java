@@ -3,10 +3,12 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupDTO;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/group")
@@ -40,7 +43,11 @@ public class GroupController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
+        }
     }
 
     /**
@@ -67,8 +74,14 @@ public class GroupController {
      */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            service.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataIntegrityViolationException violationException) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, "به دلیل وابستگی داده ای امکان حذف وجود ندارد");
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
+        }
     }
 
     /**
