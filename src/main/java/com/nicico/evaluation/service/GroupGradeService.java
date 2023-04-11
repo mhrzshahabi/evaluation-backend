@@ -1,8 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GradeDTO;
@@ -65,13 +62,6 @@ public class GroupGradeService implements IGroupGradeService {
             specResponse.setResponse(response);
         }
         return specResponse;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
-    public TotalResponse<GroupGradeDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override

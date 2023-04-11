@@ -64,11 +64,10 @@ public class GroupTypeController {
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
+    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     /**
      * @param count      is the number of entity to every page

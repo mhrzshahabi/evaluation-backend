@@ -1,7 +1,5 @@
 package com.nicico.evaluation.iservice;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 
@@ -11,8 +9,6 @@ public interface IInstanceService {
 
     InstanceDTO.Info get(Long id);
 
-    TotalResponse<InstanceDTO.Info> search(NICICOCriteria request);
-
     InstanceDTO.Info create(InstanceDTO.Create dto);
 
     InstanceDTO.Info update(InstanceDTO.Update dto);
@@ -20,6 +16,5 @@ public interface IInstanceService {
     void delete(Long id);
 
     SearchDTO.SearchRs<InstanceDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
-
 
 }

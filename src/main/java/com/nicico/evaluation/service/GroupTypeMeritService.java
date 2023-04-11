@@ -1,8 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
@@ -65,13 +62,6 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
-    public TotalResponse<GroupTypeMeritDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
-    }
-
-    @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_GROUP_TYPE_MERIT')")
     public GroupTypeMeritDTO.Info create(GroupTypeMeritDTO.Create dto) {
@@ -112,6 +102,5 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     public SearchDTO.SearchRs<GroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
-
 
 }

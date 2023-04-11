@@ -1,7 +1,5 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupDTO;
@@ -36,7 +34,6 @@ public class GroupController {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
-
     /**
      * @param id is the gorup id
      * @return GroupDTO.Info  is the single gorup entity
@@ -69,7 +66,7 @@ public class GroupController {
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
+    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

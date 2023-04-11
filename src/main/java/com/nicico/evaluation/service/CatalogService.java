@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.exception.ApplicationException;
@@ -97,5 +98,11 @@ public class CatalogService implements ICatalogService {
     public List<CatalogDTO.Info> levelDefList(String code) {
         List<Catalog> allByCatalogTypeCode = repository.findAllByCatalogTypeCode(code);
         return mapper.entityToDtoInfoList(allByCatalogTypeCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<CatalogDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 }

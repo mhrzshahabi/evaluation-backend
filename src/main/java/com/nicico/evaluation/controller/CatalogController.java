@@ -1,8 +1,11 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.CatalogDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.EvaluationConstant;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,5 +56,21 @@ public class CatalogController {
     @GetMapping(value = "/level-def-list")
     public ResponseEntity<List<CatalogDTO.Info>> levelDefList() {
         return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/spec-list")
+    public ResponseEntity<CatalogDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                              @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                              @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<CatalogDTO.Info> data = service.search(request);
+        final CatalogDTO.Response response = new CatalogDTO.Response();
+        final CatalogDTO.SpecResponse specRs = new CatalogDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 }
