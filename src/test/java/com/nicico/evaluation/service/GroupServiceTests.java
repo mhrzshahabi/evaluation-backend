@@ -3,8 +3,6 @@ package com.nicico.evaluation.service;
 import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.repository.GroupRepository;
@@ -15,12 +13,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.InstanceOfAssertFactories.OPTIONAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -39,8 +35,6 @@ public class GroupServiceTests {
     private GroupMapper groupMapper;
     @Mock
     private PageableMapper pageableMapper;
-    @Mock
-    private ApplicationException<ServiceException> applicationException;
 
     @Test
     public void createTest() {
@@ -50,16 +44,9 @@ public class GroupServiceTests {
         groupCreate.setTitle("testTitle");
         groupCreate.setDefinitionAllowed(Boolean.TRUE);
 
-        Group group = new Group();
-        group.setCode("testCode");
-        group.setTitle("testTitle");
-        group.setDefinitionAllowed(Boolean.TRUE);
+        Group group = generateGroup("testCode","testTitle",Boolean.TRUE);
 
-        GroupDTO.Info groupInfo = new GroupDTO.Info();
-        groupInfo.setId(1L);
-        groupInfo.setCode("testCode");
-        groupInfo.setTitle("testTitle");
-        groupInfo.setDefinitionAllowed(Boolean.TRUE);
+        GroupDTO.Info groupInfo = generateGroupInfo(1L, "testCode", "testTitle", Boolean.TRUE);
 
         //Action
         when(groupRepository.save(any(Group.class))).thenReturn(group);
@@ -76,54 +63,33 @@ public class GroupServiceTests {
 
     }
 
+
     @Test
-    public void listTest() {
+    public void listPageableTest() {
         //init
         List<Group> groups = generateGroupList();
         List<GroupDTO.Info> groupInfos = generateGroupInfoList();
-        //Act
-        when(groupRepository.findAll()).thenReturn(groups);
-        when(groupMapper.entityToDtoInfoList(anyList())).thenReturn(groupInfos);
-        List<GroupDTO.Info> groupInfosRes = groupService.list();
-        //Assert
-        assertNotNull(groupInfosRes);
-        assertEquals(groupInfosRes.size(), 2);
-        assertEquals(groupInfosRes.get(0).getDefinitionAllowed(), Boolean.TRUE);
-        assertEquals(groupInfosRes.get(1).getDefinitionAllowed(), Boolean.FALSE);
-
-    }
-
-    @Test
-    public void listWithPageableParamTest() {
-        //init
-        List<Group> groups = generateGroupList();
-        List<GroupDTO.Info> groupInfos = generateGroupInfoList();
-        Page<Group> pageGroup = new PageImpl(groups);
-        PageDTO pageDto = new PageDTO();
-        pageDto.setPageSize(pageGroup.getSize());
-        pageDto.setTotalPage(pageGroup.getTotalPages());
-        pageDto.setTotalItems(pageGroup.getTotalElements());
-        pageDto.setList(groupInfos);
+        Page<Group> pageGroup = new PageImpl<>(groups);
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
         //Act
         when(groupRepository.findAll(any(Pageable.class))).thenReturn(pageGroup);
         when(groupMapper.entityToDtoInfoList(anyList())).thenReturn(groupInfos);
-        when(pageableMapper.toPageDto(any(Page.class), anyList())).thenReturn(pageDto);
-        PageDTO pageDtoRes = groupService.list(pageable);
+        when(pageableMapper.toPageable(anyInt(), anyInt())).thenReturn(pageable);
+        GroupDTO.SpecResponse specResponse = groupService.list(10, 0);
         //Assert
-        assertNotNull(pageDtoRes);
-        assertEquals(pageDtoRes.getList().size(), 2);
-        GroupDTO.Info gi0  = (GroupDTO.Info)pageDtoRes.getList().get(0);
-        assertEquals(gi0.getDefinitionAllowed(), Boolean.TRUE);
-        GroupDTO.Info gi1  = (GroupDTO.Info)pageDtoRes.getList().get(1);
-        assertEquals(gi1.getDefinitionAllowed(), Boolean.FALSE);
+        assertNotNull(specResponse);
+        assertEquals(specResponse.getResponse().getData().size(), 2);
+        GroupDTO.Info gi0  = specResponse.getResponse().getData().get(0);
+        assertEquals(gi0.getCode(), "testCode1");
+        GroupDTO.Info gi1  = specResponse.getResponse().getData().get(1);
+        assertEquals(gi1.getCode(), "testCode2");
     }
 
     @Test
     public void getTest(){
         //init
         Optional<Group> group = Optional.of(generateGroup("testCode1", "testTitle1", Boolean.FALSE));
-        GroupDTO.Info groupInfo = generateGroupInfoList().get(0);
+        GroupDTO.Info groupInfo = generateGroupInfo(1L,"testCode1", "testTitle1", Boolean.FALSE);
         //act
         when(groupRepository.findById(anyLong())).thenReturn(group);
         when(groupMapper.entityToDtoInfo(any(Group.class))).thenReturn(groupInfo);
