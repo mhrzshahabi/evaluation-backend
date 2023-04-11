@@ -1,8 +1,10 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
+import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.repository.GroupRepository;
@@ -134,6 +136,16 @@ public class GroupServiceTests {
         groupService.delete(1L);
         //assert
         verify(groupRepository , times(1)).delete(group.get());
+    }
+
+    @Test
+    public void searchTest() throws IllegalAccessException, NoSuchFieldException{
+        //init
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        //act
+        SearchDTO.SearchRs<GroupDTO.Info> result = groupService.search(request);
+        //assert
+        assertNotNull(result);
     }
 
 

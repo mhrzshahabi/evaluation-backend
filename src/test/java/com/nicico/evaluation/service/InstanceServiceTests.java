@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
@@ -140,6 +141,16 @@ public class InstanceServiceTests {
         instanceService.delete(1L);
         //assert
         verify(instanceRepository, times(1)).delete(instance.get());
+    }
+
+    @Test
+    public void searchTest() throws IllegalAccessException, NoSuchFieldException{
+        //init
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        //act
+        SearchDTO.SearchRs<InstanceDTO.Info> result = instanceService.search(request);
+        //assert
+        assertNotNull(result);
     }
 
 
