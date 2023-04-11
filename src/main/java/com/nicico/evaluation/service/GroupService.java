@@ -10,6 +10,7 @@ import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
+import static com.nicico.evaluation.exception.CoreException.*;
 
 @RequiredArgsConstructor
 @Service
@@ -84,7 +85,13 @@ public class GroupService implements IGroupService {
     @PreAuthorize("hasAuthority('D_GROUP')")
     public void delete(Long id) {
         Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        repository.delete(group);
+        try {
+            repository.delete(group);
+        } catch (DataIntegrityViolationException violationException) {
+            throw applicationException.createApplicationException(INTEGRITY_CONSTRAINT, HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_DELETE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Override

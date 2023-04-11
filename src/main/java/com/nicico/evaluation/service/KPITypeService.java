@@ -10,6 +10,7 @@ import com.nicico.evaluation.mapper.KPITypeMapper;
 import com.nicico.evaluation.model.KPIType;
 import com.nicico.evaluation.repository.KPITypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
-import static com.nicico.evaluation.exception.CoreException.NOT_SAVE;
+import static com.nicico.evaluation.exception.CoreException.*;
+import static com.nicico.evaluation.exception.CoreException.NOT_DELETE;
 
 
 @RequiredArgsConstructor
@@ -101,7 +102,13 @@ public class KPITypeService implements IKPITypeService {
     @PreAuthorize("hasAuthority('D_KPI_TYPE')")
     public void delete(Long id) {
         KPIType kPIType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        repository.delete(kPIType);
+        try {
+            repository.delete(kPIType);
+        } catch (DataIntegrityViolationException violationException) {
+            throw applicationException.createApplicationException(INTEGRITY_CONSTRAINT, HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception exception) {
+            throw applicationException.createApplicationException(NOT_DELETE, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
 }

@@ -74,4 +74,10 @@ public enum CoreException implements Message {
             return this.name();
         }
     },
+    INTEGRITY_CONSTRAINT {
+        @Override
+        public String key() {
+            return this.name();
+        }
+    }
 }
