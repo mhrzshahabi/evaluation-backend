@@ -31,6 +31,12 @@ public class GradeController {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/unusedList")
+    public ResponseEntity<GradeDTO.SpecResponse> listOfGradeWithoutGroup(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.listOfGradeWithoutGroup(count, startIndex), HttpStatus.OK);
+    }
+
+
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page

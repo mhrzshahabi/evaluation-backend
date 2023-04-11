@@ -13,6 +13,8 @@ public interface IGradeService {
 
     GradeDTO.SpecResponse list(int count, int startIndex);
 
+    GradeDTO.SpecResponse listOfGradeWithoutGroup(int count, int startIndex);
+
     SearchDTO.SearchRs<GradeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
 }
