@@ -24,26 +24,47 @@ public class GroupTypeMeritController {
 
     private final IGroupTypeMeritService service;
 
+    /**
+     * @param id is the instance id
+     * @return GroupTypeMeritDTO.Info is the single instance entity
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupTypeMeritDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @return GroupTypeMeritDTO.SpecResponse that contain list of GroupTypeMeritDTO and the number of total entity
+     */
     @GetMapping(value = "/list")
     public ResponseEntity<GroupTypeMeritDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
+    /**
+     * @param request is the model of input for create instance entity
+     * @return GroupTypeMeritDTO.Info is the saved instance entity
+     */
     @PostMapping
     public ResponseEntity<GroupTypeMeritDTO.Info> create(@Valid @RequestBody GroupTypeMeritDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
+    /**
+     * @param request is  the model of input for update instance entity
+     * @return GroupTypeMeritDTO.Info is the updated instance entity
+     */
     @PutMapping
     public ResponseEntity<GroupTypeMeritDTO.Info> update(@Valid @RequestBody GroupTypeMeritDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
+    /**
+     * @param id is the instance id for delete
+     * @return status code only
+     */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
         service.delete(id);
@@ -54,7 +75,7 @@ public class GroupTypeMeritController {
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @param criteria is the key value pair for criteria
+     * @param criteria   is the key value pair for criteria
      * @return TotalResponse<GroupTypeMeritDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
