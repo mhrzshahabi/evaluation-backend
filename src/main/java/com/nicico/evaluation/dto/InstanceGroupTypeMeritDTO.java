@@ -10,44 +10,34 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public abstract class GroupTypeMeritDTO {
+public abstract class InstanceGroupTypeMeritDTO {
 
-    private Long meritComponentId;
-    private Long groupTypeId;
-    private Long weight;
+    private Long instanceId;
+    private Long groupTypeMeritId;
 
     @Getter
     @Setter
-    @ApiModel("GroupTypeMeritInfo")
-    public static class Info extends GroupTypeMeritDTO {
+    @ApiModel("InstanceGroupTypeMeritInfo")
+    public static class Info extends InstanceGroupTypeMeritDTO {
 
         private Long id;
-        private MeritComponentDTO.Info meritComponent;
-        private GroupTypeDTO.Info groupType;
+        private GroupTypeMeritDTO.Info groupTypeMerit;
+        private InstanceDTO.Info instance;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritCreateRq")
-    public static class Create extends GroupTypeMeritDTO {
+    @ApiModel("InstanceGroupTypeMeritCreateRq")
+    public static class Create extends InstanceGroupTypeMeritDTO {
 
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritUpdateRq")
-    public static class Update extends GroupTypeMeritDTO {
-
-        private Long id;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritDeleteRq")
-    public static class Delete extends GroupTypeMeritDTO {
+    @ApiModel("InstanceGroupTypeMeritUpdateRq")
+    public static class Update extends InstanceGroupTypeMeritDTO {
 
         private Long id;
     }
@@ -55,7 +45,16 @@ public abstract class GroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritSpecResponse")
+    @ApiModel("InstanceGroupTypeMeritDeleteRq")
+    public static class Delete extends InstanceGroupTypeMeritDTO {
+
+        private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("InstanceGroupTypeMeritSpecResponse")
     public static class SpecResponse {
         private Response response;
     }
@@ -63,7 +62,7 @@ public abstract class GroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritResponse")
+    @ApiModel("InstanceGroupTypeMeritResponse")
     public static class Response {
         private List<Info> data;
         private Integer status;

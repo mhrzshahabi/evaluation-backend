@@ -39,4 +39,8 @@
         <createSequence sequenceName="seq_group_type_merit_id"/>
     </changeSet>
 
+    <changeSet id="1681194699" author="semami">
+        <createSequence sequenceName="seq_instance_group_type_merit_id"/>
+    </changeSet>
+
 </databaseChangeLog>

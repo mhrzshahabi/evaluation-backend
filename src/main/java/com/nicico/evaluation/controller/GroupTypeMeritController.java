@@ -24,8 +24,8 @@ public class GroupTypeMeritController {
     private final IGroupTypeMeritService service;
 
     /**
-     * @param id is the instance id
-     * @return GroupTypeMeritDTO.Info is the single instance entity
+     * @param id is the groupTypeMerit id
+     * @return GroupTypeMeritDTO.Info is the single groupTypeMerit entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupTypeMeritDTO.Info> get(@PathVariable Long id) {
@@ -43,8 +43,8 @@ public class GroupTypeMeritController {
     }
 
     /**
-     * @param request is the model of input for create instance entity
-     * @return GroupTypeMeritDTO.Info is the saved instance entity
+     * @param request is the model of input for create groupTypeMerit entity
+     * @return GroupTypeMeritDTO.Info is the saved groupTypeMerit entity
      */
     @PostMapping
     public ResponseEntity<GroupTypeMeritDTO.Info> create(@Valid @RequestBody GroupTypeMeritDTO.Create request) {
@@ -52,8 +52,8 @@ public class GroupTypeMeritController {
     }
 
     /**
-     * @param request is  the model of input for update instance entity
-     * @return GroupTypeMeritDTO.Info is the updated instance entity
+     * @param request is  the model of input for update groupTypeMerit entity
+     * @return GroupTypeMeritDTO.Info is the updated groupTypeMerit entity
      */
     @PutMapping
     public ResponseEntity<GroupTypeMeritDTO.Info> update(@Valid @RequestBody GroupTypeMeritDTO.Update request) {
@@ -61,7 +61,7 @@ public class GroupTypeMeritController {
     }
 
     /**
-     * @param id is the instance id for delete
+     * @param id is the groupTypeMerit id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})

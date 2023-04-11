@@ -23,8 +23,8 @@ public class GroupGradeController {
 
     private final IGroupGradeService service;
     /**
-     * @param id is the instance id
-     * @return GroupGradeDTO.Info is the single instance entity
+     * @param id is the groupGrade id
+     * @return GroupGradeDTO.Info is the single groupGrade entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupGradeDTO.Info> get(@PathVariable Long id) {
@@ -42,8 +42,8 @@ public class GroupGradeController {
     }
 
     /**
-     * @param request is the model of input for create instance entity
-     * @return GroupGradeDTO.Info is the saved instance entity
+     * @param request is the model of input for create groupGrade entity
+     * @return GroupGradeDTO.Info is the saved groupGrade entity
      */
     @PostMapping
     public ResponseEntity<List<GroupGradeDTO.Info>> create(@Valid @RequestBody GroupGradeDTO.CreateAll request) {
@@ -51,8 +51,8 @@ public class GroupGradeController {
     }
 
     /**
-     * @param request is  the model of input for update instance entity
-     * @return GroupGradeDTO.Info is the updated instance entity
+     * @param request is  the model of input for update groupGrade entity
+     * @return GroupGradeDTO.Info is the updated groupGrade entity
      */
     @PutMapping(value = {"/{id}"})
     public ResponseEntity<List<GroupGradeDTO.Info>> update(@Valid @RequestBody GroupGradeDTO.CreateAll request, @PathVariable Long id) {
@@ -60,7 +60,7 @@ public class GroupGradeController {
     }
 
     /**
-     * @param id is the instance id for delete
+     * @param id is the groupGrade id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
