@@ -2,7 +2,6 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -66,11 +65,10 @@ public class GroupTypeMeritController {
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
+    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     /**
      * @param count      is the number of entity to every page
@@ -91,7 +89,7 @@ public class GroupTypeMeritController {
                 .setEndRow(startIndex + data.getList().size())
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }
