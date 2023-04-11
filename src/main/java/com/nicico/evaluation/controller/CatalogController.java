@@ -58,10 +58,18 @@ public class CatalogController {
         return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
     }
 
+
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria is the key value pair for criteria
+     * @return TotalResponse<CatalogDTO.Info> is the list of groupInfo entity that match the criteria
+     */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<CatalogDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                              @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                              @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                        @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                        @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<CatalogDTO.Info> data = service.search(request);
         final CatalogDTO.Response response = new CatalogDTO.Response();

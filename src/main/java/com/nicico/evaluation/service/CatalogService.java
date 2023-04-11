@@ -103,6 +103,7 @@ public class CatalogService implements ICatalogService {
     @Override
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<CatalogDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 }

@@ -23,4 +23,5 @@ public interface ICatalogService {
 
     SearchDTO.SearchRs<CatalogDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+
 }
