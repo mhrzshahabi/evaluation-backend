@@ -22,6 +22,10 @@ public class GroupType extends Auditable {
     @SequenceGenerator(name = "group_type_seq", sequenceName = "seq_group_type_id", initialValue = 1, allocationSize = 1)
     @Column(name = "id")
     private Long id;
+
+    @NotNull
+    @Column(name = "c_code")
+    private String code;
     
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)

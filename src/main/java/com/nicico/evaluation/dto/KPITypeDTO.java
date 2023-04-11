@@ -1,19 +1,15 @@
 package com.nicico.evaluation.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class KPITypeDTO {
 
     private String code;
@@ -25,13 +21,8 @@ public abstract class KPITypeDTO {
     @ApiModel("KPITypeInfo")
     public static class Info extends KPITypeDTO {
 
-        CatalogDTO.Info levelDefCatalog;
-
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
+        CatalogDTO.Info levelDefCatalog;
     }
 
     @Getter
@@ -49,9 +40,6 @@ public abstract class KPITypeDTO {
     public static class Update extends KPITypeDTO {
 
         private Long id;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     @Getter
@@ -61,6 +49,26 @@ public abstract class KPITypeDTO {
     public static class Delete extends KPITypeDTO {
 
         private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("KPITypeSpecResponse")
+    public static class SpecResponse {
+        private Response response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("KPITypeResponse")
+    public static class Response {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 
 }

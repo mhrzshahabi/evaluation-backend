@@ -21,6 +21,7 @@ spring:
             authorization-uri: http://staging.icico.net.ir/oauth/authorize
             token-uri: http://staging.icico.net.ir/oauth/token
             user-info-uri: http://staging.icico.net.ir/user/info
+            token-uri-swagger: http://staging.icico.net.ir/oauth/token
             user-name-attribute: username
 nicico:
   upload:

@@ -2,15 +2,13 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.evaluation.common.PageDTO;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.iservice.IInstanceService;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/instance")
@@ -27,69 +26,76 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 public class InstanceController {
 
-    private final IInstanceService instanceService;
+    private final IInstanceService service;
 
     /**
-     * @param  page is the page number
-     * @param pageSize is the number of entity to every page
-     * @return PageDTO that contain list of instanceInfoDto and the number of total entity
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @return InstanceDTO.SpecResponse that contain list of instanceInfoDto and the number of total entity
      */
     @GetMapping(value = "/list")
-    public ResponseEntity<PageDTO> list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        return new ResponseEntity<>(instanceService.list(pageable), HttpStatus.OK);
+    public ResponseEntity<InstanceDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
-    /**
-     *
-     * @param request is the key value pair for criteria
-     * @return TotalResponse<InstanceDTO.Info> is the list of instanceInfo entity that match the criteria
-     */
-    @GetMapping(value = "/spec-list")
-    public ResponseEntity<TotalResponse<InstanceDTO.Info>> search(@RequestParam MultiValueMap<String, String> request) {
-        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(request);
-        return new ResponseEntity<>(instanceService.search(nicicoCriteria), HttpStatus.OK);
-    }
 
     /**
-     *
      * @param id is the instance id
      * @return InstanceDTO.Info is the single instance entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<InstanceDTO.Info> get(@PathVariable @Min(1) Long id) {
-        return new ResponseEntity<>(instanceService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     /**
-     *
      * @param request is the model of input for create instance entity
      * @return GroupDTOInfo is the saved instance entity
      */
     @PostMapping
     public ResponseEntity<InstanceDTO.Info> create(@Valid @RequestBody InstanceDTO.Create request) {
-        return new ResponseEntity<>(instanceService.create(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
-     *
      * @param request is  the model of input for update instance entity
      * @return GroupDTOInfo is the updated instance entity
      */
     @PutMapping
     public ResponseEntity<InstanceDTO.Info> update(@Valid @RequestBody InstanceDTO.Update request) {
-        return new ResponseEntity<>(instanceService.update(request), HttpStatus.OK);
+        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
     /**
-     *
      * @param id is the instance id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> remove(@PathVariable @Min(1) Long id) {
-        instanceService.delete(id);
+        service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria is the key value pair for criteria
+     * @return TotalResponse<InstanceDTO.Info> is the list of groupInfo entity that match the criteria
+     */
+    @PostMapping(value = "/spec-list")
+    public ResponseEntity<InstanceDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                           @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                           @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<InstanceDTO.Info> data = service.search(request);
+        final InstanceDTO.Response response = new InstanceDTO.Response();
+        final InstanceDTO.SpecResponse specRs = new InstanceDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

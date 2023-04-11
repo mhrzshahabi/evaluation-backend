@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/anonymous/api/catalog")
+@RequestMapping("/api/catalog")
 @Validated
 @AllArgsConstructor
 public class CatalogController {
@@ -27,8 +27,14 @@ public class CatalogController {
     }
 
     @Loggable
+    @GetMapping(value = "/list")
+    public ResponseEntity<CatalogDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping
-    public ResponseEntity create(@RequestBody CatalogDTO.Create create) {
+    public ResponseEntity<CatalogDTO.Info> create(@RequestBody CatalogDTO.Create create) {
         return new ResponseEntity<>(service.create(create), HttpStatus.OK);
     }
 
@@ -39,13 +45,13 @@ public class CatalogController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         service.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/level-def-list")
-    public ResponseEntity<List<CatalogDTO.Info>> list() {
-        return new ResponseEntity<>(service.list(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
+    public ResponseEntity<List<CatalogDTO.Info>> levelDefList() {
+        return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
     }
 }

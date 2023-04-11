@@ -1,5 +1,6 @@
 package com.nicico.evaluation.exception;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -12,7 +13,8 @@ import java.util.List;
 @Component
 public class ApplicationExceptionImpl implements ApplicationException<ServiceException> {
 
-    private ResourceUtility resourceUtility;
+    private ResourceUtility applicationResource;
+
 
     @Value("${ENVIRONMENT_NOT_FOUND.code}")
     private String environmentNotFoundCode;
@@ -27,14 +29,14 @@ public class ApplicationExceptionImpl implements ApplicationException<ServiceExc
     private String expMessage;
 
     @Autowired
-    public ApplicationExceptionImpl(@Lazy ResourceUtility resourceUtility) {
-        this.resourceUtility = resourceUtility;
+    public ApplicationExceptionImpl(@Lazy ResourceUtility applicationResource) {
+        this.applicationResource = applicationResource;
     }
 
     public ServiceException createApplicationException(String exceptionKey) {
         try {
-            expCode = resourceUtility.getResourceText(exceptionKey.concat(CODE));
-            expMessage = resourceUtility.getResourceText(exceptionKey.concat(MESSAGE));
+            expCode = applicationResource.getResourceText(exceptionKey.concat(CODE));
+            expMessage = applicationResource.getResourceText(exceptionKey.concat(MESSAGE));
         } catch (Exception e) {
             throw ServiceException.builder().exceptionCode(environmentNotFoundCode)
                     .exceptionMessage(environmentNotFoundMessage)
@@ -46,8 +48,8 @@ public class ApplicationExceptionImpl implements ApplicationException<ServiceExc
 
     public ServiceException createApplicationException(Message message) {
         try {
-            expCode = resourceUtility.getResourceText(message.key().concat(CODE));
-            expMessage = resourceUtility.getResourceText(message.key().concat(MESSAGE));
+            expCode = applicationResource.getResourceText(message.key().concat(CODE));
+            expMessage = applicationResource.getResourceText(message.key().concat(MESSAGE));
         } catch (Exception e) {
             throw ServiceException.builder().exceptionCode(environmentNotFoundCode)
                     .exceptionMessage(environmentNotFoundMessage)
@@ -58,7 +60,7 @@ public class ApplicationExceptionImpl implements ApplicationException<ServiceExc
 
     public Notification createApplicationWarning(Message message) {
         try {
-            expMessage = resourceUtility.getResourceText(message.key().concat(MESSAGE));
+            expMessage = applicationResource.getResourceText(message.key().concat(MESSAGE));
         } catch (Exception e) {
             throw ServiceException.builder().exceptionCode(environmentNotFoundCode)
                     .exceptionMessage(environmentNotFoundMessage)
@@ -71,7 +73,7 @@ public class ApplicationExceptionImpl implements ApplicationException<ServiceExc
         List<Notification> notifications = new ArrayList<>();
         for (Message warningObj : messages) {
             try {
-                expMessage = resourceUtility.getResourceText(warningObj.key().concat(MESSAGE));
+                expMessage = applicationResource.getResourceText(warningObj.key().concat(MESSAGE));
                 Notification notification = Notification.builder().notify(expMessage).status(Status.WARN).build();
                 notifications.add(notification);
             } catch (Exception e) {
@@ -85,8 +87,8 @@ public class ApplicationExceptionImpl implements ApplicationException<ServiceExc
 
     public ServiceException createApplicationException(String exceptionKey, HttpStatus httpStatus) {
         try {
-            expCode = resourceUtility.getResourceText(exceptionKey.concat(CODE));
-            expMessage = resourceUtility.getResourceText(exceptionKey.concat(MESSAGE));
+            expCode = applicationResource.getResourceText(exceptionKey.concat(CODE));
+            expMessage = applicationResource.getResourceText(exceptionKey.concat(MESSAGE));
         } catch (Exception e) {
             throw ServiceException.builder().exceptionCode(environmentNotFoundCode)
                     .exceptionMessage(environmentNotFoundMessage)
@@ -98,8 +100,8 @@ public class ApplicationExceptionImpl implements ApplicationException<ServiceExc
 
     public ServiceException createApplicationException(Message message, HttpStatus httpStatus) {
         try {
-            expCode = resourceUtility.getResourceText(message.key().concat(CODE));
-            expMessage = resourceUtility.getResourceText(message.key().concat(MESSAGE));
+            expCode = applicationResource.getResourceText(message.key().concat(CODE));
+            expMessage = applicationResource.getResourceText(message.key().concat(MESSAGE));
         } catch (Exception e) {
             throw ServiceException.builder().exceptionCode(environmentNotFoundCode)
                     .exceptionMessage(environmentNotFoundMessage)

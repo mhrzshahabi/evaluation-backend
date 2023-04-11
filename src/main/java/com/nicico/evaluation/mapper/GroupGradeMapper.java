@@ -1,9 +1,7 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.GroupGradeDTO;
-import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupGrade;
-import com.nicico.evaluation.model.GroupType;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

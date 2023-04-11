@@ -3,7 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.evaluation.common.PageDTO;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.exception.ApplicationException;
@@ -29,59 +29,79 @@ import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
 @Service
 public class InstanceService implements IInstanceService {
 
-    private final InstanceRepository instanceRepository;
-    private final InstanceMapper instanceMapper;
+    private final InstanceMapper mapper;
+    private final InstanceRepository repository;
     private final PageableMapper pageableMapper;
     private final ApplicationException<ServiceException> applicationException;
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_INSTANCE')")
-    public PageDTO list(Pageable pageable) {
-        Page<Instance> instances = instanceRepository.findAll(pageable);
-        List<InstanceDTO.Info> instanceDto = instanceMapper.entityToDtoInfoList(instances.getContent());
-        return pageableMapper.toPageDto(instances, instanceDto);
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
+    public InstanceDTO.SpecResponse list(int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<Instance> instances = repository.findAll(pageable);
+        List<InstanceDTO.Info> instanceInfos = mapper.entityToDtoInfoList(instances.getContent());
+
+        InstanceDTO.Response response = new InstanceDTO.Response();
+        InstanceDTO.SpecResponse specResponse = new InstanceDTO.SpecResponse();
+
+        if (instanceInfos != null) {
+            response.setData(instanceInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count)
+                    .setTotalRows((int) instances.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
     }
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_INSTANCE')")
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
     public InstanceDTO.Info get(Long id) {
-        Instance instance = instanceRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        return instanceMapper.entityToDtoInfo(instance);
+        Instance instance = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        return mapper.entityToDtoInfo(instance);
     }
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_INSTANCE')")
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
     public TotalResponse<InstanceDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(instanceRepository, request, instanceMapper::entityToDtoInfo);
+        return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('C_INSTANCE')")
+    @PreAuthorize("hasAuthority('C_INSTANCE')")
     public InstanceDTO.Info create(InstanceDTO.Create dto) {
-        Instance instance = instanceMapper.dtoCreateToEntity(dto);
-        instance = instanceRepository.save(instance);
-        return instanceMapper.entityToDtoInfo(instance);
+        Instance instance = mapper.dtoCreateToEntity(dto);
+        instance = repository.save(instance);
+        return mapper.entityToDtoInfo(instance);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('U_INSTANCE')")
+    @PreAuthorize("hasAuthority('U_INSTANCE')")
     public InstanceDTO.Info update(InstanceDTO.Update dto) {
-        Instance instance = instanceRepository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        instanceMapper.update(instance, dto);
-        Instance save = instanceRepository.save(instance);
-        return instanceMapper.entityToDtoInfo(save);
+        Instance instance = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        mapper.update(instance, dto);
+        Instance save = repository.save(instance);
+        return mapper.entityToDtoInfo(save);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('D_INSTANCE')")
+    @PreAuthorize("hasAuthority('D_INSTANCE')")
     public void delete(Long id) {
-        Instance instance = instanceRepository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
-        instanceRepository.delete(instance);
+        Instance instance = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        repository.delete(instance);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
+    public SearchDTO.SearchRs<InstanceDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
 }

@@ -1,14 +1,12 @@
 package com.nicico.evaluation.dto;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,10 +24,6 @@ public class CatalogDTO implements Serializable {
         private Long id;
         private String description;
         private Long catalogTypeId;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
     }
 
     @Getter
@@ -47,10 +41,27 @@ public class CatalogDTO implements Serializable {
     @ApiModel("CatalogUpdateRq")
     public static class Update {
         private Long id;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
         private String title;
         private String description;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CatalogSpecResponse")
+    public static class SpecResponse {
+        private Response response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CatalogResponse")
+    public static class Response {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }
