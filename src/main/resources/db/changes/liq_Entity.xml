@@ -258,4 +258,7 @@
     <changeSet author="semami" id="1681191565">
         <renameColumn newColumnName="c_grade_code" oldColumnName="grade_code" tableName="tbl_group_grade"/>
     </changeSet>
+    <changeSet author="semami" id="1681192921">
+        <dropColumn tableName="tbl_group_type_merit" columnName="instance_id"/>
+    </changeSet>
 </databaseChangeLog>

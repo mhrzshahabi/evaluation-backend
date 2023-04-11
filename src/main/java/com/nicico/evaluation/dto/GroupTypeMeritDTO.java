@@ -13,7 +13,6 @@ import java.util.List;
 public abstract class GroupTypeMeritDTO {
 
     private Long meritComponentId;
-    private Long instanceId;
     private Long groupTypeId;
     private Long weight;
 
@@ -25,7 +24,6 @@ public abstract class GroupTypeMeritDTO {
         private Long id;
         private MeritComponentDTO.Info meritComponent;
         private GroupTypeDTO.Info groupType;
-        private InstanceDTO.Info instance;
     }
 
     @Getter
