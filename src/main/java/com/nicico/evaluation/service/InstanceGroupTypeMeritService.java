@@ -6,8 +6,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.mapper.InstanceGroupTypeMeritMapper;
 import com.nicico.evaluation.model.InstanceGroupTypeMerit;
@@ -15,16 +14,11 @@ import com.nicico.evaluation.repository.InstanceGroupTypeMeritRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
-import static com.nicico.evaluation.exception.CoreException.NOT_SAVE;
-
 
 @RequiredArgsConstructor
 @Service
@@ -33,13 +27,12 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     private final InstanceGroupTypeMeritMapper mapper;
     private final PageableMapper pageableMapper;
     private final InstanceGroupTypeMeritRepository repository;
-    private final ApplicationException<ServiceException> applicationException;
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_INSTANCE_GROUP_TYPE_MERIT')")
     public InstanceGroupTypeMeritDTO.Info get(Long id) {
-        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(instanceGroupTypeMerit);
     }
 
@@ -80,7 +73,7 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
             InstanceGroupTypeMerit save = repository.save(instanceGroupTypeMerit);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
     }
 
@@ -88,13 +81,13 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     @Transactional
     @PreAuthorize("hasAuthority('U_INSTANCE_GROUP_TYPE_MERIT')")
     public InstanceGroupTypeMeritDTO.Info update(InstanceGroupTypeMeritDTO.Update dto) {
-        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(instanceGroupTypeMerit, dto);
         try {
             InstanceGroupTypeMerit save = repository.save(instanceGroupTypeMerit);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
     }
 
@@ -102,7 +95,7 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     @Transactional
     @PreAuthorize("hasAuthority('D_INSTANCE_GROUP_TYPE_MERIT')")
     public void delete(Long id) {
-        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         repository.delete(instanceGroupTypeMerit);
     }
 
@@ -112,6 +105,5 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     public SearchDTO.SearchRs<InstanceGroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
-
 
 }
