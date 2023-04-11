@@ -1,7 +1,9 @@
 package com.nicico.evaluation.iservice;
 
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.CatalogDTO;
+import com.nicico.evaluation.dto.GroupTypeDTO;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -19,5 +21,8 @@ public interface ICatalogService {
     void delete(Long id);
 
     List<CatalogDTO.Info> levelDefList(String code);
+
+    SearchDTO.SearchRs<CatalogDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+
 
 }
