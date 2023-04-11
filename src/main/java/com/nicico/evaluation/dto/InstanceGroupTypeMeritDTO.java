@@ -17,7 +17,7 @@ public abstract class InstanceGroupTypeMeritDTO {
 
     @Getter
     @Setter
-    @ApiModel("GroupTypeMeritInfo")
+    @ApiModel("InstanceGroupTypeMeritInfo")
     public static class Info extends InstanceGroupTypeMeritDTO {
 
         private Long id;
@@ -28,7 +28,7 @@ public abstract class InstanceGroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritCreateRq")
+    @ApiModel("InstanceGroupTypeMeritCreateRq")
     public static class Create extends InstanceGroupTypeMeritDTO {
 
     }
@@ -36,7 +36,7 @@ public abstract class InstanceGroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritUpdateRq")
+    @ApiModel("InstanceGroupTypeMeritUpdateRq")
     public static class Update extends InstanceGroupTypeMeritDTO {
 
         private Long id;
@@ -45,7 +45,7 @@ public abstract class InstanceGroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritDeleteRq")
+    @ApiModel("InstanceGroupTypeMeritDeleteRq")
     public static class Delete extends InstanceGroupTypeMeritDTO {
 
         private Long id;
@@ -54,7 +54,7 @@ public abstract class InstanceGroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritSpecResponse")
+    @ApiModel("InstanceGroupTypeMeritSpecResponse")
     public static class SpecResponse {
         private Response response;
     }
@@ -62,7 +62,7 @@ public abstract class InstanceGroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritResponse")
+    @ApiModel("InstanceGroupTypeMeritResponse")
     public static class Response {
         private List<Info> data;
         private Integer status;
