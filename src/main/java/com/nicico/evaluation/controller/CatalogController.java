@@ -4,7 +4,6 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.GradeDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.EvaluationConstant;
@@ -55,11 +54,9 @@ public class CatalogController {
     }
 
     @GetMapping(value = "/level-def-list")
-    public ResponseEntity<List<CatalogDTO.Info>> levelDefList() {
+    public ResponseEntity<CatalogDTO.SpecResponse> levelDefList() {
         return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
     }
-
-
 
     /**
      * @param count      is the number of entity to every page

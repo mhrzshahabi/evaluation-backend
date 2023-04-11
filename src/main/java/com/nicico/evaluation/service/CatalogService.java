@@ -3,7 +3,6 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
-import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.exception.ApplicationException;
 import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.iservice.ICatalogService;
@@ -15,7 +14,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -97,15 +95,22 @@ public class CatalogService implements ICatalogService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CatalogDTO.Info> levelDefList(String code) {
+    public CatalogDTO.SpecResponse levelDefList(String code) {
         List<Catalog> allByCatalogTypeCode = repository.findAllByCatalogTypeCode(code);
-        return mapper.entityToDtoInfoList(allByCatalogTypeCode);
+        List<CatalogDTO.Info> catalogInfos =  mapper.entityToDtoInfoList(allByCatalogTypeCode);
+        final CatalogDTO.Response response = new CatalogDTO.Response();
+        final CatalogDTO.SpecResponse specRs = new CatalogDTO.SpecResponse();
+        response.setData(catalogInfos)
+                .setStartRow(0)
+                .setEndRow(catalogInfos.size())
+                .setTotalRows(catalogInfos.size());
+        specRs.setResponse(response);
+        return specRs;
     }
 
     @Override
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<CatalogDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 }

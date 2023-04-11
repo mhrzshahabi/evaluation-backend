@@ -1,6 +1,5 @@
 package com.nicico.evaluation.utility;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
@@ -49,6 +48,5 @@ public class CriteriaUtil {
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
     }
-
 
 }

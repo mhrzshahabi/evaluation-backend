@@ -35,7 +35,6 @@ public class InstanceController {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
-
     /**
      * @param id is the instance id
      * @return InstanceDTO.Info is the single instance entity
@@ -68,7 +67,7 @@ public class InstanceController {
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> remove(@PathVariable @Min(1) Long id) {
+    public ResponseEntity<String> delete(@PathVariable @Min(1) Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
