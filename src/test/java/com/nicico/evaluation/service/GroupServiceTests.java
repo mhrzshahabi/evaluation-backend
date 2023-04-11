@@ -5,6 +5,7 @@ import com.nicico.evaluation.common.PageDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
+import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.repository.GroupRepository;
@@ -88,7 +89,7 @@ public class GroupServiceTests {
     }
 
     @Test
-    public void getTest(){
+    public void getByIdTest(){
         //init
         Optional<Group> group = Optional.of(generateGroup("testCode1", "testTitle1", Boolean.FALSE));
         GroupDTO.Info groupInfo = generateGroupInfo(1L,"testCode1", "testTitle1", Boolean.FALSE);
@@ -100,6 +101,20 @@ public class GroupServiceTests {
         assertNotNull(groupRes);
         assertEquals(groupRes.getCode(), groupInfo.getCode());
         assertEquals(groupRes.getDefinitionAllowed(), groupInfo.getDefinitionAllowed());
+    }
+
+    @Test
+    public void getByIdExceptionTest(){
+        //init
+        Group  group = generateGroup("testCode1", "testTitle1", Boolean.FALSE);
+        group.setId(1L);
+        Optional<Group> groupOP = Optional.of(group);
+        //act
+        when(groupRepository.findById(2L)).thenReturn(groupOP);
+        //assert
+        assertThrows(RuntimeException.class, () -> {
+            groupService.get(group.getId());
+        });
     }
 
     @Test

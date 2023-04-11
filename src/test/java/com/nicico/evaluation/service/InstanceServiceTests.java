@@ -93,7 +93,7 @@ public class InstanceServiceTests {
     }
 
     @Test
-    public void getTest() {
+    public void getByIdTest() {
         //init
         Optional<Instance> instance = Optional.of(generateInstance("testCode1", "testTitle1"));
         InstanceDTO.Info instatnceInfo = generateInstanceInfo(1L, "testCode1", "testTitle1");
@@ -105,6 +105,20 @@ public class InstanceServiceTests {
         assertNotNull(instanceInfoRes);
         assertEquals(instanceInfoRes.getCode(), instance.get().getCode());
         assertEquals(instatnceInfo.getTitle(), instance.get().getTitle());
+    }
+
+    @Test
+    public void getByIdExceptionTest(){
+        //init
+        Instance  instance = generateInstance("testCode1", "testTitle1");
+        instance.setId(1L);
+        Optional<Instance> instanceOP = Optional.of(instance);
+        //act
+        when(instanceRepository.findById(2L)).thenReturn(instanceOP);
+        //assert
+        assertThrows(RuntimeException.class, () -> {
+            instanceService.get(instance.getId());
+        });
     }
 
     @Test
