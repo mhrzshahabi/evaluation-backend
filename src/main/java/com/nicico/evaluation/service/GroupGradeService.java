@@ -9,6 +9,7 @@ import com.nicico.evaluation.exception.ServiceException;
 import com.nicico.evaluation.iservice.IGradeService;
 import com.nicico.evaluation.iservice.IGroupGradeService;
 import com.nicico.evaluation.mapper.GroupGradeMapper;
+import com.nicico.evaluation.model.Grade;
 import com.nicico.evaluation.model.GroupGrade;
 import com.nicico.evaluation.repository.GroupGradeRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.nicico.evaluation.exception.CoreException.*;
 
@@ -143,6 +145,13 @@ public class GroupGradeService implements IGroupGradeService {
     @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
     public SearchDTO.SearchRs<GroupGradeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    public GroupGradeDTO.Info getGroupGradeByGrade(Grade grade) {
+        Optional<GroupGrade> optionalGroupGrade = repository.findFirstByGradeCodeAndGradeId(grade.getCode(),grade.getId());
+        return optionalGroupGrade.map(mapper::entityToDtoInfo).orElse(null);
+
     }
 
 }

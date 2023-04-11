@@ -31,8 +31,8 @@ public class KPITypeController {
     private final ApplicationException<ServiceException> applicationException;
 
     /**
-     * @param id is the instance id
-     * @return KPITypeDTO.Info is the single instance entity
+     * @param id is the kPIType id
+     * @return KPITypeDTO.Info is the single kPIType entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) {
@@ -50,8 +50,8 @@ public class KPITypeController {
     }
 
     /**
-     * @param request is the model of input for create instance entity
-     * @return KPITypeDTO.Info is the saved instance entity
+     * @param request is the model of input for create kPIType entity
+     * @return KPITypeDTO.Info is the saved kPIType entity
      */
     @PostMapping
     public ResponseEntity<KPITypeDTO.Info> create(@Valid @RequestBody KPITypeDTO.Create request) {
@@ -59,8 +59,8 @@ public class KPITypeController {
     }
 
     /**
-     * @param request is  the model of input for update instance entity
-     * @return KPITypeDTO.Info is the updated instance entity
+     * @param request is  the model of input for update kPIType entity
+     * @return KPITypeDTO.Info is the updated kPIType entity
      */
     @PutMapping
     public ResponseEntity<KPITypeDTO.Info> update(@Valid @RequestBody KPITypeDTO.Update request) {
@@ -68,7 +68,7 @@ public class KPITypeController {
     }
 
     /**
-     * @param id is the instance id for delete
+     * @param id is the kPIType id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
