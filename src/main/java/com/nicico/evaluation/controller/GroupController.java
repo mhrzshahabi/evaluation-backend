@@ -3,8 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.nicico.evaluation.exception.CoreException.INTEGRITY_CONSTRAINT;
-import static com.nicico.evaluation.exception.CoreException.NOT_DELETE;
 
 @RestController
 @RequestMapping("/api/group")
@@ -29,7 +26,6 @@ import static com.nicico.evaluation.exception.CoreException.NOT_DELETE;
 public class GroupController {
 
     private final IGroupService service;
-    private final ApplicationException<ServiceException> applicationException;
 
     /**
      * @param count      is the number of entity to every page
@@ -47,7 +43,11 @@ public class GroupController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
+        }
     }
 
     /**
@@ -78,9 +78,9 @@ public class GroupController {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
-            throw applicationException.createApplicationException(INTEGRITY_CONSTRAINT, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, "به دلیل وابستگی داده ای امکان حذف وجود ندارد");
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_DELETE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
     }
 

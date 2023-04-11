@@ -3,8 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.mapper.KPITypeMapper;
 import com.nicico.evaluation.model.KPIType;
@@ -13,16 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.nicico.evaluation.exception.CoreException.*;
-import static com.nicico.evaluation.exception.CoreException.NOT_DELETE;
-
 
 @RequiredArgsConstructor
 @Service
@@ -31,13 +25,12 @@ public class KPITypeService implements IKPITypeService {
     private final KPITypeMapper mapper;
     private final KPITypeRepository repository;
     private final PageableMapper pageableMapper;
-    private final ApplicationException<ServiceException> applicationException;
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_KPI_TYPE')")
     public KPITypeDTO.Info get(Long id) {
-        KPIType kpiType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        KPIType kpiType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(kpiType);
     }
 
@@ -79,7 +72,7 @@ public class KPITypeService implements IKPITypeService {
             KPIType save = repository.save(kpiType);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
     }
 
@@ -87,13 +80,13 @@ public class KPITypeService implements IKPITypeService {
     @Transactional
     @PreAuthorize("hasAuthority('U_KPI_TYPE')")
     public KPITypeDTO.Info update(KPITypeDTO.Update dto) {
-        KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(kPIType, dto);
         try {
             KPIType save = repository.save(kPIType);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_SAVE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
     }
 
@@ -101,13 +94,13 @@ public class KPITypeService implements IKPITypeService {
     @Transactional
     @PreAuthorize("hasAuthority('D_KPI_TYPE')")
     public void delete(Long id) {
-        KPIType kPIType = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        KPIType kPIType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
             repository.delete(kPIType);
         } catch (DataIntegrityViolationException violationException) {
-            throw applicationException.createApplicationException(INTEGRITY_CONSTRAINT, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint);
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_DELETE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
     }
 

@@ -3,8 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
@@ -18,9 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.nicico.evaluation.exception.CoreException.INTEGRITY_CONSTRAINT;
-import static com.nicico.evaluation.exception.CoreException.NOT_DELETE;
-
 @RequiredArgsConstructor
 @Api(value = "KPI Type")
 @RestController
@@ -28,7 +24,6 @@ import static com.nicico.evaluation.exception.CoreException.NOT_DELETE;
 public class KPITypeController {
 
     private final IKPITypeService service;
-    private final ApplicationException<ServiceException> applicationException;
 
     /**
      * @param id is the kPIType id
@@ -77,9 +72,9 @@ public class KPITypeController {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
-            throw applicationException.createApplicationException(INTEGRITY_CONSTRAINT, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, "به دلیل وابستگی داده ای امکان حذف وجود ندارد");
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_DELETE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
     }
 

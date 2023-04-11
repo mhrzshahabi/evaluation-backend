@@ -3,8 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GradeDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGradeService;
 import com.nicico.evaluation.mapper.GradeMapper;
 import com.nicico.evaluation.model.Grade;
@@ -12,15 +11,11 @@ import com.nicico.evaluation.repository.GradeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
-
 
 @RequiredArgsConstructor
 @Service
@@ -29,13 +24,12 @@ public class GradeService implements IGradeService {
     private final GradeMapper mapper;
     private final GradeRepository repository;
     private final PageableMapper pageableMapper;
-    private final ApplicationException<ServiceException> applicationException;
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GRADE')")
     public GradeDTO.Info get(Long id) {
-        Grade grade = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Grade grade = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(grade);
     }
 
@@ -73,7 +67,6 @@ public class GradeService implements IGradeService {
     @PreAuthorize("hasAuthority('R_GRADE')")
     public SearchDTO.SearchRs<GradeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
-
     }
 
 }

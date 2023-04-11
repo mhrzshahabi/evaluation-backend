@@ -3,8 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.InstanceDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.mapper.InstanceMapper;
 import com.nicico.evaluation.model.Instance;
@@ -12,15 +11,11 @@ import com.nicico.evaluation.repository.InstanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.nicico.evaluation.exception.CoreException.NOT_FOUND;
-
 
 @RequiredArgsConstructor
 @Service
@@ -29,7 +24,6 @@ public class InstanceService implements IInstanceService {
     private final InstanceMapper mapper;
     private final InstanceRepository repository;
     private final PageableMapper pageableMapper;
-    private final ApplicationException<ServiceException> applicationException;
 
     @Override
     @Transactional(readOnly = true)
@@ -56,7 +50,7 @@ public class InstanceService implements IInstanceService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_INSTANCE')")
     public InstanceDTO.Info get(Long id) {
-        Instance instance = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Instance instance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(instance);
     }
 
@@ -73,7 +67,7 @@ public class InstanceService implements IInstanceService {
     @Transactional
     @PreAuthorize("hasAuthority('U_INSTANCE')")
     public InstanceDTO.Info update(InstanceDTO.Update dto) {
-        Instance instance = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Instance instance = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(instance, dto);
         Instance save = repository.save(instance);
         return mapper.entityToDtoInfo(save);
@@ -83,7 +77,7 @@ public class InstanceService implements IInstanceService {
     @Transactional
     @PreAuthorize("hasAuthority('D_INSTANCE')")
     public void delete(Long id) {
-        Instance instance = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Instance instance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         repository.delete(instance);
     }
 

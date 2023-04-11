@@ -3,8 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
-import com.nicico.evaluation.exception.ApplicationException;
-import com.nicico.evaluation.exception.ServiceException;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
@@ -13,14 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.nicico.evaluation.exception.CoreException.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,8 +25,6 @@ public class GroupService implements IGroupService {
     private final GroupMapper mapper;
     private final GroupRepository repository;
     private final PageableMapper pageableMapper;
-    private final ApplicationException<ServiceException> applicationException;
-
 
     @Override
     @Transactional(readOnly = true)
@@ -57,7 +51,7 @@ public class GroupService implements IGroupService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP')")
     public GroupDTO.Info get(Long id) {
-        Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Group group = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(group);
     }
 
@@ -74,7 +68,7 @@ public class GroupService implements IGroupService {
     @Transactional
     @PreAuthorize("hasAuthority('U_GROUP')")
     public GroupDTO.Info update(GroupDTO.Update dto) {
-        Group group = repository.findById(dto.getId()).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Group group = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(group, dto);
         Group save = repository.save(group);
         return mapper.entityToDtoInfo(save);
@@ -84,13 +78,13 @@ public class GroupService implements IGroupService {
     @Transactional
     @PreAuthorize("hasAuthority('D_GROUP')")
     public void delete(Long id) {
-        Group group = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
+        Group group = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
             repository.delete(group);
         } catch (DataIntegrityViolationException violationException) {
-            throw applicationException.createApplicationException(INTEGRITY_CONSTRAINT, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint);
         } catch (Exception exception) {
-            throw applicationException.createApplicationException(NOT_DELETE, HttpStatus.NOT_ACCEPTABLE);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
     }
 
