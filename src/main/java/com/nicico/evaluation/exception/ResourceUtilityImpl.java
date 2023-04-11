@@ -1,6 +1,5 @@
 package com.nicico.evaluation.exception;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import static com.nicico.evaluation.exception.CoreException.ENVIRONMENT_NOT_FOUND;
 import static com.nicico.evaluation.exception.GeneralResponse.successCustomResponse;
-
 
 @Component
 public class ResourceUtilityImpl implements ResourceUtility {

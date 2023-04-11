@@ -54,11 +54,9 @@ public class CatalogController {
     }
 
     @GetMapping(value = "/level-def-list")
-    public ResponseEntity<List<CatalogDTO.Info>> levelDefList() {
+    public ResponseEntity<CatalogDTO.SpecResponse> levelDefList() {
         return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
     }
-
-
 
     /**
      * @param count      is the number of entity to every page
