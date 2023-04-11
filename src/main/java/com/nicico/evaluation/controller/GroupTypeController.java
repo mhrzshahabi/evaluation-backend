@@ -23,8 +23,8 @@ public class GroupTypeController {
 
     private final IGroupTypeService service;
     /**
-     * @param id is the instance id
-     * @return GroupTypeDTO.Info is the single instance entity
+     * @param id is the groupType id
+     * @return GroupTypeDTO.Info is the single groupType entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupTypeDTO.Info> get(@PathVariable Long id) {
@@ -42,8 +42,8 @@ public class GroupTypeController {
     }
 
     /**
-     * @param request is the model of input for create instance entity
-     * @return GroupTypeDTO.Info is the saved instance entity
+     * @param request is the model of input for create groupType entity
+     * @return GroupTypeDTO.Info is the saved groupType entity
      */
     @PostMapping
     public ResponseEntity<GroupTypeDTO.Info> create(@Valid @RequestBody GroupTypeDTO.Create request) {
@@ -51,8 +51,8 @@ public class GroupTypeController {
     }
 
     /**
-     * @param request is  the model of input for update instance entity
-     * @return GroupTypeDTO.Info is the updated instance entity
+     * @param request is  the model of input for update groupType entity
+     * @return GroupTypeDTO.Info is the updated groupType entity
      */
     @PutMapping
     public ResponseEntity<GroupTypeDTO.Info> update(@Valid @RequestBody GroupTypeDTO.Update request) {
@@ -60,7 +60,7 @@ public class GroupTypeController {
     }
 
     /**
-     * @param id is the instance id for delete
+     * @param id is the groupType id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})

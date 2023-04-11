@@ -8,9 +8,13 @@ import org.mapstruct.MappingTarget;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface KPITypeMapper  {
-        KPIType dtoCreateToEntity(KPITypeDTO.Create dto);
-        KPITypeDTO.Info entityToDtoInfo(KPIType entity);
-        List<KPITypeDTO.Info> entityToDtoInfoList(List<KPIType> entities);
-        void update(@MappingTarget KPIType entity, KPITypeDTO.Update dto);
+public interface KPITypeMapper {
+
+    KPIType dtoCreateToEntity(KPITypeDTO.Create dto);
+
+    KPITypeDTO.Info entityToDtoInfo(KPIType entity);
+
+    List<KPITypeDTO.Info> entityToDtoInfoList(List<KPIType> entities);
+
+    void update(@MappingTarget KPIType entity, KPITypeDTO.Update dto);
 }

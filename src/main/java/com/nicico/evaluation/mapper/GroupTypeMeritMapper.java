@@ -9,8 +9,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface GroupTypeMeritMapper {
-        GroupTypeMerit dtoCreateToEntity(GroupTypeMeritDTO.Create dto);
-        GroupTypeMeritDTO.Info entityToDtoInfo(GroupTypeMerit entity);
-        List<GroupTypeMeritDTO.Info> entityToDtoInfoList(List<GroupTypeMerit> entities);
-        void update(@MappingTarget GroupTypeMerit entity, GroupTypeMeritDTO.Update dto);
+
+    GroupTypeMerit dtoCreateToEntity(GroupTypeMeritDTO.Create dto);
+
+    GroupTypeMeritDTO.Info entityToDtoInfo(GroupTypeMerit entity);
+
+    List<GroupTypeMeritDTO.Info> entityToDtoInfoList(List<GroupTypeMerit> entities);
+
+    void update(@MappingTarget GroupTypeMerit entity, GroupTypeMeritDTO.Update dto);
 }

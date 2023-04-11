@@ -24,7 +24,7 @@ public class MeritComponentController {
     private final IMeritComponentService service;
     /**
      * @param id is the instance id
-     * @return MeritComponentDTO.Info is the single instance entity
+     * @return MeritComponentDTO.Info is the single meritComponent entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<MeritComponentDTO.Info> get(@PathVariable Long id) {
@@ -42,8 +42,8 @@ public class MeritComponentController {
     }
 
     /**
-     * @param request is the model of input for create instance entity
-     * @return MeritComponentDTO.Info is the saved instance entity
+     * @param request is the model of input for create meritComponent entity
+     * @return MeritComponentDTO.Info is the saved meritComponent entity
      */
     @PostMapping
     public ResponseEntity<MeritComponentDTO.Info> create(@Valid @RequestBody MeritComponentDTO.Create request) {
@@ -51,8 +51,8 @@ public class MeritComponentController {
     }
 
     /**
-     * @param request is  the model of input for update instance entity
-     * @return MeritComponentDTO.Info is the updated instance entity
+     * @param request is  the model of input for update meritComponent entity
+     * @return MeritComponentDTO.Info is the updated meritComponent entity
      */
     @PutMapping
     public ResponseEntity<MeritComponentDTO.Info> update(@Valid @RequestBody MeritComponentDTO.Update request) {
@@ -60,7 +60,7 @@ public class MeritComponentController {
     }
 
     /**
-     * @param id is the instance id for delete
+     * @param id is the meritComponent id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
