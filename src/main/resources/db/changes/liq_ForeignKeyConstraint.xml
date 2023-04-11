@@ -51,5 +51,39 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_group" validate="true"/>
     </changeSet>
-
+    <changeSet author="semami" id="1681122195">
+        <addForeignKeyConstraint baseColumnNames="merit_component_id"
+                                 baseTableName="tbl_group_type_merit"
+                                 constraintName="f_group_type_merit_to_merit" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_merit_component" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1681120835">
+        <addForeignKeyConstraint baseColumnNames="instance_id"
+                                 baseTableName="tbl_group_type_merit"
+                                 constraintName="f_group_type_merit_to_instance" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_instance" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1681120921">
+        <addForeignKeyConstraint baseColumnNames="group_type_id"
+                                 baseTableName="tbl_group_type_merit"
+                                 constraintName="f_group_type_merit_to_group_type" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_group_type" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1681194745">
+        <addForeignKeyConstraint baseColumnNames="group_type_merit_id"
+                                 baseTableName="tbl_instance_group_type_merit"
+                                 constraintName="f_instance_group_type_merit_to_group_type_merit" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_group_type_merit" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1681194782">
+        <addForeignKeyConstraint baseColumnNames="instance_id"
+                                 baseTableName="tbl_instance_group_type_merit"
+                                 constraintName="f_instance_group_type_merit_to_instance" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_instance" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

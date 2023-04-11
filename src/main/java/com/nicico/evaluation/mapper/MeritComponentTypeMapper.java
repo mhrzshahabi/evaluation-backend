@@ -9,8 +9,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface MeritComponentTypeMapper {
-        MeritComponentType dtoCreateToEntity(MeritComponentTypeDTO.Create dto);
-        MeritComponentTypeDTO.Info entityToDtoInfo(MeritComponentType entity);
-        List<MeritComponentTypeDTO.Info> entityToDtoInfoList(List<MeritComponentType> entities);
-        void update(@MappingTarget MeritComponentType entity, MeritComponentTypeDTO.Update dto);
+
+    MeritComponentType dtoCreateToEntity(MeritComponentTypeDTO.Create dto);
+
+    MeritComponentTypeDTO.Info entityToDtoInfo(MeritComponentType entity);
+
+    List<MeritComponentTypeDTO.Info> entityToDtoInfoList(List<MeritComponentType> entities);
+
+    void update(@MappingTarget MeritComponentType entity, MeritComponentTypeDTO.Update dto);
 }

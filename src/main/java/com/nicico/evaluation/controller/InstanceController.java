@@ -1,7 +1,5 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
@@ -11,7 +9,6 @@ import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +34,6 @@ public class InstanceController {
     public ResponseEntity<InstanceDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
-
 
     /**
      * @param id is the instance id
@@ -71,7 +67,7 @@ public class InstanceController {
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> remove(@PathVariable @Min(1) Long id) {
+    public ResponseEntity<String> delete(@PathVariable @Min(1) Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

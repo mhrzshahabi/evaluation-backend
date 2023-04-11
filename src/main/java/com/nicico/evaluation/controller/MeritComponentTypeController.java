@@ -23,37 +23,57 @@ public class MeritComponentTypeController {
 
     private final IMeritComponentTypeService service;
 
+    /**
+     * @param id is the meritComponentType id
+     * @return MeritComponentTypeDTO.Info is the single meritComponentType entity
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<MeritComponentTypeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @return MeritComponentTypeDTO.SpecResponse that contain list of MeritComponentTypeDTO and the number of total entity
+     */
     @GetMapping(value = "/list")
     public ResponseEntity<MeritComponentTypeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
+    /**
+     * @param request is the model of input for create meritComponentType entity
+     * @return MeritComponentTypeDTO.Info is the saved meritComponentType entity
+     */
     @PostMapping
     public ResponseEntity<MeritComponentTypeDTO.Info> create(@Valid @RequestBody MeritComponentTypeDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
+    /**
+     * @param request is  the model of input for update meritComponentType entity
+     * @return MeritComponentTypeDTO.Info is the updated meritComponentType entity
+     */
     @PutMapping
     public ResponseEntity<MeritComponentTypeDTO.Info> update(@Valid @RequestBody MeritComponentTypeDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
+    /**
+     * @param id is the meritComponentType id for delete
+     * @return status code only
+     */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
+    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @param criteria is the key value pair for criteria
+     * @param criteria   is the key value pair for criteria
      * @return TotalResponse<MeritComponentTypeDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
@@ -71,4 +91,5 @@ public class MeritComponentTypeController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
 }

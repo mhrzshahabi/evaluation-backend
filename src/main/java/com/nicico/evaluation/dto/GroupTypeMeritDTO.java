@@ -5,51 +5,57 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class CatalogDTO implements Serializable {
+public abstract class GroupTypeMeritDTO {
 
-    private String title;
-    private String code;
+    private Long meritComponentId;
+    private Long groupTypeId;
+    private Long weight;
 
     @Getter
     @Setter
-    @Accessors(chain = true)
-    @ApiModel("CatalogInfo")
-    public static class Info extends CatalogDTO {
+    @ApiModel("GroupTypeMeritInfo")
+    public static class Info extends GroupTypeMeritDTO {
+
         private Long id;
-        private String description;
-        private Long catalogTypeId;
-        private CatalogTypeDTO catalogType;
+        private MeritComponentDTO.Info meritComponent;
+        private GroupTypeDTO.Info groupType;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CatalogCreateRq")
-    public static class Create extends CatalogDTO {
-        private String description;
-        private Long catalogTypeId;
+    @ApiModel("GroupTypeMeritCreateRq")
+    public static class Create extends GroupTypeMeritDTO {
+
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CatalogUpdateRq")
-    public static class Update {
+    @ApiModel("GroupTypeMeritUpdateRq")
+    public static class Update extends GroupTypeMeritDTO {
+
         private Long id;
-        private String title;
-        private String description;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CatalogSpecResponse")
+    @ApiModel("GroupTypeMeritDeleteRq")
+    public static class Delete extends GroupTypeMeritDTO {
+
+        private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupTypeMeritSpecResponse")
     public static class SpecResponse {
         private Response response;
     }
@@ -57,7 +63,7 @@ public class CatalogDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CatalogResponse")
+    @ApiModel("GroupTypeMeritResponse")
     public static class Response {
         private List<Info> data;
         private Integer status;
@@ -65,4 +71,5 @@ public class CatalogDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
 }

@@ -25,7 +25,7 @@ public class GroupGrade extends Auditable {
     @Column(name = "grade_id")
     private Long gradeId;
 
-    @Column(name = "grade_code")
+    @Column(name = "c_grade_code")
     private String gradeCode;
 
     @Setter(AccessLevel.NONE)
@@ -36,10 +36,7 @@ public class GroupGrade extends Auditable {
     @Column(name = "group_id")
     private Long groupId;
 
-    @Column(name = "c_title")
-    private String title;
-
-    @Column(name = "c_code")
-    private String code;
+    @Column(name = "c_grade_title")
+    private String gradeTitle;
 
 }

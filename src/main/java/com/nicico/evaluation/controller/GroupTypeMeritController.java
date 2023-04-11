@@ -2,8 +2,8 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.GroupTypeDTO;
-import com.nicico.evaluation.iservice.IGroupTypeService;
+import com.nicico.evaluation.dto.GroupTypeMeritDTO;
+import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -16,51 +16,52 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Api(value = "Group Type")
+@Api(value = "Group Type Merit")
 @RestController
-@RequestMapping(value = "/api/group-type")
-public class GroupTypeController {
+@RequestMapping(value = "/api/group-type-merit")
+public class GroupTypeMeritController {
 
-    private final IGroupTypeService service;
+    private final IGroupTypeMeritService service;
+
     /**
-     * @param id is the groupType id
-     * @return GroupTypeDTO.Info is the single groupType entity
+     * @param id is the groupTypeMerit id
+     * @return GroupTypeMeritDTO.Info is the single groupTypeMerit entity
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<GroupTypeDTO.Info> get(@PathVariable Long id) {
+    public ResponseEntity<GroupTypeMeritDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @return GroupTypeDTO.SpecResponse that contain list of GroupTypeDTO and the number of total entity
+     * @return GroupTypeMeritDTO.SpecResponse that contain list of GroupTypeMeritDTO and the number of total entity
      */
     @GetMapping(value = "/list")
-    public ResponseEntity<GroupTypeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+    public ResponseEntity<GroupTypeMeritDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
-     * @param request is the model of input for create groupType entity
-     * @return GroupTypeDTO.Info is the saved groupType entity
+     * @param request is the model of input for create groupTypeMerit entity
+     * @return GroupTypeMeritDTO.Info is the saved groupTypeMerit entity
      */
     @PostMapping
-    public ResponseEntity<GroupTypeDTO.Info> create(@Valid @RequestBody GroupTypeDTO.Create request) {
+    public ResponseEntity<GroupTypeMeritDTO.Info> create(@Valid @RequestBody GroupTypeMeritDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
-     * @param request is  the model of input for update groupType entity
-     * @return GroupTypeDTO.Info is the updated groupType entity
+     * @param request is  the model of input for update groupTypeMerit entity
+     * @return GroupTypeMeritDTO.Info is the updated groupTypeMerit entity
      */
     @PutMapping
-    public ResponseEntity<GroupTypeDTO.Info> update(@Valid @RequestBody GroupTypeDTO.Update request) {
+    public ResponseEntity<GroupTypeMeritDTO.Info> update(@Valid @RequestBody GroupTypeMeritDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
     /**
-     * @param id is the groupType id for delete
+     * @param id is the groupTypeMerit id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
@@ -73,16 +74,16 @@ public class GroupTypeController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<GroupTypeDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<GroupTypeMeritDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
-    public ResponseEntity<GroupTypeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+    public ResponseEntity<GroupTypeMeritDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                             @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupTypeDTO.Info> data = service.search(request);
-        final GroupTypeDTO.Response response = new GroupTypeDTO.Response();
-        final GroupTypeDTO.SpecResponse specRs = new GroupTypeDTO.SpecResponse();
+        SearchDTO.SearchRs<GroupTypeMeritDTO.Info> data = service.search(request);
+        final GroupTypeMeritDTO.Response response = new GroupTypeMeritDTO.Response();
+        final GroupTypeMeritDTO.SpecResponse specRs = new GroupTypeMeritDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())

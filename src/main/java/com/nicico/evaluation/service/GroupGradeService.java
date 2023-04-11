@@ -1,8 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GradeDTO;
@@ -68,13 +65,6 @@ public class GroupGradeService implements IGroupGradeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_GRADE')")
-    public TotalResponse<GroupGradeDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
-    }
-
-    @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
     public List<GroupGradeDTO.Info> createAll(List<GroupGradeDTO.Create> requests) {
@@ -108,8 +98,8 @@ public class GroupGradeService implements IGroupGradeService {
         grades.forEach(grade -> {
             GroupGradeDTO.Create createDto = new GroupGradeDTO.Create();
             createDto.setGradeId(grade.getId());
-            createDto.setCode(grade.getCode());
-            createDto.setTitle(grade.getTitle());
+            createDto.setGradeCode(grade.getCode());
+            createDto.setGradeTitle(grade.getTitle());
             createDto.setGroupId(dto.getGroupId());
 
             createAllDto.add(createDto);

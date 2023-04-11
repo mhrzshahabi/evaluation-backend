@@ -9,8 +9,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface GroupGradeMapper {
-        GroupGrade dtoCreateToEntity(GroupGradeDTO.Create dto);
-        GroupGradeDTO.Info entityToDtoInfo(GroupGrade entity);
-        List<GroupGradeDTO.Info> entityToDtoInfoList(List<GroupGrade> entities);
-        void update(@MappingTarget GroupGrade entity, GroupGradeDTO.Update dto);
+
+    GroupGrade dtoCreateToEntity(GroupGradeDTO.Create dto);
+
+    GroupGradeDTO.Info entityToDtoInfo(GroupGrade entity);
+
+    List<GroupGradeDTO.Info> entityToDtoInfoList(List<GroupGrade> entities);
+
+    void update(@MappingTarget GroupGrade entity, GroupGradeDTO.Update dto);
 }

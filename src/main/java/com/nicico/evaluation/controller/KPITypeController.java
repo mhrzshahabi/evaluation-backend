@@ -23,29 +23,49 @@ public class KPITypeController {
 
     private final IKPITypeService service;
 
-
+    /**
+     * @param id is the kPIType id
+     * @return KPITypeDTO.Info is the single kPIType entity
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @return KPITypeDTO.SpecResponse that contain list of KPITypeDTO and the number of total entity
+     */
     @GetMapping(value = "/list")
     public ResponseEntity<KPITypeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
+    /**
+     * @param request is the model of input for create kPIType entity
+     * @return KPITypeDTO.Info is the saved kPIType entity
+     */
     @PostMapping
     public ResponseEntity<KPITypeDTO.Info> create(@Valid @RequestBody KPITypeDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
+    /**
+     * @param request is  the model of input for update kPIType entity
+     * @return KPITypeDTO.Info is the updated kPIType entity
+     */
     @PutMapping
     public ResponseEntity<KPITypeDTO.Info> update(@Valid @RequestBody KPITypeDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
+    /**
+     * @param id is the kPIType id for delete
+     * @return status code only
+     */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
+    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -53,7 +73,7 @@ public class KPITypeController {
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @param criteria is the key value pair for criteria
+     * @param criteria   is the key value pair for criteria
      * @return TotalResponse<KPITypeDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
@@ -71,4 +91,5 @@ public class KPITypeController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
 }

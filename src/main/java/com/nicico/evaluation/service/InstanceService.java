@@ -1,8 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.InstanceDTO;
@@ -61,13 +58,6 @@ public class InstanceService implements IInstanceService {
     public InstanceDTO.Info get(Long id) {
         Instance instance = repository.findById(id).orElseThrow(() -> applicationException.createApplicationException(NOT_FOUND, HttpStatus.NOT_FOUND));
         return mapper.entityToDtoInfo(instance);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_INSTANCE')")
-    public TotalResponse<InstanceDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override

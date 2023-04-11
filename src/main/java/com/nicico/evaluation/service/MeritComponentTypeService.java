@@ -1,8 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
@@ -62,13 +59,6 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
             specResponse.setResponse(response);
         }
         return specResponse;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
-    public TotalResponse<MeritComponentTypeDTO.Info> search(NICICOCriteria request) {
-        return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
     }
 
     @Override
