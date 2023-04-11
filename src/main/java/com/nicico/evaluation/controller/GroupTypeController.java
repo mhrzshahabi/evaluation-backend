@@ -1,7 +1,5 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
@@ -11,7 +9,6 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,27 +22,47 @@ import java.util.List;
 public class GroupTypeController {
 
     private final IGroupTypeService service;
-
+    /**
+     * @param id is the instance id
+     * @return GroupTypeDTO.Info is the single instance entity
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupTypeDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @return GroupTypeDTO.SpecResponse that contain list of GroupTypeDTO and the number of total entity
+     */
     @GetMapping(value = "/list")
     public ResponseEntity<GroupTypeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
+    /**
+     * @param request is the model of input for create instance entity
+     * @return GroupTypeDTO.Info is the saved instance entity
+     */
     @PostMapping
     public ResponseEntity<GroupTypeDTO.Info> create(@Valid @RequestBody GroupTypeDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
+    /**
+     * @param request is  the model of input for update instance entity
+     * @return GroupTypeDTO.Info is the updated instance entity
+     */
     @PutMapping
     public ResponseEntity<GroupTypeDTO.Info> update(@Valid @RequestBody GroupTypeDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
+    /**
+     * @param id is the instance id for delete
+     * @return status code only
+     */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> remove(@Validated @PathVariable Long id) {
         service.delete(id);
@@ -56,7 +73,7 @@ public class GroupTypeController {
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @param criteria is the key value pair for criteria
+     * @param criteria   is the key value pair for criteria
      * @return TotalResponse<GroupTypeDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")

@@ -115,6 +115,22 @@
     {
       "code": "D_INSTANCE",
       "title": "حذف مصداق"
+    },
+    {
+      "code": "R_GROUP_TYPE_MERIT",
+      "title": "نمایش گروه - نوع - مولفه شایستگی"
+    },
+    {
+      "code": "C_GROUP_TYPE_MERIT",
+      "title": "ایجاد گروه - نوع - مولفه شایستگی"
+    },
+    {
+      "code": "U_GROUP_TYPE_MERIT",
+      "title": "ویرایش گروه - نوع - مولفه شایستگی"
+    },
+    {
+      "code": "D_GROUP_TYPE_MERIT",
+      "title": "حذف گروه - نوع - مولفه شایستگی"
     }
   ]
 }
