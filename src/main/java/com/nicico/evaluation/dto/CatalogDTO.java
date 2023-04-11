@@ -24,6 +24,7 @@ public class CatalogDTO implements Serializable {
         private Long id;
         private String description;
         private Long catalogTypeId;
+        private CatalogTypeDTO catalogType;
     }
 
     @Getter
