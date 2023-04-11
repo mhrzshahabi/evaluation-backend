@@ -79,7 +79,7 @@ public class GroupTypeMeritController {
      * @return TotalResponse<GroupTypeMeritDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
-    public ResponseEntity<GroupTypeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+    public ResponseEntity<GroupTypeMeritDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                             @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
