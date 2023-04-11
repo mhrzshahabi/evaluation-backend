@@ -21,10 +21,9 @@ public abstract class GroupGradeDTO {
     public static class Info extends GroupGradeDTO {
 
         private Long id;
-        private String code;
-        private String title;
+        private String gradeCode;
+        private String gradeTitle;
         private GroupDTO.Info group;
-        private GradeDTO.Info grade;
     }
 
     @Getter
@@ -44,9 +43,9 @@ public abstract class GroupGradeDTO {
     public static class Create extends GroupGradeDTO {
 
         @NotNull
-        private String code;
+        private String gradeCode;
         @NotNull
-        private String title;
+        private String gradeTitle;
         @NotNull
         private Long gradeId;
     }

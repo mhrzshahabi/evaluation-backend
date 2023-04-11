@@ -98,8 +98,8 @@ public class GroupGradeService implements IGroupGradeService {
         grades.forEach(grade -> {
             GroupGradeDTO.Create createDto = new GroupGradeDTO.Create();
             createDto.setGradeId(grade.getId());
-            createDto.setCode(grade.getCode());
-            createDto.setTitle(grade.getTitle());
+            createDto.setGradeCode(grade.getCode());
+            createDto.setGradeTitle(grade.getTitle());
             createDto.setGroupId(dto.getGroupId());
 
             createAllDto.add(createDto);

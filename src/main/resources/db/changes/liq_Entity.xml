@@ -248,4 +248,14 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="semami" id="1681190989">
+        <renameColumn
+                newColumnName="c_grade_title"
+                oldColumnName="c_title"
+                tableName="tbl_group_grade"/>
+        <dropColumn tableName="tbl_group_grade" columnName="c_code"/>
+    </changeSet>
+    <changeSet author="semami" id="1681191565">
+        <renameColumn newColumnName="c_grade_code" oldColumnName="grade_code" tableName="tbl_group_grade"/>
+    </changeSet>
 </databaseChangeLog>
