@@ -13,11 +13,4 @@ import java.util.List;
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long>, JpaSpecificationExecutor<Grade> {
     List<Grade> getAllByCodeIn(List<String> codes);
-
-    @Query(value = """
-            SELECT
-                * FROM
-                view_unused_grade
-            """, nativeQuery = true)
-    Page<Grade> findAllGradeWithoutGroup(Pageable pageable);
 }
