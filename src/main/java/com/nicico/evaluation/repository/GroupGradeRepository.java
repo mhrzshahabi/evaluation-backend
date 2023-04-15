@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface GroupGradeRepository extends JpaRepository<GroupGrade, Long>, JpaSpecificationExecutor<GroupGrade> {
     List<GroupGrade> findAllByGradeIdIn(List<Long> gradeIds);
     List<GroupGrade> findAllByGroupId(Long gradeId);
-    Optional<GroupGrade> findFirstByGradeCodeAndGradeId(String gradeCode,Long GradeId);
+    Optional<GroupGrade> findFirstByGradeCode(String gradeCode);
 }
