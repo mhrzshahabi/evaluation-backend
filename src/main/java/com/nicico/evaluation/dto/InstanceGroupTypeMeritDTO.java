@@ -1,6 +1,7 @@
 package com.nicico.evaluation.dto;
 
 import io.swagger.annotations.ApiModel;
+import liquibase.pro.packaged.S;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -21,8 +22,8 @@ public abstract class InstanceGroupTypeMeritDTO {
     public static class Info extends InstanceGroupTypeMeritDTO {
 
         private Long id;
-        private GroupTypeMeritDTO.Info groupTypeMerit;
-        private InstanceDTO.Info instance;
+        private GroupTypeMeritTupleDTO groupTypeMerit;
+        private InstanceTupleDTO instance;
     }
 
     @Getter
@@ -49,6 +50,42 @@ public abstract class InstanceGroupTypeMeritDTO {
     public static class Delete extends InstanceGroupTypeMeritDTO {
 
         private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupTypeMeritDTORq")
+    public static class GroupTypeMeritTupleDTO {
+
+        private Long weight;
+        private MeritComponentTupleDTO meritComponent;
+        private GroupTypeTupleDTO groupType;
+    }
+
+    @Getter
+    @Setter
+    public static class MeritComponentTupleDTO {
+
+        private String title;
+    }
+
+    @Getter
+    @Setter
+    public static class GroupTypeTupleDTO {
+
+        private String title;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("InstanceInfo")
+    public static class InstanceTupleDTO {
+
+        private String title;
+        private Boolean hasInstance;
+
     }
 
     @Getter
