@@ -13,7 +13,7 @@ public class EvaluationHandleException extends NICICOException implements Handle
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    private String msg;
+    private String message;
 
     public EvaluationHandleException(IErrorCode errorCode) {
         super(errorCode);
@@ -29,10 +29,10 @@ public class EvaluationHandleException extends NICICOException implements Handle
         super(errorCode, field);
     }
 
-    public EvaluationHandleException(ErrorType errorCode, String field, String msg) {
+    public EvaluationHandleException(ErrorType errorCode, String field, String message) {
 
         super(errorCode, field);
-        setMsg(msg);
+        setMessage(message);
     }
 
     @Getter
