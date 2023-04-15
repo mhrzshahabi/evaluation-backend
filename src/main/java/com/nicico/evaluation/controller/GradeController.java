@@ -31,11 +31,6 @@ public class GradeController {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/unusedList")
-    public ResponseEntity<GradeDTO.SpecResponse> listOfGradeWithoutGroup(@RequestParam int count, @RequestParam int startIndex) {
-        return new ResponseEntity<>(service.listOfGradeWithoutGroup(count, startIndex), HttpStatus.OK);
-    }
-
 
     /**
      * @param count      is the number of entity to every page
@@ -49,6 +44,30 @@ public class GradeController {
                                                         @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<GradeDTO.Info> data = service.search(request);
+        final GradeDTO.Response response = new GradeDTO.Response();
+        final GradeDTO.SpecResponse specRs = new GradeDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria is the key value pair for criteria
+     * @return TotalResponse<GradeDTO.Info> is the list of groupInfo entity that match the criteria
+     */
+    @PostMapping(value = "unused/spec-list")
+    public ResponseEntity<GradeDTO.SpecResponse> searchWithoutGroup(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                        @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                        @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<GradeDTO.Info> data = service.searchWithoutGroup(request);
         final GradeDTO.Response response = new GradeDTO.Response();
         final GradeDTO.SpecResponse specRs = new GradeDTO.SpecResponse();
         response.setData(data.getList())

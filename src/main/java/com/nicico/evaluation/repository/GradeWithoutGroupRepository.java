@@ -1,9 +1,11 @@
 package com.nicico.evaluation.repository;
 
-import com.nicico.evaluation.model.MeritComponentType;
+import com.nicico.evaluation.model.GradeWithoutGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MeritComponentTypeRepository extends JpaRepository<MeritComponentType, Long>, JpaSpecificationExecutor<MeritComponentType> {}
+public interface GradeWithoutGroupRepository extends JpaRepository<GradeWithoutGroup, Long>, JpaSpecificationExecutor<GradeWithoutGroup> {
+
+}

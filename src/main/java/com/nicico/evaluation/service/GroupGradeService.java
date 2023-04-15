@@ -12,6 +12,8 @@ import com.nicico.evaluation.model.Grade;
 import com.nicico.evaluation.model.GroupGrade;
 import com.nicico.evaluation.repository.GroupGradeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,6 +33,7 @@ public class GroupGradeService implements IGroupGradeService {
     private final IGradeService gradeService;
     private final PageableMapper pageableMapper;
     private final GroupGradeRepository repository;
+    private final ResourceBundleMessageSource messageSource;
 
     @Override
     @Transactional(readOnly = true)
@@ -85,10 +89,10 @@ public class GroupGradeService implements IGroupGradeService {
     @PreAuthorize("hasAuthority('C_GROUP_GRADE')")
     public List<GroupGradeDTO.Info> createGroupGrade(GroupGradeDTO.CreateAll dto) {
         List<GradeDTO.Info> grades = gradeService.getAllByCodeIn(dto.getGradeCodes());
-
+        final Locale locale = LocaleContextHolder.getLocale();
         Boolean validation = createValidation(grades);
         if (Boolean.FALSE.equals(validation))
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.GradeIsInAnotherGroup);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.GradeIsInAnotherGroup, null, messageSource.getMessage("exception.grade.is.in.another.group", null, locale));
 
         List<GroupGradeDTO.Create> createAllDto = new ArrayList<>();
         grades.forEach(grade -> {

@@ -8,6 +8,7 @@ import com.nicico.evaluation.iservice.IGradeService;
 import com.nicico.evaluation.mapper.GradeMapper;
 import com.nicico.evaluation.model.Grade;
 import com.nicico.evaluation.repository.GradeRepository;
+import com.nicico.evaluation.repository.GradeWithoutGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ public class GradeService implements IGradeService {
 
     private final GradeMapper mapper;
     private final GradeRepository repository;
+    private final GradeWithoutGroupRepository gradeWithoutGroupRepository;
     private final PageableMapper pageableMapper;
 
     @Override
@@ -71,20 +73,9 @@ public class GradeService implements IGradeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GRADE')")
-    public GradeDTO.SpecResponse listOfGradeWithoutGroup(int count, int startIndex) {
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        Page<Grade> grades = repository.findAllGradeWithoutGroup(pageable);
-        List<GradeDTO.Info> gradeInfos = mapper.entityToDtoInfoList(grades.getContent());
-        GradeDTO.Response response = new GradeDTO.Response();
-        GradeDTO.SpecResponse specResponse = new GradeDTO.SpecResponse();
-        if (gradeInfos != null) {
-            response.setData(gradeInfos)
-                    .setStartRow(startIndex)
-                    .setEndRow(startIndex + count)
-                    .setTotalRows((int) grades.getTotalElements());
-            specResponse.setResponse(response);
-        }
-        return specResponse;
+    public SearchDTO.SearchRs<GradeDTO.Info> searchWithoutGroup(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(gradeWithoutGroupRepository, mapper::entityToDtoInfo, request);
     }
+
 
 }
