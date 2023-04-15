@@ -1,6 +1,5 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.FilterDTO;
@@ -24,35 +23,56 @@ public class CatalogController {
 
     private final ICatalogService service;
 
+    /**
+     * @param id is the Catalog id
+     * @return CatalogDTO.Info is the single kPIType entity
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<CatalogDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(service.getById(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
-    @Loggable
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @return CatalogDTO.SpecResponse that contain list of CatalogDTO and the number of total entity
+     */
     @GetMapping(value = "/list")
     public ResponseEntity<CatalogDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
-    @Loggable
+    /**
+     * @param create is the model of input for create catalog entity
+     * @return CatalogDTO.Info is the saved catalog entity
+     */
     @PostMapping
     public ResponseEntity<CatalogDTO.Info> create(@RequestBody CatalogDTO.Create create) {
         return new ResponseEntity<>(service.create(create), HttpStatus.OK);
     }
 
+    /**
+     * @param request is the model of input for update catalog entity
+     * @return CatalogDTO.Info is the updated catalog entity
+     */
     @PutMapping
     public ResponseEntity<CatalogDTO.Info> update(@Valid @RequestBody CatalogDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
-    @Loggable
+    /**
+     * @param id is the catalog id for delete
+     * @return status code only
+     */
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * @return list of CatalogDTO.SpecResponse with catalogType code equals LEVEL_DEF
+     */
     @GetMapping(value = "/level-def-list")
     public ResponseEntity<CatalogDTO.SpecResponse> levelDefList() {
         return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
@@ -62,7 +82,7 @@ public class CatalogController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria is the key value pair for criteria
-     * @return TotalResponse<CatalogDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<CatalogDTO.Info> is the list of catalogInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<CatalogDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,

@@ -30,7 +30,7 @@ public class CatalogTypeService implements ICatalogTypeService {
 
     @Override
     @Transactional(readOnly = true)
-    public CatalogTypeDTO.Info getById(Long id) {
+    public CatalogTypeDTO.Info get(Long id) {
         Optional<CatalogType> optionalCatalogType = repository.findById(id);
         return mapper.entityToDtoInfo(optionalCatalogType.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
     }

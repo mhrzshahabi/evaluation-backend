@@ -90,7 +90,7 @@ public class InstanceGroupTypeMeritController {
                 .setEndRow(startIndex + data.getList().size())
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

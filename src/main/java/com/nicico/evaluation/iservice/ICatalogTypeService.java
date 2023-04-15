@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public interface ICatalogTypeService {
 
-    CatalogTypeDTO.Info getById(Long id);
+    CatalogTypeDTO.Info get(Long id);
 
     CatalogTypeDTO.Info getByCode(String code);
 

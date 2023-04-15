@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public interface ICatalogService {
 
-    CatalogDTO.Info getById(Long id);
+    CatalogDTO.Info get(Long id);
 
     CatalogDTO.SpecResponse list(@RequestParam int count, @RequestParam int startIndex);
 

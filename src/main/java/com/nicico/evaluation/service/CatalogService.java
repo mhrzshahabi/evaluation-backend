@@ -31,7 +31,7 @@ public class CatalogService implements ICatalogService {
 
     @Transactional(readOnly = true)
     @Override
-    public CatalogDTO.Info getById(Long id) {
+    public CatalogDTO.Info get(Long id) {
         Optional<Catalog> optionalCatalog = repository.findById(id);
         return mapper.entityToDtoInfo(optionalCatalog.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
     }

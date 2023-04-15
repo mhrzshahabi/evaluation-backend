@@ -38,8 +38,8 @@ public class GroupController {
     }
 
     /**
-     * @param id is the gorup id
-     * @return GroupDTO.Info  is the single gorup entity
+     * @param id is the group id
+     * @return GroupDTO.Info  is the single group entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<GroupDTO.Info> get(@PathVariable Long id) {
