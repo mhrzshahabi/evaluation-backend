@@ -143,7 +143,7 @@ public class GroupGradeService implements IGroupGradeService {
 
     @Override
     public GroupGradeDTO.Info getGroupGradeByGrade(Grade grade) {
-        Optional<GroupGrade> optionalGroupGrade = repository.findFirstByGradeCodeAndGradeId(grade.getCode(),grade.getId());
+        Optional<GroupGrade> optionalGroupGrade = repository.findFirstByGradeCode(grade.getCode());
         return optionalGroupGrade.map(mapper::entityToDtoInfo).orElse(null);
 
     }
