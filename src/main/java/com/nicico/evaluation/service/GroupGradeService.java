@@ -92,7 +92,7 @@ public class GroupGradeService implements IGroupGradeService {
         final Locale locale = LocaleContextHolder.getLocale();
         Boolean validation = createValidation(grades);
         if (Boolean.FALSE.equals(validation))
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.GradeIsInAnotherGroup, null, messageSource.getMessage("grade_is_in_another_group", null, locale));
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.GradeIsInAnotherGroup, null, messageSource.getMessage("exception.grade.is.in.another.group", null, locale));
 
         List<GroupGradeDTO.Create> createAllDto = new ArrayList<>();
         grades.forEach(grade -> {
