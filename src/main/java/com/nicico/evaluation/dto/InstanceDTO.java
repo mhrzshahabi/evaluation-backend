@@ -21,13 +21,13 @@ public class InstanceDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("InstanceCreateRq")
-    public static class Create extends InstanceDTO{
+    public static class Create extends InstanceDTO {
     }
 
     @Getter
     @Setter
     @ApiModel("InstanceInfo")
-    public static class Info extends InstanceDTO{
+    public static class Info extends InstanceDTO {
         private Long id;
     }
 
