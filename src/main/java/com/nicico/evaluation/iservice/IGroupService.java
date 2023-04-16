@@ -2,6 +2,9 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupDTO;
+import com.nicico.evaluation.dto.GroupGradeDTO;
+
+import java.util.List;
 
 public interface IGroupService {
 
@@ -9,7 +12,7 @@ public interface IGroupService {
 
     GroupDTO.Info get(Long id);
 
-    GroupDTO.Info create(GroupDTO.Create dto);
+    List<GroupGradeDTO.Info> create(GroupDTO.Create dto);
 
     GroupDTO.Info update(GroupDTO.Update dto);
 

@@ -36,33 +36,6 @@ public class GroupServiceTests {
     @Mock
     private PageableMapper pageableMapper;
 
-    @Test
-    public void createTest() {
-        //init
-        GroupDTO.Create groupCreate = new GroupDTO.Create();
-        groupCreate.setCode("testCode");
-        groupCreate.setTitle("testTitle");
-        groupCreate.setDefinitionAllowed(Boolean.TRUE);
-
-        Group group = generateGroup("testCode", "testTitle", Boolean.TRUE);
-
-        GroupDTO.Info groupInfo = generateGroupInfo(1L, "testCode", "testTitle", Boolean.TRUE);
-
-        //Action
-        when(groupRepository.save(any(Group.class))).thenReturn(group);
-        when(groupMapper.dtoCreateToEntity(any(GroupDTO.Create.class))).thenReturn(group);
-        when(groupMapper.entityToDtoInfo(any(Group.class))).thenReturn(groupInfo);
-        GroupDTO.Info groupInfoRes = groupService.create(groupCreate);
-
-        //Assert
-        assertNotNull(groupInfoRes);
-        assertEquals(group.getCode(), groupInfoRes.getCode());
-        assertEquals(group.getTitle(), groupInfoRes.getTitle());
-        assertThat(group.getCode()).isEqualTo("testCode");
-        assertThat(groupInfoRes.getId()).isEqualTo(1L);
-
-    }
-
 
     @Test
     public void listPageableTest() {

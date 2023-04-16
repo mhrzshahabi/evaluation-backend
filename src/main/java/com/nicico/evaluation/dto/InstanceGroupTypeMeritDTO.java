@@ -1,7 +1,6 @@
 package com.nicico.evaluation.dto;
 
 import io.swagger.annotations.ApiModel;
-import liquibase.pro.packaged.S;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -81,11 +80,17 @@ public abstract class InstanceGroupTypeMeritDTO {
     @Getter
     @Setter
     @ApiModel("InstanceInfo")
+    public static class InstanceInfo {
+
+        private InstanceTupleDTO instance;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("InstanceTupleInfo")
     public static class InstanceTupleDTO {
 
         private String title;
-        private Boolean hasInstance;
-
     }
 
     @Getter

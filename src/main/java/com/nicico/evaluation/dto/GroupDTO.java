@@ -18,6 +18,8 @@ public class GroupDTO {
     private String code;
     private String title;
     private Boolean definitionAllowed;
+    @NotNull
+    private List<String> gradeCodes;
 
     @Getter
     @Setter

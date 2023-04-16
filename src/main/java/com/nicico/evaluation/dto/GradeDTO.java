@@ -19,6 +19,7 @@ public abstract class GradeDTO {
     @Setter
     @ApiModel("GradeInfo")
     public static class Info extends GradeDTO {
+        private Long groupId;
         private GroupDTO group;
     }
 
