@@ -3,6 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupDTO;
+import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -55,7 +56,7 @@ public class GroupController {
      * @return GroupDTOInfo is the saved group entity
      */
     @PostMapping
-    public ResponseEntity<GroupDTO.Info> create(@Valid @RequestBody GroupDTO.Create request) {
+    public ResponseEntity<List<GroupGradeDTO.Info>> create(@Valid @RequestBody GroupDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 

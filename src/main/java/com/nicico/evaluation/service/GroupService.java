@@ -3,7 +3,10 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
+import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IGradeService;
+import com.nicico.evaluation.iservice.IGroupGradeService;
 import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.mapper.GroupMapper;
 import com.nicico.evaluation.model.Group;
@@ -25,6 +28,8 @@ public class GroupService implements IGroupService {
     private final GroupMapper mapper;
     private final GroupRepository repository;
     private final PageableMapper pageableMapper;
+    private final IGroupGradeService gradeService;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -58,10 +63,14 @@ public class GroupService implements IGroupService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_GROUP')")
-    public GroupDTO.Info create(GroupDTO.Create dto) {
+    public List<GroupGradeDTO.Info> create(GroupDTO.Create dto) {
         Group group = mapper.dtoCreateToEntity(dto);
         group = repository.save(group);
-        return mapper.entityToDtoInfo(group);
+        GroupDTO.Info groupDTO= mapper.entityToDtoInfo(group);
+        GroupGradeDTO.CreateAll createDto=new GroupGradeDTO.CreateAll();
+        createDto.setGroupId(groupDTO.getId());
+        createDto.setGradeCodes(dto.getGradeCodes());
+       return gradeService.createGroupGrade(createDto);
     }
 
     @Override
