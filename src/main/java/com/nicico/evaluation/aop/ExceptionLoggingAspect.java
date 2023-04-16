@@ -7,12 +7,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-@Aspect
-@Component
 @Slf4j
+@Component
+@Aspect
 public class ExceptionLoggingAspect {
 
-    @Pointcut("within(com.nicico..*) && execution(* *(..))")
+    @Pointcut("within(com.nicico.evaluation..*) && execution(* *(..))")
     public void matchAllMethods(){}
 
     @AfterThrowing(pointcut = "matchAllMethods()", throwing = "ex")
