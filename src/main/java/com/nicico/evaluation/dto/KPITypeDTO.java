@@ -1,5 +1,6 @@
 package com.nicico.evaluation.dto;
 
+import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +13,11 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class KPITypeDTO {
 
+    @NotNull
     private String code;
+    @NotNull
     private String title;
+    @NotNull
     private Long levelDefCatalogId;
 
     @Getter

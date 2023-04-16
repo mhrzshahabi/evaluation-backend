@@ -87,5 +87,10 @@
             <column name="c_code" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="semami" id="1681644442">
+        <addNotNullConstraint tableName="tbl_kpi_type" columnName="c_code"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_kpi_type" columnName="c_title"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_kpi_type" columnName="level_def_id"></addNotNullConstraint>
+    </changeSet>
 
 </databaseChangeLog>
