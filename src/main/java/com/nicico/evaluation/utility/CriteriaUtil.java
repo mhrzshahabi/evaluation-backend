@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,7 +45,12 @@ public class CriteriaUtil {
         SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         criteriaRq.setOperator(operator);
         criteriaRq.setFieldName(fieldName);
-        criteriaRq.setValue(value);
+        if (value != null && value.equals("true"))
+            criteriaRq.setValue(1);
+        else if (value != null && value.equals("false"))
+            criteriaRq.setValue(0);
+        else
+            criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
     }
