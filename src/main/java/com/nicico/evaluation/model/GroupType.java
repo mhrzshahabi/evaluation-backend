@@ -6,6 +6,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Getter
 @Setter
@@ -26,15 +28,15 @@ public class GroupType extends Auditable {
     @NotNull
     @Column(name = "c_code")
     private String code;
-    
+
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kpi_type_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_group_type_to_type"))
     private KPIType kpiType;
 
     @Column(name = "kpi_type_id")
-    private Long kpiTypeId;   
-     
+    private Long kpiTypeId;
+
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_group_type_to_group"))
@@ -43,6 +45,8 @@ public class GroupType extends Auditable {
     @Column(name = "group_id")
     private Long groupId;
 
+    @Min(0)
+    @Max(100)
     @NotNull
     @Column(name = "n_weight")
     private Long weight;

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Getter
@@ -12,6 +14,8 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class GroupTypeDTO {
 
+    @Min(0)
+    @Max(100)
     private Long weight;
     private Long kpiTypeId;
     private Long groupId;
