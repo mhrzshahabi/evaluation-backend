@@ -15,7 +15,7 @@ public class ExceptionLoggingAspect {
     @Pointcut("within(com.nicico..*) && execution(* *(..))")
     public void matchAllMethods(){}
 
-    @AfterThrowing(pointcut = "logPointcut()", throwing = "ex")
+    @AfterThrowing(pointcut = "matchAllMethods()", throwing = "ex")
     public void afterThrowing(JoinPoint joinPoint, Exception ex) {
         log.info(joinPoint.getSignature() + " --> " + String.format("Exception name: %s __ Exception message: %s", ex.getClass().getName(), ex.getMessage() ) );
     }
