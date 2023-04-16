@@ -33,6 +33,15 @@ public class InstanceGroupTypeMeritController {
     }
 
     /**
+     * @param id is the groupTypeMerit id
+     * @return InstanceGroupTypeMeritDTO.InstanceInfo is the list of instances entity
+     */
+    @GetMapping(value = "/instances/{id}")
+    public ResponseEntity<List<InstanceGroupTypeMeritDTO.InstanceInfo>> getAllInstanceByGroupTypeMeritId(@PathVariable Long id) {
+        return new ResponseEntity<>(service.getAllInstanceByGroupTypeMeritId(id), HttpStatus.OK);
+    }
+
+    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @return InstanceGroupTypeMeritDTO.SpecResponse that contain list of InstanceGroupTypeMeritDTO and the number of total entity
@@ -79,8 +88,8 @@ public class InstanceGroupTypeMeritController {
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<InstanceGroupTypeMeritDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                            @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                            @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                                         @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                         @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<InstanceGroupTypeMeritDTO.Info> data = service.search(request);
         final InstanceGroupTypeMeritDTO.Response response = new InstanceGroupTypeMeritDTO.Response();
