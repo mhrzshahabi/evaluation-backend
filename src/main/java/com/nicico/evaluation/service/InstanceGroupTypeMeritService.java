@@ -35,6 +35,13 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
         InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(instanceGroupTypeMerit);
     }
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_INSTANCE_GROUP_TYPE_MERIT')")
+    public List<InstanceGroupTypeMeritDTO.InstanceInfo> getAllInstanceByGroupTypeMeritId(Long id) {
+        List<InstanceGroupTypeMerit> allByGroupTypeMeritId = repository.getAllByGroupTypeMeritId(id);
+        return mapper.entityToDtoInstanceList(allByGroupTypeMeritId);
+    }
 
     @Override
     @Transactional(readOnly = true)
