@@ -22,7 +22,7 @@ public abstract class KPITypeDTO {
     public static class Info extends KPITypeDTO {
 
         private Long id;
-        CatalogDTO.Info levelDefCatalog;
+        private CatalogDTO.Info levelDefCatalog;
     }
 
     @Getter

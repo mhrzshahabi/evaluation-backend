@@ -31,7 +31,6 @@ public class GradeController {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
-
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
@@ -53,8 +52,6 @@ public class GradeController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-
-
 
     /**
      * @param count      is the number of entity to every page
