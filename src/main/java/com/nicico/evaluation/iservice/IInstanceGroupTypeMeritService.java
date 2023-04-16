@@ -5,9 +5,13 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 
+import java.util.List;
+
 public interface IInstanceGroupTypeMeritService {
 
     InstanceGroupTypeMeritDTO.Info get(Long id);
+
+    List<InstanceGroupTypeMeritDTO.InstanceInfo> getAllInstanceByGroupTypeMeritId(Long id);
 
     InstanceGroupTypeMeritDTO.SpecResponse list(int count, int startIndex);
 

@@ -16,5 +16,7 @@ public interface InstanceGroupTypeMeritMapper {
 
     List<InstanceGroupTypeMeritDTO.Info> entityToDtoInfoList(List<InstanceGroupTypeMerit> entities);
 
+    List<InstanceGroupTypeMeritDTO.InstanceInfo> entityToDtoInstanceList(List<InstanceGroupTypeMerit> entities);
+
     void update(@MappingTarget InstanceGroupTypeMerit entity, InstanceGroupTypeMeritDTO.Update dto);
 }
