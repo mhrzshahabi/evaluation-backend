@@ -22,18 +22,18 @@ public class GroupTypeMapperTests {
     @Test
     public void dtoCreateToEntityTest() {
         //init
-        GroupTypeDTO.Create kpiTypeCreate = new GroupTypeDTO.Create();
-        kpiTypeCreate.setGroupId(1L).setCode("testCode1").setKpiTypeId(1L).setWeight(10L);
-        GroupType kpiType = generateGroupType(null, 1L, 1L, 10L);
+        GroupTypeDTO.Create groupTypeCreate = new GroupTypeDTO.Create();
+        groupTypeCreate.setGroupId(1L).setCode("testCode1").setKpiTypeId(1L).setWeight(10L);
+        GroupType groupType = generateGroupType(null, 1L, 1L, 10L);
         //act
-        GroupType kpiTypeRes = groupTypeMapper.dtoCreateToEntity(kpiTypeCreate);
+        GroupType groupTypeRes = groupTypeMapper.dtoCreateToEntity(groupTypeCreate);
         //assert
-        assertNotNull(kpiTypeRes);
-        assertNull(kpiTypeRes.getId());
-        assertEquals(kpiTypeRes.getCode(), kpiTypeCreate.getCode());
-        assertEquals(kpiTypeRes.getGroupId(), kpiTypeCreate.getGroupId());
-        assertEquals(kpiTypeRes.getKpiTypeId(), kpiTypeCreate.getKpiTypeId());
-        assertEquals(kpiTypeRes.getWeight(), kpiTypeCreate.getWeight());
+        assertNotNull(groupTypeRes);
+        assertNull(groupTypeRes.getId());
+        assertEquals(groupTypeRes.getCode(), groupTypeCreate.getCode());
+        assertEquals(groupTypeRes.getGroupId(), groupTypeCreate.getGroupId());
+        assertEquals(groupTypeRes.getKpiTypeId(), groupTypeCreate.getKpiTypeId());
+        assertEquals(groupTypeRes.getWeight(), groupTypeCreate.getWeight());
     }
 
     @Test

@@ -55,7 +55,7 @@ public class KPITypeServiceTests {
     public void listPageableTest() {
         //init
         List<KPIType> kpiTypes = generateKPITypeList();
-        List<KPITypeDTO.Info> kpiTypeInfoList = generatekpiTypeInfoList();
+        List<KPITypeDTO.Info> kpiTypeInfoList = generateKpiTypeInfoList();
         Page<KPIType> pageKpiType = new PageImpl<>(kpiTypes);
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
         //Act
@@ -207,7 +207,7 @@ public class KPITypeServiceTests {
         return kpiTypeInfo;
     }
 
-    private List<KPITypeDTO.Info> generatekpiTypeInfoList() {
+    private List<KPITypeDTO.Info> generateKpiTypeInfoList() {
         return Arrays.asList(
                 generateKpiTypeInfo(1L, "testCode1", "testTitle1", 1L),
                 generateKpiTypeInfo(2L, "testCode2", "testTitle2", 1L)
