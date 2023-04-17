@@ -87,5 +87,24 @@
             <column name="c_code" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="semami" id="1681644442">
+        <addNotNullConstraint tableName="tbl_kpi_type" columnName="c_code"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_kpi_type" columnName="c_title"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_kpi_type" columnName="level_def_id"></addNotNullConstraint>
+    </changeSet>
+    <changeSet author="semami" id="1681645525">
+        <addNotNullConstraint tableName="tbl_group_type" columnName="kpi_type_id"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_group_type" columnName="group_id"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_group_type" columnName="n_weight"></addNotNullConstraint>
+    </changeSet>
+    <changeSet author="semami" id="1681645947">
+        <addNotNullConstraint tableName="tbl_group" columnName="c_code"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_group" columnName="c_title"></addNotNullConstraint>
+    </changeSet>
+    <changeSet author="semami" id="1681646472">
+        <addNotNullConstraint tableName="tbl_group_grade" columnName="c_grade_code"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_group_grade" columnName="c_grade_title"></addNotNullConstraint>
+        <addNotNullConstraint tableName="tbl_group_grade" columnName="group_id"></addNotNullConstraint>
+    </changeSet>
 
 </databaseChangeLog>

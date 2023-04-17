@@ -27,14 +27,16 @@ public class KPIType extends Auditable {
     @Column(name = "c_code")
     private String code;
 
+    @NotNull
     @Column(name = "c_title")
     private String title;
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "level_def_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_type_to_catalog"))
+    @JoinColumn(name = "level_def_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_type_to_catalog"))
     private Catalog levelDefCatalog;
 
+    @NotNull
     @Column(name = "level_def_id")
     private Long levelDefCatalogId;
 
