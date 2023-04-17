@@ -1,6 +1,7 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,11 @@ public class Group extends Auditable {
     @SequenceGenerator(name = "group_seq", sequenceName = "group_seq_id", allocationSize = 1)
     private Long id;
 
+    @NotNull
     @Column(name = "c_code")
     private String code;
 
+    @NotNull
     @Column(name = "c_title")
     private String title;
 
