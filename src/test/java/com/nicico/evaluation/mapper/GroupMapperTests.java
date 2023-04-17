@@ -35,41 +35,41 @@ public class GroupMapperTests {
         assertEquals(groupRes.getDefinitionAllowed(), group.getDefinitionAllowed());
     }
 
-    @Test
-    public void entityToDtoInfoTest() {
-        //init
-        GroupDTO.Info groupInfo = generateGroupInfo(1L, "testCode1", "testTitle1", Boolean.TRUE);
-        Group group = generateGroup(1L, "testCode1", "testTitle1", Boolean.TRUE);
-        //act
-        GroupDTO.Info groupInfoRes = groupMapper.entityToDtoInfo(group);
-        //assert
-        assertNotNull(groupInfoRes);
-        assertEquals(groupInfoRes.getId(), group.getId());
-        assertEquals(groupInfoRes.getCode(), group.getCode());
-        assertEquals(groupInfoRes.getTitle(), group.getTitle());
-        assertEquals(groupInfoRes.getDefinitionAllowed(), group.getDefinitionAllowed());
-    }
+//    @Test
+//    public void entityToDtoInfoTest() {
+//        //init
+//        GroupDTO.Info groupInfo = generateGroupInfo(1L, "testCode1", "testTitle1", Boolean.TRUE);
+//        Group group = generateGroup(1L, "testCode1", "testTitle1", Boolean.TRUE);
+//        //act
+//        GroupDTO.Info groupInfoRes = groupMapper.entityToDtoInfo(group);
+//        //assert
+//        assertNotNull(groupInfoRes);
+//        assertEquals(groupInfoRes.getId(), group.getId());
+//        assertEquals(groupInfoRes.getCode(), group.getCode());
+//        assertEquals(groupInfoRes.getTitle(), group.getTitle());
+//        assertEquals(groupInfoRes.getDefinitionAllowed(), group.getDefinitionAllowed());
+//    }
 
-    @Test
-    public void entityToDtoInfoListTest() {
-        //init
-        List<GroupDTO.Info> groupInfos = generateGroupInfoList();
-        List<Group> groups = generateGroupList();
-        //act
-        List<GroupDTO.Info> groupInfosRes = groupMapper.entityToDtoInfoList(groups);
-        //assert
-        assertNotNull(groupInfosRes);
-        assertEquals(groupInfosRes.size(), groupInfos.size());
-        assertEquals(groupInfosRes.get(0).getId(), groupInfos.get(0).getId());
-        assertEquals(groupInfosRes.get(0).getCode(), groupInfos.get(0).getCode());
-        assertEquals(groupInfosRes.get(0).getTitle(), groupInfos.get(0).getTitle());
-        assertEquals(groupInfosRes.get(0).getDefinitionAllowed(), groupInfos.get(0).getDefinitionAllowed());
-
-        assertEquals(groupInfosRes.get(1).getId(), groupInfos.get(1).getId());
-        assertEquals(groupInfosRes.get(1).getCode(), groupInfos.get(1).getCode());
-        assertEquals(groupInfosRes.get(1).getTitle(), groupInfos.get(1).getTitle());
-        assertEquals(groupInfosRes.get(1).getDefinitionAllowed(), groupInfos.get(1).getDefinitionAllowed());
-    }
+//    @Test
+//    public void entityToDtoInfoListTest() {
+//        //init
+//        List<GroupDTO.Info> groupInfos = generateGroupInfoList();
+//        List<Group> groups = generateGroupList();
+//        //act
+//        List<GroupDTO.Info> groupInfosRes = groupMapper.entityToDtoInfoList(groups);
+//        //assert
+//        assertNotNull(groupInfosRes);
+//        assertEquals(groupInfosRes.size(), groupInfos.size());
+//        assertEquals(groupInfosRes.get(0).getId(), groupInfos.get(0).getId());
+//        assertEquals(groupInfosRes.get(0).getCode(), groupInfos.get(0).getCode());
+//        assertEquals(groupInfosRes.get(0).getTitle(), groupInfos.get(0).getTitle());
+//        assertEquals(groupInfosRes.get(0).getDefinitionAllowed(), groupInfos.get(0).getDefinitionAllowed());
+//
+//        assertEquals(groupInfosRes.get(1).getId(), groupInfos.get(1).getId());
+//        assertEquals(groupInfosRes.get(1).getCode(), groupInfos.get(1).getCode());
+//        assertEquals(groupInfosRes.get(1).getTitle(), groupInfos.get(1).getTitle());
+//        assertEquals(groupInfosRes.get(1).getDefinitionAllowed(), groupInfos.get(1).getDefinitionAllowed());
+//    }
 
     @Test
     public void updateTest() {

@@ -30,6 +30,8 @@ public abstract class GradeMapper {
 
     public abstract List<GradeDTO.Info> entityToDtoInfoList(List<Grade> entities);
 
+    public abstract List<Grade> dtoToEntityList(List<GradeDTO.Info> infos);
+
     @Named("getGroupFromGroupGrade")
     GroupDTO getGroupFromGroupGrade(Grade grade) {
         GroupGradeDTO.Info groupGradeDTO = groupGradeService.getGroupGradeByGrade(grade);

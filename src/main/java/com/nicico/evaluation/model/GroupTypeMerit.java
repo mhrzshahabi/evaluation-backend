@@ -1,11 +1,11 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
+import javax.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

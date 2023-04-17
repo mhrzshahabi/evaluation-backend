@@ -16,6 +16,7 @@ public abstract class GroupGradeDTO {
     @NotNull
     private Long groupId;
 
+
     @Getter
     @Setter
     @ApiModel("GroupGradeInfo")
@@ -25,6 +26,7 @@ public abstract class GroupGradeDTO {
         private String gradeCode;
         private String gradeTitle;
         private GroupDTO.Info group;
+        private GradeDTO.Info grade;
     }
 
     @Getter
