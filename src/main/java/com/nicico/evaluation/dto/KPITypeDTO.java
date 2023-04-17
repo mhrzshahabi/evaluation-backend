@@ -1,6 +1,6 @@
 package com.nicico.evaluation.dto;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
