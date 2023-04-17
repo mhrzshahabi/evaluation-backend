@@ -9,6 +9,8 @@ import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 
 @RestController
@@ -26,6 +29,7 @@ import java.util.List;
 public class GroupController {
 
     private final IGroupService service;
+    private final ResourceBundleMessageSource messageSource;
 
     /**
      * @param count      is the number of entity to every page
@@ -78,7 +82,8 @@ public class GroupController {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, "به دلیل وابستگی داده ای امکان حذف وجود ندارد");
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }

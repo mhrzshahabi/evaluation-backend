@@ -8,6 +8,8 @@ import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Api(value = "KPI Type")
@@ -24,6 +27,7 @@ import java.util.List;
 public class KPITypeController {
 
     private final IKPITypeService service;
+    private final ResourceBundleMessageSource messageSource;
 
     /**
      * @param id is the kPIType id
@@ -72,7 +76,8 @@ public class KPITypeController {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, "به دلیل وابستگی داده ای امکان حذف وجود ندارد");
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }

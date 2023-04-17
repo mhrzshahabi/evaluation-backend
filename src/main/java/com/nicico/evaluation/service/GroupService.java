@@ -5,7 +5,6 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IGradeService;
 import com.nicico.evaluation.iservice.IGroupGradeService;
 import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.mapper.GroupMapper;
@@ -66,11 +65,11 @@ public class GroupService implements IGroupService {
     public List<GroupGradeDTO.Info> create(GroupDTO.Create dto) {
         Group group = mapper.dtoCreateToEntity(dto);
         group = repository.save(group);
-        GroupDTO.Info groupDTO= mapper.entityToDtoInfo(group);
-        GroupGradeDTO.CreateAll createDto=new GroupGradeDTO.CreateAll();
+        GroupDTO.Info groupDTO = mapper.entityToDtoInfo(group);
+        GroupGradeDTO.CreateAll createDto = new GroupGradeDTO.CreateAll();
         createDto.setGroupId(groupDTO.getId());
         createDto.setGradeCodes(dto.getGradeCodes());
-       return gradeService.createGroupGrade(createDto);
+        return gradeService.createGroupGrade(createDto);
     }
 
     @Override
