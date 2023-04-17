@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -21,10 +22,11 @@ public class Instance extends Auditable {
     @SequenceGenerator(name = "instance_seq", sequenceName = "instance_seq_id", allocationSize = 1)
     private Long id;
 
+    @NotNull
     @Column(name = "c_code")
     private String code;
 
-
+    @NotNull
     @Column(name = "c_title")
     private String title;
 }

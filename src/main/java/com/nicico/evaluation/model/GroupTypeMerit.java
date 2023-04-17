@@ -1,11 +1,11 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
-import com.sun.istack.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -28,6 +28,7 @@ public class GroupTypeMerit extends Auditable {
     @JoinColumn(name = "merit_component_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_group_type_merit_to_merit"))
     private MeritComponent meritComponent;
 
+    @NotNull
     @Column(name = "merit_component_id")
     private Long meritComponentId;
 
@@ -36,6 +37,7 @@ public class GroupTypeMerit extends Auditable {
     @JoinColumn(name = "group_type_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_group_type_merit_to_group_type"))
     private GroupType groupType;
 
+    @NotNull
     @Column(name = "group_type_id")
     private Long groupTypeId;
 

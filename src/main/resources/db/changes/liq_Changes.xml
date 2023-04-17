@@ -106,5 +106,14 @@
         <addNotNullConstraint tableName="tbl_group_grade" columnName="c_grade_title"></addNotNullConstraint>
         <addNotNullConstraint tableName="tbl_group_grade" columnName="group_id"></addNotNullConstraint>
     </changeSet>
+    <changeSet author="a.lotfi" id="1681711368">
+        <addNotNullConstraint tableName="tbl_instance" columnName="c_code"/>
+        <addNotNullConstraint tableName="tbl_instance" columnName="c_title"/>
+    </changeSet>
+    <changeSet author="a.lotfi" id="1681711444">
+        <addNotNullConstraint tableName="tbl_group_type_merit" columnName="group_type_id"/>
+        <addNotNullConstraint tableName="tbl_group_type_merit" columnName="merit_component_id"/>
+        <addNotNullConstraint tableName="tbl_group_type_merit" columnName="n_weight"/>
+    </changeSet>
 
 </databaseChangeLog>

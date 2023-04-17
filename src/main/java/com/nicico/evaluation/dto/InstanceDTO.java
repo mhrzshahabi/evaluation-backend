@@ -14,7 +14,9 @@ import java.util.List;
 @Accessors(chain = true)
 public class InstanceDTO {
 
+    @NotNull
     private String code;
+    @NotNull
     private String title;
 
     @Getter
