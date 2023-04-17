@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -63,6 +64,11 @@ public class GradeController {
     public ResponseEntity<GradeDTO.SpecResponse> searchWithoutGroup(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                         @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                         @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        FilterDTO filterDTO = new FilterDTO();
+        filterDTO.setField("groupId");
+        filterDTO.setType("null");
+        filterDTO.setValues(Collections.singletonList("null"));
+        criteria.add(filterDTO);
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<GradeDTO.Info> data = service.searchWithoutGroup(request);
         final GradeDTO.Response response = new GradeDTO.Response();

@@ -30,7 +30,7 @@ public class CriteriaUtil {
                 } else {
                     operator = EOperator.contains;
                 }
-                criteriaRq=makeCriteria(criteria.getField(), criteria.getValues(), operator, new ArrayList<>());
+                criteriaRq=makeCriteria(criteria.getField(), (criteria.getValues()!=null  && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
                 criteriaRqList.add(criteriaRq);
             });
         }
@@ -55,6 +55,10 @@ public class CriteriaUtil {
             criteriaRq.setValue(1);
         else if (value != null && value.equals("false"))
             criteriaRq.setValue(0);
+        else if (value != null && value.equals("null")){
+            criteriaRq.setValue(null);
+            criteriaRq.setOperator(EOperator.isNull);
+        }
         else
             criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);
