@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -16,9 +17,13 @@ public abstract class GroupTypeDTO {
 
     @Min(0)
     @Max(100)
+    @NotNull
     private Long weight;
+    @NotNull
     private Long kpiTypeId;
+    @NotNull
     private Long groupId;
+    @NotNull
     private String code;
 
     @Getter
