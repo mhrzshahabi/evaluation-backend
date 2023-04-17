@@ -9,6 +9,7 @@ import com.nicico.evaluation.iservice.IGradeService;
 import com.nicico.evaluation.iservice.IGroupGradeService;
 import com.nicico.evaluation.mapper.GroupGradeMapper;
 import com.nicico.evaluation.model.Grade;
+import com.nicico.evaluation.model.Group;
 import com.nicico.evaluation.model.GroupGrade;
 import com.nicico.evaluation.repository.GroupGradeRepository;
 import lombok.RequiredArgsConstructor;
@@ -149,6 +150,12 @@ public class GroupGradeService implements IGroupGradeService {
     public GroupGradeDTO.Info getGroupGradeByGrade(Grade grade) {
         Optional<GroupGrade> optionalGroupGrade = repository.findFirstByGradeCode(grade.getCode());
         return optionalGroupGrade.map(mapper::entityToDtoInfo).orElse(null);
+
+    }
+    @Override
+    public List<GroupGradeDTO.Info> getGroupGradeByGroup(Group group) {
+        List<GroupGrade> allByGroupId = repository.findAllByGroupId(group.getId());
+        return allByGroupId.stream().map(mapper::entityToDtoInfo).toList();
 
     }
 

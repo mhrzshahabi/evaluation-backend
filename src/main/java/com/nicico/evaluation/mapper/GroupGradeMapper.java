@@ -1,20 +1,32 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.GradeDTO;
 import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.model.GroupGrade;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface GroupGradeMapper {
+public abstract class GroupGradeMapper {
 
-    GroupGrade dtoCreateToEntity(GroupGradeDTO.Create dto);
+    public abstract GroupGrade dtoCreateToEntity(GroupGradeDTO.Create dto);
 
-    GroupGradeDTO.Info entityToDtoInfo(GroupGrade entity);
+    @Mappings({
+            @Mapping(target = "grade", source = "entity", qualifiedByName = "getGradeFromGroupGrade"),
+    })
+    public abstract GroupGradeDTO.Info entityToDtoInfo(GroupGrade entity);
 
-    List<GroupGradeDTO.Info> entityToDtoInfoList(List<GroupGrade> entities);
+    public abstract List<GroupGradeDTO.Info> entityToDtoInfoList(List<GroupGrade> entities);
 
-    void update(@MappingTarget GroupGrade entity, GroupGradeDTO.Update dto);
+    public abstract void update(@MappingTarget GroupGrade entity, GroupGradeDTO.Update dto);
+
+    @Named("getGradeFromGroupGrade")
+    GradeDTO.Info getGradeFromGroupGrade(GroupGrade groupGrade) {
+        GradeDTO.Info gradeDto = new GradeDTO.Info();
+        gradeDto.setCode(groupGrade.getGradeCode());
+        gradeDto.setTitle(groupGrade.getGradeTitle());
+        gradeDto.setId(groupGrade.getGradeId());
+        return gradeDto;
+    }
 }

@@ -1,7 +1,7 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 

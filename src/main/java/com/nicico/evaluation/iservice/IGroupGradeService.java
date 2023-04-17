@@ -3,6 +3,7 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.model.Grade;
+import com.nicico.evaluation.model.Group;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface IGroupGradeService {
     SearchDTO.SearchRs<GroupGradeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     GroupGradeDTO.Info getGroupGradeByGrade(Grade grade);
+
+    List<GroupGradeDTO.Info> getGroupGradeByGroup(Group group);
 }
