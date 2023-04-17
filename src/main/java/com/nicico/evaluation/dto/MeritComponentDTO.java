@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -12,7 +13,9 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class MeritComponentDTO {
 
+    @NotNull
     private String code;
+    @NotNull
     private String title;
 
     @Getter
