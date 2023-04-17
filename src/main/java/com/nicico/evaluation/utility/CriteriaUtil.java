@@ -1,16 +1,11 @@
 package com.nicico.evaluation.utility;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @RequiredArgsConstructor
