@@ -1,20 +1,15 @@
 package com.nicico.evaluation.mapper;
 
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GradeDTO;
 import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.dto.GroupGradeDTO;
 import com.nicico.evaluation.iservice.IGroupGradeService;
-import com.nicico.evaluation.model.Grade;
 import com.nicico.evaluation.model.Group;
-import com.nicico.evaluation.service.GroupService;
-
-import java.util.Collections;
-
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
+import java.util.Collections;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
