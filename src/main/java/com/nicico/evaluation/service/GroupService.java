@@ -66,11 +66,11 @@ public class GroupService implements IGroupService {
     public List<GroupGradeDTO.Info> create(GroupDTO.Create dto) {
         Group group = mapper.dtoCreateToEntity(dto);
         group = repository.save(group);
-        GroupDTO.Info groupDTO= mapper.entityToDtoInfo(group);
-        GroupGradeDTO.CreateAll createDto=new GroupGradeDTO.CreateAll();
+        GroupDTO.Info groupDTO = mapper.entityToDtoInfo(group);
+        GroupGradeDTO.CreateAll createDto = new GroupGradeDTO.CreateAll();
         createDto.setGroupId(groupDTO.getId());
         createDto.setGradeCodes(dto.getGradeCodes());
-       return gradeService.createGroupGrade(createDto);
+        return gradeService.createGroupGrade(createDto);
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class GroupDTO {
+public abstract class GroupDTO {
 
     private String code;
     private String title;
@@ -31,8 +31,9 @@ public class GroupDTO {
     @Getter
     @Setter
     @ApiModel("GroupInfo")
-    public static class Info extends GroupDTO{
+    public static class Info extends GroupDTO {
         private Long id;
+        private List<GradeDTO.Info> grade;
     }
 
     @Getter

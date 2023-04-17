@@ -13,4 +13,5 @@ import java.util.List;
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long>, JpaSpecificationExecutor<Grade> {
     List<Grade> getAllByCodeIn(List<String> codes);
+    Grade get(List<String> codes);
 }
