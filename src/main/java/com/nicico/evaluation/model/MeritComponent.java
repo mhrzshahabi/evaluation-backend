@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -21,9 +22,11 @@ public class MeritComponent extends Auditable {
     @SequenceGenerator(name = "seq_merit_component_id", sequenceName = "seq_merit_component_id", allocationSize = 1)
     private Long id;
 
+    @NotNull
     @Column(name = "c_title", nullable = false, unique = true)
     private String title;
 
+    @NotNull
     @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -12,8 +13,11 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class GroupTypeMeritDTO {
 
+    @NotNull
     private Long meritComponentId;
+    @NotNull
     private Long groupTypeId;
+    @NotNull
     private Long weight;
 
     @Getter

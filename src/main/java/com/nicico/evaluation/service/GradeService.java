@@ -8,7 +8,6 @@ import com.nicico.evaluation.iservice.IGradeService;
 import com.nicico.evaluation.mapper.GradeMapper;
 import com.nicico.evaluation.model.Grade;
 import com.nicico.evaluation.repository.GradeRepository;
-import com.nicico.evaluation.repository.GradeWithoutGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +23,6 @@ public class GradeService implements IGradeService {
 
     private final GradeMapper mapper;
     private final GradeRepository repository;
-    private final GradeWithoutGroupRepository gradeWithoutGroupRepository;
     private final PageableMapper pageableMapper;
 
     @Override
@@ -74,7 +72,7 @@ public class GradeService implements IGradeService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GRADE')")
     public SearchDTO.SearchRs<GradeDTO.Info> searchWithoutGroup(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(gradeWithoutGroupRepository, mapper::entityToDtoInfo, request);
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
 

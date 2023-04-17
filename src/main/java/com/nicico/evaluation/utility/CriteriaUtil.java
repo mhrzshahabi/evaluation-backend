@@ -5,40 +5,46 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
 public class CriteriaUtil {
 
 
-    public static SearchDTO.SearchRq ConvertCriteriaToSearchRequest(List<FilterDTO> criteriaList, Integer count, Integer startIndex) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+    public static SearchDTO.SearchRq ConvertCriteriaToSearchRequest(List<FilterDTO> list, Integer count, Integer startIndex) {
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        Set<SearchDTO.CriteriaRq> criteriaRqList=new HashSet<>();
+        Integer startRow = (startIndex != null) ? Integer.parseInt(startIndex.toString()) : 0;
+        searchRq.setStartIndex(startRow);
+        searchRq.setCount(count != null ? count : 30);
+        searchRq.setSortBy("id");
+        searchRq.setDistinct(true);
 
-        if (criteriaList != null && !criteriaList.isEmpty()) {
-            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-            AtomicReference<SearchDTO.CriteriaRq> criteriaRq = new AtomicReference<>(new SearchDTO.CriteriaRq());
-            criteriaList.forEach(criteria -> {
+        if (list != null && !list.isEmpty()) {
+            list.forEach(criteria -> {
+                SearchDTO.CriteriaRq criteriaRq;
                 EOperator operator;
                 if ("select".equals(criteria.getType())) {
                     operator = EOperator.equals;
                 } else {
                     operator = EOperator.contains;
                 }
-                criteriaRq.set(makeCriteria(criteria.getField(), criteria.getValues().get(0), operator, criteriaRqList));
-                criteriaRqList.add(criteriaRq.get());
-
+                criteriaRq=makeCriteria(criteria.getField(), (criteria.getValues()!=null  && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
+                criteriaRqList.add(criteriaRq);
             });
-            request.setCriteria(criteriaRq.get());
         }
-        request.setCount(count != null ? count : 30);
-        request.setStartIndex(startIndex != null ? startIndex : 0);
-        request.setDistinct(true);
-        request.setSortBy("id");
-        return request;
+        try {
+            SearchDTO.CriteriaRq criteria = makeCriteria(null, null, EOperator.and, criteriaRqList.stream().toList());
+            if (searchRq.getCriteria() != null) {
+                criteria.getCriteria().add(searchRq.getCriteria());
+            }
+            searchRq.setCriteria(criteria);
+        } catch (Exception ex) {
+
+        }
+
+        return searchRq;
     }
 
     public static SearchDTO.CriteriaRq makeCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
@@ -49,6 +55,10 @@ public class CriteriaUtil {
             criteriaRq.setValue(1);
         else if (value != null && value.equals("false"))
             criteriaRq.setValue(0);
+        else if (value != null && value.equals("null")){
+            criteriaRq.setValue(null);
+            criteriaRq.setOperator(EOperator.isNull);
+        }
         else
             criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);

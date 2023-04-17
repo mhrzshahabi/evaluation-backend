@@ -13,8 +13,8 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select  * from syn_hrm_view_grade")
-@DiscriminatorValue("synHrmViewGrade")
+@Subselect("select  * from view_grade")
+@DiscriminatorValue("viewGrade")
 public class Grade {
 
     @Id
@@ -27,5 +27,8 @@ public class Grade {
 
     @Column(name = "C_POST_GRADE_TITLE")
     private String title;
+
+    @Column(name = "group_id")
+    private Long groupId;
 
 }
