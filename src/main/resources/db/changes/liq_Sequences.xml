@@ -43,4 +43,12 @@
         <createSequence sequenceName="seq_instance_group_type_merit_id"/>
     </changeSet>
 
+    <changeSet id="1681727615" author="MShahabi">
+        <createSequence sequenceName="seq_batch_id"/>
+    </changeSet>
+
+    <changeSet id="1681727646" author="MShahabi">
+        <createSequence sequenceName="seq_batch_detail_id"/>
+    </changeSet>
+
 </databaseChangeLog>

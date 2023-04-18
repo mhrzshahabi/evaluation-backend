@@ -81,6 +81,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <changeSet id="1680591476" author="semami">
         <createSequence incrementBy="50" sequenceName="seq_kpi_type_id" startValue="1"/>
         <createTable tableName="TBL_KPI_TYPE">
@@ -105,6 +106,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <changeSet id="1680590045224" author="a.lotfi">
         <createTable tableName="tbl_group">
             <column name="id" type="NUMBER(19, 0)">
@@ -129,6 +131,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <changeSet id="1680686659" author="semami">
         <createSequence incrementBy="50" sequenceName="seq_merit_component_type_id" startValue="1"/>
         <createTable tableName="tbl_merit_component_type">
@@ -150,6 +153,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <changeSet id="1680928838" author="semami">
         <createTable tableName="tbl_group_type">
             <column name="id" type="NUMBER(19, 0)">
@@ -171,6 +175,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <changeSet id="1680937495" author="semami">
         <dropColumn tableName="tbl_kpi_type" columnName="n_level_def"/>
         <addColumn tableName="tbl_kpi_type">
@@ -248,6 +253,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <changeSet author="semami" id="1681190989">
         <renameColumn
                 newColumnName="c_grade_title"
@@ -255,9 +261,11 @@
                 tableName="tbl_group_grade"/>
         <dropColumn tableName="tbl_group_grade" columnName="c_code"/>
     </changeSet>
+
     <changeSet author="semami" id="1681191565">
         <renameColumn newColumnName="c_grade_code" oldColumnName="grade_code" tableName="tbl_group_grade"/>
     </changeSet>
+
     <changeSet author="semami" id="1681192921">
         <dropColumn tableName="tbl_group_type_merit" columnName="instance_id"/>
     </changeSet>
@@ -282,4 +290,50 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="1681727685" author="MShahabi">
+        <createTable tableName="tbl_batch">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_batch_PK"/>
+            </column>
+            <column name="title_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1681731713" author="MShahabi">
+        <createTable tableName="tbl_batch_detail">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_batch_detail_PK"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_exception_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_input_dto" type="CLOB"/>
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="batch_id" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

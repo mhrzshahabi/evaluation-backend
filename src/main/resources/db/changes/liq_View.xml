@@ -3,19 +3,18 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-
-    <changeSet author="namdari" id="1681723196">
+    <changeSet author="namdari" id="1681723197">
         <createView viewName="view_grade" replaceIfExists="true">
             <![CDATA[
           SELECT distinct
-    syn_hrm_view_grade.id,
-    syn_hrm_view_grade.c_post_grade_code,
-    syn_hrm_view_grade.c_post_grade_title,
-    tbl_group_grade.group_id
-FROM
-    syn_hrm_view_grade
-    LEFT JOIN tbl_group_grade ON syn_hrm_view_grade.c_post_grade_code = tbl_group_grade.c_grade_code
-]]>
+                syn_hrm_view_grade.id,
+                syn_hrm_view_grade.c_post_grade_code,
+                syn_hrm_view_grade.c_post_grade_title,
+                tbl_group_grade.group_id
+            FROM
+                syn_hrm_view_grade
+                LEFT JOIN tbl_group_grade ON syn_hrm_view_grade.c_post_grade_code = tbl_group_grade.c_grade_code
+            ]]>
         </createView>
     </changeSet>
 

@@ -86,4 +86,32 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_instance" validate="true"/>
     </changeSet>
+    <changeSet author="MShahabi" id="1681728493">
+        <addForeignKeyConstraint baseColumnNames="title_catalog_id"
+                                 baseTableName="tbl_batch"
+                                 constraintName="f_batch_title_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
+    <changeSet author="MShahabi" id="1681728522">
+        <addForeignKeyConstraint baseColumnNames="status_catalog_id"
+                                 baseTableName="tbl_batch"
+                                 constraintName="f_batch_status_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
+    <changeSet author="MShahabi" id="1681728684">
+        <addForeignKeyConstraint baseColumnNames="status_catalog_id"
+                                 baseTableName="tbl_batch_detail"
+                                 constraintName="f_batch_detail_status_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
+    <changeSet author="MShahabi" id="1681728744">
+        <addForeignKeyConstraint baseColumnNames="batch_id"
+                                 baseTableName="tbl_batch_detail"
+                                 constraintName="f_batch_detail_to_batch" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_batch" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
