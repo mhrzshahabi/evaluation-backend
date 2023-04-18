@@ -15,8 +15,8 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class GroupTypeDTO {
 
-    @Min(0)
-    @Max(100)
+    @Min(value =0, message = " وزن باید عددی بین صفر تا 100 باشد")
+    @Max(value = 100, message = " وزن باید عددی بین صفر تا 100 باشد")
     @NotNull
     private Long weight;
     @NotNull
