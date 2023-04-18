@@ -8,6 +8,7 @@ import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.mapper.InstanceMapper;
 import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.repository.InstanceRepository;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,6 +26,15 @@ public class InstanceService implements IInstanceService {
     private final InstanceMapper mapper;
     private final InstanceRepository repository;
     private final PageableMapper pageableMapper;
+
+    @Override
+    public ByteArrayOutputStream exportAsExcel(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRs<InstanceDTO.Excel> searchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoExcel, request);
+//        List<InstanceDTO.Excel> dd = mapper.entityToDtoExcelList(repository.findAll());
+        ExcelGenerator<InstanceDTO.Excel> excelGenerator = new ExcelGenerator<>(searchRs.getList());
+        excelGenerator.generateSheet("Instance");
+        return excelGenerator.getExcel();
+    }
 
     @Override
     @Transactional(readOnly = true)

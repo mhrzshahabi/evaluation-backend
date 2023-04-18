@@ -21,6 +21,15 @@ public class InstanceDTO {
 
     @Getter
     @Setter
+    @ApiModel("InstanceExcel")
+    public static class Excel {
+        private Long id;
+        private String code;
+        private String title;
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("InstanceCreateRq")
     public static class Create extends InstanceDTO {

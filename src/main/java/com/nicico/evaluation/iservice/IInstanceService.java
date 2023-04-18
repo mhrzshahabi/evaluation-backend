@@ -3,7 +3,11 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 
+import java.io.ByteArrayOutputStream;
+
 public interface IInstanceService {
+
+    ByteArrayOutputStream exportAsExcel(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
     InstanceDTO.SpecResponse list(int count, int startIndex);
 

@@ -7,13 +7,19 @@ import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.io.ByteArrayOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -24,6 +30,21 @@ import java.util.List;
 public class InstanceController {
 
     private final IInstanceService service;
+
+    @GetMapping(value = "/export-excel")
+    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        String currentDateTime = new SimpleDateFormat("yyyy/MM/dd___HH-mm-ss").format(new Date());
+
+        String contentType = "application/octet-stream";
+        String headerValue = "attachment; filename=data_" + currentDateTime + ".xlsx";
+
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, Integer.MAX_VALUE, 0);
+        ByteArrayOutputStream excelByteData = service.exportAsExcel(request);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                .body(excelByteData.toByteArray());
+    }
 
     /**
      * @param count      is the number of entity to every page
