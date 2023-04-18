@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceService;
@@ -16,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,12 +28,9 @@ public class InstanceService implements IInstanceService {
     private final PageableMapper pageableMapper;
 
     @Override
-    public ByteArrayOutputStream exportAsExcel(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
-        SearchDTO.SearchRs<InstanceDTO.Excel> searchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoExcel, request);
-//        List<InstanceDTO.Excel> dd = mapper.entityToDtoExcelList(repository.findAll());
-        ExcelGenerator<InstanceDTO.Excel> excelGenerator = new ExcelGenerator<>(searchRs.getList());
-        excelGenerator.generateSheet("Instance");
-        return excelGenerator.getExcel();
+    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        byte[] body = BaseService.exportAllExcel(repository, mapper::entityToDtoExcel, criteria, null);
+        return new ExcelGenerator.ExcelDownload(body);
     }
 
     @Override

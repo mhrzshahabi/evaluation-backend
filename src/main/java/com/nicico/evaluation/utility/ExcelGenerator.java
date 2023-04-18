@@ -2,9 +2,14 @@ package com.nicico.evaluation.utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -18,6 +23,19 @@ import java.lang.reflect.Field;
 
 public class ExcelGenerator<T>{
 
+    @Getter
+    @Setter
+    public static class ExcelDownload{
+        private String contentType;
+        private String headerValue;
+        private byte[] content;
+        public ExcelDownload(byte[] content){
+            String currentDateTime = new SimpleDateFormat("yyyy/MM/dd___HH-mm-ss").format(new Date());
+            this.contentType = "application/octet-stream";
+            this.headerValue = "attachment; filename=data_" + currentDateTime + ".xlsx";
+            this.content = content;
+        }
+    }
 
     private List<T> data;
     private Field[] dataFields;
