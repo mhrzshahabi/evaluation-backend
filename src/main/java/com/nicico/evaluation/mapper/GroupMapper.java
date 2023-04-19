@@ -23,6 +23,7 @@ public abstract class GroupMapper {
 
     @Mappings({
             @Mapping(target = "grade", source = "entity", qualifiedByName = "getGradeFromGroupGrade"),
+            @Mapping(target = "gradeCodes", source = "entity", qualifiedByName = "getGradeCodesFromGroupGrade")
     })
     public abstract GroupDTO.Info entityToDtoInfo(Group entity);
 
@@ -34,6 +35,16 @@ public abstract class GroupMapper {
     List<GradeDTO.Info> getGradeFromGroupGrade(Group group) {
         List<GroupGradeDTO.Info> infos = groupGradeService.getGroupGradeByGroup(group);
         List<GradeDTO.Info> list = infos.stream().map(GroupGradeDTO.Info::getGrade).toList();
+        if (!list.isEmpty())
+            return list;
+        else
+            return Collections.emptyList();
+    }
+
+    @Named("getGradeCodesFromGroupGrade")
+    List<String> getGradeCodesFromGroupGrade(Group group) {
+        List<GroupGradeDTO.Info> infos = groupGradeService.getGroupGradeByGroup(group);
+        List<String> list = infos.stream().map(GroupGradeDTO.Info::getGradeCode).toList();
         if (!list.isEmpty())
             return list;
         else

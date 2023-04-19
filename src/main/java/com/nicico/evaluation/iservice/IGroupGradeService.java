@@ -19,7 +19,7 @@ public interface IGroupGradeService {
 
     List<GroupGradeDTO.Info> createGroupGrade(GroupGradeDTO.CreateAll dto);
 
-    List<GroupGradeDTO.Info> update(Long id, GroupGradeDTO.CreateAll dto);
+    List<GroupGradeDTO.Info> update(GroupGradeDTO.CreateAll dto);
 
     void deleteAll(List<Long> ids);
 

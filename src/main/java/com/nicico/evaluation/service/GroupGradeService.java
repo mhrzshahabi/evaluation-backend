@@ -117,9 +117,8 @@ public class GroupGradeService implements IGroupGradeService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_GROUP_GRADE')")
-    public List<GroupGradeDTO.Info> update(Long id, GroupGradeDTO.CreateAll dto) {
-        GroupGrade groupGrade = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        List<Long> groupGradeIds = repository.findAllByGroupId(groupGrade.getGroupId()).stream().map(GroupGrade::getId).toList();
+    public List<GroupGradeDTO.Info> update(GroupGradeDTO.CreateAll dto) {
+        List<Long> groupGradeIds = repository.findAllByGroupId(dto.getGroupId()).stream().map(GroupGrade::getId).toList();
         this.deleteAll(groupGradeIds);
         return this.createGroupGrade(dto);
     }

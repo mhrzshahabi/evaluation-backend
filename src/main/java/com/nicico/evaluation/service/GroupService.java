@@ -79,6 +79,10 @@ public class GroupService implements IGroupService {
         Group group = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(group, dto);
         Group save = repository.save(group);
+        GroupGradeDTO.CreateAll createDto = new GroupGradeDTO.CreateAll();
+        createDto.setGroupId(dto.getId());
+        createDto.setGradeCodes(dto.getGradeCodes());
+        gradeService.update(createDto);
         return mapper.entityToDtoInfo(save);
     }
 
