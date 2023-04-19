@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,7 +32,8 @@ public class BatchService implements IBatchService {
     @PreAuthorize("hasAuthority('R_BATCH')")
     public BatchDTO.Info get(Long id) {
         Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return mapper.entityToDtoInfo(batch);
+//        return mapper.entityToDtoInfo(batch);
+        return null;
     }
 
     @Override
@@ -40,7 +42,8 @@ public class BatchService implements IBatchService {
     public BatchDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<Batch> batches = repository.findAll(pageable);
-        List<BatchDTO.Info> batchInfos = mapper.entityToDtoInfoList(batches.getContent());
+//        List<BatchDTO.Info> batchInfos = mapper.entityToDtoInfoList(batches.getContent());
+        List<BatchDTO.Info> batchInfos = new ArrayList<>();
 
         BatchDTO.Response response = new BatchDTO.Response();
         BatchDTO.SpecResponse specResponse = new BatchDTO.SpecResponse();
@@ -59,7 +62,8 @@ public class BatchService implements IBatchService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_BATCH')")
     public SearchDTO.SearchRs<BatchDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository,  mapper::entityToDtoInfo, request);
+//        return BaseService.optimizedSearch(repository,  mapper::entityToDtoInfo, request);
+        return null;
 
     }
 
@@ -67,10 +71,12 @@ public class BatchService implements IBatchService {
     @Transactional
     @PreAuthorize("hasAuthority('C_BATCH')")
     public BatchDTO.Info create(BatchDTO.Create dto) {
-        Batch batch = mapper.dtoCreateToEntity(dto);
+//        Batch batch = mapper.dtoCreateToEntity(dto);
+        Batch batch = new Batch();
         try {
             Batch save = repository.save(batch);
-            return mapper.entityToDtoInfo(save);
+//            return mapper.entityToDtoInfo(save);
+            return null;
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
@@ -81,10 +87,11 @@ public class BatchService implements IBatchService {
     @PreAuthorize("hasAuthority('U_BATCH')")
     public BatchDTO.Info update(BatchDTO.Update dto) {
         Batch batch = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        mapper.update(batch, dto);
+//        mapper.update(batch, dto);
         try {
             Batch save = repository.save(batch);
-            return mapper.entityToDtoInfo(save);
+//            return mapper.entityToDtoInfo(save);
+            return null;
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
