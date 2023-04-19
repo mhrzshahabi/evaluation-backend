@@ -27,7 +27,7 @@ public class GroupService implements IGroupService {
     private final GroupMapper mapper;
     private final GroupRepository repository;
     private final PageableMapper pageableMapper;
-    private final IGroupGradeService gradeService;
+    private final IGroupGradeService groupGradeService;
 
 
     @Override
@@ -62,14 +62,13 @@ public class GroupService implements IGroupService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_GROUP')")
-    public List<GroupGradeDTO.Info> create(GroupDTO.Create dto) {
-        Group group = mapper.dtoCreateToEntity(dto);
-        group = repository.save(group);
-        GroupDTO.Info groupDTO = mapper.entityToDtoInfo(group);
+    public GroupDTO.Info create(GroupDTO.Create dto) {
+        Group group = repository.save(mapper.dtoCreateToEntity(dto));
         GroupGradeDTO.CreateAll createDto = new GroupGradeDTO.CreateAll();
-        createDto.setGroupId(groupDTO.getId());
+        createDto.setGroupId(group.getId());
         createDto.setGradeCodes(dto.getGradeCodes());
-        return gradeService.createGroupGrade(createDto);
+        groupGradeService.createGroupGrade(createDto);
+        return mapper.entityToDtoInfo(group);
     }
 
     @Override
@@ -82,7 +81,7 @@ public class GroupService implements IGroupService {
         GroupGradeDTO.CreateAll createDto = new GroupGradeDTO.CreateAll();
         createDto.setGroupId(dto.getId());
         createDto.setGradeCodes(dto.getGradeCodes());
-        gradeService.update(createDto);
+        groupGradeService.update(createDto);
         return mapper.entityToDtoInfo(save);
     }
 
