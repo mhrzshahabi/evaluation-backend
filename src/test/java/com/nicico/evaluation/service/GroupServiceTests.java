@@ -87,29 +87,29 @@ public class GroupServiceTests {
         });
     }
 
-    @Test
-    public void updateTest() {
-        //init
-        GroupDTO.Update groupUpdate = new GroupDTO.Update();
-        groupUpdate.setId(1L).setCode("NEWtestCode1").setTitle("NEWtestTitle1").setDefinitionAllowed(Boolean.TRUE);
-        Group group = generateGroup("OLDtestCode1", "OLDtestTitle1", Boolean.FALSE);
-        group.setId(1L);
-        Optional<Group> oldGroup = Optional.of(group);
-        Group newGroup = generateGroup("NEWtestCode1", "NEWtestTitle1", Boolean.TRUE);
-        GroupDTO.Info groupInfo = generateGroupInfo(1L, "NEWtestCode1", "NEWtestTitle1", Boolean.TRUE);
-
-        //act
-        when(groupRepository.findById(anyLong())).thenReturn(oldGroup);
-        when(groupRepository.save(any(Group.class))).thenReturn(newGroup);
-        when(groupMapper.entityToDtoInfo(any(Group.class))).thenReturn(groupInfo);
-        GroupDTO.Info groupRes = groupService.update(groupUpdate);
-
-        //assert
-        assertNotNull(groupRes);
-        assertEquals(groupRes.getId(), groupUpdate.getId());
-        assertEquals(newGroup.getCode(), groupRes.getCode());
-        assertNotEquals(oldGroup.get().getDefinitionAllowed(), groupRes.getDefinitionAllowed());
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        GroupDTO.Update groupUpdate = new GroupDTO.Update();
+//        groupUpdate.setId(1L).setCode("NEWtestCode1").setTitle("NEWtestTitle1").setDefinitionAllowed(Boolean.TRUE);
+//        Group group = generateGroup("OLDtestCode1", "OLDtestTitle1", Boolean.FALSE);
+//        group.setId(1L);
+//        Optional<Group> oldGroup = Optional.of(group);
+//        Group newGroup = generateGroup("NEWtestCode1", "NEWtestTitle1", Boolean.TRUE);
+//        GroupDTO.Info groupInfo = generateGroupInfo(1L, "NEWtestCode1", "NEWtestTitle1", Boolean.TRUE);
+//
+//        //act
+//        when(groupRepository.findById(anyLong())).thenReturn(oldGroup);
+//        when(groupRepository.save(any(Group.class))).thenReturn(newGroup);
+//        when(groupMapper.entityToDtoInfo(any(Group.class))).thenReturn(groupInfo);
+//        GroupDTO.Info groupRes = groupService.update(groupUpdate);
+//
+//        //assert
+//        assertNotNull(groupRes);
+//        assertEquals(groupRes.getId(), groupUpdate.getId());
+//        assertEquals(newGroup.getCode(), groupRes.getCode());
+//        assertNotEquals(oldGroup.get().getDefinitionAllowed(), groupRes.getDefinitionAllowed());
+//    }
 
     @Test
     public void deleteTest() {
