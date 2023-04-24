@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+//گروه - نوع - شایستگی
 
 @Getter
 @Setter
