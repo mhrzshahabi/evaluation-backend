@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BatchDetailMapper {
 
-    BatchDetail dtoCreateToEntity(BatchDetailDTO.Create dto);
-
-    BatchDetailDTO.Info entityToDtoInfo(BatchDetail entity);
-
-    List<BatchDetailDTO.Info> entityToDtoInfoList(List<BatchDetail> entities);
-
-    void update(@MappingTarget BatchDetail entity, BatchDetailDTO.Update dto);
+//    BatchDetail dtoCreateToEntity(BatchDetailDTO.Create dto);
+//
+//    BatchDetailDTO.Info entityToDtoInfo(BatchDetail entity);
+//
+//    List<BatchDetailDTO.Info> entityToDtoInfoList(List<BatchDetail> entities);
+//
+//    void update(@MappingTarget BatchDetail entity, BatchDetailDTO.Update dto);
 }
