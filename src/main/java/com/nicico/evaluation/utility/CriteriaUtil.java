@@ -31,6 +31,8 @@ public class CriteriaUtil {
                     operator = EOperator.contains;
                 }
                 criteriaRq=makeCriteria(criteria.getField(), (criteria.getValues()!=null  && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
+             //todo
+               if (!criteriaRq.getFieldName().equals("hasEvaluation"))
                 criteriaRqList.add(criteriaRq);
             });
         }

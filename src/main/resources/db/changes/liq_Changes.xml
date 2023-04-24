@@ -331,4 +331,8 @@
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1681737861">
+        <addNotNullConstraint tableName="tbl_instance_group_type_merit" columnName="instance_id"/>
+    </changeSet>
+
 </databaseChangeLog>

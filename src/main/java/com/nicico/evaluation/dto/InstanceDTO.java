@@ -33,7 +33,7 @@ public class InstanceDTO {
         private Long id;
         //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
         //todo
-        private Boolean evaluationStatus = false;
+        private Boolean hasEvaluation = false;
     }
 
     @Getter

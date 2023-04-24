@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -12,6 +13,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class InstanceGroupTypeMeritDTO {
 
+    @NotNull
     private Long instanceId;
     private Long groupTypeMeritId;
 
@@ -74,7 +76,6 @@ public class InstanceGroupTypeMeritDTO {
     public static class GroupTypeTupleDTO {
 
         private String title;
-
     }
 
     @Getter

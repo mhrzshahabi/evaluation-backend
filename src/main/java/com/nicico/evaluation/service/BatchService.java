@@ -71,12 +71,10 @@ public class BatchService implements IBatchService {
     @Transactional
     @PreAuthorize("hasAuthority('C_BATCH')")
     public BatchDTO.Info create(BatchDTO.Create dto) {
-//        Batch batch = mapper.dtoCreateToEntity(dto);
-        Batch batch = new Batch();
+        Batch batch = mapper.dtoCreateToEntity(dto);
         try {
             Batch save = repository.save(batch);
-//            return mapper.entityToDtoInfo(save);
-            return null;
+            return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }

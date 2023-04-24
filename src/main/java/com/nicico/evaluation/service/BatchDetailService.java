@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,7 +32,8 @@ public class BatchDetailService implements IBatchDetailService {
     @PreAuthorize("hasAuthority('R_BATCH_DETAIL')")
     public BatchDetailDTO.Info get(Long id) {
         BatchDetail batchDetail = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return mapper.entityToDtoInfo(batchDetail);
+//        return mapper.entityToDtoInfo(batchDetail);
+        return null;
     }
 
     @Override
@@ -40,7 +42,8 @@ public class BatchDetailService implements IBatchDetailService {
     public BatchDetailDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<BatchDetail> batchDetails = repository.findAll(pageable);
-        List<BatchDetailDTO.Info> batchDetailInfos = mapper.entityToDtoInfoList(batchDetails.getContent());
+//        List<BatchDetailDTO.Info> batchDetailInfos = mapper.entityToDtoInfoList(batchDetails.getContent());
+        List<BatchDetailDTO.Info> batchDetailInfos = new ArrayList<>();
 
         BatchDetailDTO.Response response = new BatchDetailDTO.Response();
         BatchDetailDTO.SpecResponse specResponse = new BatchDetailDTO.SpecResponse();
@@ -59,7 +62,8 @@ public class BatchDetailService implements IBatchDetailService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_BATCH_DETAIL')")
     public SearchDTO.SearchRs<BatchDetailDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository,  mapper::entityToDtoInfo, request);
+//        return BaseService.optimizedSearch(repository,  mapper::entityToDtoInfo, request);
+        return null;
 
     }
 
@@ -67,10 +71,12 @@ public class BatchDetailService implements IBatchDetailService {
     @Transactional
     @PreAuthorize("hasAuthority('C_BATCH_DETAIL')")
     public BatchDetailDTO.Info create(BatchDetailDTO.Create dto) {
-        BatchDetail batchDetail = mapper.dtoCreateToEntity(dto);
+//        BatchDetail batchDetail = mapper.dtoCreateToEntity(dto);
+        BatchDetail batchDetail = new BatchDetail();
         try {
             BatchDetail save = repository.save(batchDetail);
-            return mapper.entityToDtoInfo(save);
+//            return mapper.entityToDtoInfo(save);
+            return null;
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
@@ -81,10 +87,11 @@ public class BatchDetailService implements IBatchDetailService {
     @PreAuthorize("hasAuthority('U_BATCH_DETAIL')")
     public BatchDetailDTO.Info update(BatchDetailDTO.Update dto) {
         BatchDetail batchDetail = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        mapper.update(batchDetail, dto);
+//        mapper.update(batchDetail, dto);
         try {
             BatchDetail save = repository.save(batchDetail);
-            return mapper.entityToDtoInfo(save);
+//            return mapper.entityToDtoInfo(save);
+            return null;
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
@@ -102,6 +109,13 @@ public class BatchDetailService implements IBatchDetailService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
+    }
+
+    @Override
+    public List<BatchDetailDTO.Info> getBatchDetailListByBatchId(Long batchId) {
+        List<BatchDetail> batchDetailList = repository.findAllByBatchId(batchId);
+//        return mapper.entityToDtoInfoList(batchDetailList);
+        return null;
     }
 
 }
