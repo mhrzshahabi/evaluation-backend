@@ -8,6 +8,7 @@ import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.repository.MeritComponentRepository;
+import liquibase.pro.packaged.B;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
