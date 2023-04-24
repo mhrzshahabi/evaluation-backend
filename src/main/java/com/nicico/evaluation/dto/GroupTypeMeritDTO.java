@@ -36,6 +36,7 @@ public abstract class GroupTypeMeritDTO {
     @ApiModel("GroupTypeMeritCreateRq")
     public static class Create extends GroupTypeMeritDTO {
 
+        private List<Long> instanceIds;
     }
 
     @Getter
@@ -45,6 +46,7 @@ public abstract class GroupTypeMeritDTO {
     public static class Update extends GroupTypeMeritDTO {
 
         private Long id;
+        private List<Long> instanceIds;
     }
 
     @Getter

@@ -3,8 +3,10 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
+import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
+import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
@@ -15,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     private final GroupTypeMeritMapper mapper;
     private final PageableMapper pageableMapper;
     private final GroupTypeMeritRepository repository;
+    private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
 
     @Override
     @Transactional(readOnly = true)
@@ -59,9 +63,17 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE_MERIT')")
     public GroupTypeMeritDTO.Info create(GroupTypeMeritDTO.Create dto) {
         GroupTypeMerit groupTypeMerit = mapper.dtoCreateToEntity(dto);
+        List<InstanceGroupTypeMeritDTO.Create> instanceGroupTypeMeritDTOList = new ArrayList<>();
         try {
-            GroupTypeMerit save = repository.save(groupTypeMerit);
-            return mapper.entityToDtoInfo(save);
+            GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
+            dto.getInstanceIds().forEach(instanceId -> {
+                InstanceGroupTypeMeritDTO.Create instanceGroupTypeMeritDTO = new InstanceGroupTypeMeritDTO.Create();
+                instanceGroupTypeMeritDTO.setInstanceId(instanceId);
+                instanceGroupTypeMeritDTO.setGroupTypeMeritId(groupTypeMeritAdd.getId());
+                instanceGroupTypeMeritDTOList.add(instanceGroupTypeMeritDTO);
+            });
+            instanceGroupTypeMeritService.createAll(instanceGroupTypeMeritDTOList);
+            return mapper.entityToDtoInfo(groupTypeMeritAdd);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
@@ -74,11 +86,25 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
         GroupTypeMerit groupTypeMerit = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(groupTypeMerit, dto);
         try {
+            List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(dto.getId()).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
+            if (!instanceGroupTypeIds.isEmpty())
+                instanceGroupTypeMeritService.deleteAll(instanceGroupTypeIds);
+            List<InstanceGroupTypeMeritDTO.Create> instanceGroupTypeMeritDTOList = new ArrayList<>();
+            dto.getInstanceIds().forEach(instanceId -> {
+                InstanceGroupTypeMeritDTO.Create instanceGroupTypeMeritDTO = new InstanceGroupTypeMeritDTO.Create();
+                instanceGroupTypeMeritDTO.setInstanceId(instanceId);
+                instanceGroupTypeMeritDTO.setGroupTypeMeritId(dto.getId());
+                instanceGroupTypeMeritDTOList.add(instanceGroupTypeMeritDTO);
+            });
+            instanceGroupTypeMeritService.createAll(instanceGroupTypeMeritDTOList);
+
             GroupTypeMerit save = repository.save(groupTypeMerit);
             return mapper.entityToDtoInfo(save);
-        } catch (Exception exception) {
+        } catch (
+                Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
+
     }
 
     @Override
