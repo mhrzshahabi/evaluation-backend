@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-
+//نوع
 @Getter
 @Setter
 @Accessors(chain = true)
