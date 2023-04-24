@@ -147,6 +147,30 @@
     {
       "code": "D_INSTANCE_GROUP_TYPE_MERIT",
       "title": "حذف مصداق -گروه - نوع - مولفه شایستگی"
+    },
+    {
+      "code": "R_POST",
+      "title": "نمایش پست"
+    },
+    {
+      "code": "R_GROUP_POST",
+      "title": "نمایش گروه پست"
+    },
+    {
+      "code": "R_POST_MERIT_COMPONENT",
+      "title": "نمایش پست - مولفه شایستگی"
+    },
+    {
+      "code": "C_POST_MERIT_COMPONENT",
+      "title": "ایجاد پست - مولفه شایستگی"
+    },
+    {
+      "code": "U_POST_MERIT_COMPONENT",
+      "title": "ویرایش پست - مولفه شایستگی"
+    },
+    {
+      "code": "D_POST_MERIT_COMPONENT",
+      "title": "حذف پست - مولفه شایستگی"
     }
   ]
 }
