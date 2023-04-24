@@ -12,14 +12,15 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class MeritComponentTypeDTO {
 
-    private String meritComponentId;
-    private String kpiTypeId;
+    private Long meritComponentId;
+    private Long kpiTypeId;
 
     @Getter
     @Setter
     @ApiModel("MeritComponentTypeInfo")
     public static class Info extends MeritComponentTypeDTO {
 
+        private KPITypeDTO.Info kpiType;
         private Long id;
     }
 

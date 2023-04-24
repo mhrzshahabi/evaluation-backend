@@ -36,6 +36,14 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
+    public List<MeritComponentTypeDTO.Info> findAllByMeritComponentId(Long meritComponentId) {
+        List<MeritComponentType> meritComponentTypeList = repository.findAllByMeritComponentId(meritComponentId);
+        return mapper.entityToDtoInfoList(meritComponentTypeList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
     public MeritComponentTypeDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<MeritComponentType> meritComponentTypes = repository.findAll(pageable);
@@ -69,6 +77,13 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('C_MERIT_COMPONENT_TYPE')")
+    public List<MeritComponentTypeDTO.Info> createAll(List<MeritComponentTypeDTO.Create> requests) {
+        return requests.stream().map(this::create).toList();
+    }
+
+    @Override
+    @Transactional
     @PreAuthorize("hasAuthority('U_MERIT_COMPONENT_TYPE')")
     public MeritComponentTypeDTO.Info update(MeritComponentTypeDTO.Update dto) {
         MeritComponentType meritComponentType = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
@@ -87,6 +102,13 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
     public void delete(Long id) {
         MeritComponentType meritComponentType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         repository.delete(meritComponentType);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('D_MERIT_COMPONENT_TYPE')")
+    public void deleteAll(List<Long> ids) {
+        ids.forEach(this::delete);
     }
 
     @Override
