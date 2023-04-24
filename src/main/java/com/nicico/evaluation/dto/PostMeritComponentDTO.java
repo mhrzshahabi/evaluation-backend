@@ -23,7 +23,7 @@ public abstract class PostMeritComponentDTO {
 
     @Getter
     @Setter
-    @ApiModel("MeritComponentInfo")
+    @ApiModel("PostMeritComponentInfo")
     public static class Info extends PostMeritComponentDTO {
 
         private Long id;
@@ -34,7 +34,7 @@ public abstract class PostMeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("MeritComponentCreateRq")
+    @ApiModel("PostMeritComponentCreateRq")
     public static class Create extends PostMeritComponentDTO {
 
     }
@@ -42,7 +42,7 @@ public abstract class PostMeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("MeritComponentUpdateRq")
+    @ApiModel("PostMeritComponentUpdateRq")
     public static class Update extends PostMeritComponentDTO {
 
         private Long id;
@@ -51,7 +51,7 @@ public abstract class PostMeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("MeritComponentDeleteRq")
+    @ApiModel("PostMeritComponentDeleteRq")
     public static class Delete extends PostMeritComponentDTO {
 
         private Long id;
@@ -60,7 +60,7 @@ public abstract class PostMeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("MeritComponentSpecResponse")
+    @ApiModel("PostMeritComponentSpecResponse")
     public static class SpecResponse {
         private Response response;
     }
@@ -68,7 +68,7 @@ public abstract class PostMeritComponentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("MeritComponentResponse")
+    @ApiModel("PostMeritComponentResponse")
     public static class Response {
         private List<Info> data;
         private Integer status;

@@ -23,7 +23,7 @@ public class PostMeritComponentController {
 
     private final IPostMeritComponentService service;
     /**
-     * @param id is the instance id
+     * @param id is the postMeritComponent id
      * @return PostMeritComponentDTO.Info is the single postMeritComponent entity
      */
     @GetMapping(value = "/{id}")
@@ -73,7 +73,7 @@ public class PostMeritComponentController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<PostMeritComponentDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<PostMeritComponentDTO.Info> is the list of postMeritComponentInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<PostMeritComponentDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
