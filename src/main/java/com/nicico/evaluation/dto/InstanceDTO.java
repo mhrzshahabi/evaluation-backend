@@ -31,6 +31,9 @@ public class InstanceDTO {
     @ApiModel("InstanceInfo")
     public static class Info extends InstanceDTO {
         private Long id;
+        //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
+        //todo
+        private Boolean hasEvaluation = false;
     }
 
     @Getter

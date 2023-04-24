@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-
+//مصداق- گروه - نوع - شایستگی
 @Getter
 @Setter
 @Accessors(chain = true)

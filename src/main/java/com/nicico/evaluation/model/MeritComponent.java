@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
+//شایستگی
 @Getter
 @Setter
 @Accessors(chain = true)

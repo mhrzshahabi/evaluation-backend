@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
-
+//رده
 @Getter
 @Setter
 @NoArgsConstructor

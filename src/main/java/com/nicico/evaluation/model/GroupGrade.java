@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-
+//گروه - رده
 @Getter
 @Setter
 @Accessors(chain = true)
