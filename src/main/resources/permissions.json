@@ -149,6 +149,38 @@
       "title": "حذف مصداق -گروه - نوع - مولفه شایستگی"
     },
     {
+      "code": "R_BATCH",
+      "title": "نمایش اسناد گروهی"
+    },
+    {
+      "code": "C_BATCH",
+      "title": "ایجاد اسناد گروهی"
+    },
+    {
+      "code": "U_BATCH",
+      "title": "ویرایش اسناد گروهی"
+    },
+    {
+      "code": "D_BATCH",
+      "title": "حذف اسناد گروهی"
+    },
+    {
+      "code": "R_BATCH_DETAIL",
+      "title": "نمایش جزئیات اسناد گروهی"
+    },
+    {
+      "code": "C_BATCH_DETAIL",
+      "title": "ایجاد جزئیات اسناد گروهی"
+    },
+    {
+      "code": "U_BATCH_DETAIL",
+      "title": "ویرایش جزئیات اسناد گروهی"
+    },
+    {
+      "code": "D_BATCH_DETAIL",
+      "title": "حذف جزئیات اسناد گروهی"
+    },
+    {
       "code": "R_POST",
       "title": "نمایش پست"
     },

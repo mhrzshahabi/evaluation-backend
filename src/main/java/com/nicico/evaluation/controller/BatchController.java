@@ -1,13 +1,13 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.BatchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IGroupService;
+import com.nicico.evaluation.iservice.IBatchService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,64 +15,59 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 
-
+@RequiredArgsConstructor
+@Api(value = "Batch")
 @RestController
-@RequestMapping("/api/group")
-@Api("Group Api")
-@Validated
-@AllArgsConstructor
-public class GroupController {
+@RequestMapping(value = "/api/batch")
+public class BatchController {
 
-    private final IGroupService service;
+    private final IBatchService service;
     private final ResourceBundleMessageSource messageSource;
+
+    /**
+     * @param id is the batch id
+     * @return BatchDTO.Info is the single batch entity
+     */
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<BatchDTO.Info> get(@PathVariable Long id) {
+        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+    }
 
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @return GroupDTO.SpecResponse that contain list of groupInfoDto and the number of total entity
+     * @return BatchDTO.SpecResponse that contain list of BatchDTO and the number of total entity
      */
     @GetMapping(value = "/list")
-    public ResponseEntity<GroupDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+    public ResponseEntity<BatchDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
-     * @param id is the group id
-     * @return GroupDTO.Info  is the single group entity
-     */
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<GroupDTO.Info> get(@PathVariable Long id) {
-        try {
-            return new ResponseEntity<>(service.get(id), HttpStatus.OK);
-        } catch (Exception e) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
-        }
-    }
-
-    /**
-     * @param request is the model of input for create group entity
-     * @return GroupDTOInfo is the saved group entity
+     * @param request is the model of input for create batch entity
+     * @return BatchDTO.Info is the saved batch entity
      */
     @PostMapping
-    public ResponseEntity<GroupDTO.Info> create(@Valid @RequestBody GroupDTO.Create request) {
+    public ResponseEntity<BatchDTO.Info> create(@Valid @RequestBody BatchDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
-     * @param request is  the model of input for update group entity
-     * @return GroupDTOInfo is the updated group entity
+     * @param request is  the model of input for update batch entity
+     * @return BatchDTO.Info is the updated batch entity
      */
     @PutMapping
-    public ResponseEntity<GroupDTO.Info> update(@Valid @RequestBody GroupDTO.Update request) {
+    public ResponseEntity<BatchDTO.Info> update(@Valid @RequestBody BatchDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
     /**
-     * @param id is the group id for delete
+     * @param id is the batch id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
@@ -91,17 +86,17 @@ public class GroupController {
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @param criteria is the key value pair for criteria
-     * @return TotalResponse<GroupDTO.Info> is the list of groupInfo entity that match the criteria
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<BatchDTO.Info> is the list of batch entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
-    public ResponseEntity<GroupDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                        @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                        @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<BatchDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                          @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                          @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupDTO.Info> data = service.search(request);
-        final GroupDTO.Response response = new GroupDTO.Response();
-        final GroupDTO.SpecResponse specRs = new GroupDTO.SpecResponse();
+        SearchDTO.SearchRs<BatchDTO.Info> data = service.search(request);
+        final BatchDTO.Response response = new BatchDTO.Response();
+        final BatchDTO.SpecResponse specRs = new BatchDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())
