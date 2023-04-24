@@ -17,5 +17,69 @@
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="semami" id="1681810266">
+        <createView viewName="view_post" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM as id,
+                    post.*
+                    FROM
+                    (
+                        SELECT
+                            *
+                        FROM
+                            syn_hrm_post
+                    )post
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="semami" id="1681883250">
+        <createView viewName="view_group_post" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM AS id,
+                    groupPost.*
+                FROM
+                    (
+                        SELECT
+                            MIN(post_id) post_id,
+                            MIN(post_grade_id) post_grade_id,
+                            MIN(post_grade_code) post_grade_code,
+                            MIN(post_grade_title) post_grade_title,
+                            MIN(post_grade_code_parent) post_grade_code_parent,
+                            MIN(post_grade_title_parent) post_grade_title_parent,
+                            post_group_code group_post_code,
+                            MIN(post_title) post_title,
+                            MIN(post_parent_id) post_parent_id,
+                            MIN(post_level) post_level,
+                            MIN(post_full_path_code) post_full_path_code,
+                            MIN(post_mosavab) post_mosavab,
+                            MIN(post_company_id) post_company_id,
+                            MIN(post_company_code) post_company_code,
+                            MIN(post_company_name) post_company_name,
+                            MIN(cost_center_id) cost_center_id,
+                            MIN(cost_center_code) cost_center_code,
+                            MIN(cost_center_title) cost_center_title,
+                            MIN(hoze_code) hoze_code,
+                            MIN(hoze_title) hoze_title,
+                            MIN(mojtama_code) mojtama_code,
+                            MIN(mojtama_title) mojtama_title,
+                            MIN(omoor_code) omoor_code,
+                            MIN(omoor_title) omoor_title,
+                            MIN(moavenat_code) moavenat_code,
+                            MIN(moavenat_title) moavenat_title,
+                            MIN(ghesmat_code) ghesmat_code,
+                            MIN(ghesmat_title) ghesmat_title,
+                            MIN(vahed_code) vahed_code,
+                            MIN(vahed_title) vahed_title
+                        FROM
+                            syn_hrm_post
+                        GROUP BY (
+                            post_group_code
+                        )
+                    ) groupPost
+            ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>

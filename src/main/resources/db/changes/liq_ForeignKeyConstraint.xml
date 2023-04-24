@@ -114,4 +114,11 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_batch" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1681897733">
+        <addForeignKeyConstraint baseColumnNames="merit_component_id"
+                                 baseTableName="tbl_post_merit_component"
+                                 constraintName="f_post_merit_component_to_merit_component" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_merit_component" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

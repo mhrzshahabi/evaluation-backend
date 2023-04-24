@@ -13,15 +13,21 @@ public interface IInstanceGroupTypeMeritService {
 
     List<InstanceGroupTypeMeritDTO.InstanceInfo> getAllInstanceByGroupTypeMeritId(Long id);
 
+    List<InstanceGroupTypeMeritDTO.Info> getAllByGroupTypeMeritId(Long id);
+
     InstanceGroupTypeMeritDTO.SpecResponse list(int count, int startIndex);
 
     TotalResponse<InstanceGroupTypeMeritDTO.Info> search(NICICOCriteria request);
+
+    List<InstanceGroupTypeMeritDTO.Info> createAll(List<InstanceGroupTypeMeritDTO.Create> requests);
 
     InstanceGroupTypeMeritDTO.Info create(InstanceGroupTypeMeritDTO.Create dto);
 
     InstanceGroupTypeMeritDTO.Info update(InstanceGroupTypeMeritDTO.Update dto);
 
     void delete(Long id);
+
+    void deleteAll(List<Long> ids);
 
     SearchDTO.SearchRs<InstanceGroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 

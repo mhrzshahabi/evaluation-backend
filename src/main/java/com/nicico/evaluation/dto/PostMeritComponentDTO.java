@@ -11,50 +11,39 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public abstract class GroupTypeMeritDTO {
+public abstract class PostMeritComponentDTO {
 
     @NotNull
-    private Long meritComponentId;
+    private String groupPostCode;
     @NotNull
-    private Long groupTypeId;
+    private Long meritComponentId;
+    private Long evaluationItemId;
     @NotNull
     private Long weight;
 
     @Getter
     @Setter
-    @ApiModel("GroupTypeMeritInfo")
-    public static class Info extends GroupTypeMeritDTO {
+    @ApiModel("PostMeritComponentInfo")
+    public static class Info extends PostMeritComponentDTO {
 
         private Long id;
         private MeritComponentDTO.Info meritComponent;
-        private GroupTypeDTO.Info groupType;
-        private Boolean hasInstance;
+
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritCreateRq")
-    public static class Create extends GroupTypeMeritDTO {
+    @ApiModel("PostMeritComponentCreateRq")
+    public static class Create extends PostMeritComponentDTO {
 
-        private List<Long> instanceIds;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritUpdateRq")
-    public static class Update extends GroupTypeMeritDTO {
-
-        private Long id;
-        private List<Long> instanceIds;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritDeleteRq")
-    public static class Delete extends GroupTypeMeritDTO {
+    @ApiModel("PostMeritComponentUpdateRq")
+    public static class Update extends PostMeritComponentDTO {
 
         private Long id;
     }
@@ -62,7 +51,16 @@ public abstract class GroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritSpecResponse")
+    @ApiModel("PostMeritComponentDeleteRq")
+    public static class Delete extends PostMeritComponentDTO {
+
+        private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PostMeritComponentSpecResponse")
     public static class SpecResponse {
         private Response response;
     }
@@ -70,7 +68,7 @@ public abstract class GroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GroupTypeMeritResponse")
+    @ApiModel("PostMeritComponentResponse")
     public static class Response {
         private List<Info> data;
         private Integer status;

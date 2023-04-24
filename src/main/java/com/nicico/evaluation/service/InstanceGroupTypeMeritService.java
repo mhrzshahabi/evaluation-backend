@@ -35,12 +35,21 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
         InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(instanceGroupTypeMerit);
     }
+
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_INSTANCE_GROUP_TYPE_MERIT')")
     public List<InstanceGroupTypeMeritDTO.InstanceInfo> getAllInstanceByGroupTypeMeritId(Long id) {
         List<InstanceGroupTypeMerit> allByGroupTypeMeritId = repository.getAllByGroupTypeMeritId(id);
         return mapper.entityToDtoInstanceList(allByGroupTypeMeritId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_INSTANCE_GROUP_TYPE_MERIT')")
+    public List<InstanceGroupTypeMeritDTO.Info> getAllByGroupTypeMeritId(Long id) {
+        List<InstanceGroupTypeMerit> allByGroupTypeMeritId = repository.getAllByGroupTypeMeritId(id);
+        return mapper.entityToDtoInfoList(allByGroupTypeMeritId);
     }
 
     @Override
@@ -69,6 +78,13 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     @PreAuthorize("hasAuthority('R_INSTANCE_GROUP_TYPE_MERIT')")
     public TotalResponse<InstanceGroupTypeMeritDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(repository, request, mapper::entityToDtoInfo);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('C_INSTANCE_GROUP_TYPE_MERIT')")
+    public List<InstanceGroupTypeMeritDTO.Info> createAll(List<InstanceGroupTypeMeritDTO.Create> requests) {
+        return requests.stream().map(this::create).toList();
     }
 
     @Override
@@ -104,6 +120,13 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     public void delete(Long id) {
         InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         repository.delete(instanceGroupTypeMerit);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('D_INSTANCE_GROUP_TYPE_MERIT')")
+    public void deleteAll(List<Long> ids) {
+        ids.forEach(this::delete);
     }
 
     @Override

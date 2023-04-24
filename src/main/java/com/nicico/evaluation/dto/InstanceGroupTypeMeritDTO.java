@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public abstract class InstanceGroupTypeMeritDTO {
+public class InstanceGroupTypeMeritDTO {
 
     @NotNull
     private Long instanceId;
@@ -91,6 +91,7 @@ public abstract class InstanceGroupTypeMeritDTO {
     @ApiModel("InstanceTupleInfo")
     public static class InstanceTupleDTO {
 
+        private Long id;
         private String title;
     }
 
