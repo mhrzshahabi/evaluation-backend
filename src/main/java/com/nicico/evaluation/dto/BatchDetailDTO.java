@@ -18,6 +18,7 @@ public abstract class BatchDetailDTO {
     @ApiModel("BatchDetailInfo")
     public static class Info extends BatchDetailDTO {
         private Long id;
+        private String statusCatalog;
     }
 
     @Getter

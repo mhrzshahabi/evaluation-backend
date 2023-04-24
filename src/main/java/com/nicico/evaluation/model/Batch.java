@@ -37,4 +37,13 @@ public class Batch extends Auditable {
     @Column(name = "status_catalog_id")
     private Long statusCatalogId;
 
+    @Transient
+    private Integer total;
+
+    @Transient
+    private Integer successfulNumber;
+
+    @Transient
+    private Integer failedNumber;
+
 }

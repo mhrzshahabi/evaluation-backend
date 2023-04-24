@@ -19,10 +19,10 @@ public abstract class BatchDTO {
     public static class Info extends BatchDTO {
         private Long id;
         private String titleCatalog;
+        private String statusCatalog;
         private Integer total;
         private Integer successfulNumber;
         private Integer failedNumber;
-        private String statusCatalog;
         private Float progress;
     }
 
@@ -31,7 +31,9 @@ public abstract class BatchDTO {
     @Accessors(chain = true)
     @ApiModel("BatchCreateRq")
     public static class Create extends BatchDTO {
-
+        private Long titleCatalogId;
+        private Long statusCatalogId;
+        private List<Object> inputDetails;
     }
 
     @Getter

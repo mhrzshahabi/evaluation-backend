@@ -25,5 +25,4 @@ public interface IInstanceGroupTypeMeritService {
 
     SearchDTO.SearchRs<InstanceGroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-
 }

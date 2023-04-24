@@ -32,7 +32,7 @@ public class InstanceGroupTypeMerit extends Auditable {
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "instance_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_instance_group_type_merit_to_instance"))
+    @JoinColumn(name = "instance_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_instance_group_type_merit_to_instance"))
     private Instance instance;
 
     @Column(name = "instance_id")

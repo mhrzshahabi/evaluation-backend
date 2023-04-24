@@ -28,6 +28,7 @@ public abstract class GroupTypeMeritDTO {
         private Long id;
         private MeritComponentDTO.Info meritComponent;
         private GroupTypeDTO.Info groupType;
+        private Boolean hasInstance;
     }
 
     @Getter

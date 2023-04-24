@@ -104,4 +104,10 @@ public class BatchDetailService implements IBatchDetailService {
         }
     }
 
+    @Override
+    public List<BatchDetailDTO.Info> getBatchDetailListByBatchId(Long batchId) {
+        List<BatchDetail> batchDetailList = repository.findAllByBatchId(batchId);
+        return mapper.entityToDtoInfoList(batchDetailList);
+    }
+
 }
