@@ -1,9 +1,16 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
+import com.nicico.evaluation.utility.ExcelGenerator;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface IInstanceService {
+
+    ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 
     InstanceDTO.SpecResponse list(int count, int startIndex);
 
