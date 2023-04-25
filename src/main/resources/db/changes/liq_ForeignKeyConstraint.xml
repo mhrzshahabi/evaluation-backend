@@ -58,13 +58,7 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_merit_component" validate="true"/>
     </changeSet>
-    <changeSet author="semami" id="1681120835">
-        <addForeignKeyConstraint baseColumnNames="instance_id"
-                                 baseTableName="tbl_group_type_merit"
-                                 constraintName="f_group_type_merit_to_instance" deferrable="false"
-                                 initiallyDeferred="false" referencedColumnNames="id"
-                                 referencedTableName="tbl_instance" validate="true"/>
-    </changeSet>
+
     <changeSet author="semami" id="1681120921">
         <addForeignKeyConstraint baseColumnNames="group_type_id"
                                  baseTableName="tbl_group_type_merit"

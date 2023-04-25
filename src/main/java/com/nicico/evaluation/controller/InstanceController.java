@@ -5,9 +5,12 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +27,19 @@ import java.util.List;
 public class InstanceController {
 
     private final IInstanceService service;
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return TotalResponse<InstanceDTO.Info> is the list of groupInfo entity that match the criteria
+     */
+    @PostMapping(value = "/export-excel")
+    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        ExcelGenerator.ExcelDownload excelDownload = service.downloadExcel(criteria);
+        return  ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
 
     /**
      * @param count      is the number of entity to every page

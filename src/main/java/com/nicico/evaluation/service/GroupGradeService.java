@@ -91,9 +91,9 @@ public class GroupGradeService implements IGroupGradeService {
     public List<GroupGradeDTO.Info> createGroupGrade(GroupGradeDTO.CreateAll dto) {
         List<GradeDTO.Info> grades = gradeService.getAllByCodeIn(dto.getGradeCodes());
         final Locale locale = LocaleContextHolder.getLocale();
-        Boolean validation = createValidation(grades);
-        if (Boolean.FALSE.equals(validation))
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.GradeIsInAnotherGroup, null, messageSource.getMessage("exception.grade.is.in.another.group", null, locale));
+        List<String> validation = createValidation(grades);
+        if (!validation.isEmpty())
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.GradeIsInAnotherGroup, null, messageSource.getMessage("exception.grade.is.in.another.group", null, locale) + validation);
 
         List<GroupGradeDTO.Create> createAllDto = new ArrayList<>();
         grades.forEach(grade -> {
@@ -108,10 +108,10 @@ public class GroupGradeService implements IGroupGradeService {
         return this.createAll(createAllDto);
     }
 
-    private Boolean createValidation(List<GradeDTO.Info> grades) {
+    private List<String> createValidation(List<GradeDTO.Info> grades) {
         List<Long> gradeIds = grades.stream().map(GradeDTO::getId).toList();
         List<GroupGrade> allByGradeIdIn = repository.findAllByGradeIdIn(gradeIds);
-        return allByGradeIdIn.isEmpty();
+        return allByGradeIdIn.stream().map(GroupGrade::getGradeTitle).toList();
     }
 
     @Override

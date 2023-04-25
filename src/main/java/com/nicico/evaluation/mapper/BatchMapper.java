@@ -54,25 +54,28 @@ public abstract class BatchMapper {
     @Named("getSuccessfulNumberByBatchId")
     Integer getSuccessfulNumberByBatchId(Long batchId) {
         List<BatchDetailDTO.Info> batchDetailList = batchDetailService.getBatchDetailListByBatchId(batchId);
-        return Math.toIntExact(batchDetailList.stream().filter(item -> item.getStatusCatalog().equals("موفق")).count());
+        return (int) batchDetailList.stream().filter(item -> item.getStatusCatalog().equals("موفق")).count();
     }
 
     @Named("getFailedNumberByBatchId")
     Integer getFailedNumberByBatchId(Long batchId) {
         List<BatchDetailDTO.Info> batchDetailList = batchDetailService.getBatchDetailListByBatchId(batchId);
-        return Math.toIntExact(batchDetailList.stream().filter(item -> item.getStatusCatalog().equals("ناموفق")).count());
+        return (int) batchDetailList.stream().filter(item -> item.getStatusCatalog().equals("ناموفق")).count();
     }
 
     @Named("getTotalNumberByBatchId")
     Integer getTotalNumberByBatchId(Long batchId) {
-        return Math.toIntExact(batchDetailService.getBatchDetailListByBatchId(batchId).size());
+        return batchDetailService.getBatchDetailListByBatchId(batchId).size();
     }
 
     @Named("getProgressByBatchId")
     Integer getProgressByBatchId(Long batchId) {
         List<BatchDetailDTO.Info> batchDetailList = batchDetailService.getBatchDetailListByBatchId(batchId);
-        Integer successful = Math.toIntExact(batchDetailList.stream().filter(item -> item.getStatusCatalog().equals("موفق")).count());
-        return null;
+        int successful = Math.toIntExact(batchDetailList.stream().filter(item -> item.getStatusCatalog().equals("موفق")).count());
+        if (successful != 0)
+            return successful/batchDetailList.size();
+        else
+            return 0;
     }
 
 }
