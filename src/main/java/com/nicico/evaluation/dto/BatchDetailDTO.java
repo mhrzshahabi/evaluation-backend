@@ -18,7 +18,11 @@ public abstract class BatchDetailDTO {
     @ApiModel("BatchDetailInfo")
     public static class Info extends BatchDetailDTO {
         private Long id;
+        private String description;
+        private String exceptionTitle;
+        private String inputDTO;
         private String statusCatalog;
+        private Long batchId;
     }
 
     @Getter
@@ -27,6 +31,8 @@ public abstract class BatchDetailDTO {
     @ApiModel("BatchDetailCreateRq")
     public static class Create extends BatchDetailDTO {
 
+        private String description;
+        private List<Object> inputDetails;
     }
 
     @Getter

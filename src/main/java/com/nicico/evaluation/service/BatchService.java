@@ -3,8 +3,12 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.BatchDTO;
+import com.nicico.evaluation.dto.BatchDetailDTO;
+import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IBatchDetailService;
 import com.nicico.evaluation.iservice.IBatchService;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.mapper.BatchMapper;
 import com.nicico.evaluation.model.Batch;
 import com.nicico.evaluation.repository.BatchRepository;
@@ -26,6 +30,8 @@ public class BatchService implements IBatchService {
     private final BatchMapper mapper;
     private final BatchRepository repository;
     private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
+    private final IBatchDetailService batchDetailService;
 
     @Override
     @Transactional(readOnly = true)
@@ -74,6 +80,10 @@ public class BatchService implements IBatchService {
         Batch batch = mapper.dtoCreateToEntity(dto);
         try {
             Batch save = repository.save(batch);
+            BatchDetailDTO.Create detailCreate = new BatchDetailDTO.Create();
+            CatalogDTO.Info catalogDTO = catalogService.get(dto.getTitleCatalogId());
+            detailCreate.setInputDetails(dto.getInputDetails());
+            BatchDetailDTO.Info batchDetailDTO = batchDetailService.create(detailCreate);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
