@@ -2,7 +2,7 @@ spring:
   application:
     name: evaluation-backend
   profiles:
-    active: Development
+    active: Staging
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
