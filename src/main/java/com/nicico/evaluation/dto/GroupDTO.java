@@ -18,7 +18,7 @@ public abstract class GroupDTO {
     private String code;
     private String title;
     private Boolean definitionAllowed;
-    @NotNull
+    @NotNull(message = "رده نمی تواند خالی باشد")
     private List<String> gradeCodes;
 
     @Getter
