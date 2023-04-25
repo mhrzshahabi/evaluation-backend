@@ -63,16 +63,9 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE_MERIT')")
     public GroupTypeMeritDTO.Info create(GroupTypeMeritDTO.Create dto) {
         GroupTypeMerit groupTypeMerit = mapper.dtoCreateToEntity(dto);
-        List<InstanceGroupTypeMeritDTO.Create> instanceGroupTypeMeritDTOList = new ArrayList<>();
         try {
             GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
-            dto.getInstanceIds().forEach(instanceId -> {
-                InstanceGroupTypeMeritDTO.Create instanceGroupTypeMeritDTO = new InstanceGroupTypeMeritDTO.Create();
-                instanceGroupTypeMeritDTO.setInstanceId(instanceId);
-                instanceGroupTypeMeritDTO.setGroupTypeMeritId(groupTypeMeritAdd.getId());
-                instanceGroupTypeMeritDTOList.add(instanceGroupTypeMeritDTO);
-            });
-            instanceGroupTypeMeritService.createAll(instanceGroupTypeMeritDTOList);
+            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), groupTypeMeritAdd.getId());
             return mapper.entityToDtoInfo(groupTypeMeritAdd);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
@@ -89,15 +82,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
             List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(dto.getId()).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
             if (!instanceGroupTypeIds.isEmpty())
                 instanceGroupTypeMeritService.deleteAll(instanceGroupTypeIds);
-            List<InstanceGroupTypeMeritDTO.Create> instanceGroupTypeMeritDTOList = new ArrayList<>();
-            dto.getInstanceIds().forEach(instanceId -> {
-                InstanceGroupTypeMeritDTO.Create instanceGroupTypeMeritDTO = new InstanceGroupTypeMeritDTO.Create();
-                instanceGroupTypeMeritDTO.setInstanceId(instanceId);
-                instanceGroupTypeMeritDTO.setGroupTypeMeritId(dto.getId());
-                instanceGroupTypeMeritDTOList.add(instanceGroupTypeMeritDTO);
-            });
-            instanceGroupTypeMeritService.createAll(instanceGroupTypeMeritDTOList);
-
+            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), dto.getId());
             GroupTypeMerit save = repository.save(groupTypeMerit);
             return mapper.entityToDtoInfo(save);
         } catch (
@@ -105,6 +90,17 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
 
+    }
+
+    private void createAllInstanceGroupTypeMerit(List<Long> instanceIds, Long id) {
+        List<InstanceGroupTypeMeritDTO.Create> instanceGroupTypeMeritDTOList = new ArrayList<>();
+        instanceIds.forEach(instanceId -> {
+            InstanceGroupTypeMeritDTO.Create instanceGroupTypeMeritDTO = new InstanceGroupTypeMeritDTO.Create();
+            instanceGroupTypeMeritDTO.setInstanceId(instanceId);
+            instanceGroupTypeMeritDTO.setGroupTypeMeritId(id);
+            instanceGroupTypeMeritDTOList.add(instanceGroupTypeMeritDTO);
+        });
+        instanceGroupTypeMeritService.createAll(instanceGroupTypeMeritDTOList);
     }
 
     @Override

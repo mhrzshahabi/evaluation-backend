@@ -27,6 +27,7 @@ public abstract class MeritComponentDTO {
         //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
         //todo
         private Boolean hasEvaluation = false;
+        private List<KPITypeDTO.Info> kpiType;
     }
 
     @Getter
@@ -35,6 +36,7 @@ public abstract class MeritComponentDTO {
     @ApiModel("MeritComponentCreateRq")
     public static class Create extends MeritComponentDTO {
 
+        private List<Long> kpiTypeId;
     }
 
     @Getter
@@ -44,6 +46,7 @@ public abstract class MeritComponentDTO {
     public static class Update extends MeritComponentDTO {
 
         private Long id;
+        private List<Long> kpiTypeId;
     }
 
     @Getter
@@ -53,6 +56,16 @@ public abstract class MeritComponentDTO {
     public static class Delete extends MeritComponentDTO {
 
         private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("KpiTypeTupleDTORq")
+    public static class KpiTypeTupleDTO   {
+
+        private String code;
+        private String title;
     }
 
     @Getter

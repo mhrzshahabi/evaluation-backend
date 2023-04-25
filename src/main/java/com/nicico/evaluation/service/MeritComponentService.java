@@ -3,12 +3,13 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.MeritComponentDTO;
+import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IMeritComponentService;
+import com.nicico.evaluation.iservice.IMeritComponentTypeService;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.repository.MeritComponentRepository;
-import liquibase.pro.packaged.B;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class MeritComponentService implements IMeritComponentService {
     private final MeritComponentMapper mapper;
     private final PageableMapper pageableMapper;
     private final MeritComponentRepository repository;
+    private final IMeritComponentTypeService meritComponentTypeService;
 
     @Override
     @Transactional(readOnly = true)
@@ -61,8 +64,9 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
         try {
-            MeritComponent save = repository.save(meritComponent);
-            return mapper.entityToDtoInfo(save);
+            MeritComponent meritComponentAdd = repository.save(meritComponent);
+            createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
+            return mapper.entityToDtoInfo(meritComponentAdd);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
@@ -75,11 +79,27 @@ public class MeritComponentService implements IMeritComponentService {
         MeritComponent meritComponent = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(meritComponent, dto);
         try {
+            List<Long> meritComponentTypeIds = meritComponentTypeService.findAllByMeritComponentId(meritComponent.getId()).stream().map(MeritComponentTypeDTO.Info::getId).toList();
+            if (!meritComponentTypeIds.isEmpty())
+                meritComponentTypeService.deleteAll(meritComponentTypeIds);
+            createAllMeritComponentType(dto.getKpiTypeId(), dto.getId());
             MeritComponent save = repository.save(meritComponent);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
+    }
+
+    private void createAllMeritComponentType(List<Long> kpiTypeId, Long id) {
+
+        List<MeritComponentTypeDTO.Create> createListDto = new ArrayList<>();
+        kpiTypeId.forEach(typeId -> {
+            MeritComponentTypeDTO.Create meritComponentTypeDTO = new MeritComponentTypeDTO.Create();
+            meritComponentTypeDTO.setMeritComponentId(id);
+            meritComponentTypeDTO.setKpiTypeId(typeId);
+            createListDto.add(meritComponentTypeDTO);
+        });
+        meritComponentTypeService.createAll(createListDto);
     }
 
     @Override
