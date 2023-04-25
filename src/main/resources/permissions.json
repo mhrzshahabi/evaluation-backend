@@ -219,6 +219,10 @@
     {
       "code": "D_POST_MERIT_INSTANCE",
       "title": "حذف پست - مولفه شایستگی- مصداق"
+    },
+    {
+      "code": "R_PERSONNEL",
+      "title": "نمایش پرسنل"
     }
   ]
 }

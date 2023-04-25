@@ -338,5 +338,10 @@
         <addNotNullConstraint tableName="tbl_post_merit_instance" columnName="instance_id"/>
         <addNotNullConstraint tableName="tbl_post_merit_instance" columnName="post_merit_component_id"/>
     </changeSet>
+    <changeSet author="semami" id="1682418097">
+        <addNotNullConstraint tableName="tbl_post_merit_component" columnName="merit_component_id"/>
+        <addNotNullConstraint tableName="tbl_post_merit_component" columnName="c_group_post_code"/>
+        <addNotNullConstraint tableName="tbl_post_merit_component" columnName="n_weight"/>
+    </changeSet>
 
 </databaseChangeLog>
