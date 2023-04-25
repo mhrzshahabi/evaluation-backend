@@ -53,4 +53,7 @@
     <changeSet id="1681899863" author="semami">
         <createSequence sequenceName="seq_post_merit_component_id"/>
     </changeSet>
+    <changeSet id="1682398865" author="semami">
+        <createSequence sequenceName="seq_post_merit_instance_id"/>
+    </changeSet>
 </databaseChangeLog>

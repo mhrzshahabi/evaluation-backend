@@ -203,6 +203,22 @@
     {
       "code": "D_POST_MERIT_COMPONENT",
       "title": "حذف پست - مولفه شایستگی"
+    },
+    {
+      "code": "R_POST_MERIT_INSTANCE",
+      "title": "نمایش پست - مولفه شایستگی - مصداق"
+    },
+    {
+      "code": "C_POST_MERIT_INSTANCE",
+      "title": "ایجاد پست - مولفه شایستگی- مصداق"
+    },
+    {
+      "code": "U_POST_MERIT_INSTANCE",
+      "title": "ویرایش پست - مولفه شایستگی- مصداق"
+    },
+    {
+      "code": "D_POST_MERIT_INSTANCE",
+      "title": "حذف پست - مولفه شایستگی- مصداق"
     }
   ]
 }

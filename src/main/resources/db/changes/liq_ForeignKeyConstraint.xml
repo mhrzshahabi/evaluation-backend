@@ -121,4 +121,18 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_merit_component" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1682398748">
+        <addForeignKeyConstraint baseColumnNames="post_merit_component_id"
+                                 baseTableName="tbl_post_merit_instance"
+                                 constraintName="f_post_merit_instance_to_post_merit_component" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_post_merit_component" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1682398812">
+        <addForeignKeyConstraint baseColumnNames="instance_id"
+                                 baseTableName="tbl_post_merit_instance"
+                                 constraintName="f_post_merit_instance_to_instance" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_instance" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

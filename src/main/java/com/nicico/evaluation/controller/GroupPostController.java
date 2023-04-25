@@ -52,5 +52,4 @@ public class GroupPostController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-
 }

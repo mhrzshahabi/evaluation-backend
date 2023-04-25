@@ -334,5 +334,9 @@
     <changeSet author="MShahabi" id="1681737861">
         <addNotNullConstraint tableName="tbl_instance_group_type_merit" columnName="instance_id"/>
     </changeSet>
+    <changeSet author="semami" id="1682399809">
+        <addNotNullConstraint tableName="tbl_post_merit_instance" columnName="instance_id"/>
+        <addNotNullConstraint tableName="tbl_post_merit_instance" columnName="post_merit_component_id"/>
+    </changeSet>
 
 </databaseChangeLog>
