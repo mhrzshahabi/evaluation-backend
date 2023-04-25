@@ -24,12 +24,21 @@ spring:
             token-uri-swagger: http://staging.icico.net.ir/oauth/token
             user-name-attribute: username
 nicico:
+  server:
+    url: http://staging.icico.net.ir/evaluation-backend
+  security:
+  #    sys-password: password
+
   upload:
-    dir: /var/nicico/${spring.application.name}/
+    dir: /var/nicico/${spring.application.name}/upload
+
 ui:
   redirect:
-    address: http://staging.icico.net.ir/evaluation-frontend/auth-redirect
+    #address: http://staging.icico.net.ir/evaluation-frontend/auth-redirect
+    address: http://staging.icico.net.ir/evaluation-frontend
 
   landing:
-    address: http://staging.icico.net.ir/evaluation-frontend
+    address: http://staging.icico.net.ir/evaluation-backend
+    #address: http://172.16.6.196:4200
+
 
