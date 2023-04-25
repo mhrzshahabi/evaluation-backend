@@ -18,10 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "Post MeritComponent")
 @RestController
-@RequestMapping(value = "/api/post-merit-Component")
+@RequestMapping(value = "/api/post-merit-component")
 public class PostMeritComponentController {
 
     private final IPostMeritComponentService service;
+
     /**
      * @param id is the postMeritComponent id
      * @return PostMeritComponentDTO.Info is the single postMeritComponent entity
@@ -77,8 +78,8 @@ public class PostMeritComponentController {
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<PostMeritComponentDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                 @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                                 @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                                     @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                     @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<PostMeritComponentDTO.Info> data = service.search(request);
         final PostMeritComponentDTO.Response response = new PostMeritComponentDTO.Response();

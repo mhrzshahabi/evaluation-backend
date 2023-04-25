@@ -2,8 +2,8 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.GroupPostDTO;
-import com.nicico.evaluation.iservice.IGroupPostService;
+import com.nicico.evaluation.dto.PersonnelDTO;
+import com.nicico.evaluation.iservice.IPersonnelService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Api(value = "Group Post")
+@Api(value = "Personnel")
 @RestController
-@RequestMapping(value = "/api/group-post")
-public class GroupPostController {
+@RequestMapping(value = "/api/personnel")
+public class PersonnelController {
 
-    private final IGroupPostService service;
+    private final IPersonnelService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<GroupPostDTO.Info> get(@PathVariable Long id) {
+    public ResponseEntity<PersonnelDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/list")
-    public ResponseEntity<GroupPostDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+    public ResponseEntity<PersonnelDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
@@ -35,16 +35,16 @@ public class GroupPostController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<GroupPostDTO.Info> is the list of groupPostInfo entity that match the criteria
+     * @return TotalResponse<PersonnelDTO.Info> is the list of PersonnelInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
-    public ResponseEntity<GroupPostDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+    public ResponseEntity<PersonnelDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                             @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupPostDTO.Info> data = service.search(request);
-        final GroupPostDTO.Response response = new GroupPostDTO.Response();
-        final GroupPostDTO.SpecResponse specRs = new GroupPostDTO.SpecResponse();
+        var data = service.search(request);
+        final PersonnelDTO.Response response = new PersonnelDTO.Response();
+        final PersonnelDTO.SpecResponse specRs = new PersonnelDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())
@@ -52,4 +52,5 @@ public class GroupPostController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
 }
