@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1682408453" author="namdari">
+        <sql>
+            create or replace synonym SYN_HRM_PERSONNEL for STG_HRM.view_personnel_evaluation;
+        </sql>
+    </changeSet>
+    <changeSet id="1682408454" author="namdari">
+        <sql>
+            create or replace synonym SYN_HRM_VIEW_GRADE for STG_HRM.VIEW_POST_GRADE;
+        </sql>
+    </changeSet>
+    <changeSet id="1682408455" author="namdari">
+        <sql>
+            create or replace synonym SYN_HRM_POST for STG_HRM.view_post_evaluation;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
