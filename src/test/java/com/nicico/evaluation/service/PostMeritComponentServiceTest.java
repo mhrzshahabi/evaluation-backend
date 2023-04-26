@@ -50,7 +50,7 @@ class PostMeritComponentServiceTest {
         // Setup
         // Configure PostMeritComponentRepository.findById(...).
         final Optional<PostMeritComponent> postMeritComponent = Optional.of(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L, 0L));
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L));
         when(mockRepository.findById(0L)).thenReturn(postMeritComponent);
 
         // Configure PostMeritComponentMapper.entityToDtoInfo(...).
@@ -70,10 +70,10 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         when(mockMapper.entityToDtoInfo(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L))).thenReturn(info);
 
         // Run the test
@@ -99,7 +99,7 @@ class PostMeritComponentServiceTest {
 
         // Configure PostMeritComponentRepository.findAll(...).
         final Page<PostMeritComponent> postMeritComponents = new PageImpl<>(
-                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L)));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(postMeritComponents);
 
@@ -120,11 +120,11 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         final List<PostMeritComponentDTO.Info> infos = List.of(info);
         when(mockMapper.entityToDtoInfoList(
-                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L)))).thenReturn(infos);
 
         // Run the test
@@ -140,12 +140,12 @@ class PostMeritComponentServiceTest {
 
         // Configure PostMeritComponentRepository.findAll(...).
         final Page<PostMeritComponent> postMeritComponents = new PageImpl<>(
-                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L)));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(postMeritComponents);
 
         when(mockMapper.entityToDtoInfoList(
-                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L)))).thenReturn(null);
 
         // Run the test
@@ -161,12 +161,12 @@ class PostMeritComponentServiceTest {
 
         // Configure PostMeritComponentRepository.findAll(...).
         final Page<PostMeritComponent> postMeritComponents = new PageImpl<>(
-                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L)));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(postMeritComponents);
 
         when(mockMapper.entityToDtoInfoList(
-                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                List.of(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L)))).thenReturn(Collections.emptyList());
 
         // Run the test
@@ -182,14 +182,14 @@ class PostMeritComponentServiceTest {
 
         // Configure PostMeritComponentMapper.dtoCreateToEntity(...).
         final PostMeritComponent postMeritComponent = new PostMeritComponent(0L, "groupPostCode",
-                new MeritComponent(0L, "title", "code"), 0L, 0L, 0L);
+                new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L);
         when(mockMapper.dtoCreateToEntity(any(PostMeritComponentDTO.Create.class))).thenReturn(postMeritComponent);
 
         // Configure PostMeritComponentRepository.save(...).
         final PostMeritComponent postMeritComponent1 = new PostMeritComponent(0L, "groupPostCode",
-                new MeritComponent(0L, "title", "code"), 0L, 0L, 0L);
+                new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L);
         when(mockRepository.save(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L))).thenReturn(postMeritComponent1);
 
         // Configure PostMeritComponentMapper.entityToDtoInfo(...).
@@ -209,10 +209,10 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         when(mockMapper.entityToDtoInfo(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L))).thenReturn(info);
 
         // Run the test
@@ -229,14 +229,14 @@ class PostMeritComponentServiceTest {
 
         // Configure PostMeritComponentRepository.findById(...).
         final Optional<PostMeritComponent> postMeritComponent = Optional.of(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L, 0L));
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L));
         when(mockRepository.findById(0L)).thenReturn(postMeritComponent);
 
         // Configure PostMeritComponentRepository.save(...).
         final PostMeritComponent postMeritComponent1 = new PostMeritComponent(0L, "groupPostCode",
-                new MeritComponent(0L, "title", "code"), 0L, 0L, 0L);
+                new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L);
         when(mockRepository.save(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L))).thenReturn(postMeritComponent1);
 
         // Configure PostMeritComponentMapper.entityToDtoInfo(...).
@@ -256,10 +256,10 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         when(mockMapper.entityToDtoInfo(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L,
                         0L))).thenReturn(info);
 
         // Run the test
@@ -267,7 +267,7 @@ class PostMeritComponentServiceTest {
 
         // Verify the results
         verify(mockMapper).update(
-                eq(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L, 0L)),
+                eq(new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L)),
                 any(PostMeritComponentDTO.Update.class));
     }
 
@@ -289,7 +289,7 @@ class PostMeritComponentServiceTest {
         // Setup
         // Configure PostMeritComponentRepository.findById(...).
         final Optional<PostMeritComponent> postMeritComponent = Optional.of(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L, 0L));
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L));
         when(mockRepository.findById(0L)).thenReturn(postMeritComponent);
 
         // Run the test
@@ -297,7 +297,7 @@ class PostMeritComponentServiceTest {
 
         // Verify the results
         verify(mockRepository).delete(
-                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L, 0L));
+                new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code",null), 0L, 0L, 0L));
     }
 
     @Test

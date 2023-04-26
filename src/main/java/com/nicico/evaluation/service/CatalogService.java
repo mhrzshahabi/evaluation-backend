@@ -109,4 +109,10 @@ public class CatalogService implements ICatalogService {
     public SearchDTO.SearchRs<CatalogDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
+
+    @Override
+    public Catalog getByCode(String code) {
+        Optional<Catalog> optionalCatalog = repository.findByCode(code);
+        return optionalCatalog.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    }
 }

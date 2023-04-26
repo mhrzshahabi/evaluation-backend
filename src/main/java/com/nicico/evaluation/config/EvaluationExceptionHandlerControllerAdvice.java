@@ -48,7 +48,7 @@ public class EvaluationExceptionHandlerControllerAdvice extends AbstractExceptio
             if (oracleDatabaseException.getOracleErrorNumber() == 1) {
 
                 String consoleMessage = oracleDatabaseException.getSql() + System.getProperty("line.separator") + oracleDatabaseException.getMessage();
-                return error(EvaluationHandleException.ErrorType.Forbidden, null, messageSource.getMessage("exception.duplicate.information", null, locale), consoleMessage);
+                return error(EvaluationHandleException.ErrorType.DuplicateRecord, null, messageSource.getMessage("exception.duplicate.information", null, locale), consoleMessage);
             }
         }
 

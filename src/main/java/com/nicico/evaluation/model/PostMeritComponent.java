@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
+// پست - شایستگی
 @Getter
 @Setter
 @Accessors(chain = true)

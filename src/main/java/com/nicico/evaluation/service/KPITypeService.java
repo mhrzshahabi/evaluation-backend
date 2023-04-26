@@ -8,6 +8,7 @@ import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.mapper.KPITypeMapper;
 import com.nicico.evaluation.model.KPIType;
 import com.nicico.evaluation.repository.KPITypeRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -71,6 +72,20 @@ public class KPITypeService implements IKPITypeService {
         try {
             KPIType save = repository.save(kpiType);
             return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('C_KPI_TYPE')")
+    public BaseResponse batchCreate(KPITypeDTO.Create dto) {
+        BaseResponse response = new BaseResponse();
+        KPIType kpiType = mapper.dtoCreateToEntity(dto);
+        try {
+            repository.save(kpiType);
+            response.setStatus(200);
+            return response;
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
