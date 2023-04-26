@@ -2,9 +2,9 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.KPITypeDTO;
+import com.nicico.evaluation.dto.SensitiveEventsDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IKPITypeService;
+import com.nicico.evaluation.iservice.ISensitiveEventsService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -21,53 +21,53 @@ import java.util.List;
 import java.util.Locale;
 
 @RequiredArgsConstructor
-@Api(value = "KPI Type")
+@Api(value = "Sensitive Events")
 @RestController
-@RequestMapping(value = "/api/kpi-type")
-public class KPITypeController {
+@RequestMapping(value = "/api/sensitive-events")
+public class SensitiveEventsController {
 
-    private final IKPITypeService service;
+    private final ISensitiveEventsService service;
     private final ResourceBundleMessageSource messageSource;
 
     /**
-     * @param id is the kPIType id
-     * @return KPITypeDTO.Info is the single kPIType entity
+     * @param id is the SensitiveEvents id
+     * @return SensitiveEventsDTO.Info is the single SensitiveEvents entity
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<KPITypeDTO.Info> get(@PathVariable Long id) {
+    public ResponseEntity<SensitiveEventsDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @return KPITypeDTO.SpecResponse that contain list of KPITypeDTO and the number of total entity
+     * @return SensitiveEventsDTO.SpecResponse that contain list of SensitiveEventsDTO and the number of total entity
      */
     @GetMapping(value = "/list")
-    public ResponseEntity<KPITypeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+    public ResponseEntity<SensitiveEventsDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
-     * @param request is the model of input for create kPIType entity
-     * @return KPITypeDTO.Info is the saved kPIType entity
+     * @param request is the model of input for create SensitiveEvents entity
+     * @return SensitiveEventsDTO.Info is the saved SensitiveEvents entity
      */
     @PostMapping
-    public ResponseEntity<KPITypeDTO.Info> create(@Valid @RequestBody KPITypeDTO.Create request) {
+    public ResponseEntity<SensitiveEventsDTO.Info> create(@Valid @RequestBody SensitiveEventsDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
-     * @param request is  the model of input for update kPIType entity
-     * @return KPITypeDTO.Info is the updated kPIType entity
+     * @param request is  the model of input for update SensitiveEvents entity
+     * @return SensitiveEventsDTO.Info is the updated SensitiveEvents entity
      */
     @PutMapping
-    public ResponseEntity<KPITypeDTO.Info> update(@Valid @RequestBody KPITypeDTO.Update request) {
+    public ResponseEntity<SensitiveEventsDTO.Info> update(@Valid @RequestBody SensitiveEventsDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
     /**
-     * @param id is the kPIType id for delete
+     * @param id is the SensitiveEvents id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
@@ -87,16 +87,16 @@ public class KPITypeController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<KPITypeDTO.Info> is the list of KPITypeInfo entity that match the criteria
+     * @return TotalResponse<SensitiveEventsDTO.Info> is the list of SensitiveEventsInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
-    public ResponseEntity<KPITypeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                          @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                          @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<SensitiveEventsDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<KPITypeDTO.Info> data = service.search(request);
-        final KPITypeDTO.Response response = new KPITypeDTO.Response();
-        final KPITypeDTO.SpecResponse specRs = new KPITypeDTO.SpecResponse();
+        SearchDTO.SearchRs<SensitiveEventsDTO.Info> data = service.search(request);
+        final SensitiveEventsDTO.Response response = new SensitiveEventsDTO.Response();
+        final SensitiveEventsDTO.SpecResponse specRs = new SensitiveEventsDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())
