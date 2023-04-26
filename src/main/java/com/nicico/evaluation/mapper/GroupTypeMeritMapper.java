@@ -20,7 +20,7 @@ public abstract class GroupTypeMeritMapper {
     public abstract GroupTypeMerit dtoCreateToEntity(GroupTypeMeritDTO.Create dto);
 
     @Mappings({
-            @Mapping(target = "hasInstance", source = "id", qualifiedByName = "getHasInstanceFromId"),
+//            @Mapping(target = "hasInstance", source = "id", qualifiedByName = "getHasInstanceFromId"),
             @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId"),
             @Mapping(target = "instance", source = "id", qualifiedByName = "getInstanceInfoFromId"),
     })
@@ -30,11 +30,11 @@ public abstract class GroupTypeMeritMapper {
 
     public abstract void update(@MappingTarget GroupTypeMerit entity, GroupTypeMeritDTO.Update dto);
 
-    @Named("getHasInstanceFromId")
-    Boolean getHasInstanceFromId(Long id) {
-        int instances = instanceGroupTypeMeritService.getAllInstanceByGroupTypeMeritId(id).size();
-        return instances != 0;
-    }
+//    @Named("getHasInstanceFromId")
+//    Boolean getHasInstanceFromId(Long id) {
+//        int instances = instanceGroupTypeMeritService.getAllInstanceByGroupTypeMeritId(id).size();
+//        return instances != 0;
+//    }
 
     @Named("getInstanceInfoFromId")
     List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> getInstanceInfoFromId(Long id) {

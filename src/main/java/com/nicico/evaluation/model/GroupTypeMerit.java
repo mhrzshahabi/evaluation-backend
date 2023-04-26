@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 //گروه - نوع - شایستگی
 
 @Getter
@@ -45,5 +46,16 @@ public class GroupTypeMerit extends Auditable {
     @NotNull
     @Column(name = "n_weight")
     private Long weight;
+
+    @OneToMany(mappedBy = "groupTypeMerit", fetch = FetchType.LAZY)
+    private List<InstanceGroupTypeMerit> instanceGroupTypeMerits;
+
+    @Transient
+    private Boolean hasInstance;
+
+    @PostLoad
+    public void updateHasInstance(){
+        hasInstance = !instanceGroupTypeMerits.isEmpty();
+    }
 
 }
