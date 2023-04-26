@@ -97,4 +97,20 @@
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="semami" id="1682489292">
+        <createView viewName="view_person" replaceIfExists="true">
+            <![CDATA[
+                  select
+                    rownum as id,
+                    person.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_PERSON
+                    )person
+            ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>
