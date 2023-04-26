@@ -26,8 +26,6 @@ public abstract class GroupTypeMeritDTO {
     public static class Info extends GroupTypeMeritDTO {
 
         private Long id;
-        private Long groupId;
-        private Long kpiTypeId;
         private MeritComponentDTO.Info meritComponent;
         private GroupTypeDTO.Info groupType;
         private Boolean hasInstance;
