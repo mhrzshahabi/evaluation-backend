@@ -129,4 +129,25 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_instance" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1682504625">
+        <addForeignKeyConstraint baseColumnNames="type_catalog_id"
+                                 baseTableName="tbl_sensitive_events"
+                                 constraintName="f_event_type_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1682504681">
+        <addForeignKeyConstraint baseColumnNames="event_policy_catalog_id"
+                                 baseTableName="tbl_sensitive_events"
+                                 constraintName="f_event_policy_status_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1682504723">
+        <addForeignKeyConstraint baseColumnNames="status_catalog_id"
+                                 baseTableName="tbl_sensitive_events"
+                                 constraintName="f_sensitive_events_status_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

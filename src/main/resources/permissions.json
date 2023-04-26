@@ -227,6 +227,22 @@
     {
       "code": "R_PERSON",
       "title": "نمایش اشخاص"
+    },
+    {
+      "code": "R_SENSITIVE_EVENTS",
+      "title": "نمایش وقایع حساس"
+    },
+    {
+      "code": "C_SENSITIVE_EVENTS",
+      "title": "ایجاد پست وقایع حساس"
+    },
+    {
+      "code": "U_SENSITIVE_EVENTS",
+      "title": "ویرایش وقایع حساس"
+    },
+    {
+      "code": "D_SENSITIVE_EVENTS",
+      "title": "حذف پست وقایع حساس"
     }
   ]
 }
