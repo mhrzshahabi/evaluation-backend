@@ -9,6 +9,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+//پست گروهی (بدون اسلش)
 @Getter
 @Setter
 @NoArgsConstructor
