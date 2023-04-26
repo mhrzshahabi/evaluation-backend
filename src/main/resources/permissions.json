@@ -223,6 +223,10 @@
     {
       "code": "R_PERSONNEL",
       "title": "نمایش پرسنل"
+    },
+    {
+      "code": "R_PERSON",
+      "title": "نمایش اشخاص"
     }
   ]
 }
