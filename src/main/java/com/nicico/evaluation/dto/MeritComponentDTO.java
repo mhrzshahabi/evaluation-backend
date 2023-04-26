@@ -27,7 +27,10 @@ public abstract class MeritComponentDTO {
         //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
         //todo
         private Boolean hasEvaluation = true;
-        private List<KPITypeDTO.Info> kpiType;
+        //بعدا امکان داره لیست بشه
+//        private List<KPITypeDTO.Info> kpiType;
+        private Long kpiTypeId;
+        private KPITypeDTO.Info kpiType;
     }
 
     @Getter

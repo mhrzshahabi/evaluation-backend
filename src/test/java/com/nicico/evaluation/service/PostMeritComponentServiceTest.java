@@ -70,7 +70,7 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         when(mockMapper.entityToDtoInfo(
                 new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
@@ -120,7 +120,7 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         final List<PostMeritComponentDTO.Info> infos = List.of(info);
         when(mockMapper.entityToDtoInfoList(
@@ -209,7 +209,7 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         when(mockMapper.entityToDtoInfo(
                 new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,
@@ -256,7 +256,7 @@ class PostMeritComponentServiceTest {
         catalogType.setCode("code");
         levelDefCatalog.setCatalogType(catalogType);
         kpiTypeDTO.setLevelDefCatalog(levelDefCatalog);
-        meritComponent.setKpiType(List.of(kpiTypeDTO));
+//        meritComponent.setKpiType(List.of(kpiTypeDTO));
         info.setMeritComponent(meritComponent);
         when(mockMapper.entityToDtoInfo(
                 new PostMeritComponent(0L, "groupPostCode", new MeritComponent(0L, "title", "code"), 0L, 0L,

@@ -21,7 +21,9 @@ public abstract class MeritComponentMapper {
     public abstract MeritComponent dtoCreateToEntity(MeritComponentDTO.Create dto);
 
     @Mappings({
-            @Mapping(target = "kpiType", source = "id", qualifiedByName = "getAllKpiTypeByMeritComponentId"),
+//            @Mapping(target = "kpiType", source = "id", qualifiedByName = "getAllKpiTypeByMeritComponentId"),
+            @Mapping(target = "kpiType", source = "id", qualifiedByName = "getKpiTypeByMeritComponentId"),
+            @Mapping(target = "kpiTypeId", source = "id", qualifiedByName = "getKpiTypeIdByMeritComponentId"),
     })
     public abstract MeritComponentDTO.Info entityToDtoInfo(MeritComponent entity);
 
@@ -29,8 +31,18 @@ public abstract class MeritComponentMapper {
 
     public abstract void update(@MappingTarget MeritComponent entity, MeritComponentDTO.Update dto);
 
-    @Named("getAllKpiTypeByMeritComponentId")
-    List<KPITypeDTO.Info> getAllKpiTypeByMeritComponentId(Long id) {
-        return meritComponentTypeService.findAllByMeritComponentId(id).stream().map(MeritComponentTypeDTO.Info::getKpiType).toList();
+//    @Named("getAllKpiTypeByMeritComponentId")
+//    List<KPITypeDTO.Info> getAllKpiTypeByMeritComponentId(Long id) {
+//        return meritComponentTypeService.findAllByMeritComponentId(id).stream().map(MeritComponentTypeDTO.Info::getKpiType).toList();
+//    }
+    @Named("getKpiTypeByMeritComponentId")
+    KPITypeDTO.Info getKpiTypeByMeritComponentId(Long id) {
+        MeritComponentTypeDTO.Info info=meritComponentTypeService.findFirstByMeritComponentId(id);
+        return ( info !=null && info.getKpiType()!=null ) ? info.getKpiType() : null;
+    }
+    @Named("getKpiTypeIdByMeritComponentId")
+    Long getKpiTypeIdByMeritComponentId(Long id) {
+        MeritComponentTypeDTO.Info info=meritComponentTypeService.findFirstByMeritComponentId(id);
+        return (info !=null && info.getKpiType()!=null && info.getKpiType().getId()!=null ) ? info.getKpiType().getId() : null;
     }
 }

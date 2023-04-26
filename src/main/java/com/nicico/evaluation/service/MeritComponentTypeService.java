@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +40,14 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
     public List<MeritComponentTypeDTO.Info> findAllByMeritComponentId(Long meritComponentId) {
         List<MeritComponentType> meritComponentTypeList = repository.findAllByMeritComponentId(meritComponentId);
         return mapper.entityToDtoInfoList(meritComponentTypeList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
+    public MeritComponentTypeDTO.Info findFirstByMeritComponentId(Long meritComponentId) {
+        Optional<MeritComponentType> optionalMeritComponentType = repository.findFirstByMeritComponentId(meritComponentId);
+        return optionalMeritComponentType.map(mapper::entityToDtoInfo).orElse(null);
     }
 
     @Override
