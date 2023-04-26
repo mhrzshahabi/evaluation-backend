@@ -2,6 +2,7 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 public interface IKPITypeService {
 
@@ -12,6 +13,8 @@ public interface IKPITypeService {
     SearchDTO.SearchRs<KPITypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     KPITypeDTO.Info create(KPITypeDTO.Create dto);
+
+    BaseResponse batchCreate(KPITypeDTO.Create dto);
 
     KPITypeDTO.Info update(KPITypeDTO.Update dto);
 

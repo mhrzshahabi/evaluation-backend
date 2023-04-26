@@ -29,9 +29,22 @@ public abstract class BatchDetailDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("BatchDetailCreateRq")
-    public static class Create extends BatchDetailDTO {
+    public static class Create {
 
         private String description;
+        private String inputDTO;
+        private Long statusCatalogId;
+        private Long batchId;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("BatchDetailCreateListRq")
+    public static class CreateList {
+
+        private Long batchId;
+        private String serviceType;
         private List<Object> inputDetails;
     }
 

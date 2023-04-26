@@ -53,7 +53,7 @@ public class BatchDetailController {
      * @return BatchDetailDTO.Info is the saved batchDetail entity
      */
     @PostMapping
-    public ResponseEntity<BatchDetailDTO.Info> create(@Valid @RequestBody BatchDetailDTO.Create request) {
+    public ResponseEntity<BatchDetailDTO.Info> create(@Valid @RequestBody BatchDetailDTO.CreateList request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 

@@ -13,9 +13,11 @@ public interface IBatchDetailService {
 
     SearchDTO.SearchRs<BatchDetailDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    BatchDetailDTO.Info create(BatchDetailDTO.Create dto);
+    BatchDetailDTO.Info create(BatchDetailDTO.CreateList dto);
 
     BatchDetailDTO.Info update(BatchDetailDTO.Update dto);
+
+    void updateStatus(String statsCode);
 
     void delete(Long id);
 

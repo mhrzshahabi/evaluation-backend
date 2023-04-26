@@ -70,21 +70,24 @@ public class BatchService implements IBatchService {
     public SearchDTO.SearchRs<BatchDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
 //        return BaseService.optimizedSearch(repository,  mapper::entityToDtoInfo, request);
         return null;
-
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_BATCH')")
+//    @PreAuthorize("hasAuthority('C_BATCH')")
     public BatchDTO.Info create(BatchDTO.Create dto) {
+        dto.setStatusCatalogId(catalogService.getByCode("In-progress").getId());
         Batch batch = mapper.dtoCreateToEntity(dto);
         try {
             Batch save = repository.save(batch);
-            BatchDetailDTO.Create detailCreate = new BatchDetailDTO.Create();
+            BatchDetailDTO.CreateList detailCreate = new BatchDetailDTO.CreateList();
             CatalogDTO.Info catalogDTO = catalogService.get(dto.getTitleCatalogId());
             detailCreate.setInputDetails(dto.getInputDetails());
+            detailCreate.setServiceType(catalogDTO.getCode());
+            detailCreate.setBatchId(save.getId());
             BatchDetailDTO.Info batchDetailDTO = batchDetailService.create(detailCreate);
-            return mapper.entityToDtoInfo(save);
+//            return mapper.entityToDtoInfo(save);
+            return null;
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
