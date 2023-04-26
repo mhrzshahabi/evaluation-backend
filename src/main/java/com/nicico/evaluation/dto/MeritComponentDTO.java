@@ -29,8 +29,7 @@ public abstract class MeritComponentDTO {
         private Boolean hasEvaluation = false;
         //بعدا امکان داره لیست بشه
 //        private List<KPITypeDTO.Info> kpiType;
-        private Long kpiTypeId;
-        private KPITypeDTO.Info kpiType;
+        private MeritComponentTypeDTO.Info meritComponentTypes;
     }
 
     @Getter

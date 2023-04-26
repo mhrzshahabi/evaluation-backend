@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses = MeritComponentMapper.class)
 public abstract class GroupTypeMeritMapper {
 
     @Lazy
@@ -21,6 +21,7 @@ public abstract class GroupTypeMeritMapper {
 
     @Mappings({
             @Mapping(target = "hasInstance", source = "id", qualifiedByName = "getHasInstanceFromId"),
+            @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId"),
             @Mapping(target = "instance", source = "id", qualifiedByName = "getInstanceInfoFromId"),
     })
     public abstract GroupTypeMeritDTO.Info entityToDtoInfo(GroupTypeMerit entity);
