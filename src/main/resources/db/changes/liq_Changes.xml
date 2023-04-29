@@ -637,4 +637,25 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet author="semami" id="1682753128">
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="c_description" type="VARCHAR2(2000 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_sensitive_event_person">
+            <column name="n_participation" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="semami" id="1682753758">
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="c_title"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="d_event_date"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="n_level_effect"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="type_catalog_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="event_policy_catalog_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="status_catalog_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="c_description"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="c_national_code"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="sensitive_event_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="merit_component_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="n_participation"/>
+    </changeSet>
 </databaseChangeLog>

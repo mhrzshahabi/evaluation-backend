@@ -28,9 +28,11 @@ public class SensitiveEvents extends Auditable {
     @Column(name = "c_title")
     private String title;
 
+    @NotNull
     @Column(name = "d_event_date")
     private Date eventDate;
 
+    @NotNull
     @Column(name = "n_level_effect")
     private Long levelEffect;
 
@@ -61,4 +63,6 @@ public class SensitiveEvents extends Auditable {
     @Column(name = "status_catalog_id")
     private Long statusCatalogId;
 
+    @Column(name = "c_description", length = 2000)
+    private String description;
 }
