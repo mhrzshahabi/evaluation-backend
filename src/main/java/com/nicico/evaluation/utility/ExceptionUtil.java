@@ -19,7 +19,7 @@ public class ExceptionUtil {
 
     /**
      * @param exception arising when delete an record before deleting its children
-     * @return hashmap containing table name and column id that
+     * @return hashmap containing table name and column id
      */
     private Map<String, String> getTableAndColumnCausedException(DataIntegrityViolationException exception) {
         Map<String, String> result = new HashMap<>();
@@ -61,6 +61,10 @@ public class ExceptionUtil {
         return result;
     }
 
+    /**
+     * @param exception arising when delete an record before deleting its children
+     * @return hashmap containing table name, column id and column name
+     */
     private Map<String, String> getTableAndColumnTitleAndRecordId(DataIntegrityViolationException exception) {
         Map<String, String> tableAndColumnCausedException = getTableAndColumnCausedException(exception);
 
