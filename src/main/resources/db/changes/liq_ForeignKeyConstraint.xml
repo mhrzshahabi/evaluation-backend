@@ -150,4 +150,18 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_catalog" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1682504724">
+        <addForeignKeyConstraint baseColumnNames="sensitive_event_id"
+                                 baseTableName="tbl_sensitive_event_person"
+                                 constraintName="f_sensitive_event_person_to_sensitive_event" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_sensitive_events" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1682747021">
+        <addForeignKeyConstraint baseColumnNames="merit_component_id"
+                                 baseTableName="tbl_sensitive_event_person"
+                                 constraintName="f_sensitive_event_person_to_merit_component" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_merit_component" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

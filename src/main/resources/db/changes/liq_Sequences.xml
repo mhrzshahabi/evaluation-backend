@@ -62,4 +62,8 @@
     <changeSet id="1682504288" author="semami">
         <createSequence sequenceName="seq_sensitive_events_id"/>
     </changeSet>
+
+    <changeSet id="1682746757" author="semami">
+        <createSequence sequenceName="sensitive_event_person_id"/>
+    </changeSet>
 </databaseChangeLog>

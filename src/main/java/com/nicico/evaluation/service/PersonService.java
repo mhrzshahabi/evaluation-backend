@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -40,11 +41,12 @@ public class PersonService implements IPersonService {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<Person> persons = repository.findAll(pageable);
         List<PersonDTO.Info> personInfos = mapper.entityToDtoInfoList(persons.getContent());
+        List<PersonDTO.Info> infos = personInfos.stream().filter(person -> Objects.nonNull(person.getPersonelId())).toList();
         PersonDTO.Response response = new PersonDTO.Response();
         PersonDTO.SpecResponse specResponse = new PersonDTO.SpecResponse();
 
-        if (personInfos != null) {
-            response.setData(personInfos)
+        if (infos != null) {
+            response.setData(infos)
                     .setStartRow(startIndex)
                     .setEndRow(startIndex + count)
                     .setTotalRows((int) persons.getTotalElements());
