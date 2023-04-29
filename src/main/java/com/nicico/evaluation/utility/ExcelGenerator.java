@@ -53,7 +53,9 @@ public class ExcelGenerator<T>{
         this.data = data;
         this.getDataFields();
     }
-
+    private String getFullHeaderName(){
+        return  "فاوا گستر مس";
+    }
 
     private void getDataFields() {
         T temp = data.get(0);
@@ -70,6 +72,7 @@ public class ExcelGenerator<T>{
         sheet.addMergedRegion(CellRangeAddress.valueOf("A1:O1"));
     }
 
+
     private void writeFullHeader(){
         Row row = sheet.createRow(0);
         CellStyle style = workbook.createCellStyle();
@@ -78,8 +81,7 @@ public class ExcelGenerator<T>{
         font.setFontHeight(28);
         style.setFont(font);
         style.setAlignment(HorizontalAlignment.CENTER);
-        String fullHeaderName = "فاوا گستر مس";
-        createCell(row, 0, fullHeaderName , style);
+        createCell(row, 0, getFullHeaderName(), style);
     }
 
 
@@ -93,7 +95,7 @@ public class ExcelGenerator<T>{
         int count = 0;
         String fieldName =  null;
         for(Field f : this.dataFields) {
-            fieldName = f.getName();
+            fieldName = f.getName().toLowerCase();
             if(fieldName == "id")
                 continue;
             createCell(row, count, PersianColumnName.getPersianColumnName(fieldName), style);
@@ -106,10 +108,10 @@ public class ExcelGenerator<T>{
             cell.setCellValue((Integer) valueOfCell);
         } else if (valueOfCell instanceof Long) {
             cell.setCellValue((Long) valueOfCell);
-        } else if (valueOfCell instanceof String) {
-            cell.setCellValue((String) valueOfCell);
         } else if (valueOfCell instanceof Boolean) {
             cell.setCellValue((Boolean) valueOfCell);
+        } else if (valueOfCell instanceof String) {
+            cell.setCellValue((String) valueOfCell);
         }
         cell.setCellStyle(style);
         sheet.autoSizeColumn(columnCount, true);
@@ -126,7 +128,7 @@ public class ExcelGenerator<T>{
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             for(Field f : this.dataFields) {
-                if(f.getName() == "id")
+                if(f.getName().toLowerCase() == "id")
                     continue;
                 f.setAccessible(true);
                 createCell(row, columnCount++, f.get(record), style);

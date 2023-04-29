@@ -1,7 +1,6 @@
 package com.nicico.evaluation.utility;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 import java.util.Arrays;
 
@@ -14,8 +13,12 @@ public enum PersianColumnName {
 
 
     public static String getPersianColumnName(String englishName){
+        if(englishName == null)
+            return "";
         final String fEnglishName = englishName.toLowerCase();
-        PersianColumnName ele = Arrays.stream(PersianColumnName.values()).filter(a -> a.name().toLowerCase().equals(fEnglishName)).findFirst().orElseThrow();
+        PersianColumnName ele = Arrays.stream(PersianColumnName.values()).filter(a -> a.name().toLowerCase().equals(fEnglishName)).findFirst().orElse(null);
+        if(ele == null)
+            return englishName;
         return ele.persianName;
     }
 }
