@@ -1,4 +1,4 @@
-package com.nicico.evaluation.utility;
+package com.nicico.evaluation.enums;
 
 import lombok.AllArgsConstructor;
 
