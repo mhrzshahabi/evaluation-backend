@@ -7,10 +7,10 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public abstract class GroupPostMapper {
+public  interface GroupPostMapper {
 
-    public abstract GroupPostDTO.Info entityToDtoInfo(GroupPost entity);
+      GroupPostDTO.Info entityToDtoInfo(GroupPost entity);
 
-    public abstract List<GroupPostDTO.Info> entityToDtoInfoList(List<GroupPost> entities);
+      List<GroupPostDTO.Info> entityToDtoInfoList(List<GroupPost> entities);
 
 }

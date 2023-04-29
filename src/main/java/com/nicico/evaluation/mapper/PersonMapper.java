@@ -7,10 +7,10 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public abstract class PersonMapper {
+public  interface PersonMapper {
 
-    public abstract PersonDTO.Info entityToDtoInfo(Person entity);
+      PersonDTO.Info entityToDtoInfo(Person entity);
 
-    public abstract List<PersonDTO.Info> entityToDtoInfoList(List<Person> entities);
+      List<PersonDTO.Info> entityToDtoInfoList(List<Person> entities);
 
 }
