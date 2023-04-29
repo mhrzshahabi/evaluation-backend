@@ -29,7 +29,7 @@ public class InstanceService implements IInstanceService {
 
     @Override
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        byte[] body = BaseService.exportAllExcel(repository, mapper::entityToDtoExcel, criteria, null);
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null);
         return new ExcelGenerator.ExcelDownload(body);
     }
 
