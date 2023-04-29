@@ -29,7 +29,7 @@ public abstract class GroupTypeMeritDTO {
         private MeritComponentDTO.Info meritComponent;
         private GroupTypeDTO.Info groupType;
         private Boolean hasInstance;
-        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instance;
+        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
     }
 
     @Getter

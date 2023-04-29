@@ -22,7 +22,7 @@ public abstract class GroupTypeMeritMapper {
     @Mappings({
 //            @Mapping(target = "hasInstance", source = "id", qualifiedByName = "getHasInstanceFromId"),
             @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId"),
-            @Mapping(target = "instance", source = "id", qualifiedByName = "getInstanceInfoFromId"),
+            @Mapping(target = "instanceGroupTypeMerits", source = "id", qualifiedByName = "getInstanceInfoFromId"),
     })
     public abstract GroupTypeMeritDTO.Info entityToDtoInfo(GroupTypeMerit entity);
 
