@@ -33,6 +33,10 @@ public class SensitiveEvents extends Auditable {
     private Date eventDate;
 
     @NotNull
+    @Column(name = "d_to_date")
+    private Date toDate;
+
+    @NotNull
     @Column(name = "n_level_effect")
     private Long levelEffect;
 

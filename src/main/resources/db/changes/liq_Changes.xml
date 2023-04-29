@@ -658,4 +658,9 @@
         <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="merit_component_id"/>
         <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="n_participation"/>
     </changeSet>
+    <changeSet author="semami" id="1682758362">
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="d_to_date" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
