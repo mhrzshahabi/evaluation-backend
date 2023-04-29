@@ -27,7 +27,7 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS_PERSONNEL')")
+    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS_PERSON')")
     public SensitiveEventPersonDTO.Info get(Long id) {
         SensitiveEventPerson sensitiveEventPerson = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(sensitiveEventPerson);
@@ -35,7 +35,7 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS_PERSONNEL')")
+    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS_PERSON')")
     public SensitiveEventPersonDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<SensitiveEventPerson> sensitiveEventPersonnel = repository.findAll(pageable);
@@ -56,7 +56,7 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_SENSITIVE_EVENTS_PERSONNEL')")
+    @PreAuthorize("hasAuthority('C_SENSITIVE_EVENTS_PERSON')")
     public SensitiveEventPersonDTO.Info create(SensitiveEventPersonDTO.Create dto) {
         SensitiveEventPerson sensitiveEventPerson = mapper.dtoCreateToEntity(dto);
         try {
@@ -69,7 +69,7 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_SENSITIVE_EVENTS_PERSONNEL')")
+    @PreAuthorize("hasAuthority('U_SENSITIVE_EVENTS_PERSON')")
     public SensitiveEventPersonDTO.Info update(SensitiveEventPersonDTO.Update dto) {
         SensitiveEventPerson sensitiveEventPerson = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(sensitiveEventPerson, dto);
@@ -83,7 +83,7 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_SENSITIVE_EVENTS_PERSONNEL')")
+    @PreAuthorize("hasAuthority('D_SENSITIVE_EVENTS_PERSON')")
     public void delete(Long id) {
         SensitiveEventPerson sensitiveEventPerson = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         repository.delete(sensitiveEventPerson);
@@ -91,7 +91,7 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS_PERSONNEL')")
+    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS_PERSON')")
     public SearchDTO.SearchRs<SensitiveEventPersonDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }

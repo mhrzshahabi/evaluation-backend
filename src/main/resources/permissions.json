@@ -245,19 +245,19 @@
       "title": "حذف وقایع حساس"
     },
     {
-      "code": "R_SENSITIVE_EVENTS_PERSONNEL",
+      "code": "R_SENSITIVE_EVENTS_PERSON",
       "title": "نمایش پرسنل وقایع حساس"
     },
     {
-      "code": "C_SENSITIVE_EVENTS_PERSONNEL",
+      "code": "C_SENSITIVE_EVENTS_PERSON",
       "title": "ایجاد پرسنل وقایع حساس"
     },
     {
-      "code": "U_SENSITIVE_EVENTS_PERSONNEL",
+      "code": "U_SENSITIVE_EVENTS_PERSON",
       "title": "ویرایش پرسنل وقایع حساس"
     },
     {
-      "code": "D_SENSITIVE_EVENTS_PERSONNEL",
+      "code": "D_SENSITIVE_EVENTS_PERSON",
       "title": "حذف پرسنل وقایع حساس"
     }
   ]
