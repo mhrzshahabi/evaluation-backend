@@ -1,5 +1,7 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.CatalogTypeDTO;
@@ -50,13 +52,15 @@ class SensitiveEventsServiceTest {
         // Setup
         // Configure SensitiveEventsRepository.findById(...).
         final Optional<SensitiveEvents> sensitiveEvents = Optional.of(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"));
         when(mockRepository.findById(0L)).thenReturn(sensitiveEvents);
 
         // Configure SensitiveEventsMapper.entityToDtoInfo(...).
@@ -81,14 +85,15 @@ class SensitiveEventsServiceTest {
         eventPolicyCatalog.setCatalogType(catalogType1);
         info.setEventPolicyCatalog(eventPolicyCatalog);
         when(mockMapper.entityToDtoInfo(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)))
-                .thenReturn(info);
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"))).thenReturn(info);
 
         // Run the test
         final SensitiveEventsDTO.Info result = sensitiveEventsServiceUnderTest.get(0L);
@@ -112,13 +117,15 @@ class SensitiveEventsServiceTest {
 
         // Configure SensitiveEventsRepository.findAll(...).
         final Page<SensitiveEvents> sensitiveEvents = new PageImpl<>(
-                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description")));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(sensitiveEvents);
 
         // Configure SensitiveEventsMapper.entityToDtoInfoList(...).
@@ -144,14 +151,15 @@ class SensitiveEventsServiceTest {
         info.setEventPolicyCatalog(eventPolicyCatalog);
         final List<SensitiveEventsDTO.Info> infos = List.of(info);
         when(mockMapper.entityToDtoInfoList(
-                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L))))
-                .thenReturn(infos);
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description")))).thenReturn(infos);
 
         // Run the test
         final SensitiveEventsDTO.SpecResponse result = sensitiveEventsServiceUnderTest.list(0, 0);
@@ -166,24 +174,27 @@ class SensitiveEventsServiceTest {
 
         // Configure SensitiveEventsRepository.findAll(...).
         final Page<SensitiveEvents> sensitiveEvents = new PageImpl<>(
-                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description")));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(sensitiveEvents);
 
         when(mockMapper.entityToDtoInfoList(
-                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L))))
-                .thenReturn(null);
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description")))).thenReturn(null);
 
         // Run the test
         final SensitiveEventsDTO.SpecResponse result = sensitiveEventsServiceUnderTest.list(0, 0);
@@ -198,24 +209,27 @@ class SensitiveEventsServiceTest {
 
         // Configure SensitiveEventsRepository.findAll(...).
         final Page<SensitiveEvents> sensitiveEvents = new PageImpl<>(
-                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description")));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(sensitiveEvents);
 
         when(mockMapper.entityToDtoInfoList(
-                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                List.of(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L))))
-                .thenReturn(Collections.emptyList());
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description")))).thenReturn(Collections.emptyList());
 
         // Run the test
         final SensitiveEventsDTO.SpecResponse result = sensitiveEventsServiceUnderTest.list(0, 0);
@@ -230,33 +244,36 @@ class SensitiveEventsServiceTest {
 
         // Configure SensitiveEventsMapper.dtoCreateToEntity(...).
         final SensitiveEvents sensitiveEvents = new SensitiveEvents(0L, "title",
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                 new Catalog(0L, "title", "code", "description",
                         new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                 new Catalog(0L, "title", "code", "description",
                         new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                 new Catalog(0L, "title", "code", "description",
-                        new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L);
+                        new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L, "description");
         when(mockMapper.dtoCreateToEntity(any(SensitiveEventsDTO.Create.class))).thenReturn(sensitiveEvents);
 
         // Configure SensitiveEventsRepository.save(...).
         final SensitiveEvents sensitiveEvents1 = new SensitiveEvents(0L, "title",
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                 new Catalog(0L, "title", "code", "description",
                         new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                 new Catalog(0L, "title", "code", "description",
                         new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                 new Catalog(0L, "title", "code", "description",
-                        new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L);
+                        new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L, "description");
         when(mockRepository.save(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)))
-                .thenReturn(sensitiveEvents1);
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"))).thenReturn(sensitiveEvents1);
 
         // Configure SensitiveEventsMapper.entityToDtoInfo(...).
         final SensitiveEventsDTO.Info info = new SensitiveEventsDTO.Info();
@@ -280,14 +297,15 @@ class SensitiveEventsServiceTest {
         eventPolicyCatalog.setCatalogType(catalogType1);
         info.setEventPolicyCatalog(eventPolicyCatalog);
         when(mockMapper.entityToDtoInfo(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)))
-                .thenReturn(info);
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"))).thenReturn(info);
 
         // Run the test
         final SensitiveEventsDTO.Info result = sensitiveEventsServiceUnderTest.create(dto);
@@ -303,33 +321,37 @@ class SensitiveEventsServiceTest {
 
         // Configure SensitiveEventsRepository.findById(...).
         final Optional<SensitiveEvents> sensitiveEvents = Optional.of(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"));
         when(mockRepository.findById(0L)).thenReturn(sensitiveEvents);
 
         // Configure SensitiveEventsRepository.save(...).
         final SensitiveEvents sensitiveEvents1 = new SensitiveEvents(0L, "title",
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                 new Catalog(0L, "title", "code", "description",
                         new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                 new Catalog(0L, "title", "code", "description",
                         new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                 new Catalog(0L, "title", "code", "description",
-                        new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L);
+                        new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L, "description");
         when(mockRepository.save(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)))
-                .thenReturn(sensitiveEvents1);
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"))).thenReturn(sensitiveEvents1);
 
         // Configure SensitiveEventsMapper.entityToDtoInfo(...).
         final SensitiveEventsDTO.Info info = new SensitiveEventsDTO.Info();
@@ -353,28 +375,30 @@ class SensitiveEventsServiceTest {
         eventPolicyCatalog.setCatalogType(catalogType1);
         info.setEventPolicyCatalog(eventPolicyCatalog);
         when(mockMapper.entityToDtoInfo(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)))
-                .thenReturn(info);
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"))).thenReturn(info);
 
         // Run the test
         final SensitiveEventsDTO.Info result = sensitiveEventsServiceUnderTest.update(dto);
 
         // Verify the results
         verify(mockMapper).update(
-                eq(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                eq(new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L)),
-                any(SensitiveEventsDTO.Update.class));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description")), any(SensitiveEventsDTO.Update.class));
     }
 
     @Test
@@ -395,13 +419,15 @@ class SensitiveEventsServiceTest {
         // Setup
         // Configure SensitiveEventsRepository.findById(...).
         final Optional<SensitiveEvents> sensitiveEvents = Optional.of(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"));
         when(mockRepository.findById(0L)).thenReturn(sensitiveEvents);
 
         // Run the test
@@ -409,13 +435,15 @@ class SensitiveEventsServiceTest {
 
         // Verify the results
         verify(mockRepository).delete(
-                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
+                new SensitiveEvents(0L, "title", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
                                 new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
                         new Catalog(0L, "title", "code", "description",
-                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L));
+                                new CatalogType(0L, "title", "code", "description", List.of()), 0L), 0L,
+                        "description"));
     }
 
     @Test
