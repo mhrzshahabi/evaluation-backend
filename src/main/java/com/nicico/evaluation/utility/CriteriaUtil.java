@@ -27,7 +27,11 @@ public class CriteriaUtil {
                 EOperator operator;
                 if ("select".equals(criteria.getType())) {
                     operator = EOperator.equals;
-                } else {
+                } else if ("null".equals(criteria.getType())){
+                    operator = EOperator.isNull;
+                }else if ("notNull".equals(criteria.getType())){
+                    operator = EOperator.notNull;
+                }else {
                     operator = EOperator.contains;
                 }
                 criteriaRq=makeCriteria(criteria.getField(), (criteria.getValues()!=null  && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
