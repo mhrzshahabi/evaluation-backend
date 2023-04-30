@@ -6,6 +6,7 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IBatchDetailService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,7 +29,7 @@ public class BatchDetailController {
 
     private final IBatchDetailService service;
     private final ResourceBundleMessageSource messageSource;
-
+    private final ExceptionUtil exceptionUtil;
     /**
      * @param id is the batchDetail id
      * @return BatchDetailDTO.Info is the single batchDetail entity
@@ -77,7 +78,8 @@ public class BatchDetailController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }

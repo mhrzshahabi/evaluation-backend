@@ -1,6 +1,6 @@
 package com.nicico.evaluation.utility;
 
-import com.nicico.evaluation.enums.EntityJunctions;
+import com.nicico.evaluation.enums.EntityManagement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -154,7 +154,7 @@ public class ExceptionUtil {
         sb.append(resultList.size());
         sb.append(" مورد از بخش (");
         try {
-            sb.append(EntityJunctions.valueOf(tableName).getTitle());
+            sb.append(EntityManagement.valueOf(tableName).getTitle());
         } catch (IllegalArgumentException e) {
             sb.append("نامشخص");
         }

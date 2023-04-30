@@ -6,6 +6,7 @@ import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,8 +27,9 @@ import java.util.Locale;
 @RequestMapping(value = "/api/kpi-type")
 public class KPITypeController {
 
-    private final IKPITypeService service;
     private final ResourceBundleMessageSource messageSource;
+    private final ExceptionUtil exceptionUtil;
+    private final IKPITypeService service;
 
     /**
      * @param id is the kPIType id
@@ -77,7 +79,8 @@ public class KPITypeController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }

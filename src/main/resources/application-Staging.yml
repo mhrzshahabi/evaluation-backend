@@ -33,3 +33,5 @@ ui:
   landing:
     address: http://staging.icico.net.ir/evaluation-frontend
 
+    fmsGroupId: '644e026765b7d401c7853fd7'
+    fmsUrl: 'http://storage.icico.net.ir/fms/file'

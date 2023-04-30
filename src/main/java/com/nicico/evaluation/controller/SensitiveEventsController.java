@@ -6,6 +6,7 @@ import com.nicico.evaluation.dto.SensitiveEventsDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ISensitiveEventsService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,7 +29,7 @@ public class SensitiveEventsController {
 
     private final ISensitiveEventsService service;
     private final ResourceBundleMessageSource messageSource;
-
+    private final ExceptionUtil exceptionUtil;
     /**
      * @param id is the SensitiveEvents id
      * @return SensitiveEventsDTO.Info is the single SensitiveEvents entity
@@ -77,7 +78,8 @@ public class SensitiveEventsController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
