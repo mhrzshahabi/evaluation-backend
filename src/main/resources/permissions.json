@@ -259,6 +259,22 @@
     {
       "code": "D_SENSITIVE_EVENTS_PERSON",
       "title": "حذف پرسنل وقایع حساس"
+    },
+    {
+      "code": "R_EVALUATION_PERIOD",
+      "title": "نمایش دوره ارزیابی"
+    },
+    {
+      "code": "C_EVALUATION_PERIOD",
+      "title": "ایجاد دوره ارزیابی"
+    },
+    {
+      "code": "U_EVALUATION_PERIOD",
+      "title": "ویرایش دوره ارزیابی"
+    },
+    {
+      "code": "D_EVALUATION_PERIOD",
+      "title": "حذف دوره ارزیابی"
     }
   ]
 }
