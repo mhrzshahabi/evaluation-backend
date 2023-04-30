@@ -84,8 +84,8 @@ public class GroupController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
-            String recordsByParentId = exceptionUtil.getRecordsByParentId(violationException, id);
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + recordsByParentId);
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
