@@ -6,6 +6,7 @@ import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -29,6 +30,7 @@ public class GroupController {
 
     private final IGroupService service;
     private final ResourceBundleMessageSource messageSource;
+    private final ExceptionUtil exceptionUtil;
 
     /**
      * @param count      is the number of entity to every page
@@ -82,7 +84,8 @@ public class GroupController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
