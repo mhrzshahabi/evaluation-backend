@@ -6,9 +6,11 @@ import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,8 @@ import java.util.Locale;
 public class InstanceGroupTypeMeritController {
 
     private final IInstanceGroupTypeMeritService service;
-
+    private final ResourceBundleMessageSource messageSource;
+    private final ExceptionUtil exceptionUtil;
     /**
      * @param id is the instanceGroupTypeMerit id
      * @return InstanceGroupTypeMeritDTO.Info is the single instanceGroupTypeMerit entity
