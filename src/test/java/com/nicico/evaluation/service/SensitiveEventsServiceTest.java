@@ -455,5 +455,4 @@ class SensitiveEventsServiceTest {
         assertThatThrownBy(() -> sensitiveEventsServiceUnderTest.delete(0L))
                 .isInstanceOf(EvaluationHandleException.class);
     }
-
 }

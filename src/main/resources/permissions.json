@@ -259,6 +259,22 @@
     {
       "code": "D_SENSITIVE_EVENTS_PERSON",
       "title": "حذف پرسنل وقایع حساس"
+    },
+    {
+      "code": "R_ATTACHMENT",
+      "title": "نمایش پیوست"
+    },
+    {
+      "code": "C_ATTACHMENT",
+      "title": "ایجاد پیوست"
+    },
+    {
+      "code": "U_ATTACHMENT",
+      "title": "ویرایش پیوست"
+    },
+    {
+      "code": "D_ATTACHMENT",
+      "title": "حذف پیوست"
     }
   ]
 }

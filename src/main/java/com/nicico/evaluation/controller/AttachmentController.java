@@ -1,15 +1,15 @@
 package com.nicico.evaluation.controller;
 
-import com.ctc.wstx.util.ExceptionUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.AttachmentDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.SensitiveEventPersonDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.ISensitiveEventPersonService;
+import com.nicico.evaluation.iservice.IAttachmentService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,54 +23,62 @@ import java.util.List;
 import java.util.Locale;
 
 @RequiredArgsConstructor
-@Api(value = "Sensitive Event Person")
+@Api(value = "Attachment")
 @RestController
-@RequestMapping(value = "/api/sensitive-event-person")
-public class SensitiveEventPersonController {
+@RequestMapping(value = "/api/attachment")
+public class AttachmentController {
 
-    private final ISensitiveEventPersonService service;
+    @Value("${ui.landing.fmsUrl}")
+    private String fmsUrl;
+    @Value("${ui.landing.fmsGroupId}")
+    private String fmsGroupId;
+    private final IAttachmentService service;
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
 
     /**
-     * @param id is the SensitiveEventPerson id
-     * @return SensitiveEventPersonDTO.Info is the single SensitiveEventPerson entity
-     */
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<SensitiveEventPersonDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
-    }
-
-    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @return SensitiveEventPersonDTO.SpecResponse that contain list of SensitiveEventPersonDTO and the number of total entity
+     * @return AttachmentDTO.SpecResponse that contain list of groupInfoDto and the number of total entity
      */
     @GetMapping(value = "/list")
-    public ResponseEntity<SensitiveEventPersonDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+    public ResponseEntity<AttachmentDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
-     * @param request is the model of input for create SensitiveEventPerson entity
-     * @return SensitiveEventPersonDTO.Info is the saved SensitiveEventPerson entity
+     * @param id is the group id
+     * @return AttachmentDTO.Info  is the single group entity
+     */
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<AttachmentDTO.Info> get(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
+        }
+    }
+
+    /**
+     * @param request is the model of input for create group entity
+     * @return AttachmentDTOInfo is the saved group entity
      */
     @PostMapping
-    public ResponseEntity<SensitiveEventPersonDTO.Info> create(@Valid @RequestBody SensitiveEventPersonDTO.Create request) {
+    public ResponseEntity<AttachmentDTO.Info> create(@Valid @RequestBody AttachmentDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
-     * @param request is  the model of input for update SensitiveEventPerson entity
-     * @return SensitiveEventPersonDTO.Info is the updated SensitiveEventPerson entity
+     * @param request is  the model of input for update group entity
+     * @return AttachmentDTOInfo is the updated group entity
      */
     @PutMapping
-    public ResponseEntity<SensitiveEventPersonDTO.Info> update(@Valid @RequestBody SensitiveEventPersonDTO.Update request) {
+    public ResponseEntity<AttachmentDTO.Info> update(@Valid @RequestBody AttachmentDTO.Update request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 
     /**
-     * @param id is the SensitiveEventPerson id for delete
+     * @param id is the group id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
@@ -91,22 +99,29 @@ public class SensitiveEventPersonController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<SensitiveEventPersonDTO.Info> is the list of SensitiveEventPersonInfo entity that match the criteria
+     * @return TotalResponse<AttachmentDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
-    public ResponseEntity<SensitiveEventPersonDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                       @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                                       @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<AttachmentDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                             @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<SensitiveEventPersonDTO.Info> data = service.search(request);
-        final SensitiveEventPersonDTO.Response response = new SensitiveEventPersonDTO.Response();
-        final SensitiveEventPersonDTO.SpecResponse specRs = new SensitiveEventPersonDTO.SpecResponse();
+        SearchDTO.SearchRs<AttachmentDTO.Info> data = service.search(request);
+        final AttachmentDTO.Response response = new AttachmentDTO.Response();
+        final AttachmentDTO.SpecResponse specRs = new AttachmentDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getFmsInfo")
+    public ResponseEntity<AttachmentDTO.FmsInfo> getFmsInfo() {
+        AttachmentDTO.FmsInfo fmsInfo = new AttachmentDTO.FmsInfo();
+        fmsInfo.setFmsUrl(fmsUrl).setFmsGroupId(fmsGroupId);
+        return new ResponseEntity<>(fmsInfo, HttpStatus.OK);
     }
 
 }

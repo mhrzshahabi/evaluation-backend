@@ -422,4 +422,26 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="1682921657" author="semami">
+        <createTable tableName="tbl_attachment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_attachment_PK"/>
+            </column>
+            <column name="c_fms_key" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_object_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_group_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_object" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
