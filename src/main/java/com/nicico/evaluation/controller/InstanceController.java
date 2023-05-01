@@ -3,11 +3,16 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/instance")
@@ -26,6 +32,8 @@ import java.util.List;
 @AllArgsConstructor
 public class InstanceController {
 
+    private final ResourceBundleMessageSource messageSource;
+    private final ExceptionUtil exceptionUtil;
     private final IInstanceService service;
 
     /**
@@ -84,8 +92,16 @@ public class InstanceController {
      */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> delete(@PathVariable @Min(1) Long id) {
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            service.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataIntegrityViolationException violationException) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
+        }
     }
 
     /**

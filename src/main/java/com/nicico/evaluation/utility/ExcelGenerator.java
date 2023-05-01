@@ -7,12 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import lombok.AllArgsConstructor;
+import com.nicico.evaluation.enums.PersianColumnName;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -39,7 +38,7 @@ public class ExcelGenerator<T>{
 
     private List<T> data;
     private Field[] dataFields;
-    private XSSFWorkbook workbook;
+    private final XSSFWorkbook workbook;
     private XSSFSheet sheet;
 
     public ExcelGenerator() {
@@ -55,31 +54,81 @@ public class ExcelGenerator<T>{
         this.data = data;
         this.getDataFields();
     }
-
+    private String getFullHeaderName(){
+        return  "فاوا گستر مس";
+    }
 
     private void getDataFields() {
         T temp = data.get(0);
         dataFields = temp.getClass().getDeclaredFields();
     }
+
     private void createSheet(String sheetName) {
         if(Objects.isNull(sheetName) || sheetName.trim().isEmpty()) {
             sheetName = this.data.get(0).getClass().getName();
             sheetName = sheetName.substring(sheetName.lastIndexOf(".")+1);
         }
         sheet = workbook.createSheet(sheetName);
+        sheet.setRightToLeft(Boolean.TRUE);
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 9));
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 9));
+    }
+
+    private CellStyle getCellStyle(Integer fontHeight, Boolean isBold){
+        CellStyle style = workbook.createCellStyle();
+        XSSFFont font = workbook.createFont();
+        font.setBold(isBold);
+        font.setFontHeight(fontHeight);
+        style.setFont(font);
+        return style;
     }
 
 
-    private void writeHeader() {
+    private void writeFullHeader(){
         Row row = sheet.createRow(0);
-        CellStyle style = workbook.createCellStyle();
-        XSSFFont font = workbook.createFont();
-        font.setBold(true);
-        style.setFont(font);
+        CellStyle style = getCellStyle(26, Boolean.TRUE);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        createCell(row, 0, getFullHeaderName(), style);
+    }
+
+    private void writeSubFullHeader(String subFullHeader){
+        Row row = sheet.createRow(1);
+        CellStyle style = getCellStyle(20, Boolean.TRUE);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        createCell(row, 0, subFullHeader, style);
+    }
+
+
+
+    private void writeHeader() {
+        Row row = sheet.createRow(2);
+        CellStyle style = getCellStyle(18, Boolean.TRUE);
+        style.setAlignment(HorizontalAlignment.CENTER);
         int count = 0;
+        String fieldName =  null;
         for(Field f : this.dataFields) {
-            createCell(row, count, f.getName() , style);
+            fieldName = f.getName().toLowerCase();
+            if(fieldName.equals("id"))
+                continue;
+            createCell(row, count, PersianColumnName.getPersianColumnName(fieldName), style);
             count++;
+        }
+    }
+
+
+
+    private void write() throws IllegalArgumentException, IllegalAccessException  {
+        int rowCount = 3;
+        CellStyle style = getCellStyle(16, Boolean.FALSE);
+        for (T record : this.data) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            for(Field f : this.dataFields) {
+                if(f.getName().toLowerCase().equals("id"))
+                    continue;
+                f.setAccessible(true);
+                createCell(row, columnCount++, f.get(record), style);
+            }
         }
     }
     private void createCell(Row row, int columnCount, Object valueOfCell, CellStyle style) {
@@ -88,35 +137,21 @@ public class ExcelGenerator<T>{
             cell.setCellValue((Integer) valueOfCell);
         } else if (valueOfCell instanceof Long) {
             cell.setCellValue((Long) valueOfCell);
-        } else if (valueOfCell instanceof String) {
-            cell.setCellValue((String) valueOfCell);
         } else if (valueOfCell instanceof Boolean) {
             cell.setCellValue((Boolean) valueOfCell);
+        } else if (valueOfCell instanceof String) {
+            cell.setCellValue((String) valueOfCell);
         }
         cell.setCellStyle(style);
         sheet.autoSizeColumn(columnCount, true);
     }
 
 
-    private void write() throws IllegalArgumentException, IllegalAccessException  {
-        int rowCount = 1;
-        CellStyle style = workbook.createCellStyle();
-        XSSFFont font = workbook.createFont();
-        font.setFontHeight(14);
-        style.setFont(font);
-        for (T record : this.data) {
-            Row row = sheet.createRow(rowCount++);
-            int columnCount = 0;
-            for(Field f : this.dataFields) {
-                f.setAccessible(true);
-                createCell(row, columnCount++, f.get(record), style);
-            }
-        }
-    }
-
-    public void generateSheet(String sheetName) {
+    public void generateSheet(String sheetName, String subFullHeader) {
         try {
             createSheet(sheetName);
+            writeFullHeader();
+            writeSubFullHeader(subFullHeader);
             writeHeader();
             write();
         } catch (IllegalArgumentException | IllegalAccessException e) {
