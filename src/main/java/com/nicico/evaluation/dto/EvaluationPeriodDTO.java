@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -13,11 +14,17 @@ import java.util.List;
 @Accessors(chain = true)
 public class EvaluationPeriodDTO {
 
+    @NotNull
     private String title;
+    @NotNull
     private Date startDate;
+    @NotNull
     private Date endDate;
+    @NotNull
     private Date startDateAssessment;
+    @NotNull
     private Date endDateAssessment;
+
     private String description;
 
     @Getter

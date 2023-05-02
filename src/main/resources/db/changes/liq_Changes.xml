@@ -668,10 +668,11 @@
             <column name="c_national_code" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-    <changeSet author="a.lotfi" id="1683009539">
-        <addColumn tableName="tbl_evaluation_period">
-            <column name="d_start_date_assessment" type="TIMESTAMP"/>
-            <column name="d_end_date_assessment" type="TIMESTAMP"/>
-        </addColumn>
+    <changeSet author="a.lotfi"  id="1683023514">
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_title"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date_assessment"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date_assessment"/>
     </changeSet>
 </databaseChangeLog>
