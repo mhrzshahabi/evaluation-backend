@@ -4,7 +4,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.utility.ExcelGenerator;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -24,4 +23,5 @@ public interface IInstanceService {
 
     SearchDTO.SearchRs<InstanceDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+    SearchDTO.SearchRs<InstanceDTO.Info> searchByPostMeritId(SearchDTO.SearchRq request, Long postMeritId) throws IllegalAccessException, NoSuchFieldException;
 }
