@@ -70,4 +70,8 @@
     <changeSet id="1682930066" author="semami">
         <createSequence sequenceName="seq_attachment_id"/>
     </changeSet>
+
+    <changeSet id="1682837264" author="a.lotfi">
+        <createSequence sequenceName="seq_evaluation_period_id"/>
+    </changeSet>
 </databaseChangeLog>
