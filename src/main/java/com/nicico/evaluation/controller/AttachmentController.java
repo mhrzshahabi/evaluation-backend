@@ -39,7 +39,7 @@ public class AttachmentController {
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @return AttachmentDTO.SpecResponse that contain list of groupInfoDto and the number of total entity
+     * @return AttachmentDTO.SpecResponse that contain list of attachmentInfoDto and the number of total entity
      */
     @GetMapping(value = "/list")
     public ResponseEntity<AttachmentDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
@@ -47,8 +47,8 @@ public class AttachmentController {
     }
 
     /**
-     * @param id is the group id
-     * @return AttachmentDTO.Info  is the single group entity
+     * @param id is the attachment id
+     * @return AttachmentDTO.Info  is the single attachment entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<AttachmentDTO.Info> get(@PathVariable Long id) {
@@ -60,8 +60,8 @@ public class AttachmentController {
     }
 
     /**
-     * @param request is the model of input for create group entity
-     * @return AttachmentDTOInfo is the saved group entity
+     * @param request is the model of input for create attachment entity
+     * @return AttachmentDTOInfo is the saved attachment entity
      */
     @PostMapping
     public ResponseEntity<AttachmentDTO.Info> create(@Valid @RequestBody AttachmentDTO.Create request) {
@@ -69,8 +69,8 @@ public class AttachmentController {
     }
 
     /**
-     * @param request is  the model of input for update group entity
-     * @return AttachmentDTOInfo is the updated group entity
+     * @param request is  the model of input for update attachment entity
+     * @return AttachmentDTOInfo is the updated attachment entity
      */
     @PutMapping
     public ResponseEntity<AttachmentDTO.Info> update(@Valid @RequestBody AttachmentDTO.Update request) {
@@ -78,7 +78,7 @@ public class AttachmentController {
     }
 
     /**
-     * @param id is the group id for delete
+     * @param id is the attachment id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
@@ -99,7 +99,7 @@ public class AttachmentController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<AttachmentDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<AttachmentDTO.Info> is the list of attachmentInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<AttachmentDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
@@ -117,6 +117,9 @@ public class AttachmentController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    /**
+     * @return fms url and fms groupId
+     */
     @GetMapping(value = "/getFmsInfo")
     public ResponseEntity<AttachmentDTO.FmsInfo> getFmsInfo() {
         AttachmentDTO.FmsInfo fmsInfo = new AttachmentDTO.FmsInfo();
