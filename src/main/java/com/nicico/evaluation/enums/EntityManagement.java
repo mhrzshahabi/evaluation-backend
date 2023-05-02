@@ -28,7 +28,8 @@ public enum EntityManagement {
     VIEW_PERSONNEL("پرسنل"),
     VIEW_POST("پست"),
     VIEW_GROUP_POST("گروه - پست"),
-    TBL_KPI_TYPE("نوع");
+    TBL_KPI_TYPE("نوع"),
+    TBL_ATTACHMENT("پیوست");
 
 
     private final String title;

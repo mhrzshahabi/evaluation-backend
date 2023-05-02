@@ -1,20 +1,38 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.AttachmentDTO;
 import com.nicico.evaluation.dto.SensitiveEventsDTO;
 import com.nicico.evaluation.model.SensitiveEvents;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import com.nicico.evaluation.service.AttachmentService;
+import com.nicico.evaluation.utility.EvaluationConstant;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface SensitiveEventsMapper {
+public abstract class SensitiveEventsMapper {
 
-    SensitiveEvents dtoCreateToEntity(SensitiveEventsDTO.Create dto);
+    @Value("${ui.landing.fmsGroupId}")
+    private String fmsGroupId;
 
-    SensitiveEventsDTO.Info entityToDtoInfo(SensitiveEvents entity);
+    @Autowired
+    AttachmentService attachmentService;
 
-    List<SensitiveEventsDTO.Info> entityToDtoInfoList(List<SensitiveEvents> entities);
+    public abstract SensitiveEvents dtoCreateToEntity(SensitiveEventsDTO.Create dto);
 
-    void update(@MappingTarget SensitiveEvents entity, SensitiveEventsDTO.Update dto);
+    @Mappings({
+            @Mapping(target = "attachment", source = "id", qualifiedByName = "getAttachment"),
+    })
+    public abstract SensitiveEventsDTO.Info entityToDtoInfo(SensitiveEvents entity);
+
+    public abstract List<SensitiveEventsDTO.Info> entityToDtoInfoList(List<SensitiveEvents> entities);
+
+    public abstract void update(@MappingTarget SensitiveEvents entity, SensitiveEventsDTO.Update dto);
+
+    @Named("getAttachment")
+    List<AttachmentDTO.Info> getAttachment(Long id) {
+        return attachmentService.getAllByObjectIdAndObjectTypeAndGroupId(id, EvaluationConstant.SENSITIVE_EVENTS, fmsGroupId);
+    }
 }
