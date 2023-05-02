@@ -37,6 +37,14 @@ public class PostMeritInstanceService implements IPostMeritInstanceService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_MERIT_INSTANCE')")
+    public List<PostMeritInstanceDTO.Info> getAllByPostMeritComponentId(Long id) {
+        List<PostMeritInstance> allByPostMeritComponentId = repository.findAllByPostMeritComponentId(id);
+        return mapper.entityToDtoInfoList(allByPostMeritComponentId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_POST_MERIT_INSTANCE')")
     public PostMeritInstanceDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<PostMeritInstance> postMeritInstance = repository.findAll(pageable);

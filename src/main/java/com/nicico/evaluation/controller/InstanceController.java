@@ -38,12 +38,12 @@ public class InstanceController {
 
     /**
      * @param criteria is the key value pair for criteria
-     * @return TotalResponse<InstanceDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<InstanceDTO.Info> is the list of InstanceInfo entity that match the criteria
      */
     @PostMapping(value = "/export-excel")
     public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         ExcelGenerator.ExcelDownload excelDownload = service.downloadExcel(criteria);
-        return  ResponseEntity.ok()
+        return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
                 .body(excelDownload.getContent());
@@ -107,8 +107,8 @@ public class InstanceController {
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @param criteria is the key value pair for criteria
-     * @return TotalResponse<InstanceDTO.Info> is the list of groupInfo entity that match the criteria
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<InstanceDTO.Info> is the list of InstanceInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<InstanceDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
@@ -126,4 +126,26 @@ public class InstanceController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<InstanceDTO.Info> is the list of InstanceInfo entity that match the criteria
+     */
+    @PostMapping(value = "/spec-list/by-post-merit-id")
+    public ResponseEntity<InstanceDTO.SpecResponse> searchByPostMeritId(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                        @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                        @RequestParam(value = "postMeritId") Long postMeritId,
+                                                                        @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<InstanceDTO.Info> data = service.searchByPostMeritId(request, postMeritId);
+        final InstanceDTO.Response response = new InstanceDTO.Response();
+        final InstanceDTO.SpecResponse specRs = new InstanceDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 }
