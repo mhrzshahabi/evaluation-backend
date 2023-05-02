@@ -11,11 +11,15 @@ import java.util.List;
 public interface InstanceMapper {
 
     InstanceDTO.Excel entityToDtoExcel(Instance entity);
+
     List<InstanceDTO.Excel> entityToDtoExcelList(List<Instance> entities);
 
     Instance dtoCreateToEntity(InstanceDTO.Create dto);
+
     InstanceDTO.Info entityToDtoInfo(Instance entity);
+
     List<InstanceDTO.Info> entityToDtoInfoList(List<Instance> entities);
+
     void update(@MappingTarget Instance entity, InstanceDTO.Update dto);
 
 }

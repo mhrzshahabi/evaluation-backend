@@ -19,6 +19,8 @@ public class InstanceDTO {
     @NotNull
     private String title;
 
+    private Boolean allocated;
+
     @Getter
     @Setter
     @ApiModel("InstanceExcel")
