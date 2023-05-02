@@ -12,6 +12,8 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class BatchDetailDTO {
 
+    private Long statusCatalogId;
+    private Long batchId;
 
     @Getter
     @Setter
@@ -22,19 +24,16 @@ public abstract class BatchDetailDTO {
         private String exceptionTitle;
         private String inputDTO;
         private String statusCatalog;
-        private Long batchId;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("BatchDetailCreateRq")
-    public static class Create {
+    public static class Create extends BatchDetailDTO{
 
         private String description;
         private String inputDTO;
-        private Long statusCatalogId;
-        private Long batchId;
     }
 
     @Getter

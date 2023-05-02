@@ -5,6 +5,7 @@ import com.nicico.evaluation.dto.BatchDetailDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IBatchDetailService;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
@@ -54,7 +55,7 @@ public class BatchDetailController {
      * @return BatchDetailDTO.Info is the saved batchDetail entity
      */
     @PostMapping
-    public ResponseEntity<BatchDetailDTO.Info> create(@Valid @RequestBody BatchDetailDTO.CreateList request) {
+    public ResponseEntity<BaseResponse> create(@Valid @RequestBody BatchDetailDTO.CreateList request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 

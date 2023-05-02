@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,14 +82,15 @@ public class KPITypeService implements IKPITypeService {
     @PreAuthorize("hasAuthority('C_KPI_TYPE')")
     public BaseResponse batchCreate(KPITypeDTO.Create dto) {
         BaseResponse response = new BaseResponse();
-        KPIType kpiType = mapper.dtoCreateToEntity(dto);
         try {
+            KPIType kpiType = mapper.dtoCreateToEntity(dto);
             repository.save(kpiType);
-            response.setStatus(200);
-            return response;
+            response.setStatus(HttpStatus.OK.value());
         } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
         }
+        return response;
     }
 
     @Override

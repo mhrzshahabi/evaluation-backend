@@ -2,15 +2,20 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IInstanceService;
+import com.nicico.evaluation.iservice.IPostMeritComponentService;
 import com.nicico.evaluation.iservice.IPostMeritInstanceService;
 import com.nicico.evaluation.mapper.PostMeritInstanceMapper;
 import com.nicico.evaluation.model.PostMeritInstance;
 import com.nicico.evaluation.repository.PostMeritInstanceRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +27,11 @@ import java.util.List;
 @Service
 public class PostMeritInstanceService implements IPostMeritInstanceService {
 
-    private final PostMeritInstanceMapper mapper;
     private final PageableMapper pageableMapper;
+    private final PostMeritInstanceMapper mapper;
+    private final IInstanceService instanceService;
     private final PostMeritInstanceRepository repository;
+    private final IPostMeritComponentService postMeritComponentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -87,6 +94,30 @@ public class PostMeritInstanceService implements IPostMeritInstanceService {
             createDtoList.add(createDto);
         });
         return this.createAll(createDtoList);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('C_POST_MERIT_INSTANCE')")
+    public BaseResponse batchCreate(PostMeritInstanceDTO.BatchCreate dto) {
+        BaseResponse response = new BaseResponse();
+        try {
+            PostMeritComponentDTO.BatchCreate batchCreate = mapper.dtoBatchCreateToDtoComponentBatchCreate(dto);
+            BaseResponse postMeritComponentResponse = postMeritComponentService.batchCreate(batchCreate);
+            if (postMeritComponentResponse.getStatus() == HttpStatus.OK.value()) {
+                PostMeritInstanceDTO.Create create = new PostMeritInstanceDTO.Create();
+                create.setPostMeritComponentId(Long.valueOf(postMeritComponentResponse.getMessage()));
+                create.setInstanceId(instanceService.getByCode(dto.getInstanceCode()).getId());
+                create(create);
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.setMessage(postMeritComponentResponse.getMessage());
+            }
+        } catch (Exception exception) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
+        }
+        return response;
     }
 
     @Override

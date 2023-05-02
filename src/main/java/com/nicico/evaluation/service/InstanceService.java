@@ -96,4 +96,10 @@ public class InstanceService implements IInstanceService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    public InstanceDTO.Info getByCode(String code) {
+        Instance instance = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(instance);
+    }
+
 }

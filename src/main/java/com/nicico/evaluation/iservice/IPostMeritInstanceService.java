@@ -2,6 +2,7 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface IPostMeritInstanceService {
     PostMeritInstanceDTO.Info create(PostMeritInstanceDTO.Create dto);
 
     List<PostMeritInstanceDTO.Info> create(PostMeritInstanceDTO.CreateAll dto);
+
+    BaseResponse batchCreate(PostMeritInstanceDTO.BatchCreate dto);
 
     void delete(Long id);
 

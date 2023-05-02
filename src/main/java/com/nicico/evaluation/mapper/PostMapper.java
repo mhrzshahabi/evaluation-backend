@@ -7,11 +7,10 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface  PostMapper {
+public interface PostMapper {
 
-      PostDTO.Info entityToDtoInfo(Post entity);
+    PostDTO.Info entityToDtoInfo(Post entity);
 
-      List<PostDTO.Info> entityToDtoInfoList(List<Post> entities);
-
+    List<PostDTO.Info> entityToDtoInfoList(List<Post> entities);
 
 }

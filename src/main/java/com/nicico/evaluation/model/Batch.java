@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,6 +38,9 @@ public class Batch extends Auditable {
     @Column(name = "status_catalog_id")
     private Long statusCatalogId;
 
+    @OneToMany(mappedBy = "batch", fetch = FetchType.LAZY)
+    private List<BatchDetail> batchDetailList;
+
     @Transient
     private Integer total;
 
@@ -45,5 +49,16 @@ public class Batch extends Auditable {
 
     @Transient
     private Integer failedNumber;
+
+    @Transient
+    private Float progress;
+
+    @PostLoad
+    public void updateStatistics() {
+        total = batchDetailList.size();
+        successfulNumber = batchDetailList.stream().filter(item -> item.getStatusCatalog().getCode().equals("Successful")).toList().size();
+        failedNumber = batchDetailList.stream().filter(item -> item.getStatusCatalog().getCode().equals("Failed")).toList().size();
+        progress = (successfulNumber != 0 ? successfulNumber.floatValue() / total.floatValue() : 0) * 100;
+    }
 
 }

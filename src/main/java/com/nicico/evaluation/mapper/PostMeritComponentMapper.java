@@ -9,10 +9,12 @@ import org.mapstruct.Mappings;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring",uses = MeritComponentMapper.class)
+@Mapper(componentModel = "spring", uses = MeritComponentMapper.class)
 public interface PostMeritComponentMapper {
 
     PostMeritComponent dtoCreateToEntity(PostMeritComponentDTO.Create dto);
+
+    PostMeritComponent dtoBatchCreateToEntity(PostMeritComponentDTO.BatchCreate dto);
 
     @Mappings({
             @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId"),

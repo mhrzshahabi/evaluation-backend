@@ -49,6 +49,22 @@ public abstract class PostMeritInstanceDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("PostMeritInstanceBatchCreateRq")
+    public static class BatchCreate {
+
+        @NotNull
+        private String groupPostCode;
+        @NotNull
+        private String meritComponentCode;
+        @NotNull
+        private String instanceCode;
+        @NotNull
+        private Long weight;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PostMeritInstanceUpdateRq")
     public static class Update extends PostMeritInstanceDTO {
 

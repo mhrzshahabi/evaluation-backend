@@ -4,13 +4,16 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IPostMeritComponentService;
 import com.nicico.evaluation.mapper.PostMeritComponentMapper;
 import com.nicico.evaluation.model.PostMeritComponent;
 import com.nicico.evaluation.repository.PostMeritComponentRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +24,10 @@ import java.util.List;
 @Service
 public class PostMeritComponentService implements IPostMeritComponentService {
 
-    private final PostMeritComponentMapper mapper;
     private final PageableMapper pageableMapper;
+    private final PostMeritComponentMapper mapper;
     private final PostMeritComponentRepository repository;
+    private final IMeritComponentService meritComponentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -65,6 +69,25 @@ public class PostMeritComponentService implements IPostMeritComponentService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('C_POST_MERIT_COMPONENT')")
+    public BaseResponse batchCreate(PostMeritComponentDTO.BatchCreate dto) {
+        BaseResponse response = new BaseResponse();
+        try {
+            Long meritComponentId = meritComponentService.getByCode(dto.getMeritComponentCode()).getId();
+            PostMeritComponent postMeritComponent = mapper.dtoBatchCreateToEntity(dto);
+            postMeritComponent.setMeritComponentId(meritComponentId);
+            PostMeritComponent save = repository.save(postMeritComponent);
+            PostMeritComponentDTO.Info info = mapper.entityToDtoInfo(save);
+            response.setMessage(info.getId().toString());
+            response.setStatus(HttpStatus.OK.value());
+        } catch (Exception exception) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
+        }
+        return response;
     }
 
     @Override

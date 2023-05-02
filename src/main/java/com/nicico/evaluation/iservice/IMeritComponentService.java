@@ -17,4 +17,6 @@ public interface IMeritComponentService {
 
     SearchDTO.SearchRs<MeritComponentDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+    MeritComponentDTO.Info getByCode(String code);
+
 }

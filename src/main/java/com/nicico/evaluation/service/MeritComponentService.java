@@ -117,4 +117,10 @@ public class MeritComponentService implements IMeritComponentService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    public MeritComponentDTO.Info getByCode(String code) {
+        MeritComponent meritComponent = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(meritComponent);
+    }
+
 }

@@ -32,7 +32,6 @@ public abstract class BatchDTO {
     @ApiModel("BatchCreateRq")
     public static class Create extends BatchDTO {
         private Long titleCatalogId;
-        private Long statusCatalogId;
         private List<Object> inputDetails;
     }
 
