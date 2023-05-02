@@ -10,6 +10,8 @@ public interface IPostMeritInstanceService {
 
     PostMeritInstanceDTO.Info get(Long id);
 
+    List<PostMeritInstanceDTO.Info> getAllByPostMeritComponentId(Long id);
+
     PostMeritInstanceDTO.SpecResponse list(int count, int startIndex);
 
     List<PostMeritInstanceDTO.Info> createAll(List<PostMeritInstanceDTO.Create> requests);
