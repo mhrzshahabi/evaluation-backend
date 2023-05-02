@@ -663,4 +663,9 @@
             <column name="d_to_date" type="TIMESTAMP"/>
         </addColumn>
     </changeSet>
+     <changeSet author="semami" id="1682938091">
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="c_national_code" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
