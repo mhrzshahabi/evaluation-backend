@@ -28,7 +28,7 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SpecialCaseDTO.Info get(Long id) {
         SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return specialCaseMapper.entityToDtoInfo(specialcase);
@@ -36,7 +36,7 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SpecialCaseDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<SpecialCase> specialCases = specialCaseRepository.findAll(pageable);
@@ -57,7 +57,7 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SearchDTO.SearchRs<SpecialCaseDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(specialCaseRepository, specialCaseMapper::entityToDtoInfo, request);
     }
@@ -65,7 +65,7 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAuthority('C_SPECIAL_CASE')")
     public SpecialCaseDTO.Info create(SpecialCaseDTO.Create dto) {
         SpecialCase specialCase = specialCaseMapper.dtoCreateToEntity(dto);
         try {
@@ -78,7 +78,7 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAuthority('U_SPECIAL_CASE')")
     public SpecialCaseDTO.Info update(SpecialCaseDTO.Update dto) {
         SpecialCase specialcase = specialCaseRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseMapper.update(specialcase, dto);
@@ -92,7 +92,7 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAuthority('D_SPECIAL_CASE')")
     public void delete(Long id) {
         SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseRepository.delete(specialcase);

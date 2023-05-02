@@ -275,6 +275,22 @@
     {
       "code": "D_ATTACHMENT",
       "title": "حذف پیوست"
+    },
+    {
+      "code": "R_SPECIAL_CASE",
+      "title": "نمایش موارد خاص"
+    },
+    {
+      "code": "C_SPECIAL_CASE",
+      "title": "ایجاد موارد خاص"
+    },
+    {
+      "code": "U_SPECIAL_CASE",
+      "title": "ویرایش موارد خاص"
+    },
+    {
+      "code": "D_SPECIAL_CASE",
+      "title": "حذف موارد خاص"
     }
   ]
 }

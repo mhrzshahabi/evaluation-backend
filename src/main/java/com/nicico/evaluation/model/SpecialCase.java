@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_specialcase")
+@Table(name = "tbl_special_case")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,31 +23,31 @@ public class SpecialCase extends Auditable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "c_firstName")
+    @Column(name = "c_first_name")
     private String firstName;
 
-    @Column(name = "c_lastName")
+    @Column(name = "c_last_name")
     private String lastName;
 
-    @Column(name = "c_nationalCode")
+    @Column(name = "c_national_code")
     private String nationalCode;
 
-    @Column(name = "c_postCode")
+    @Column(name = "c_post_code")
     private String postCode;
 
-    @Column(name = "c_assessorName")
+    @Column(name = "c_assessor_name")
     private String assessorName;
 
-    @Column(name = "c_assessorNationalCode")
+    @Column(name = "c_assessor_national_code")
     private String assessorNationalCode;
 
-    @Column(name = "c_assessorPostCode")
+    @Column(name = "c_assessor_post_code")
     private String assessorPostCode;
 
-    @Column(name = "d_startDate")
+    @Column(name = "d_start_date")
     private Date startDate;
 
-    @Column(name = "d_endDate")
+    @Column(name = "d_end_date")
     private Date endDate;
 
 }
