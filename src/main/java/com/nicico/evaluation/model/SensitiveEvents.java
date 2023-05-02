@@ -70,6 +70,7 @@ public class SensitiveEvents extends Auditable {
     @Column(name = "c_description", length = 2000)
     private String description;
 
-//    @OneToMany(mappedBy = "object", fetch = FetchType.LAZY)
-//    private List<Attachment> attachment;
+    @Column(name = "c_national_code")
+    private String nationalCode;
+
 }

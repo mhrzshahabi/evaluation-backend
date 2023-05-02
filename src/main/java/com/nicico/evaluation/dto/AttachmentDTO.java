@@ -14,8 +14,12 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class AttachmentDTO {
 
-    private String fmsKey;
+    private String fileName;
+    private Long fileTypeId;
+    private String description;
     private Long objectId;
+    private String objectType;
+    private String fmsKey;
     private String groupId;
 
     @Getter
@@ -29,8 +33,7 @@ public abstract class AttachmentDTO {
     @Setter
     @ApiModel("AttachmentInfo")
     public static class Info extends AttachmentDTO {
-
-        private Object object;
+        private Long id;
     }
 
     @Getter

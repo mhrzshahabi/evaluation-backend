@@ -37,6 +37,14 @@ public class AttachmentService implements IAttachmentService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ATTACHMENT')")
+    public List<AttachmentDTO.Info> getAllByObjectIdAndObjectTypeAndGroupId(Long objectId, String objectType, String groupId) {
+        List<Attachment> attachments = repository.findAllByObjectIdAndObjectTypeAndGroupId(objectId, objectType, groupId);
+        return mapper.entityToDtoInfoList(attachments);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_ATTACHMENT')")
     public AttachmentDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<Attachment> Attachments = repository.findAll(pageable);

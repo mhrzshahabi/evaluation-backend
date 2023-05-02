@@ -1,6 +1,5 @@
 package com.nicico.evaluation.controller;
 
-import com.ctc.wstx.util.ExceptionUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.SensitiveEventPersonDTO;
