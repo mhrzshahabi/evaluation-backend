@@ -63,16 +63,16 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
+//    @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
         try {
             if (
-                    evaluationPeriod.getStartDateArzeshYabi().compareTo(evaluationPeriod.getStartDate()) > 0 &&
-                            evaluationPeriod.getStartDateArzeshYabi().compareTo(evaluationPeriod.getEndDate()) < 0 &&
-                            evaluationPeriod.getEndDateArzeshYabi().compareTo(evaluationPeriod.getStartDate()) > 0 &&
-                            evaluationPeriod.getEndDateArzeshYabi().compareTo(evaluationPeriod.getEndDate()) < 0 &&
-                            evaluationPeriod.getEndDateArzeshYabi().compareTo(evaluationPeriod.getStartDateArzeshYabi()) > 0
+                    evaluationPeriod.getStartDateAssessment().compareTo(evaluationPeriod.getStartDate()) > 0 &&
+                            evaluationPeriod.getStartDateAssessment().compareTo(evaluationPeriod.getEndDate()) < 0 &&
+                            evaluationPeriod.getEndDateAssessment().compareTo(evaluationPeriod.getStartDate()) > 0 &&
+                            evaluationPeriod.getEndDateAssessment().compareTo(evaluationPeriod.getEndDate()) < 0 &&
+                            evaluationPeriod.getEndDateAssessment().compareTo(evaluationPeriod.getStartDateAssessment()) > 0
             ) {
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
                 return evaluationPeriodMapper.entityToDtoInfo(save);
@@ -89,11 +89,11 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     public EvaluationPeriodDTO.Info update(EvaluationPeriodDTO.Update dto) {
         try {
             if (
-                    dto.getStartDateArzeshYabi().compareTo(dto.getStartDate()) > 0 &&
-                            dto.getStartDateArzeshYabi().compareTo(dto.getEndDate()) < 0 &&
-                            dto.getEndDateArzeshYabi().compareTo(dto.getStartDate()) > 0 &&
-                            dto.getEndDateArzeshYabi().compareTo(dto.getEndDate()) < 0 &&
-                            dto.getEndDateArzeshYabi().compareTo(dto.getStartDateArzeshYabi()) > 0
+                    dto.getStartDateAssessment().compareTo(dto.getStartDate()) > 0 &&
+                            dto.getStartDateAssessment().compareTo(dto.getEndDate()) < 0 &&
+                            dto.getEndDateAssessment().compareTo(dto.getStartDate()) > 0 &&
+                            dto.getEndDateAssessment().compareTo(dto.getEndDate()) < 0 &&
+                            dto.getEndDateAssessment().compareTo(dto.getStartDateAssessment()) > 0
             ) {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
                 evaluationPeriodMapper.update(evaluationPeriod, dto);
