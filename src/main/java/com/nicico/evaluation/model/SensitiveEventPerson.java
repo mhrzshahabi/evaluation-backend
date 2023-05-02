@@ -19,7 +19,7 @@ public class SensitiveEventPerson extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sensitive_event_person_seq")
-    @SequenceGenerator(name = "sensitive_event_person_seq", sequenceName = "sensitive_event_person_id", initialValue = 1, allocationSize = 1)
+    @SequenceGenerator(name = "sensitive_event_person_seq", sequenceName = "seq_sensitive_event_person_id", initialValue = 1, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

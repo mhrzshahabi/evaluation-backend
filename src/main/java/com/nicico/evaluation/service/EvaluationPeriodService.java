@@ -63,7 +63,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
+    @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
         try {
@@ -85,7 +85,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
+    @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info update(EvaluationPeriodDTO.Update dto) {
         try {
             if (

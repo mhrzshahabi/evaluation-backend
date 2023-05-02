@@ -663,6 +663,11 @@
             <column name="d_to_date" type="TIMESTAMP"/>
         </addColumn>
     </changeSet>
+     <changeSet author="semami" id="1682938091">
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="c_national_code" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
     <changeSet author="a.lotfi" id="1683009529">
         <addColumn tableName="tbl_evaluation_period">
             <column name="d_start_date_arzeshyabi" type="TIMESTAMP"/>

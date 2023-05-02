@@ -69,4 +69,8 @@ public class SensitiveEvents extends Auditable {
 
     @Column(name = "c_description", length = 2000)
     private String description;
+
+    @Column(name = "c_national_code")
+    private String nationalCode;
+
 }
