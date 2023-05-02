@@ -32,6 +32,12 @@ public class EvaluationPeriod extends Auditable {
     @Column(name = "d_end_date")
     private Date endDate;
 
+    @Column(name = "d_start_date_arzeshyabi")
+    private Date startDateArzeshYabi;
+
+    @Column(name = "d_end_date_arzeshyabi")
+    private Date endDateArzeshYabi;
+
     @Column(name = "c_description")
     private String description;
 }

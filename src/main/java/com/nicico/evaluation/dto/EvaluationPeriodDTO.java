@@ -16,6 +16,8 @@ public class EvaluationPeriodDTO {
     private String title;
     private Date startDate;
     private Date endDate;
+    private Date startDateArzeshYabi;
+    private Date endDateArzeshYabi;
     private String description;
 
     @Getter

@@ -42,13 +42,18 @@ public class EvaluationPeriodServiceTests {
         //init
         EvaluationPeriodDTO.Create evaluationPeriodCreate = new EvaluationPeriodDTO.Create();
         evaluationPeriodCreate.setTitle("testTitle");
-        evaluationPeriodCreate.setStartDate(new Date());
-        evaluationPeriodCreate.setEndDate(new Date());
+        evaluationPeriodCreate.setStartDate(new Date(1682003325));
+        evaluationPeriodCreate.setEndDate(new Date(1683013608));
+        evaluationPeriodCreate.setStartDateArzeshYabi(new Date(evaluationPeriodCreate.getStartDate().getTime() + 15000));
+        evaluationPeriodCreate.setEndDateArzeshYabi(new Date(evaluationPeriodCreate.getEndDate().getTime() - 15000));
         evaluationPeriodCreate.setDescription("testDesc");
 
-        EvaluationPeriod evaluationPeriod = generateEvaluationPeriod("testTitle",new Date(), new Date(),"testDesc");
-        EvaluationPeriodDTO.Info evaluationPeriodInfo = generateEvaluationPeriodInfo(1L, "testTitle",new Date(), new Date(),"testDesc");
-
+        EvaluationPeriod evaluationPeriod = generateEvaluationPeriod("testTitle",new Date(1682003325), new Date(1683013608),"testDesc");
+        evaluationPeriod.setStartDateArzeshYabi(new Date(evaluationPeriod.getStartDate().getTime() + 15000));
+        evaluationPeriod.setEndDateArzeshYabi(new Date(evaluationPeriod.getEndDate().getTime() - 15000));
+        EvaluationPeriodDTO.Info evaluationPeriodInfo = generateEvaluationPeriodInfo(1L, "testTitle",new Date(1682003325), new Date(1683013608),"testDesc");
+        evaluationPeriodInfo.setStartDateArzeshYabi(new Date(evaluationPeriodInfo.getStartDate().getTime() + 15000));
+        evaluationPeriodInfo.setEndDateArzeshYabi(new Date(evaluationPeriodInfo.getEndDate().getTime() - 15000));
         //Action
         when(evaluationPeriodRepository.save(any(EvaluationPeriod.class))).thenReturn(evaluationPeriod);
         when(evaluationPeriodMapper.dtoCreateToEntity(any(EvaluationPeriodDTO.Create.class))).thenReturn(evaluationPeriod);
@@ -120,7 +125,10 @@ public class EvaluationPeriodServiceTests {
     public void updateTest() {
         //init
         EvaluationPeriodDTO.Update evaluationPeriodUpdate = new EvaluationPeriodDTO.Update();
-        evaluationPeriodUpdate.setId(1L).setTitle("NEWtestTitle1").setDescription("NEWtestDesc1");
+        evaluationPeriodUpdate.setId(1L).setTitle("NEWtestTitle1").setDescription("NEWtestDesc1")
+                .setStartDate(new Date(1682003325)).setEndDate(new Date(1683013608));
+        evaluationPeriodUpdate.setStartDateArzeshYabi(new Date(evaluationPeriodUpdate.getStartDate().getTime() + 15000));
+        evaluationPeriodUpdate.setEndDateArzeshYabi(new Date(evaluationPeriodUpdate.getEndDate().getTime() - 15000));
         EvaluationPeriod evaluationPeriod = generateEvaluationPeriod("OLDtestTitle1", new Date(), new Date(),"OLDtestDesc1");
         evaluationPeriod.setId(1L);
         Optional<EvaluationPeriod> oldEvaluationPeriod = Optional.of(evaluationPeriod);

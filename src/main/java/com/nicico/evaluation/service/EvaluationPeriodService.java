@@ -63,12 +63,21 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
+//    @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
         try {
-            EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
-            return evaluationPeriodMapper.entityToDtoInfo(save);
+            if (
+                    evaluationPeriod.getStartDateArzeshYabi().compareTo(evaluationPeriod.getStartDate()) > 0 &&
+                            evaluationPeriod.getStartDateArzeshYabi().compareTo(evaluationPeriod.getEndDate()) < 0 &&
+                            evaluationPeriod.getEndDateArzeshYabi().compareTo(evaluationPeriod.getStartDate()) > 0 &&
+                            evaluationPeriod.getEndDateArzeshYabi().compareTo(evaluationPeriod.getEndDate()) < 0 &&
+                            evaluationPeriod.getEndDateArzeshYabi().compareTo(evaluationPeriod.getStartDateArzeshYabi()) > 0
+            ) {
+                EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
+                return evaluationPeriodMapper.entityToDtoInfo(save);
+            }
+            throw new Exception();
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
@@ -76,13 +85,22 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
+//    @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info update(EvaluationPeriodDTO.Update dto) {
-        EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        evaluationPeriodMapper.update(evaluationPeriod, dto);
         try {
-            EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
-            return evaluationPeriodMapper.entityToDtoInfo(save);
+            if (
+                    dto.getStartDateArzeshYabi().compareTo(dto.getStartDate()) > 0 &&
+                            dto.getStartDateArzeshYabi().compareTo(dto.getEndDate()) < 0 &&
+                            dto.getEndDateArzeshYabi().compareTo(dto.getStartDate()) > 0 &&
+                            dto.getEndDateArzeshYabi().compareTo(dto.getEndDate()) < 0 &&
+                            dto.getEndDateArzeshYabi().compareTo(dto.getStartDateArzeshYabi()) > 0
+            ) {
+                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+                evaluationPeriodMapper.update(evaluationPeriod, dto);
+                EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
+                return evaluationPeriodMapper.entityToDtoInfo(save);
+            }
+            throw new Exception();
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }

@@ -663,4 +663,10 @@
             <column name="d_to_date" type="TIMESTAMP"/>
         </addColumn>
     </changeSet>
+    <changeSet author="a.lotfi" id="1683009529">
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="d_start_date_arzeshyabi" type="TIMESTAMP"/>
+            <column name="d_end_date_arzeshyabi" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
