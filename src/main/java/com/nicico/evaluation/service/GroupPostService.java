@@ -3,11 +3,12 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupPostDTO;
+import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupPostService;
-import com.nicico.evaluation.iservice.IPostMeritComponentService;
 import com.nicico.evaluation.mapper.GroupPostMapper;
 import com.nicico.evaluation.model.GroupPost;
+import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.repository.GroupPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,6 @@ public class GroupPostService implements IGroupPostService {
     private final GroupPostMapper mapper;
     private final GroupPostRepository repository;
     private final PageableMapper pageableMapper;
-    private final IPostMeritComponentService postMeritComponentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -60,6 +60,12 @@ public class GroupPostService implements IGroupPostService {
     @PreAuthorize("hasAuthority('R_GROUP_POST')")
     public SearchDTO.SearchRs<GroupPostDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    public GroupPostDTO.Info getByCode(String code) {
+        GroupPost groupPost = repository.findFirstByGroupPostCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(groupPost);
     }
 
 }

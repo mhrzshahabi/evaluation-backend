@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IGroupPostService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IPostMeritComponentService;
 import com.nicico.evaluation.mapper.PostMeritComponentMapper;
@@ -26,6 +27,7 @@ public class PostMeritComponentService implements IPostMeritComponentService {
 
     private final PageableMapper pageableMapper;
     private final PostMeritComponentMapper mapper;
+    private final IGroupPostService groupPostService;
     private final PostMeritComponentRepository repository;
     private final IMeritComponentService meritComponentService;
 
@@ -76,6 +78,7 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     public BaseResponse batchCreate(PostMeritComponentDTO.BatchCreate dto) {
         BaseResponse response = new BaseResponse();
         try {
+            groupPostService.getByCode(dto.getGroupPostCode());
             Long meritComponentId = meritComponentService.getByCode(dto.getMeritComponentCode()).getId();
             PostMeritComponent postMeritComponent = mapper.dtoBatchCreateToEntity(dto);
             postMeritComponent.setMeritComponentId(meritComponentId);
