@@ -68,7 +68,7 @@ public class EvaluationPeriodDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationPeriodResponse")
     public static class Response {
-        private List<EvaluationPeriodDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

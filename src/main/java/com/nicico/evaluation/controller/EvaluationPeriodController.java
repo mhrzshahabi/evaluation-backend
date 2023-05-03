@@ -26,7 +26,7 @@ import java.util.Locale;
 @RequestMapping(value = "/api/evaluation-period")
 public class EvaluationPeriodController {
 
-    private final IEvaluationPeriodService evaluationPeriodService;
+    private final IEvaluationPeriodService service;
     private final ResourceBundleMessageSource messageSource;
 
     /**
@@ -35,7 +35,7 @@ public class EvaluationPeriodController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<EvaluationPeriodDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(evaluationPeriodService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     /**
@@ -45,7 +45,7 @@ public class EvaluationPeriodController {
      */
     @GetMapping(value = "/list")
     public ResponseEntity<EvaluationPeriodDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
-        return new ResponseEntity<>(evaluationPeriodService.list(count, startIndex), HttpStatus.OK);
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
@@ -54,7 +54,7 @@ public class EvaluationPeriodController {
      */
     @PostMapping
     public ResponseEntity<EvaluationPeriodDTO.Info> create(@Valid @RequestBody EvaluationPeriodDTO.Create request) {
-        return new ResponseEntity<>(evaluationPeriodService.create(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
@@ -63,7 +63,7 @@ public class EvaluationPeriodController {
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<EvaluationPeriodDTO.Info> update(@PathVariable Long id, @Valid @RequestBody EvaluationPeriodDTO.Update request) {
-        return new ResponseEntity<>(evaluationPeriodService.update(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**
@@ -73,7 +73,7 @@ public class EvaluationPeriodController {
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
         try {
-            evaluationPeriodService.delete(id);
+            service.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
@@ -94,7 +94,7 @@ public class EvaluationPeriodController {
                                                                    @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                    @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationPeriodDTO.Info> data = evaluationPeriodService.search(request);
+        SearchDTO.SearchRs<EvaluationPeriodDTO.Info> data = service.search(request);
         final EvaluationPeriodDTO.Response response = new EvaluationPeriodDTO.Response();
         final EvaluationPeriodDTO.SpecResponse specRs = new EvaluationPeriodDTO.SpecResponse();
         response.setData(data.getList())

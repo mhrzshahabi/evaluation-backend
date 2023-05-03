@@ -74,8 +74,8 @@ public class SpecialCaseService implements ISpecialCaseService {
         if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
-                    "assessNatioanlCode and assessorNationalCode",
-                    messageSource.getMessage("exception.nationalcode.duplicate", null, locale));
+                    "assessNationalCode and assessorNationalCode",
+                    messageSource.getMessage("exception.nationalCode.duplicate", null, locale));
         }
         SpecialCase specialCase = specialCaseMapper.dtoCreateToEntity(dto);
         try {
@@ -94,7 +94,7 @@ public class SpecialCaseService implements ISpecialCaseService {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and assessorNationalCode",
-                    messageSource.getMessage("exception.nationalcode.duplicate", null, locale));
+                    messageSource.getMessage("exception.nationalCode.duplicate", null, locale));
         }
         SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseMapper.update(specialcase, dto);

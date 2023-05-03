@@ -1,4 +1,3 @@
-
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -28,7 +27,7 @@ import java.util.Locale;
 @AllArgsConstructor
 public class SpecialCaseController {
 
-    private final ISpecialCaseService specialCaseService;
+    private final ISpecialCaseService service;
     private final ResourceBundleMessageSource messageSource;
 
     /**
@@ -37,7 +36,7 @@ public class SpecialCaseController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<SpecialCaseDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(specialCaseService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
     /**
@@ -47,7 +46,7 @@ public class SpecialCaseController {
      */
     @GetMapping(value = "/list")
     public ResponseEntity<SpecialCaseDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
-        return new ResponseEntity<>(specialCaseService.list(count, startIndex), HttpStatus.OK);
+        return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
@@ -56,7 +55,7 @@ public class SpecialCaseController {
      */
     @PostMapping
     public ResponseEntity<SpecialCaseDTO.Info> create(@Valid @RequestBody SpecialCaseDTO.Create request) {
-        return new ResponseEntity<>(specialCaseService.create(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
@@ -65,7 +64,7 @@ public class SpecialCaseController {
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<SpecialCaseDTO.Info> update(@PathVariable Long id, @Valid @RequestBody SpecialCaseDTO.Update request) {
-        return new ResponseEntity<>(specialCaseService.update(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**
@@ -75,7 +74,7 @@ public class SpecialCaseController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
         try {
-            specialCaseService.delete(id);
+            service.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
@@ -96,7 +95,7 @@ public class SpecialCaseController {
                                                               @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                               @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<SpecialCaseDTO.Info> data = specialCaseService.search(request);
+        SearchDTO.SearchRs<SpecialCaseDTO.Info> data = service.search(request);
         final SpecialCaseDTO.Response response = new SpecialCaseDTO.Response();
         final SpecialCaseDTO.SpecResponse specRs = new SpecialCaseDTO.SpecResponse();
         response.setData(data.getList())

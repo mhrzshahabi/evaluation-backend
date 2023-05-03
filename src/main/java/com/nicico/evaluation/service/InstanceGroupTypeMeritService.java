@@ -8,9 +8,11 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
+import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.mapper.InstanceGroupTypeMeritMapper;
 import com.nicico.evaluation.model.InstanceGroupTypeMerit;
 import com.nicico.evaluation.repository.InstanceGroupTypeMeritRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +26,9 @@ import java.util.List;
 @Service
 public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritService {
 
-    private final InstanceGroupTypeMeritMapper mapper;
     private final PageableMapper pageableMapper;
+    private final IInstanceService instanceService;
+    private final InstanceGroupTypeMeritMapper mapper;
     private final InstanceGroupTypeMeritRepository repository;
 
     @Override
@@ -98,6 +101,31 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+    // in progress
+    @Override
+    @PreAuthorize("hasAuthority('C_INSTANCE_GROUP_TYPE_MERIT')")
+    public BaseResponse batchCreate(InstanceGroupTypeMeritDTO.BatchCreate dto) {
+        BaseResponse response = new BaseResponse();
+//        try {
+//            Long instanceId = instanceService.getByCode(dto.getInstanceCode()).getId();
+//            PostMeritComponentDTO.BatchCreate batchCreate = mapper.dtoBatchCreateToDtoComponentBatchCreate(dto);
+//            BaseResponse postMeritComponentResponse = postMeritComponentService.batchCreate(batchCreate);
+//            if (postMeritComponentResponse.getStatus() == HttpStatus.OK.value()) {
+//                PostMeritInstanceDTO.Create create = new PostMeritInstanceDTO.Create();
+//                create.setPostMeritComponentId(Long.valueOf(postMeritComponentResponse.getMessage()));
+//                create.setInstanceId(instanceId);
+//                create(create);
+//                response.setStatus(HttpStatus.OK.value());
+//            } else {
+//                response.setStatus(HttpStatus.FORBIDDEN.value());
+//                response.setMessage(postMeritComponentResponse.getMessage());
+//            }
+//        } catch (Exception exception) {
+//            response.setStatus(HttpStatus.FORBIDDEN.value());
+//            response.setMessage(exception.getMessage());
+//        }
+        return response;
     }
 
     @Override

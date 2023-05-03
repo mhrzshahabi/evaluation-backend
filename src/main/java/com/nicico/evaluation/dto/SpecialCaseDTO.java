@@ -1,4 +1,3 @@
-
 package com.nicico.evaluation.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,19 +17,12 @@ import java.util.List;
 public class SpecialCaseDTO {
 
     private String assessFullName;
-
     private String assessNationalCode;
-
     private String assessPostCode;
-
     private String assessorFullName;
-
     private String assessorNationalCode;
-
     private String assessorPostCode;
-
     private Date startDate;
-
     private Date endDate;
 
     @Getter
@@ -38,6 +30,7 @@ public class SpecialCaseDTO {
     @Accessors(chain = true)
     @ApiModel("SpecialCaseCreateRq")
     public static class Create extends SpecialCaseDTO {
+
     }
 
     @Getter
@@ -77,7 +70,7 @@ public class SpecialCaseDTO {
     @Accessors(chain = true)
     @ApiModel("SpecialCaseResponse")
     public static class Response {
-        private List<SpecialCaseDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
