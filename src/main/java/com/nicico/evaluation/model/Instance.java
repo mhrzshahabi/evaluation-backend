@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 //مصداق-
 
 @Getter
@@ -30,4 +31,7 @@ public class Instance extends Auditable {
     @NotNull
     @Column(name = "c_title")
     private String title;
+
+    @OneToMany(mappedBy = "instance", fetch = FetchType.LAZY)
+    private List<PostMeritInstance> postMeritInstances;
 }

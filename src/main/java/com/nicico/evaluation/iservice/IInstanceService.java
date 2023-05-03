@@ -24,6 +24,4 @@ public interface IInstanceService {
     SearchDTO.SearchRs<InstanceDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     InstanceDTO.Info getByCode(String code);
-
-    SearchDTO.SearchRs<InstanceDTO.Info> searchByPostMeritId(SearchDTO.SearchRq request, Long postMeritId) throws IllegalAccessException, NoSuchFieldException;
 }
