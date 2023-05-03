@@ -63,9 +63,9 @@ public class SensitiveEventPersonController {
      * @param request is  the model of input for update SensitiveEventPerson entity
      * @return SensitiveEventPersonDTO.Info is the updated SensitiveEventPerson entity
      */
-    @PutMapping
-    public ResponseEntity<SensitiveEventPersonDTO.Info> update(@Valid @RequestBody SensitiveEventPersonDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<SensitiveEventPersonDTO.Info> update(@PathVariable Long id, @Valid @RequestBody SensitiveEventPersonDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

@@ -38,7 +38,6 @@ public class CatalogTypeDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CatalogTypeUpdateRq")
     public static class Update {
-        private Long id;
         private String title;
         private String description;
     }

@@ -61,9 +61,9 @@ public class EvaluationPeriodController {
      * @param request is  the model of input for update EvaluationPeriod entity
      * @return EvaluationPeriodDTO.Info is the updated EvaluationPeriod entity
      */
-    @PutMapping
-    public ResponseEntity<EvaluationPeriodDTO.Info> update(@Valid @RequestBody EvaluationPeriodDTO.Update request) {
-        return new ResponseEntity<>(evaluationPeriodService.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<EvaluationPeriodDTO.Info> update(@PathVariable Long id, @Valid @RequestBody EvaluationPeriodDTO.Update request) {
+        return new ResponseEntity<>(evaluationPeriodService.update(id, request), HttpStatus.OK);
     }
 
     /**

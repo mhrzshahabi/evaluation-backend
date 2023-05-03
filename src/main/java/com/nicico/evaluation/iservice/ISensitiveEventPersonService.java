@@ -13,7 +13,7 @@ public interface ISensitiveEventPersonService {
 
     SensitiveEventPersonDTO.Info create(SensitiveEventPersonDTO.Create dto);
 
-    SensitiveEventPersonDTO.Info update(SensitiveEventPersonDTO.Update dto);
+    SensitiveEventPersonDTO.Info update(Long id, SensitiveEventPersonDTO.Update dto);
 
     void delete(Long id);
 

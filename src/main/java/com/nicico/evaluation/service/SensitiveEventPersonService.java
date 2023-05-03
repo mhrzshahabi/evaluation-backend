@@ -70,8 +70,8 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_SENSITIVE_EVENTS_PERSON')")
-    public SensitiveEventPersonDTO.Info update(SensitiveEventPersonDTO.Update dto) {
-        SensitiveEventPerson sensitiveEventPerson = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public SensitiveEventPersonDTO.Info update(Long id, SensitiveEventPersonDTO.Update dto) {
+        SensitiveEventPerson sensitiveEventPerson = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(sensitiveEventPerson, dto);
         try {
             SensitiveEventPerson save = repository.save(sensitiveEventPerson);

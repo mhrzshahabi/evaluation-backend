@@ -50,8 +50,6 @@ public abstract class AttachmentDTO {
     @Accessors(chain = true)
     @ApiModel("AttachmentUpdateRq")
     public static class Update extends AttachmentDTO {
-        @NotNull
-        private Long id;
     }
 
     @Getter

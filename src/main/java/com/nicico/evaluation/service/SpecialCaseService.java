@@ -89,14 +89,14 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_SPECIAL_CASE')")
-    public SpecialCaseDTO.Info update(SpecialCaseDTO.Update dto) {
+    public SpecialCaseDTO.Info update(Long id, SpecialCaseDTO.Update dto) {
         if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and assessorNationalCode",
                     messageSource.getMessage("exception.nationalcode.duplicate", null, locale));
         }
-        SpecialCase specialcase = specialCaseRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseMapper.update(specialcase, dto);
         try {
             SpecialCase save = specialCaseRepository.save(specialcase);
@@ -105,6 +105,7 @@ public class SpecialCaseService implements ISpecialCaseService {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
     }
+
 
     @Override
     @Transactional

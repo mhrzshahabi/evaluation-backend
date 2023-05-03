@@ -96,8 +96,8 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_POST_MERIT_COMPONENT')")
-    public PostMeritComponentDTO.Info update(PostMeritComponentDTO.Update dto) {
-        PostMeritComponent postMeritComponent = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public PostMeritComponentDTO.Info update(Long id, PostMeritComponentDTO.Update dto) {
+        PostMeritComponent postMeritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(postMeritComponent, dto);
         try {
             PostMeritComponent save = repository.save(postMeritComponent);

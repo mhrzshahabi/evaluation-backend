@@ -71,9 +71,9 @@ public class InstanceGroupTypeMeritController {
      * @param request is  the model of input for update instanceGroupTypeMerit entity
      * @return InstanceGroupTypeMeritDTO.Info is the updated instanceGroupTypeMerit entity
      */
-    @PutMapping
-    public ResponseEntity<InstanceGroupTypeMeritDTO.Info> update(@Valid @RequestBody InstanceGroupTypeMeritDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<InstanceGroupTypeMeritDTO.Info> update(@PathVariable Long id, @Valid @RequestBody InstanceGroupTypeMeritDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

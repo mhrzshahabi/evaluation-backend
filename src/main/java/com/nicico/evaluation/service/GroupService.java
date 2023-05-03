@@ -74,12 +74,12 @@ public class GroupService implements IGroupService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_GROUP')")
-    public GroupDTO.Info update(GroupDTO.Update dto) {
-        Group group = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public GroupDTO.Info update(Long id, GroupDTO.Update dto) {
+        Group group = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(group, dto);
         Group save = repository.save(group);
         GroupGradeDTO.CreateAll createDto = new GroupGradeDTO.CreateAll();
-        createDto.setGroupId(dto.getId());
+        createDto.setGroupId(id);
         createDto.setGradeCodes(dto.getGradeCodes());
         groupGradeService.update(createDto);
         return mapper.entityToDtoInfo(save);

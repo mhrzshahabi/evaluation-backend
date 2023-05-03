@@ -62,9 +62,9 @@ public class GroupTypeController {
      * @param request is  the model of input for update groupType entity
      * @return GroupTypeDTO.Info is the updated groupType entity
      */
-    @PutMapping
-    public ResponseEntity<GroupTypeDTO.Info> update(@Valid @RequestBody GroupTypeDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<GroupTypeDTO.Info> update(@PathVariable Long id, @Valid @RequestBody GroupTypeDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

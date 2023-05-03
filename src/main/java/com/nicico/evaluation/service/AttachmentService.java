@@ -87,8 +87,8 @@ public class AttachmentService implements IAttachmentService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_ATTACHMENT')")
-    public AttachmentDTO.Info update(AttachmentDTO.Update dto) {
-        Attachment Attachment = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public AttachmentDTO.Info update(Long id, AttachmentDTO.Update dto) {
+        Attachment Attachment = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(Attachment, dto);
         try {
             Attachment save = repository.save(Attachment);

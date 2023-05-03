@@ -17,7 +17,7 @@ public interface IBatchDetailService {
 
     BaseResponse create(BatchDetailDTO.CreateList dto);
 
-    BatchDetailDTO.Info update(BatchDetailDTO.Update dto);
+    BatchDetailDTO.Info update(Long id, BatchDetailDTO.Update dto);
 
     void updateStatusAndExceptionTitle(Long id, Long statusCatalogId, String exceptionTitle);
 

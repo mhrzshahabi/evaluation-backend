@@ -96,8 +96,8 @@ public class KPITypeService implements IKPITypeService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_KPI_TYPE')")
-    public KPITypeDTO.Info update(KPITypeDTO.Update dto) {
-        KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public KPITypeDTO.Info update(Long id, KPITypeDTO.Update dto) {
+        KPIType kPIType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(kPIType, dto);
         try {
             KPIType save = repository.save(kPIType);

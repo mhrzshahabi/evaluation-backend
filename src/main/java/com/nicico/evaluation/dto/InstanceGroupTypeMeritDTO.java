@@ -41,7 +41,6 @@ public class InstanceGroupTypeMeritDTO {
     @ApiModel("InstanceGroupTypeMeritUpdateRq")
     public static class Update extends InstanceGroupTypeMeritDTO {
 
-        private Long id;
     }
 
     @Getter

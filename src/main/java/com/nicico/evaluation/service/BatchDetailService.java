@@ -107,8 +107,8 @@ public class BatchDetailService implements IBatchDetailService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_BATCH_DETAIL')")
-    public BatchDetailDTO.Info update(BatchDetailDTO.Update dto) {
-        BatchDetail batchDetail = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public BatchDetailDTO.Info update(Long id, BatchDetailDTO.Update dto) {
+        BatchDetail batchDetail = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(batchDetail, dto);
         try {
             BatchDetail save = repository.save(batchDetail);

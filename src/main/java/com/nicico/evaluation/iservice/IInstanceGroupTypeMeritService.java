@@ -23,7 +23,7 @@ public interface IInstanceGroupTypeMeritService {
 
     InstanceGroupTypeMeritDTO.Info create(InstanceGroupTypeMeritDTO.Create dto);
 
-    InstanceGroupTypeMeritDTO.Info update(InstanceGroupTypeMeritDTO.Update dto);
+    InstanceGroupTypeMeritDTO.Info update(Long id, InstanceGroupTypeMeritDTO.Update dto);
 
     void delete(Long id);
 

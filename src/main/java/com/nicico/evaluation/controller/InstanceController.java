@@ -81,9 +81,9 @@ public class InstanceController {
      * @param request is  the model of input for update instance entity
      * @return GroupDTOInfo is the updated instance entity
      */
-    @PutMapping
-    public ResponseEntity<InstanceDTO.Info> update(@Valid @RequestBody InstanceDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<InstanceDTO.Info> update(@PathVariable Long id, @Valid @RequestBody InstanceDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

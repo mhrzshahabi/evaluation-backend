@@ -74,8 +74,8 @@ public class InstanceService implements IInstanceService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_INSTANCE')")
-    public InstanceDTO.Info update(InstanceDTO.Update dto) {
-        Instance instance = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public InstanceDTO.Info update(Long id, InstanceDTO.Update dto) {
+        Instance instance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(instance, dto);
         Instance save = repository.save(instance);
         return mapper.entityToDtoInfo(save);

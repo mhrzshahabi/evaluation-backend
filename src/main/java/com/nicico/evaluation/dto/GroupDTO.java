@@ -9,7 +9,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -41,9 +40,7 @@ public abstract class GroupDTO {
     @Accessors(chain = true)
     @ApiModel("GroupUpdateRq")
     public static class Update extends GroupDTO {
-        @NotNull
-        @Min(1)
-        private Long id;
+
     }
 
     @Getter

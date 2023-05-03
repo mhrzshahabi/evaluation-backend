@@ -62,9 +62,9 @@ public class PostMeritComponentController {
      * @param request is  the model of input for update postMeritComponent entity
      * @return PostMeritComponentDTO.Info is the updated postMeritComponent entity
      */
-    @PutMapping
-    public ResponseEntity<PostMeritComponentDTO.Info> update(@Valid @RequestBody PostMeritComponentDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<PostMeritComponentDTO.Info> update(@PathVariable Long id, @Valid @RequestBody PostMeritComponentDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

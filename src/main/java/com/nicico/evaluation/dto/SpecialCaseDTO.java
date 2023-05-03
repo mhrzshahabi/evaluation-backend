@@ -52,8 +52,7 @@ public class SpecialCaseDTO {
     @Accessors(chain = true)
     @ApiModel("SpecialCaseUpdateRq")
     public static class Update extends SpecialCaseDTO {
-        @NotNull
-        private Long id;
+
     }
 
     @Getter

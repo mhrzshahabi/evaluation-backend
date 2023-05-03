@@ -17,7 +17,7 @@ public interface IInstanceService {
 
     InstanceDTO.Info create(InstanceDTO.Create dto);
 
-    InstanceDTO.Info update(InstanceDTO.Update dto);
+    InstanceDTO.Info update(Long id, InstanceDTO.Update dto);
 
     void delete(Long id);
 
