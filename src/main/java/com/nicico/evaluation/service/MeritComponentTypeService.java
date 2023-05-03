@@ -94,8 +94,8 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_MERIT_COMPONENT_TYPE')")
-    public MeritComponentTypeDTO.Info update(MeritComponentTypeDTO.Update dto) {
-        MeritComponentType meritComponentType = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public MeritComponentTypeDTO.Info update(Long id, MeritComponentTypeDTO.Update dto) {
+        MeritComponentType meritComponentType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(meritComponentType, dto);
         try {
             MeritComponentType save = repository.save(meritComponentType);

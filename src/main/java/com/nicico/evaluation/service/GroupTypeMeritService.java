@@ -75,14 +75,14 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_GROUP_TYPE_MERIT')")
-    public GroupTypeMeritDTO.Info update(GroupTypeMeritDTO.Update dto) {
-        GroupTypeMerit groupTypeMerit = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public GroupTypeMeritDTO.Info update(Long id, GroupTypeMeritDTO.Update dto) {
+        GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(groupTypeMerit, dto);
         try {
-            List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(dto.getId()).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
+            List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(id).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
             if (!instanceGroupTypeIds.isEmpty())
                 instanceGroupTypeMeritService.deleteAll(instanceGroupTypeIds);
-            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), dto.getId());
+            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), id);
             GroupTypeMerit save = repository.save(groupTypeMerit);
             return mapper.entityToDtoInfo(save);
         } catch (

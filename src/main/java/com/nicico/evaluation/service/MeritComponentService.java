@@ -75,14 +75,14 @@ public class MeritComponentService implements IMeritComponentService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_MERIT_COMPONENT')")
-    public MeritComponentDTO.Info update(MeritComponentDTO.Update dto) {
-        MeritComponent meritComponent = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public MeritComponentDTO.Info update(Long id, MeritComponentDTO.Update dto) {
+        MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(meritComponent, dto);
         try {
             List<Long> meritComponentTypeIds = meritComponentTypeService.findAllByMeritComponentId(meritComponent.getId()).stream().map(MeritComponentTypeDTO.Info::getId).toList();
             if (!meritComponentTypeIds.isEmpty())
                 meritComponentTypeService.deleteAll(meritComponentTypeIds);
-            createAllMeritComponentType(dto.getKpiTypeId(), dto.getId());
+            createAllMeritComponentType(dto.getKpiTypeId(), id);
             MeritComponent save = repository.save(meritComponent);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {

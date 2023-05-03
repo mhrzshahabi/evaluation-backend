@@ -52,7 +52,7 @@ public abstract class BatchDetailDTO {
     @Accessors(chain = true)
     @ApiModel("BatchDetailUpdateRq")
     public static class Update extends BatchDetailDTO {
-        private Long id;
+
     }
 
     @Getter

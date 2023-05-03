@@ -14,7 +14,7 @@ public interface IPostMeritComponentService {
 
     BaseResponse batchCreate(PostMeritComponentDTO.BatchCreate dto);
 
-    PostMeritComponentDTO.Info update(PostMeritComponentDTO.Update dto);
+    PostMeritComponentDTO.Info update(Long id, PostMeritComponentDTO.Update dto);
 
     void delete(Long id);
 

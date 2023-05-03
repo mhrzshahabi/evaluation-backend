@@ -62,9 +62,9 @@ public class CatalogTypeController {
      * @param request is the model of input for update catalogType entity
      * @return CatalogTypeDTO.Info is the updated catalogType entity
      */
-    @PutMapping
-    public ResponseEntity<CatalogTypeDTO.Info> update(@Valid @RequestBody CatalogTypeDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CatalogTypeDTO.Info> update(@PathVariable Long id, @Valid @RequestBody CatalogTypeDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

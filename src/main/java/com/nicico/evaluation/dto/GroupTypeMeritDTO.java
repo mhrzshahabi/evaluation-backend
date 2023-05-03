@@ -47,7 +47,6 @@ public abstract class GroupTypeMeritDTO {
     @ApiModel("GroupTypeMeritUpdateRq")
     public static class Update extends GroupTypeMeritDTO {
 
-        private Long id;
         private List<Long> instanceIds;
     }
 

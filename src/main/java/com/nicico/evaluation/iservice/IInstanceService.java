@@ -17,13 +17,11 @@ public interface IInstanceService {
 
     InstanceDTO.Info create(InstanceDTO.Create dto);
 
-    InstanceDTO.Info update(InstanceDTO.Update dto);
+    InstanceDTO.Info update(Long id, InstanceDTO.Update dto);
 
     void delete(Long id);
 
     SearchDTO.SearchRs<InstanceDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     InstanceDTO.Info getByCode(String code);
-
-    SearchDTO.SearchRs<InstanceDTO.Info> searchByPostMeritId(SearchDTO.SearchRq request, Long postMeritId) throws IllegalAccessException, NoSuchFieldException;
 }

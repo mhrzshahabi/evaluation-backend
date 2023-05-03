@@ -16,7 +16,7 @@ public interface IKPITypeService {
 
     BaseResponse batchCreate(KPITypeDTO.Create dto);
 
-    KPITypeDTO.Info update(KPITypeDTO.Update dto);
+    KPITypeDTO.Info update(Long id, KPITypeDTO.Update dto);
 
     void delete(Long id);
 

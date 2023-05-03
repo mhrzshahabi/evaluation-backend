@@ -14,7 +14,7 @@ public interface IBatchService {
 
     BaseResponse create(BatchDTO.Create dto);
 
-    BatchDTO.Info update(BatchDTO.Update dto);
+    BatchDTO.Info update(Long id, BatchDTO.Update dto);
 
     void delete(Long id);
 

@@ -1,6 +1,5 @@
 package com.nicico.evaluation.iservice;
 
-
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.CatalogTypeDTO;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +14,7 @@ public interface ICatalogTypeService {
 
     CatalogTypeDTO.Info create(CatalogTypeDTO.Create create);
 
-    CatalogTypeDTO.Info update(CatalogTypeDTO.Update update);
+    CatalogTypeDTO.Info update(Long id, CatalogTypeDTO.Update update);
 
     void delete(Long id);
 

@@ -62,9 +62,9 @@ public class MeritComponentTypeController {
      * @param request is  the model of input for update meritComponentType entity
      * @return MeritComponentTypeDTO.Info is the updated meritComponentType entity
      */
-    @PutMapping
-    public ResponseEntity<MeritComponentTypeDTO.Info> update(@Valid @RequestBody MeritComponentTypeDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<MeritComponentTypeDTO.Info> update(@PathVariable Long id, @Valid @RequestBody MeritComponentTypeDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

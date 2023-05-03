@@ -103,8 +103,8 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_INSTANCE_GROUP_TYPE_MERIT')")
-    public InstanceGroupTypeMeritDTO.Info update(InstanceGroupTypeMeritDTO.Update dto) {
-        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public InstanceGroupTypeMeritDTO.Info update(Long id, InstanceGroupTypeMeritDTO.Update dto) {
+        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(instanceGroupTypeMerit, dto);
         try {
             InstanceGroupTypeMerit save = repository.save(instanceGroupTypeMerit);

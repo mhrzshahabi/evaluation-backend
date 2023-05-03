@@ -83,10 +83,10 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info update(EvaluationPeriodDTO.Update dto) {
+    public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) {
         try {
             if (this.isValidDates(dto.getStartDate(), dto.getEndDate(), dto.getStartDateAssessment(), dto.getEndDateAssessment())){
-                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
                 evaluationPeriodMapper.update(evaluationPeriod, dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
                 return evaluationPeriodMapper.entityToDtoInfo(save);

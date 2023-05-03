@@ -59,7 +59,6 @@ public abstract class PostMeritComponentDTO {
     @ApiModel("PostMeritComponentUpdateRq")
     public static class Update extends PostMeritComponentDTO {
 
-        private Long id;
     }
 
     @Getter
