@@ -23,20 +23,17 @@ public class SpecialCase extends Auditable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "c_first_name")
-    private String firstName;
+    @Column(name = "c_assess_full_name")
+    private String assessFullName;
 
-    @Column(name = "c_last_name")
-    private String lastName;
+    @Column(name = "c_assess_national_code")
+    private String assessNationalCode;
 
-    @Column(name = "c_national_code")
-    private String nationalCode;
+    @Column(name = "c_assess_post_code")
+    private String assessPostCode;
 
-    @Column(name = "c_post_code")
-    private String postCode;
-
-    @Column(name = "c_assessor_name")
-    private String assessorName;
+    @Column(name = "c_assessor_full_name")
+    private String assessorFullName;
 
     @Column(name = "c_assessor_national_code")
     private String assessorNationalCode;
