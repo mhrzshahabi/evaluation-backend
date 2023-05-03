@@ -39,7 +39,7 @@ public class AttachmentService implements IAttachmentService {
     @PreAuthorize("hasAuthority('R_ATTACHMENT')")
     public List<AttachmentDTO.Info> getAllByObjectIdAndObjectTypeAndGroupId(Long objectId, String objectType, String groupId) {
         List<Attachment> attachments = repository.findAllByObjectIdAndObjectTypeAndGroupId(objectId, objectType, groupId);
-        return mapper.entityToDtoInfoList(attachments);
+        return mapper.entityToAttachInfoDtoList(attachments);
     }
 
     @Override

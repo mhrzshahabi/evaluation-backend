@@ -17,6 +17,9 @@ public abstract class SensitiveEventsMapper {
     @Value("${ui.landing.fmsGroupId}")
     private String fmsGroupId;
 
+    @Value("${ui.landing.fmsUrl}")
+    private String fmsUrl;
+
     @Autowired
     AttachmentService attachmentService;
 
@@ -32,7 +35,10 @@ public abstract class SensitiveEventsMapper {
     public abstract void update(@MappingTarget SensitiveEvents entity, SensitiveEventsDTO.Update dto);
 
     @Named("getAttachment")
-    List<AttachmentDTO.Info> getAttachment(Long id) {
-        return attachmentService.getAllByObjectIdAndObjectTypeAndGroupId(id, EvaluationConstant.SENSITIVE_EVENTS, fmsGroupId);
+    AttachmentDTO.AttachInfo getAttachment(Long id) {
+        AttachmentDTO.AttachInfo attachInfoDto = new AttachmentDTO.AttachInfo();
+        List<AttachmentDTO.Info> allByObjectIdAndObjectTypeAndGroupId = attachmentService.getAllByObjectIdAndObjectTypeAndGroupId(id, EvaluationConstant.SENSITIVE_EVENTS, fmsGroupId);
+        return attachInfoDto.setFmsUrl(fmsUrl).setInfoList(allByObjectIdAndObjectTypeAndGroupId);
+
     }
 }
