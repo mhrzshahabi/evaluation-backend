@@ -718,4 +718,105 @@
         <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date_assessment"/>
         <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date_assessment"/>
     </changeSet>
+    <changeSet author="a.lotfi" id="1683095597">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'وضعیت ارزیابی',
+                    'EvaluationStatus',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ثبت اولیه',
+                    'Initial-registration',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'نهایی شده',
+                    'Finalized',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در انتظار بررسی',
+                    'Awaiting-review',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
