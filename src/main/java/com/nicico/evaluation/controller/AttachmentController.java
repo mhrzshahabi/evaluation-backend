@@ -28,7 +28,7 @@ import java.util.Locale;
 @RequestMapping(value = "/api/attachment")
 public class AttachmentController {
 
-
+    @Value("${ui.landing.fmsUrl}")
     private String fmsUrl;
     @Value("${ui.landing.fmsGroupId}")
     private String fmsGroupId;

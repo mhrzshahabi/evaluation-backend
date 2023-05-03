@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -20,8 +19,8 @@ public abstract class AttachmentDTO {
     private String description;
     private Long objectId;
     private String objectType;
-    private String fmsKey;
     private String groupId;
+    private String fmsKey;
 
     @Getter
     @Setter
@@ -35,6 +34,16 @@ public abstract class AttachmentDTO {
     @ApiModel("AttachmentInfo")
     public static class Info extends AttachmentDTO {
         private Long id;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("AttachmentInfo")
+    public static class AttachInfo {
+        private String fmsUrl;
+        private List<AttachmentDTO.Info> infoList;
+
     }
 
     @Getter
@@ -42,20 +51,7 @@ public abstract class AttachmentDTO {
     @ApiModel("FmsInfo")
     public static class FmsInfo {
 
-        @Value("${ui.landing.fmsGroupId}")
         private String fmsGroupId;
-        @Value("${ui.landing.fmsUrl}")
-        private String fmsUrl;
-    }
-
-    @Getter
-    @Setter
-    @ApiModel("AttachInfo")
-    public static class AttachInfo extends Info {
-
-        @Value("${ui.landing.fmsGroupId}")
-        private String fmsGroupId;
-        @Value("${ui.landing.fmsUrl}")
         private String fmsUrl;
     }
 

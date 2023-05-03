@@ -16,7 +16,7 @@ public interface AttachmentMapper {
 
     List<AttachmentDTO.Info> entityToDtoInfoList(List<Attachment> entities);
 
-    List<AttachmentDTO.AttachInfo> entityToAttachInfoDtoList(List<Attachment> entities);
+    List<AttachmentDTO.Info> entityToAttachInfoDtoList(List<Attachment> entities);
 
     void update(@MappingTarget Attachment entity, AttachmentDTO.Update dto);
 }
