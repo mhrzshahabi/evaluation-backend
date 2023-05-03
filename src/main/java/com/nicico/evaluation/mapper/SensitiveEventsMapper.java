@@ -32,7 +32,7 @@ public abstract class SensitiveEventsMapper {
     public abstract void update(@MappingTarget SensitiveEvents entity, SensitiveEventsDTO.Update dto);
 
     @Named("getAttachment")
-    List<AttachmentDTO.Info> getAttachment(Long id) {
+    List<AttachmentDTO.AttachInfo> getAttachment(Long id) {
         return attachmentService.getAllByObjectIdAndObjectTypeAndGroupId(id, EvaluationConstant.SENSITIVE_EVENTS, fmsGroupId);
     }
 }

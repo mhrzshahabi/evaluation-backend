@@ -32,7 +32,7 @@ public abstract class SensitiveEventsDTO {
         private CatalogDTO.Info eventPolicyCatalog;
         private CatalogDTO.Info typeCatalog;
         private String nationalCode;
-        private List<AttachmentDTO.Info> attachment;
+        private List<AttachmentDTO.AttachInfo> attachment;
 
     }
 

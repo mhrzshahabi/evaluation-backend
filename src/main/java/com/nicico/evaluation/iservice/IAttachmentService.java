@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IAttachmentService {
 
-    List<AttachmentDTO.Info> getAllByObjectIdAndObjectTypeAndGroupId(Long objectId, String objectType, String groupId);
+    List<AttachmentDTO.AttachInfo> getAllByObjectIdAndObjectTypeAndGroupId(Long objectId, String objectType, String groupId);
 
     AttachmentDTO.SpecResponse list(int count, int startIndex);
 
