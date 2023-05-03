@@ -45,6 +45,22 @@ public class InstanceDTO {
         //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
         //todo
         private Boolean hasEvaluation = false;
+        List<PostMeritInstanceTupleDTO> postMeritInstances;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel(" PostMeritInstanceTupleInfo")
+    public static class PostMeritInstanceTupleDTO {
+        private Long id;
+        private PostMeritComponentTupleDTO postMeritComponent;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("PostMeritComponentTupleInfo")
+    public static class PostMeritComponentTupleDTO {
+        private Long id;
     }
 
     @Getter
