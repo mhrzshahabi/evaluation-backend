@@ -27,6 +27,8 @@ public class CriteriaUtil {
                 EOperator operator;
                 if ("select".equals(criteria.getType())) {
                     operator = EOperator.equals;
+                } else if ("date".equals(criteria.getType())){
+                    operator = EOperator.equals;
                 } else {
                     operator = EOperator.contains;
                 }

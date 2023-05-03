@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -67,13 +68,9 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
         try {
-            if (
-                    evaluationPeriod.getStartDateAssessment().compareTo(evaluationPeriod.getStartDate()) > 0 &&
-                            evaluationPeriod.getStartDateAssessment().compareTo(evaluationPeriod.getEndDate()) < 0 &&
-                            evaluationPeriod.getEndDateAssessment().compareTo(evaluationPeriod.getStartDate()) > 0 &&
-                            evaluationPeriod.getEndDateAssessment().compareTo(evaluationPeriod.getEndDate()) < 0 &&
-                            evaluationPeriod.getEndDateAssessment().compareTo(evaluationPeriod.getStartDateAssessment()) > 0
-            ) {
+            if (this.isValidDates(evaluationPeriod.getStartDate(), evaluationPeriod.getEndDate(),
+                    evaluationPeriod.getStartDateAssessment(), evaluationPeriod.getEndDateAssessment())
+            ){
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
                 return evaluationPeriodMapper.entityToDtoInfo(save);
             }
@@ -88,13 +85,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info update(EvaluationPeriodDTO.Update dto) {
         try {
-            if (
-                    dto.getStartDateAssessment().compareTo(dto.getStartDate()) > 0 &&
-                            dto.getStartDateAssessment().compareTo(dto.getEndDate()) < 0 &&
-                            dto.getEndDateAssessment().compareTo(dto.getStartDate()) > 0 &&
-                            dto.getEndDateAssessment().compareTo(dto.getEndDate()) < 0 &&
-                            dto.getEndDateAssessment().compareTo(dto.getStartDateAssessment()) > 0
-            ) {
+            if (this.isValidDates(dto.getStartDate(), dto.getEndDate(), dto.getStartDateAssessment(), dto.getEndDateAssessment())){
                 EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
                 evaluationPeriodMapper.update(evaluationPeriod, dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
@@ -112,5 +103,15 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     public void delete(Long id) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         evaluationPeriodRepository.delete(evaluationPeriod);
+    }
+
+
+    private boolean isValidDates(Date startDate, Date endDate, Date startDateAssessment, Date endDateAssessment){
+        return startDateAssessment.compareTo(startDate) > 0 &&
+                startDateAssessment.compareTo(endDate) < 0 &&
+                startDateAssessment.compareTo(endDateAssessment) < 0 &&
+                endDateAssessment.compareTo(startDate) > 0 &&
+                endDateAssessment.compareTo(endDate) < 0 &&
+                endDateAssessment.compareTo(startDateAssessment) > 0;
     }
 }
