@@ -67,6 +67,8 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     @PreAuthorize("hasAuthority('C_SPECIAL_CASE')")
     public SpecialCaseDTO.Info create(SpecialCaseDTO.Create dto) {
+        if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode()))
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         SpecialCase specialCase = specialCaseMapper.dtoCreateToEntity(dto);
         try {
             specialCase = specialCaseRepository.save(specialCase);
@@ -80,6 +82,8 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     @PreAuthorize("hasAuthority('U_SPECIAL_CASE')")
     public SpecialCaseDTO.Info update(SpecialCaseDTO.Update dto) {
+        if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode()))
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         SpecialCase specialcase = specialCaseRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseMapper.update(specialcase, dto);
         try {
