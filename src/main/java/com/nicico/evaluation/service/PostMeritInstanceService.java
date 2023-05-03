@@ -5,6 +5,7 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.iservice.IPostMeritComponentService;
 import com.nicico.evaluation.iservice.IPostMeritInstanceService;
 import com.nicico.evaluation.mapper.PostMeritInstanceMapper;
@@ -28,7 +29,7 @@ public class PostMeritInstanceService implements IPostMeritInstanceService {
 
     private final PageableMapper pageableMapper;
     private final PostMeritInstanceMapper mapper;
-//    private final IInstanceService instanceService;
+    private final IInstanceService instanceService;
     private final PostMeritInstanceRepository repository;
     private final IPostMeritComponentService postMeritComponentService;
 
@@ -108,13 +109,13 @@ public class PostMeritInstanceService implements IPostMeritInstanceService {
     public BaseResponse batchCreate(PostMeritInstanceDTO.BatchCreate dto) {
         BaseResponse response = new BaseResponse();
         try {
+            Long instanceId = instanceService.getByCode(dto.getInstanceCode()).getId();
             PostMeritComponentDTO.BatchCreate batchCreate = mapper.dtoBatchCreateToDtoComponentBatchCreate(dto);
             BaseResponse postMeritComponentResponse = postMeritComponentService.batchCreate(batchCreate);
             if (postMeritComponentResponse.getStatus() == HttpStatus.OK.value()) {
                 PostMeritInstanceDTO.Create create = new PostMeritInstanceDTO.Create();
                 create.setPostMeritComponentId(Long.valueOf(postMeritComponentResponse.getMessage()));
-                create.setInstanceId(1L);
-//                create.setInstanceId(instanceService.getByCode(dto.getInstanceCode()).getId());
+                create.setInstanceId(instanceId);
                 create(create);
                 response.setStatus(HttpStatus.OK.value());
             } else {

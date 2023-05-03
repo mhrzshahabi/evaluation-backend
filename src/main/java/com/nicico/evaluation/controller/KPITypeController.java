@@ -63,9 +63,9 @@ public class KPITypeController {
      * @param request is  the model of input for update kPIType entity
      * @return KPITypeDTO.Info is the updated kPIType entity
      */
-    @PutMapping
-    public ResponseEntity<KPITypeDTO.Info> update(@Valid @RequestBody KPITypeDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<KPITypeDTO.Info> update(@PathVariable Long id, @Valid @RequestBody KPITypeDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

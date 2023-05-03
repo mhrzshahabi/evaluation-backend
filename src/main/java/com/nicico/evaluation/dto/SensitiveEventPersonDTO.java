@@ -41,7 +41,6 @@ public abstract class SensitiveEventPersonDTO {
     @ApiModel("SensitiveEventPersonUpdateRq")
     public static class Update extends SensitiveEventPersonDTO {
 
-        private Long id;
     }
 
     @Getter

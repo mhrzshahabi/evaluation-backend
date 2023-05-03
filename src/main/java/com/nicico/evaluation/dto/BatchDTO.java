@@ -40,7 +40,7 @@ public abstract class BatchDTO {
     @Accessors(chain = true)
     @ApiModel("BatchUpdateRq")
     public static class Update extends BatchDTO {
-        private Long id;
+
     }
 
     @Getter

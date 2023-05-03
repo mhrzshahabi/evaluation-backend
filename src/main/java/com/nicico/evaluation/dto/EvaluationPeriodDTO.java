@@ -24,7 +24,6 @@ public class EvaluationPeriodDTO {
     private Date startDateAssessment;
     @NotNull
     private Date endDateAssessment;
-
     private String description;
 
     @Getter
@@ -48,7 +47,7 @@ public class EvaluationPeriodDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationPeriodUpdateRq")
     public static class Update extends EvaluationPeriodDTO {
-        private Long id;
+
     }
 
     public static class Delete {

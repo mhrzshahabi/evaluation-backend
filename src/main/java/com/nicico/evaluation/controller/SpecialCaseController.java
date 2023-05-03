@@ -63,9 +63,9 @@ public class SpecialCaseController {
      * @param request is  the model of input for update specialCase entity
      * @return SpecialCaseDTOInfo is the updated specialCase entity
      */
-    @PutMapping
-    public ResponseEntity<SpecialCaseDTO.Info> update(@Valid @RequestBody SpecialCaseDTO.Update request) {
-        return new ResponseEntity<>(specialCaseService.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<SpecialCaseDTO.Info> update(@PathVariable Long id, @Valid @RequestBody SpecialCaseDTO.Update request) {
+        return new ResponseEntity<>(specialCaseService.update(id, request), HttpStatus.OK);
     }
 
     /**

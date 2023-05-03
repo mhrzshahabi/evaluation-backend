@@ -69,8 +69,8 @@ public class CatalogService implements ICatalogService {
 
     @Transactional
     @Override
-    public CatalogDTO.Info update(CatalogDTO.Update update) {
-        Optional<Catalog> optional = repository.findById(update.getId());
+    public CatalogDTO.Info update(Long id, CatalogDTO.Update update) {
+        Optional<Catalog> optional = repository.findById(id);
         Catalog currentEntity = optional.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         Catalog entity = new Catalog();
         modelMapper.map(currentEntity, entity);

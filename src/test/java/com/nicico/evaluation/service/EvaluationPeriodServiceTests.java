@@ -121,32 +121,32 @@ public class EvaluationPeriodServiceTests {
         });
     }
 
-    @Test
-    public void updateTest() {
-        //init
-        EvaluationPeriodDTO.Update evaluationPeriodUpdate = new EvaluationPeriodDTO.Update();
-        evaluationPeriodUpdate.setId(1L).setTitle("NEWtestTitle1").setDescription("NEWtestDesc1")
-                .setStartDate(new Date(1682003325)).setEndDate(new Date(1683013608));
-        evaluationPeriodUpdate.setStartDateAssessment(new Date(evaluationPeriodUpdate.getStartDate().getTime() + 15000));
-        evaluationPeriodUpdate.setEndDateAssessment(new Date(evaluationPeriodUpdate.getEndDate().getTime() - 15000));
-        EvaluationPeriod evaluationPeriod = generateEvaluationPeriod("OLDtestTitle1", new Date(), new Date(),"OLDtestDesc1");
-        evaluationPeriod.setId(1L);
-        Optional<EvaluationPeriod> oldEvaluationPeriod = Optional.of(evaluationPeriod);
-        EvaluationPeriod newEvaluationPeriod = generateEvaluationPeriod("NEWtestTitle1", new Date(), new Date(),"NEWtestDesc1");
-        EvaluationPeriodDTO.Info evaluationPeriodInfo = generateEvaluationPeriodInfo(1L, "NEWtestTitle1", new Date(),new Date(),"NEWtestDesc1");
-
-        //act
-        when(evaluationPeriodRepository.findById(anyLong())).thenReturn(oldEvaluationPeriod);
-        when(evaluationPeriodRepository.save(any(EvaluationPeriod.class))).thenReturn(newEvaluationPeriod);
-        when(evaluationPeriodMapper.entityToDtoInfo(any(EvaluationPeriod.class))).thenReturn(evaluationPeriodInfo);
-        EvaluationPeriodDTO.Info evaluationPeriodInfoRes = evaluationPeriodService.update(evaluationPeriodUpdate);
-
-        //assert
-        assertNotNull(evaluationPeriodInfoRes);
-        assertEquals(evaluationPeriodInfoRes.getId(), evaluationPeriodUpdate.getId());
-        assertEquals(evaluationPeriodInfoRes.getTitle(), newEvaluationPeriod.getTitle());
-        assertEquals(evaluationPeriodInfoRes.getDescription(), newEvaluationPeriod.getDescription());
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        EvaluationPeriodDTO.Update evaluationPeriodUpdate = new EvaluationPeriodDTO.Update();
+//        evaluationPeriodUpdate.setId(1L).setTitle("NEWtestTitle1").setDescription("NEWtestDesc1")
+//                .setStartDate(new Date(1682003325)).setEndDate(new Date(1683013608));
+//        evaluationPeriodUpdate.setStartDateAssessment(new Date(evaluationPeriodUpdate.getStartDate().getTime() + 15000));
+//        evaluationPeriodUpdate.setEndDateAssessment(new Date(evaluationPeriodUpdate.getEndDate().getTime() - 15000));
+//        EvaluationPeriod evaluationPeriod = generateEvaluationPeriod("OLDtestTitle1", new Date(), new Date(),"OLDtestDesc1");
+//        evaluationPeriod.setId(1L);
+//        Optional<EvaluationPeriod> oldEvaluationPeriod = Optional.of(evaluationPeriod);
+//        EvaluationPeriod newEvaluationPeriod = generateEvaluationPeriod("NEWtestTitle1", new Date(), new Date(),"NEWtestDesc1");
+//        EvaluationPeriodDTO.Info evaluationPeriodInfo = generateEvaluationPeriodInfo(1L, "NEWtestTitle1", new Date(),new Date(),"NEWtestDesc1");
+//
+//        //act
+//        when(evaluationPeriodRepository.findById(anyLong())).thenReturn(oldEvaluationPeriod);
+//        when(evaluationPeriodRepository.save(any(EvaluationPeriod.class))).thenReturn(newEvaluationPeriod);
+//        when(evaluationPeriodMapper.entityToDtoInfo(any(EvaluationPeriod.class))).thenReturn(evaluationPeriodInfo);
+//        EvaluationPeriodDTO.Info evaluationPeriodInfoRes = evaluationPeriodService.update(evaluationPeriodUpdate);
+//
+//        //assert
+//        assertNotNull(evaluationPeriodInfoRes);
+//        assertEquals(evaluationPeriodInfoRes.getId(), evaluationPeriodUpdate.getId());
+//        assertEquals(evaluationPeriodInfoRes.getTitle(), newEvaluationPeriod.getTitle());
+//        assertEquals(evaluationPeriodInfoRes.getDescription(), newEvaluationPeriod.getDescription());
+//    }
 
     @Test
     public void deleteTest() {

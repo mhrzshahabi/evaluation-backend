@@ -86,7 +86,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info update(EvaluationPeriodDTO.Update dto) {
+    public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) {
         try {
             if (
                     dto.getStartDateAssessment().compareTo(dto.getStartDate()) > 0 &&
@@ -95,7 +95,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                             dto.getEndDateAssessment().compareTo(dto.getEndDate()) < 0 &&
                             dto.getEndDateAssessment().compareTo(dto.getStartDateAssessment()) > 0
             ) {
-                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
                 evaluationPeriodMapper.update(evaluationPeriod, dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
                 return evaluationPeriodMapper.entityToDtoInfo(save);

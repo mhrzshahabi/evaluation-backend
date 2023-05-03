@@ -15,7 +15,7 @@ public interface IAttachmentService {
 
     AttachmentDTO.Info create(AttachmentDTO.Create dto);
 
-    AttachmentDTO.Info update(AttachmentDTO.Update dto);
+    AttachmentDTO.Info update(Long id, AttachmentDTO.Update dto);
 
     void delete(Long id);
 

@@ -63,9 +63,9 @@ public class GroupTypeMeritController {
      * @param request is  the model of input for update groupTypeMerit entity
      * @return GroupTypeMeritDTO.Info is the updated groupTypeMerit entity
      */
-    @PutMapping
-    public ResponseEntity<GroupTypeMeritDTO.Info> update(@Valid @RequestBody GroupTypeMeritDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<GroupTypeMeritDTO.Info> update(@PathVariable Long id, @Valid @RequestBody GroupTypeMeritDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

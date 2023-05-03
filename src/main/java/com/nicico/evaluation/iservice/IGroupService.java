@@ -11,7 +11,7 @@ public interface IGroupService {
 
     GroupDTO.Info create(GroupDTO.Create dto);
 
-    GroupDTO.Info update(GroupDTO.Update dto);
+    GroupDTO.Info update(Long id, GroupDTO.Update dto);
 
     void delete(Long id);
 

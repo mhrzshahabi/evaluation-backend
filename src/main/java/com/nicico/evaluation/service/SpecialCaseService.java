@@ -10,6 +10,8 @@ import com.nicico.evaluation.mapper.SpecialCaseMapper;
 import com.nicico.evaluation.model.SpecialCase;
 import com.nicico.evaluation.repository.SpecialCaseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +28,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     private final SpecialCaseRepository specialCaseRepository;
     private final SpecialCaseMapper specialCaseMapper;
     private final PageableMapper pageableMapper;
+    private final ResourceBundleMessageSource messageSource;
 
     @Override
     @Transactional(readOnly = true)
@@ -67,6 +71,12 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     @PreAuthorize("hasAuthority('C_SPECIAL_CASE')")
     public SpecialCaseDTO.Info create(SpecialCaseDTO.Create dto) {
+        if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
+                    "assessNatioanlCode and assessorNationalCode",
+                    messageSource.getMessage("exception.nationalcode.duplicate", null, locale));
+        }
         SpecialCase specialCase = specialCaseMapper.dtoCreateToEntity(dto);
         try {
             specialCase = specialCaseRepository.save(specialCase);
@@ -79,8 +89,14 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_SPECIAL_CASE')")
-    public SpecialCaseDTO.Info update(SpecialCaseDTO.Update dto) {
-        SpecialCase specialcase = specialCaseRepository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public SpecialCaseDTO.Info update(Long id, SpecialCaseDTO.Update dto) {
+        if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
+                    "assessNationalCode and assessorNationalCode",
+                    messageSource.getMessage("exception.nationalcode.duplicate", null, locale));
+        }
+        SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseMapper.update(specialcase, dto);
         try {
             SpecialCase save = specialCaseRepository.save(specialcase);
@@ -89,6 +105,7 @@ public class SpecialCaseService implements ISpecialCaseService {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
     }
+
 
     @Override
     @Transactional

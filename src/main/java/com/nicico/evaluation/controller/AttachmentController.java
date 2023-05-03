@@ -72,9 +72,9 @@ public class AttachmentController {
      * @param request is  the model of input for update attachment entity
      * @return AttachmentDTOInfo is the updated attachment entity
      */
-    @PutMapping
-    public ResponseEntity<AttachmentDTO.Info> update(@Valid @RequestBody AttachmentDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<AttachmentDTO.Info> update(@PathVariable Long id, @Valid @RequestBody AttachmentDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

@@ -92,8 +92,8 @@ public class BatchService implements IBatchService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_BATCH')")
-    public BatchDTO.Info update(BatchDTO.Update dto) {
-        Batch batch = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public BatchDTO.Info update(Long id, BatchDTO.Update dto) {
+        Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(batch, dto);
         try {
             Batch save = repository.save(batch);
