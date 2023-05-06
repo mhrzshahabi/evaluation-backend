@@ -23,6 +23,7 @@ public abstract class PersonDTO {
         private Long personelId;
         private String firstName;
         private String lastName;
+        private String fullName;
         private String nationalCode;
         private String fatherName;
         private String motherName;
