@@ -5,20 +5,20 @@ import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IPostMeritInstanceService {
 
     PostMeritInstanceDTO.Info get(Long id);
 
-    List<PostMeritInstanceDTO.Info> getAllByPostMeritComponentId(Long id);
 
     PostMeritInstanceDTO.SpecResponse list(int count, int startIndex);
 
-    List<PostMeritInstanceDTO.Info> createAll(List<PostMeritInstanceDTO.Create> requests);
+    Set<PostMeritInstanceDTO.Info> createAll(Set<PostMeritInstanceDTO.Create> requests);
 
     PostMeritInstanceDTO.Info create(PostMeritInstanceDTO.Create dto);
 
-    List<PostMeritInstanceDTO.Info> create(PostMeritInstanceDTO.CreateAll dto);
+    Set<PostMeritInstanceDTO.Info> create(PostMeritInstanceDTO.CreateAll dto);
 
     BaseResponse batchCreate(PostMeritInstanceDTO.BatchCreate dto);
 

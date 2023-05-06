@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Api(value = "Post Merit Instance")
@@ -30,6 +31,7 @@ public class PostMeritInstanceController {
     private final IPostMeritInstanceService service;
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
+
     /**
      * @param id is the postMeritInstance id
      * @return PostMeritInstanceDTO.Info is the single postMeritInstance entity
@@ -54,7 +56,7 @@ public class PostMeritInstanceController {
      * @return PostMeritInstanceDTO.Info is the saved postMeritInstance entity
      */
     @PostMapping
-    public ResponseEntity<List<PostMeritInstanceDTO.Info>> create(@Valid @RequestBody PostMeritInstanceDTO.CreateAll request) {
+    public ResponseEntity<Set<PostMeritInstanceDTO.Info>> create(@Valid @RequestBody PostMeritInstanceDTO.CreateAll request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
