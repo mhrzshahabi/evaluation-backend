@@ -16,6 +16,7 @@ spring:
         dialect: org.hibernate.dialect.Oracle12cDialect
         hbm2ddl:
           schema_filter_provider: com.nicico.copper.common.hibernate.CustomSchemaFilterProvider
+    show-sql: true
     open-in-view: false
   liquibase:
     database-change-log-table: Z_LIQ_CHANGELOG

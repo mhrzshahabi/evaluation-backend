@@ -30,6 +30,7 @@ public class CriteriaUtil {
                     operator = EOperator.equals;
                 } else if ("date".equals(criteria.getType())) {
                     operator = EOperator.equals;
+                    criteria.setValues(criteria.getValues().stream().map(item -> Long.valueOf((String) item)).collect(Collectors.toList()));
                 } else {
                     operator = EOperator.contains;
                 }
