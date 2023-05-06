@@ -60,4 +60,10 @@ public class GroupPostService implements IGroupPostService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    public GroupPostDTO.Info getByCode(String code) {
+        GroupPost groupPost = repository.findFirstByGroupPostCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(groupPost);
+    }
+
 }

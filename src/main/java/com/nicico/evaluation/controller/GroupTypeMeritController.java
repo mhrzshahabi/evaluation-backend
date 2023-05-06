@@ -3,10 +3,15 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Api(value = "Group Type Merit")
@@ -21,6 +27,8 @@ import java.util.List;
 @RequestMapping(value = "/api/group-type-merit")
 public class GroupTypeMeritController {
 
+    private final ResourceBundleMessageSource messageSource;
+    private final ExceptionUtil exceptionUtil;
     private final IGroupTypeMeritService service;
 
     /**
@@ -55,9 +63,9 @@ public class GroupTypeMeritController {
      * @param request is  the model of input for update groupTypeMerit entity
      * @return GroupTypeMeritDTO.Info is the updated groupTypeMerit entity
      */
-    @PutMapping
-    public ResponseEntity<GroupTypeMeritDTO.Info> update(@Valid @RequestBody GroupTypeMeritDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<GroupTypeMeritDTO.Info> update(@PathVariable Long id, @Valid @RequestBody GroupTypeMeritDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**
@@ -66,8 +74,16 @@ public class GroupTypeMeritController {
      */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            service.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataIntegrityViolationException violationException) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
+        }
     }
 
     /**

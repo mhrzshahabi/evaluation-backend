@@ -11,4 +11,6 @@ import java.util.List;
 public interface BatchDetailRepository extends JpaRepository<BatchDetail, Long>, JpaSpecificationExecutor<BatchDetail> {
 
     List<BatchDetail> findAllByBatchId(Long batchId);
+
+    List<BatchDetail> findAllByBatchIdAndStatusCatalogTitle(Long batchId, String statusCatalogTitle);
 }

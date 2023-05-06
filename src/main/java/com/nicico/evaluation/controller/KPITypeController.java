@@ -6,6 +6,7 @@ import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,8 +27,9 @@ import java.util.Locale;
 @RequestMapping(value = "/api/kpi-type")
 public class KPITypeController {
 
-    private final IKPITypeService service;
     private final ResourceBundleMessageSource messageSource;
+    private final ExceptionUtil exceptionUtil;
+    private final IKPITypeService service;
 
     /**
      * @param id is the kPIType id
@@ -61,9 +63,9 @@ public class KPITypeController {
      * @param request is  the model of input for update kPIType entity
      * @return KPITypeDTO.Info is the updated kPIType entity
      */
-    @PutMapping
-    public ResponseEntity<KPITypeDTO.Info> update(@Valid @RequestBody KPITypeDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<KPITypeDTO.Info> update(@PathVariable Long id, @Valid @RequestBody KPITypeDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**
@@ -77,7 +79,8 @@ public class KPITypeController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
@@ -87,7 +90,7 @@ public class KPITypeController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<KPITypeDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<KPITypeDTO.Info> is the list of KPITypeInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<KPITypeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,

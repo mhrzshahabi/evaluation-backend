@@ -6,6 +6,8 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
 //شایستگی
 @Getter
 @Setter
@@ -29,5 +31,8 @@ public class MeritComponent extends Auditable {
     @NotNull
     @Column(name = "c_code", nullable = false, unique = true)
     private String code;
+
+    @OneToMany(mappedBy = "meritComponent", fetch = FetchType.LAZY)
+    private List<MeritComponentType> meritComponentTypes;
 
 }

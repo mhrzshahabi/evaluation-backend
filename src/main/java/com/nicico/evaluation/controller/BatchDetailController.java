@@ -5,7 +5,9 @@ import com.nicico.evaluation.dto.BatchDetailDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IBatchDetailService;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,7 +30,7 @@ public class BatchDetailController {
 
     private final IBatchDetailService service;
     private final ResourceBundleMessageSource messageSource;
-
+    private final ExceptionUtil exceptionUtil;
     /**
      * @param id is the batchDetail id
      * @return BatchDetailDTO.Info is the single batchDetail entity
@@ -53,7 +55,7 @@ public class BatchDetailController {
      * @return BatchDetailDTO.Info is the saved batchDetail entity
      */
     @PostMapping
-    public ResponseEntity<BatchDetailDTO.Info> create(@Valid @RequestBody BatchDetailDTO.Create request) {
+    public ResponseEntity<BaseResponse> create(@Valid @RequestBody BatchDetailDTO.CreateList request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
@@ -61,9 +63,9 @@ public class BatchDetailController {
      * @param request is  the model of input for update batchDetail entity
      * @return BatchDetailDTO.Info is the updated batchDetail entity
      */
-    @PutMapping
-    public ResponseEntity<BatchDetailDTO.Info> update(@Valid @RequestBody BatchDetailDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<BatchDetailDTO.Info> update(@PathVariable Long id, @Valid @RequestBody BatchDetailDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**
@@ -77,7 +79,8 @@ public class BatchDetailController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             final Locale locale = LocaleContextHolder.getLocale();
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }

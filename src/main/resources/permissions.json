@@ -203,6 +203,110 @@
     {
       "code": "D_POST_MERIT_COMPONENT",
       "title": "حذف پست - مولفه شایستگی"
+    },
+    {
+      "code": "R_POST_MERIT_INSTANCE",
+      "title": "نمایش پست - مولفه شایستگی - مصداق"
+    },
+    {
+      "code": "C_POST_MERIT_INSTANCE",
+      "title": "ایجاد پست - مولفه شایستگی- مصداق"
+    },
+    {
+      "code": "U_POST_MERIT_INSTANCE",
+      "title": "ویرایش پست - مولفه شایستگی- مصداق"
+    },
+    {
+      "code": "D_POST_MERIT_INSTANCE",
+      "title": "حذف پست - مولفه شایستگی- مصداق"
+    },
+    {
+      "code": "R_PERSONNEL",
+      "title": "نمایش پرسنل"
+    },
+    {
+      "code": "R_PERSON",
+      "title": "نمایش اشخاص"
+    },
+    {
+      "code": "R_SENSITIVE_EVENTS",
+      "title": "نمایش وقایع حساس"
+    },
+    {
+      "code": "C_SENSITIVE_EVENTS",
+      "title": "ایجاد وقایع حساس"
+    },
+    {
+      "code": "U_SENSITIVE_EVENTS",
+      "title": "ویرایش وقایع حساس"
+    },
+    {
+      "code": "D_SENSITIVE_EVENTS",
+      "title": "حذف وقایع حساس"
+    },
+    {
+      "code": "R_SENSITIVE_EVENTS_PERSON",
+      "title": "نمایش پرسنل وقایع حساس"
+    },
+    {
+      "code": "C_SENSITIVE_EVENTS_PERSON",
+      "title": "ایجاد پرسنل وقایع حساس"
+    },
+    {
+      "code": "U_SENSITIVE_EVENTS_PERSON",
+      "title": "ویرایش پرسنل وقایع حساس"
+    },
+    {
+      "code": "D_SENSITIVE_EVENTS_PERSON",
+      "title": "حذف پرسنل وقایع حساس"
+    },
+    {
+      "code": "R_ATTACHMENT",
+      "title": "نمایش پیوست"
+    },
+    {
+      "code": "C_ATTACHMENT",
+      "title": "ایجاد پیوست"
+    },
+    {
+      "code": "U_ATTACHMENT",
+      "title": "ویرایش پیوست"
+    },
+    {
+      "code": "D_ATTACHMENT",
+      "title": "حذف پیوست"
+    },
+    {
+      "code": "R_EVALUATION_PERIOD",
+      "title": "نمایش دوره ارزیابی"
+    },
+    {
+      "code": "C_EVALUATION_PERIOD",
+      "title": "ایجاد دوره ارزیابی"
+    },
+    {
+      "code": "U_EVALUATION_PERIOD",
+      "title": "ویرایش دوره ارزیابی"
+    },
+    {
+      "code": "D_EVALUATION_PERIOD",
+      "title": "حذف دوره ارزیابی"
+    },
+    {
+      "code": "R_SPECIAL_CASE",
+      "title": "نمایش موارد خاص"
+    },
+    {
+      "code": "C_SPECIAL_CASE",
+      "title": "ایجاد موارد خاص"
+    },
+    {
+      "code": "U_SPECIAL_CASE",
+      "title": "ویرایش موارد خاص"
+    },
+    {
+      "code": "D_SPECIAL_CASE",
+      "title": "حذف موارد خاص"
     }
   ]
 }

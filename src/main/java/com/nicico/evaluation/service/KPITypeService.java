@@ -8,10 +8,12 @@ import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.mapper.KPITypeMapper;
 import com.nicico.evaluation.model.KPIType;
 import com.nicico.evaluation.repository.KPITypeRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,10 +79,25 @@ public class KPITypeService implements IKPITypeService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('C_KPI_TYPE')")
+    public BaseResponse batchCreate(KPITypeDTO.Create dto) {
+        BaseResponse response = new BaseResponse();
+        try {
+            KPIType kpiType = mapper.dtoCreateToEntity(dto);
+            repository.save(kpiType);
+            response.setStatus(HttpStatus.OK.value());
+        } catch (Exception exception) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
+        }
+        return response;
+    }
+
+    @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_KPI_TYPE')")
-    public KPITypeDTO.Info update(KPITypeDTO.Update dto) {
-        KPIType kPIType = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public KPITypeDTO.Info update(Long id, KPITypeDTO.Update dto) {
+        KPIType kPIType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(kPIType, dto);
         try {
             KPIType save = repository.save(kPIType);

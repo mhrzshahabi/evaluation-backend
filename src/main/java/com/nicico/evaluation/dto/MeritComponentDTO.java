@@ -27,7 +27,9 @@ public abstract class MeritComponentDTO {
         //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
         //todo
         private Boolean hasEvaluation = false;
-        private List<KPITypeDTO.Info> kpiType;
+        //بعدا امکان داره لیست بشه
+//        private List<KPITypeDTO.Info> kpiType;
+        private MeritComponentTypeDTO.Info meritComponentTypes;
     }
 
     @Getter
@@ -45,7 +47,6 @@ public abstract class MeritComponentDTO {
     @ApiModel("MeritComponentUpdateRq")
     public static class Update extends MeritComponentDTO {
 
-        private Long id;
         private List<Long> kpiTypeId;
     }
 

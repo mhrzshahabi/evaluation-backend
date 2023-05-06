@@ -2,6 +2,7 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.BatchDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 public interface IBatchService {
 
@@ -11,9 +12,9 @@ public interface IBatchService {
 
     SearchDTO.SearchRs<BatchDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    BatchDTO.Info create(BatchDTO.Create dto);
+    BaseResponse create(BatchDTO.Create dto);
 
-    BatchDTO.Info update(BatchDTO.Update dto);
+    BatchDTO.Info update(Long id, BatchDTO.Update dto);
 
     void delete(Long id);
 

@@ -160,13 +160,13 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         return infoList;
     }
 
-    public static <E, EXCEL, DAO extends JpaSpecificationExecutor<E>> byte[]  exportAllExcel(DAO dao, Function<E, EXCEL> converter, List<FilterDTO> criteria, String sheetName) throws NoSuchFieldException, IllegalAccessException {
+    public static <E, EXCEL, DAO extends JpaSpecificationExecutor<E>> byte[]  exportExcel(DAO dao, Function<E, EXCEL> converter, List<FilterDTO> criteria, String sheetName, String headerName) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, Integer.MAX_VALUE, 0);
         SearchDTO.SearchRs<EXCEL> searchRs = BaseService.optimizedSearch(dao, converter, request);
         ExcelGenerator<EXCEL> excelGenerator = new ExcelGenerator<>(searchRs.getList());
 //        List<E> data = dao.findAll(null);
 //        ExcelGenerator<E> excelGenerator = new ExcelGenerator<E>(data);
-        excelGenerator.generateSheet(sheetName);
+        excelGenerator.generateSheet(sheetName, headerName);
         return excelGenerator.getExcel().toByteArray();
     }
 

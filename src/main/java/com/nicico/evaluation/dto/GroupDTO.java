@@ -7,15 +7,17 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
-
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public abstract class GroupDTO {
 
+    @Size(max = 255, message = "کد نمی تواند بیشتر از 255 کاراکتر باشد")
     private String code;
+    @Size(max = 255, message = "عنوان نمی تواند بیشتر از 255 کاراکتر باشد")
     private String title;
     private Boolean definitionAllowed;
     @NotNull(message = "رده نمی تواند خالی باشد")
@@ -41,9 +43,7 @@ public abstract class GroupDTO {
     @Accessors(chain = true)
     @ApiModel("GroupUpdateRq")
     public static class Update extends GroupDTO {
-        @NotNull
-        @Min(1)
-        private Long id;
+
     }
 
     @Getter

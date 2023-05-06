@@ -8,7 +8,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
+// پست - شایستگی
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -39,6 +41,9 @@ public class PostMeritComponent extends Auditable {
 
     @Column(name = "evaluation_item_id")
     private Long evaluationItemId;
+
+    @OneToMany(mappedBy = "postMeritComponent", fetch = FetchType.LAZY)
+    private List<PostMeritInstance> postMeritInstanceList;
 
     @Min(0)
     @Max(100)

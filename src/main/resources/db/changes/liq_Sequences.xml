@@ -50,7 +50,33 @@
     <changeSet id="1681727646" author="MShahabi">
         <createSequence sequenceName="seq_batch_detail_id"/>
     </changeSet>
+
     <changeSet id="1681899863" author="semami">
         <createSequence sequenceName="seq_post_merit_component_id"/>
     </changeSet>
+
+    <changeSet id="1682398865" author="semami">
+        <createSequence sequenceName="seq_post_merit_instance_id"/>
+    </changeSet>
+
+    <changeSet id="1682504288" author="semami">
+        <createSequence sequenceName="seq_sensitive_events_id"/>
+    </changeSet>
+
+    <changeSet id="1682930381" author="semami">
+        <createSequence sequenceName="seq_sensitive_event_person_id"/>
+    </changeSet>
+
+    <changeSet id="1682930066" author="semami">
+        <createSequence sequenceName="seq_attachment_id"/>
+    </changeSet>
+
+    <changeSet id="1682837264" author="a.lotfi">
+        <createSequence sequenceName="seq_evaluation_period_id"/>
+    </changeSet>
+
+    <changeSet id="1683021042" author="a.lotfi">
+        <createSequence sequenceName="seq_special_case_id" />
+    </changeSet>
+
 </databaseChangeLog>

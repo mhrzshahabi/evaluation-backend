@@ -8,6 +8,7 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
+import com.nicico.evaluation.iservice.IInstanceService;
 import com.nicico.evaluation.mapper.InstanceGroupTypeMeritMapper;
 import com.nicico.evaluation.model.InstanceGroupTypeMerit;
 import com.nicico.evaluation.repository.InstanceGroupTypeMeritRepository;
@@ -24,8 +25,9 @@ import java.util.List;
 @Service
 public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritService {
 
-    private final InstanceGroupTypeMeritMapper mapper;
     private final PageableMapper pageableMapper;
+    private final IInstanceService instanceService;
+    private final InstanceGroupTypeMeritMapper mapper;
     private final InstanceGroupTypeMeritRepository repository;
 
     @Override
@@ -103,8 +105,8 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_INSTANCE_GROUP_TYPE_MERIT')")
-    public InstanceGroupTypeMeritDTO.Info update(InstanceGroupTypeMeritDTO.Update dto) {
-        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public InstanceGroupTypeMeritDTO.Info update(Long id, InstanceGroupTypeMeritDTO.Update dto) {
+        InstanceGroupTypeMerit instanceGroupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(instanceGroupTypeMerit, dto);
         try {
             InstanceGroupTypeMerit save = repository.save(instanceGroupTypeMerit);

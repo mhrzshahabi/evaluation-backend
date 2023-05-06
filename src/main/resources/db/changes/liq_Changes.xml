@@ -334,5 +334,528 @@
     <changeSet author="MShahabi" id="1681737861">
         <addNotNullConstraint tableName="tbl_instance_group_type_merit" columnName="instance_id"/>
     </changeSet>
+    <changeSet author="semami" id="1682399809">
+        <addNotNullConstraint tableName="tbl_post_merit_instance" columnName="instance_id"/>
+        <addNotNullConstraint tableName="tbl_post_merit_instance" columnName="post_merit_component_id"/>
+    </changeSet>
+    <changeSet author="semami" id="1682418097">
+        <addNotNullConstraint tableName="tbl_post_merit_component" columnName="merit_component_id"/>
+        <addNotNullConstraint tableName="tbl_post_merit_component" columnName="c_group_post_code"/>
+        <addNotNullConstraint tableName="tbl_post_merit_component" columnName="n_weight"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681727591">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_catalog_type_id
+            FROM tbl_catalog_type
+            WHERE c_code = 'BatchDetailStatus';
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'MShahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در حال پردازش',
+                    'Processing',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="semami" id="1682493972">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'وضعیت وقایع حساس',
+                    'SensitiveEventsStatus',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'لغو شده',
+                    'Canceled',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'تائید شده',
+                    'Verified',
+                    '');
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در انتظار بررسی',
+                    'Pending',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet author="semami" id="1682506152">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'نوع وقایع حساس',
+                    'SensitiveEventsType',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'مثبت',
+                    'Positive',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'منفی',
+                    'Negative',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet author="semami" id="1682506379">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'سیاست رویداد وقایع حساس',
+                    'SensitiveEventsType',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'عادی',
+                    'Normal',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'موثر',
+                    'Effective',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="semami" id="1682753128">
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="c_description" type="VARCHAR2(2000 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_sensitive_event_person">
+            <column name="n_participation" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="semami" id="1682753758">
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="c_title"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="d_event_date"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="n_level_effect"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="type_catalog_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="event_policy_catalog_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="status_catalog_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_events" columnName="c_description"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="c_national_code"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="sensitive_event_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="merit_component_id"/>
+        <addNotNullConstraint tableName="tbl_sensitive_event_person" columnName="n_participation"/>
+    </changeSet>
+
+    <changeSet author="semami" id="1682758362">
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="d_to_date" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
+     <changeSet author="semami" id="1682938091">
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="c_national_code" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681727596">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_catalog_type_id
+            FROM tbl_catalog_type
+            WHERE c_code = 'BatchTitles';
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'MShahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ایجاد گروهی پست مولفه شایستگی مصداق -  از اکسل',
+                    'BatchCreate-PostMeritInstance-Excel',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="a.lotfi"  id="1683023514">
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_title"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date_assessment"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date_assessment"/>
+    </changeSet>
+    <changeSet author="a.lotfi" id="1683095597">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'وضعیت ارزیابی',
+                    'EvaluationStatus',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ثبت اولیه',
+                    'Initial-registration',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'نهایی شده',
+                    'Finalized',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در انتظار بررسی',
+                    'Awaiting-review',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681728257">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_catalog_type_id
+            FROM tbl_catalog_type
+            WHERE c_code = 'BatchTitles';
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'MShahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ایجاد گروهی گروه نوع مولفه شایستگی مصداق -  از اکسل',
+                    'BatchCreate-GroupTypeMeritInstance-Excel',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

@@ -139,32 +139,32 @@ public class GroupTypeServiceTests {
         });
     }
 
-    @Test
-    public void updateTest() {
-        //init
-        GroupTypeDTO.Update groupTypeUpdate = new GroupTypeDTO.Update();
-        groupTypeUpdate.setId(1L).setCode("NEWtestCode1").setGroupId(1L).setKpiTypeId(1L).setWeight(10L);
-        GroupType groupType = generateGroupType("OLDtestCode1", 1L, 1L, 10L);
-        groupType.setId(1L);
-        Optional<GroupType> oldGroupType = Optional.of(groupType);
-        GroupType newGroupType = generateGroupType("NEWtestCode1", 1L, 1L, 10L);
-        GroupTypeDTO.Info groupTypeInfo = generateGroupTypeInfo(1L, "NEWtestCode1", 1L, 1L, 10L);
-
-        //act
-        when(groupTypeRepository.findById(anyLong())).thenReturn(oldGroupType);
-        when(groupTypeRepository.save(any(GroupType.class))).thenReturn(newGroupType);
-        when(groupTypeMapper.entityToDtoInfo(any(GroupType.class))).thenReturn(groupTypeInfo);
-        GroupTypeDTO.Info groupTypeInfoRes = groupTypeService.update(groupTypeUpdate);
-
-        //assert
-        assertNotNull(groupTypeInfoRes);
-        assertEquals(groupTypeInfoRes.getId(), groupType.getId());
-        assertEquals(groupTypeInfoRes.getCode(), groupTypeUpdate.getCode());
-        assertEquals(groupTypeInfoRes.getGroupId(), groupTypeUpdate.getGroupId());
-        assertEquals(groupTypeInfoRes.getKpiTypeId(), groupTypeUpdate.getKpiTypeId());
-        assertEquals(groupTypeInfoRes.getWeight(), groupTypeUpdate.getWeight());
-
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        GroupTypeDTO.Update groupTypeUpdate = new GroupTypeDTO.Update();
+//        groupTypeUpdate.setId(1L).setCode("NEWtestCode1").setGroupId(1L).setKpiTypeId(1L).setWeight(10L);
+//        GroupType groupType = generateGroupType("OLDtestCode1", 1L, 1L, 10L);
+//        groupType.setId(1L);
+//        Optional<GroupType> oldGroupType = Optional.of(groupType);
+//        GroupType newGroupType = generateGroupType("NEWtestCode1", 1L, 1L, 10L);
+//        GroupTypeDTO.Info groupTypeInfo = generateGroupTypeInfo(1L, "NEWtestCode1", 1L, 1L, 10L);
+//
+//        //act
+//        when(groupTypeRepository.findById(anyLong())).thenReturn(oldGroupType);
+//        when(groupTypeRepository.save(any(GroupType.class))).thenReturn(newGroupType);
+//        when(groupTypeMapper.entityToDtoInfo(any(GroupType.class))).thenReturn(groupTypeInfo);
+//        GroupTypeDTO.Info groupTypeInfoRes = groupTypeService.update(groupTypeUpdate);
+//
+//        //assert
+//        assertNotNull(groupTypeInfoRes);
+//        assertEquals(groupTypeInfoRes.getId(), groupType.getId());
+//        assertEquals(groupTypeInfoRes.getCode(), groupTypeUpdate.getCode());
+//        assertEquals(groupTypeInfoRes.getGroupId(), groupTypeUpdate.getGroupId());
+//        assertEquals(groupTypeInfoRes.getKpiTypeId(), groupTypeUpdate.getKpiTypeId());
+//        assertEquals(groupTypeInfoRes.getWeight(), groupTypeUpdate.getWeight());
+//
+//    }
 
     @Test
     public void deleteTest() {

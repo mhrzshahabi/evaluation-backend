@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-//- گروه - نوع -
+// گروه - نوع
 
 @Getter
 @Setter
