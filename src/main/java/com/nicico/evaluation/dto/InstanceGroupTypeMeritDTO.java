@@ -38,6 +38,24 @@ public class InstanceGroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("InstanceGroupTypeMeritBatchCreateRq")
+    public static class BatchCreate {
+
+        @NotNull
+        private String groupCode;
+        @NotNull
+        private String kpiTypeCode;
+        @NotNull
+        private String meritComponentCode;
+        @NotNull
+        private String instanceCode;
+        @NotNull
+        private Long weight;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("InstanceGroupTypeMeritUpdateRq")
     public static class Update extends InstanceGroupTypeMeritDTO {
 

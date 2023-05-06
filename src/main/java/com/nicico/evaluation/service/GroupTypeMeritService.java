@@ -10,6 +10,7 @@ import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,6 +71,22 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('C_GROUP_TYPE_MERIT')")
+    public BaseResponse batchCreate(GroupTypeMeritDTO.BatchCreate dto) {
+        BaseResponse response = new BaseResponse();
+//        GroupTypeMerit groupTypeMerit = mapper.dtoCreateToEntity(dto);
+//        try {
+//            GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
+//            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), groupTypeMeritAdd.getId());
+//            return mapper.entityToDtoInfo(groupTypeMeritAdd);
+//        } catch (Exception exception) {
+//            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+//        }
+        return response;
     }
 
     @Override
