@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -31,8 +32,9 @@ public class CriteriaUtil {
                 EOperator operator;
                 if ("select".equals(criteria.getType())) {
                     operator = EOperator.equals;
-                } else if ("date".equals(criteria.getType())){
+                } else if ("date".equals(criteria.getType())) {
                     operator = EOperator.equals;
+                    criteria.setValues(criteria.getValues().stream().map(item -> Long.valueOf((String) item)).collect(Collectors.toList()));
                 } else {
                     operator = EOperator.contains;
                 }
