@@ -66,9 +66,7 @@ public class InstanceDTO {
     @Accessors(chain = true)
     @ApiModel("InstanceUpdateRq")
     public static class Update extends InstanceDTO {
-        @NotNull
-        @Min(1)
-        private Long id;
+
     }
 
     @Getter

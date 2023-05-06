@@ -11,5 +11,7 @@ public interface IGroupPostService {
 
     SearchDTO.SearchRs<GroupPostDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+    GroupPostDTO.Info getByCode(String code);
+
 }
 

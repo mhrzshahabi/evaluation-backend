@@ -32,7 +32,7 @@ public abstract class SensitiveEventsDTO {
         private CatalogDTO.Info eventPolicyCatalog;
         private CatalogDTO.Info typeCatalog;
         private String nationalCode;
-        private List<AttachmentDTO.Info> attachment;
+        private AttachmentDTO.AttachInfo attachment;
 
     }
 
@@ -50,7 +50,6 @@ public abstract class SensitiveEventsDTO {
     @ApiModel("SensitiveEventsUpdateRq")
     public static class Update extends SensitiveEventsDTO {
 
-        private Long id;
     }
 
     @Getter

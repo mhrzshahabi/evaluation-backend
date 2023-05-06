@@ -68,9 +68,9 @@ public class GroupController {
      * @param request is  the model of input for update group entity
      * @return GroupDTOInfo is the updated group entity
      */
-    @PutMapping
-    public ResponseEntity<GroupDTO.Info> update(@Valid @RequestBody GroupDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<GroupDTO.Info> update(@PathVariable Long id, @Valid @RequestBody GroupDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

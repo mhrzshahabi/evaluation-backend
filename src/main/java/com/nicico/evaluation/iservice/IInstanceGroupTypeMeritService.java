@@ -4,6 +4,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 import java.util.List;
 
@@ -23,7 +24,9 @@ public interface IInstanceGroupTypeMeritService {
 
     InstanceGroupTypeMeritDTO.Info create(InstanceGroupTypeMeritDTO.Create dto);
 
-    InstanceGroupTypeMeritDTO.Info update(InstanceGroupTypeMeritDTO.Update dto);
+    BaseResponse batchCreate(InstanceGroupTypeMeritDTO.BatchCreate dto);
+
+    InstanceGroupTypeMeritDTO.Info update(Long id, InstanceGroupTypeMeritDTO.Update dto);
 
     void delete(Long id);
 

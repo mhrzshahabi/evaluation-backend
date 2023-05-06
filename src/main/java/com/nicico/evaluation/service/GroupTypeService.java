@@ -70,8 +70,8 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_GROUP_TYPE')")
-    public GroupTypeDTO.Info update(GroupTypeDTO.Update dto) {
-        GroupType groupType = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public GroupTypeDTO.Info update(Long id, GroupTypeDTO.Update dto) {
+        GroupType groupType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(groupType, dto);
         try {
             GroupType save = repository.save(groupType);

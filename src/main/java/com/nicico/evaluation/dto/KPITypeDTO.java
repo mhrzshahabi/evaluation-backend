@@ -43,7 +43,6 @@ public abstract class KPITypeDTO {
     @ApiModel("KPITypeUpdateRq")
     public static class Update extends KPITypeDTO {
 
-        private Long id;
     }
 
     @Getter

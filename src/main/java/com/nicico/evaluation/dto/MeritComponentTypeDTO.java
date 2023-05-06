@@ -38,7 +38,6 @@ public abstract class MeritComponentTypeDTO {
     @ApiModel("MeritComponentTypeUpdateRq")
     public static class Update extends MeritComponentTypeDTO {
 
-        private Long id;
     }
 
     @Getter

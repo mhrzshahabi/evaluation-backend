@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.BatchDetailDTO;
+import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IBatchDetailService;
-import com.nicico.evaluation.iservice.ICatalogService;
-import com.nicico.evaluation.iservice.IKPITypeService;
-import com.nicico.evaluation.iservice.IPostMeritInstanceService;
+import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.BatchDetailMapper;
 import com.nicico.evaluation.model.BatchDetail;
 import com.nicico.evaluation.repository.BatchDetailRepository;
@@ -41,6 +39,7 @@ public class BatchDetailService implements IBatchDetailService {
     private final IKPITypeService kpiTypeService;
     private final BatchDetailRepository repository;
     private final IPostMeritInstanceService postMeritInstanceService;
+    private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
 
     @Override
     @Transactional(readOnly = true)
@@ -107,8 +106,8 @@ public class BatchDetailService implements IBatchDetailService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_BATCH_DETAIL')")
-    public BatchDetailDTO.Info update(BatchDetailDTO.Update dto) {
-        BatchDetail batchDetail = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public BatchDetailDTO.Info update(Long id, BatchDetailDTO.Update dto) {
+        BatchDetail batchDetail = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(batchDetail, dto);
         try {
             BatchDetail save = repository.save(batchDetail);
@@ -171,6 +170,17 @@ public class BatchDetailService implements IBatchDetailService {
             case "BatchCreate-PostMeritInstance-Excel" -> batchDetailList.forEach(detail -> {
                 try {
                     BaseResponse response = postMeritInstanceService.batchCreate(objectMapper.readValue(detail.getInputDTO(), PostMeritInstanceDTO.BatchCreate.class));
+                    if (response.getStatus() == 200)
+                        updateStatusAndExceptionTitle(detail.getId(), successCatalogId, null);
+                    else
+                        updateStatusAndExceptionTitle(detail.getId(), failCatalogId, response.getMessage());
+                } catch (JsonProcessingException e) {
+                    updateStatusAndExceptionTitle(detail.getId(), failCatalogId, e.getMessage());
+                }
+            });
+            case "BatchCreate-GroupTypeMeritInstance-Excel" -> batchDetailList.forEach(detail -> {
+                try {
+                    BaseResponse response = instanceGroupTypeMeritService.batchCreate(objectMapper.readValue(detail.getInputDTO(), InstanceGroupTypeMeritDTO.BatchCreate.class));
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitle(detail.getId(), successCatalogId, null);
                     else

@@ -63,9 +63,9 @@ public class BatchDetailController {
      * @param request is  the model of input for update batchDetail entity
      * @return BatchDetailDTO.Info is the updated batchDetail entity
      */
-    @PutMapping
-    public ResponseEntity<BatchDetailDTO.Info> update(@Valid @RequestBody BatchDetailDTO.Update request) {
-        return new ResponseEntity<>(service.update(request), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<BatchDetailDTO.Info> update(@PathVariable Long id, @Valid @RequestBody BatchDetailDTO.Update request) {
+        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**

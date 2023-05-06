@@ -11,7 +11,7 @@ public interface IMeritComponentService {
 
     MeritComponentDTO.Info create(MeritComponentDTO.Create dto);
 
-    MeritComponentDTO.Info update(MeritComponentDTO.Update dto);
+    MeritComponentDTO.Info update(Long id, MeritComponentDTO.Update dto);
 
     void delete(Long id);
 

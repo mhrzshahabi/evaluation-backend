@@ -2,6 +2,7 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 public interface IGroupTypeMeritService {
 
@@ -11,7 +12,9 @@ public interface IGroupTypeMeritService {
 
     GroupTypeMeritDTO.Info create(GroupTypeMeritDTO.Create dto);
 
-    GroupTypeMeritDTO.Info update(GroupTypeMeritDTO.Update dto);
+    BaseResponse batchCreate(GroupTypeMeritDTO.BatchCreate dto);
+
+    GroupTypeMeritDTO.Info update(Long id, GroupTypeMeritDTO.Update dto);
 
     void delete(Long id);
 

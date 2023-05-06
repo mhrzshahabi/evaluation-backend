@@ -19,7 +19,7 @@ public interface IMeritComponentTypeService {
 
     List<MeritComponentTypeDTO.Info> createAll(List<MeritComponentTypeDTO.Create> requests);
 
-    MeritComponentTypeDTO.Info update(MeritComponentTypeDTO.Update dto);
+    MeritComponentTypeDTO.Info update(Long id, MeritComponentTypeDTO.Update dto);
 
     void delete(Long id);
 

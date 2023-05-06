@@ -19,8 +19,8 @@ public abstract class AttachmentDTO {
     private String description;
     private Long objectId;
     private String objectType;
-    private String fmsKey;
     private String groupId;
+    private String fmsKey;
 
     @Getter
     @Setter
@@ -34,6 +34,16 @@ public abstract class AttachmentDTO {
     @ApiModel("AttachmentInfo")
     public static class Info extends AttachmentDTO {
         private Long id;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("AttachmentInfo")
+    public static class AttachInfo {
+        private String fmsUrl;
+        private List<AttachmentDTO.Info> infoList;
+
     }
 
     @Getter
@@ -41,8 +51,8 @@ public abstract class AttachmentDTO {
     @ApiModel("FmsInfo")
     public static class FmsInfo {
 
-        private String fmsUrl;
         private String fmsGroupId;
+        private String fmsUrl;
     }
 
     @Getter
@@ -50,8 +60,6 @@ public abstract class AttachmentDTO {
     @Accessors(chain = true)
     @ApiModel("AttachmentUpdateRq")
     public static class Update extends AttachmentDTO {
-        @NotNull
-        private Long id;
     }
 
     @Getter

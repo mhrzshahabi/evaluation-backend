@@ -63,7 +63,7 @@ public class GroupGradeController {
      * @return GroupGradeDTO.Info is the updated groupGrade entity
      */
     @PutMapping(value = {"/{id}"})
-    public ResponseEntity<List<GroupGradeDTO.Info>> update(@Valid @RequestBody GroupGradeDTO.CreateAll request, @PathVariable Long id) {
+    public ResponseEntity<List<GroupGradeDTO.Info>> update(@PathVariable Long id, @Valid @RequestBody GroupGradeDTO.CreateAll request) {
         return new ResponseEntity<>(service.update(request), HttpStatus.OK);
     }
 

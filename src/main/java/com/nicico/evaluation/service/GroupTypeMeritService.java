@@ -10,6 +10,7 @@ import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,15 +75,31 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('C_GROUP_TYPE_MERIT')")
+    public BaseResponse batchCreate(GroupTypeMeritDTO.BatchCreate dto) {
+        BaseResponse response = new BaseResponse();
+//        GroupTypeMerit groupTypeMerit = mapper.dtoCreateToEntity(dto);
+//        try {
+//            GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
+//            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), groupTypeMeritAdd.getId());
+//            return mapper.entityToDtoInfo(groupTypeMeritAdd);
+//        } catch (Exception exception) {
+//            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+//        }
+        return response;
+    }
+
+    @Override
+    @Transactional
     @PreAuthorize("hasAuthority('U_GROUP_TYPE_MERIT')")
-    public GroupTypeMeritDTO.Info update(GroupTypeMeritDTO.Update dto) {
-        GroupTypeMerit groupTypeMerit = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public GroupTypeMeritDTO.Info update(Long id, GroupTypeMeritDTO.Update dto) {
+        GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(groupTypeMerit, dto);
         try {
-            List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(dto.getId()).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
+            List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(id).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
             if (!instanceGroupTypeIds.isEmpty())
                 instanceGroupTypeMeritService.deleteAll(instanceGroupTypeIds);
-            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), dto.getId());
+            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), id);
             GroupTypeMerit save = repository.save(groupTypeMerit);
             return mapper.entityToDtoInfo(save);
         } catch (

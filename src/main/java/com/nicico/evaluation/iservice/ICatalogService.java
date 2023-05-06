@@ -13,7 +13,7 @@ public interface ICatalogService {
 
     CatalogDTO.Info create(CatalogDTO.Create create);
 
-    CatalogDTO.Info update(CatalogDTO.Update update);
+    CatalogDTO.Info update(Long id, CatalogDTO.Update update);
 
     void delete(Long id);
 

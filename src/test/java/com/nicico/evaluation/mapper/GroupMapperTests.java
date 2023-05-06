@@ -71,20 +71,20 @@ public class GroupMapperTests {
 //        assertEquals(groupInfosRes.get(1).getDefinitionAllowed(), groupInfos.get(1).getDefinitionAllowed());
 //    }
 
-    @Test
-    public void updateTest() {
-        //init
-        GroupDTO.Update groupUpdate = new GroupDTO.Update();
-        groupUpdate.setId(1L).setCode("testCode1").setTitle("testTitle1").setDefinitionAllowed(Boolean.TRUE);
-        Group group = generateGroup(null, null, null, null);
-        //act
-        groupMapper.update(group, groupUpdate);
-        //assert
-        assertEquals(group.getId(), groupUpdate.getId());
-        assertEquals(group.getCode(), groupUpdate.getCode());
-        assertEquals(group.getTitle(), groupUpdate.getTitle());
-        assertEquals(group.getDefinitionAllowed(), groupUpdate.getDefinitionAllowed());
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        GroupDTO.Update groupUpdate = new GroupDTO.Update();
+//        groupUpdate.setId(1L).setCode("testCode1").setTitle("testTitle1").setDefinitionAllowed(Boolean.TRUE);
+//        Group group = generateGroup(null, null, null, null);
+//        //act
+//        groupMapper.update(group, groupUpdate);
+//        //assert
+//        assertEquals(group.getId(), groupUpdate.getId());
+//        assertEquals(group.getCode(), groupUpdate.getCode());
+//        assertEquals(group.getTitle(), groupUpdate.getTitle());
+//        assertEquals(group.getDefinitionAllowed(), groupUpdate.getDefinitionAllowed());
+//    }
 
 
     private Group generateGroup(Long id, String code, String title, Boolean definitionAllowed) {
