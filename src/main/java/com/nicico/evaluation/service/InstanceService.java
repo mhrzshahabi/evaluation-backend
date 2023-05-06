@@ -29,7 +29,7 @@ public class InstanceService implements IInstanceService {
 
     @Override
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        byte[] body = BaseService.exportAllExcel(repository, mapper::entityToDtoExcel, criteria, null);
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست مصداق ها");
         return new ExcelGenerator.ExcelDownload(body);
     }
 
@@ -74,8 +74,8 @@ public class InstanceService implements IInstanceService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_INSTANCE')")
-    public InstanceDTO.Info update(InstanceDTO.Update dto) {
-        Instance instance = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public InstanceDTO.Info update(Long id, InstanceDTO.Update dto) {
+        Instance instance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(instance, dto);
         Instance save = repository.save(instance);
         return mapper.entityToDtoInfo(save);
@@ -94,6 +94,12 @@ public class InstanceService implements IInstanceService {
     @PreAuthorize("hasAuthority('R_INSTANCE')")
     public SearchDTO.SearchRs<InstanceDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    public InstanceDTO.Info getByCode(String code) {
+        Instance instance = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(instance);
     }
 
 }

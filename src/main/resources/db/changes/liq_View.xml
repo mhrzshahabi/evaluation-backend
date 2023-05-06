@@ -81,5 +81,54 @@
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="semami" id="1682421852">
+        <createView viewName="view_personnel" replaceIfExists="true">
+            <![CDATA[
+                 select
+                    rownum as id,
+                    personnel.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            syn_hrm_personnel
+                    )personnel
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="semami" id="1682489292">
+        <createView viewName="view_person" replaceIfExists="true">
+            <![CDATA[
+                  select
+                    rownum as id,
+                    person.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_PERSON
+                    )person
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681727593">
+        <createView viewName="view_grade" replaceIfExists="true">
+            <![CDATA[
+          SELECT distinct
+                syn_hrm_view_grade.id,
+                syn_hrm_view_grade.c_post_grade_code,
+                syn_hrm_view_grade.c_post_grade_title,
+                tbl_group_grade.group_id
+            FROM
+                syn_hrm_view_grade
+                LEFT JOIN tbl_group_grade ON syn_hrm_view_grade.c_post_grade_code = tbl_group_grade.c_grade_code
+            WHERE
+                syn_hrm_view_grade.c_post_grade_code is not null
+            ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>

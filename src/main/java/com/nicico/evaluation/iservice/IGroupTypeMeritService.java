@@ -11,7 +11,7 @@ public interface IGroupTypeMeritService {
 
     GroupTypeMeritDTO.Info create(GroupTypeMeritDTO.Create dto);
 
-    GroupTypeMeritDTO.Info update(GroupTypeMeritDTO.Update dto);
+    GroupTypeMeritDTO.Info update(Long id, GroupTypeMeritDTO.Update dto);
 
     void delete(Long id);
 

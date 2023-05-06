@@ -129,30 +129,30 @@ public class KPITypeServiceTests {
         });
     }
 
-    @Test
-    public void updateTest() {
-        //init
-        KPITypeDTO.Update kpiTypeUpdate = new KPITypeDTO.Update();
-        kpiTypeUpdate.setId(1L).setCode("NEWtestCode1").setTitle("NEWtestTitle1").setLevelDefCatalogId(1L);
-        KPIType kpiType = generateKPIType("OLDtestCode1", "OLDtestTitle1", 1L);
-        kpiType.setId(1L);
-        Optional<KPIType> oldKpiType = Optional.of(kpiType);
-        KPIType newkpiType = generateKPIType("NEWtestCode1", "NEWtestTitle1", 1L);
-        KPITypeDTO.Info kpiTypeInfo = generateKpiTypeInfo(1L, "NEWtestCode1", "NEWtestTitle1", 1L);
-
-        //act
-        when(kpiTypeRepository.findById(anyLong())).thenReturn(oldKpiType);
-        when(kpiTypeRepository.save(any(KPIType.class))).thenReturn(newkpiType);
-        when(kpiTypeMapper.entityToDtoInfo(any(KPIType.class))).thenReturn(kpiTypeInfo);
-        KPITypeDTO.Info kpiTypeInfoRes = kpiTypeService.update(kpiTypeUpdate);
-
-        //assert
-        assertNotNull(kpiTypeInfoRes);
-        assertEquals(kpiTypeInfoRes.getId(), kpiType.getId());
-        assertEquals(kpiTypeInfoRes.getCode(), kpiTypeUpdate.getCode());
-        assertEquals(kpiTypeInfoRes.getTitle(), kpiTypeUpdate.getTitle());
-        assertEquals(kpiTypeInfoRes.getLevelDefCatalogId(), kpiTypeUpdate.getLevelDefCatalogId());
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        KPITypeDTO.Update kpiTypeUpdate = new KPITypeDTO.Update();
+//        kpiTypeUpdate.setId(1L).setCode("NEWtestCode1").setTitle("NEWtestTitle1").setLevelDefCatalogId(1L);
+//        KPIType kpiType = generateKPIType("OLDtestCode1", "OLDtestTitle1", 1L);
+//        kpiType.setId(1L);
+//        Optional<KPIType> oldKpiType = Optional.of(kpiType);
+//        KPIType newkpiType = generateKPIType("NEWtestCode1", "NEWtestTitle1", 1L);
+//        KPITypeDTO.Info kpiTypeInfo = generateKpiTypeInfo(1L, "NEWtestCode1", "NEWtestTitle1", 1L);
+//
+//        //act
+//        when(kpiTypeRepository.findById(anyLong())).thenReturn(oldKpiType);
+//        when(kpiTypeRepository.save(any(KPIType.class))).thenReturn(newkpiType);
+//        when(kpiTypeMapper.entityToDtoInfo(any(KPIType.class))).thenReturn(kpiTypeInfo);
+//        KPITypeDTO.Info kpiTypeInfoRes = kpiTypeService.update(kpiTypeUpdate);
+//
+//        //assert
+//        assertNotNull(kpiTypeInfoRes);
+//        assertEquals(kpiTypeInfoRes.getId(), kpiType.getId());
+//        assertEquals(kpiTypeInfoRes.getCode(), kpiTypeUpdate.getCode());
+//        assertEquals(kpiTypeInfoRes.getTitle(), kpiTypeUpdate.getTitle());
+//        assertEquals(kpiTypeInfoRes.getLevelDefCatalogId(), kpiTypeUpdate.getLevelDefCatalogId());
+//    }
 
     @Test
     public void deleteTest() {

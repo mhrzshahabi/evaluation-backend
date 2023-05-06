@@ -47,4 +47,8 @@ ui:
     address: http://devapp01.icico.net.ir/evaluation-backend
     #address: http://172.16.6.196:4200
 
+    fmsGroupId: '6450d6e2a2bda66902a00ffe'
+    fmsUrl: 'http://devapp01.icico.net.ir/fms/file'
+
+
 

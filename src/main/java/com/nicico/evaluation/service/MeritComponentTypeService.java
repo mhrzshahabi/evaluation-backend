@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +40,14 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
     public List<MeritComponentTypeDTO.Info> findAllByMeritComponentId(Long meritComponentId) {
         List<MeritComponentType> meritComponentTypeList = repository.findAllByMeritComponentId(meritComponentId);
         return mapper.entityToDtoInfoList(meritComponentTypeList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT_TYPE')")
+    public MeritComponentTypeDTO.Info findFirstByMeritComponentId(Long meritComponentId) {
+        Optional<MeritComponentType> optionalMeritComponentType = repository.findFirstByMeritComponentId(meritComponentId);
+        return optionalMeritComponentType.map(mapper::entityToDtoInfo).orElse(null);
     }
 
     @Override
@@ -85,8 +94,8 @@ public class MeritComponentTypeService implements IMeritComponentTypeService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_MERIT_COMPONENT_TYPE')")
-    public MeritComponentTypeDTO.Info update(MeritComponentTypeDTO.Update dto) {
-        MeritComponentType meritComponentType = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public MeritComponentTypeDTO.Info update(Long id, MeritComponentTypeDTO.Update dto) {
+        MeritComponentType meritComponentType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(meritComponentType, dto);
         try {
             MeritComponentType save = repository.save(meritComponentType);

@@ -29,7 +29,7 @@ public abstract class GroupTypeMeritDTO {
         private MeritComponentDTO.Info meritComponent;
         private GroupTypeDTO.Info groupType;
         private Boolean hasInstance;
-        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instance;
+        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
     }
 
     @Getter
@@ -44,10 +44,25 @@ public abstract class GroupTypeMeritDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("GroupTypeMeritBatchCreateRq")
+    public static class BatchCreate extends GroupTypeMeritDTO {
+
+        @NotNull
+        private Long groupTypeId;
+        @NotNull
+        private Long meritComponentCode;
+        @NotNull
+        private String instanceCode;
+        @NotNull
+        private Long weight;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("GroupTypeMeritUpdateRq")
     public static class Update extends GroupTypeMeritDTO {
 
-        private Long id;
         private List<Long> instanceIds;
     }
 

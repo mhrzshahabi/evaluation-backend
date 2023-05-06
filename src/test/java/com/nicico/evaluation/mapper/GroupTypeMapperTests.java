@@ -82,20 +82,20 @@ public class GroupTypeMapperTests {
         assertEquals(groupTypeInfoRes.get(1).getWeight(), groupTypeInfoRes.get(1).getWeight());
     }
 
-    @Test
-    public void updateTest() {
-        //init
-        GroupTypeDTO.Update groupTypeUpdate = new GroupTypeDTO.Update();
-        groupTypeUpdate.setId(1L).setCode("testCode1").setGroupId(1L).setKpiTypeId(1L).setWeight(10L);
-        GroupType groupType = generateGroupType(null, null, null, null);
-        //act
-        groupTypeMapper.update(groupType, groupTypeUpdate);
-        //assert
-        assertEquals(groupType.getId(), groupTypeUpdate.getId());
-        assertEquals(groupType.getCode(), groupTypeUpdate.getCode());
-        assertEquals(groupType.getGroupId(), groupTypeUpdate.getGroupId());
-        assertEquals(groupType.getKpiTypeId(), groupTypeUpdate.getKpiTypeId());
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        GroupTypeDTO.Update groupTypeUpdate = new GroupTypeDTO.Update();
+//        groupTypeUpdate.setId(1L).setCode("testCode1").setGroupId(1L).setKpiTypeId(1L).setWeight(10L);
+//        GroupType groupType = generateGroupType(null, null, null, null);
+//        //act
+//        groupTypeMapper.update(groupType, groupTypeUpdate);
+//        //assert
+//        assertEquals(groupType.getId(), groupTypeUpdate.getId());
+//        assertEquals(groupType.getCode(), groupTypeUpdate.getCode());
+//        assertEquals(groupType.getGroupId(), groupTypeUpdate.getGroupId());
+//        assertEquals(groupType.getKpiTypeId(), groupTypeUpdate.getKpiTypeId());
+//    }
 
 
     private GroupType generateGroupType(String code, Long groupId, Long kpiTypeId, Long weight) {

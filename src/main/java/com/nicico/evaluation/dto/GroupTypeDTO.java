@@ -50,7 +50,6 @@ public abstract class GroupTypeDTO {
     @ApiModel("GroupTypeUpdateRq")
     public static class Update extends GroupTypeDTO {
 
-        private Long id;
     }
 
     @Getter

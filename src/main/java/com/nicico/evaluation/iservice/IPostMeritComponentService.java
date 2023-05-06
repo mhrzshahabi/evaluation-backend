@@ -2,6 +2,7 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 public interface IPostMeritComponentService {
 
@@ -11,7 +12,9 @@ public interface IPostMeritComponentService {
 
     PostMeritComponentDTO.Info create(PostMeritComponentDTO.Create dto);
 
-    PostMeritComponentDTO.Info update(PostMeritComponentDTO.Update dto);
+    BaseResponse batchCreate(PostMeritComponentDTO.BatchCreate dto);
+
+    PostMeritComponentDTO.Info update(Long id, PostMeritComponentDTO.Update dto);
 
     void delete(Long id);
 

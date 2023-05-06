@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MeritComponentTypeRepository extends JpaRepository<MeritComponentType, Long>, JpaSpecificationExecutor<MeritComponentType> {
     List<MeritComponentType> findAllByMeritComponentId(Long meritComponentId);
+    Optional<MeritComponentType> findFirstByMeritComponentId(Long meritComponentId);
 }

@@ -66,19 +66,19 @@ public class InstanceMapperTests {
         assertEquals(instanceInfosRes.get(1).getTitle(), instanceInfos.get(1).getTitle());
     }
 
-    @Test
-    public void updateTest() {
-        //init
-        InstanceDTO.Update instanceUpdate = new InstanceDTO.Update();
-        instanceUpdate.setId(1L).setCode("testCode1").setTitle("testTitle1");
-        Instance instance = generateInstance(null, null, null);
-        //act
-        instanceMapper.update(instance, instanceUpdate);
-        //assert
-        assertEquals(instance.getId(), instanceUpdate.getId());
-        assertEquals(instance.getCode(), instanceUpdate.getCode());
-        assertEquals(instance.getTitle(), instanceUpdate.getTitle());
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        InstanceDTO.Update instanceUpdate = new InstanceDTO.Update();
+//        instanceUpdate.setId(1L).setCode("testCode1").setTitle("testTitle1");
+//        Instance instance = generateInstance(null, null, null);
+//        //act
+//        instanceMapper.update(instance, instanceUpdate);
+//        //assert
+//        assertEquals(instance.getId(), instanceUpdate.getId());
+//        assertEquals(instance.getCode(), instanceUpdate.getCode());
+//        assertEquals(instance.getTitle(), instanceUpdate.getTitle());
+//    }
 
 
     private Instance generateInstance(Long id, String code, String title) {

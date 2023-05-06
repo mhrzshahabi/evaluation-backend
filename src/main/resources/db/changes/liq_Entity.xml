@@ -357,4 +357,149 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="1682398628" author="semami">
+        <createTable tableName="tbl_post_merit_instance">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_post_merit_instance_PK"/>
+            </column>
+            <column name="post_merit_component_id" type="NUMBER(10, 0)"/>
+            <column name="instance_id" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1682494370" author="semami">
+        <createTable tableName="tbl_sensitive_events">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sensitive_events_PK"/>
+            </column>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_event_date" type="TIMESTAMP"/>
+            <column name="n_level_effect" type="NUMBER(10, 0)"/>
+            <column name="event_policy_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="type_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1682746152" author="semami">
+        <createTable tableName="tbl_sensitive_event_person">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sensitive_event_person_PK"/>
+            </column>
+            <column name="c_national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="sensitive_event_id" type="NUMBER(10, 0)"/>
+            <column name="merit_component_id" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1682921657" author="semami">
+        <createTable tableName="tbl_attachment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_attachment_PK"/>
+            </column>
+            <column name="c_file_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_file_type_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_fms_key" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_object_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_group_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_object_id" type="NUMBER(10, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1682837563" author="a.lotfi">
+        <createTable tableName="tbl_evaluation_period">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_period_PK"/>
+            </column>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_start_date" type="TIMESTAMP"/>
+            <column name="d_end_date" type="TIMESTAMP"/>
+            <column name="d_start_date_assessment" type="TIMESTAMP"/>
+            <column name="d_end_date_assessment" type="TIMESTAMP"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1683024536" author="a.lotfi">
+        <createTable tableName="tbl_special_case">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_special_case_PK"/>
+            </column>
+            <column name="c_assess_full_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assess_national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assess_post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assessor_full_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assessor_national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assessor_post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_start_date" type="TIMESTAMP"/>
+            <column name="d_end_date" type="TIMESTAMP"/>
+
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

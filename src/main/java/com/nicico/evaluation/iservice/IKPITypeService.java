@@ -2,6 +2,7 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 public interface IKPITypeService {
 
@@ -13,7 +14,9 @@ public interface IKPITypeService {
 
     KPITypeDTO.Info create(KPITypeDTO.Create dto);
 
-    KPITypeDTO.Info update(KPITypeDTO.Update dto);
+    BaseResponse batchCreate(KPITypeDTO.Create dto);
+
+    KPITypeDTO.Info update(Long id, KPITypeDTO.Update dto);
 
     void delete(Long id);
 

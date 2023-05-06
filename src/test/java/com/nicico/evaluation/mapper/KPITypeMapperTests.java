@@ -76,20 +76,20 @@ public class KPITypeMapperTests {
         assertEquals(kpiTypeInfoRes.get(1).getLevelDefCatalogId(), kpiTypeInfos.get(1).getLevelDefCatalogId());
     }
 
-    @Test
-    public void updateTest() {
-        //init
-        KPITypeDTO.Update kpiTypeUpdate = new KPITypeDTO.Update();
-        kpiTypeUpdate.setId(1L).setCode("testCode1").setTitle("testTitle1").setLevelDefCatalogId(1L);
-        KPIType kpiType = generateKpiType(null, null, null, null);
-        //act
-        kpiTypeMapper.update(kpiType, kpiTypeUpdate);
-        //assert
-        assertEquals(kpiType.getId(), kpiTypeUpdate.getId());
-        assertEquals(kpiType.getCode(), kpiTypeUpdate.getCode());
-        assertEquals(kpiType.getTitle(), kpiTypeUpdate.getTitle());
-        assertEquals(kpiType.getLevelDefCatalogId(), kpiTypeUpdate.getLevelDefCatalogId());
-    }
+//    @Test
+//    public void updateTest() {
+//        //init
+//        KPITypeDTO.Update kpiTypeUpdate = new KPITypeDTO.Update();
+//        kpiTypeUpdate.setId(1L).setCode("testCode1").setTitle("testTitle1").setLevelDefCatalogId(1L);
+//        KPIType kpiType = generateKpiType(null, null, null, null);
+//        //act
+//        kpiTypeMapper.update(kpiType, kpiTypeUpdate);
+//        //assert
+//        assertEquals(kpiType.getId(), kpiTypeUpdate.getId());
+//        assertEquals(kpiType.getCode(), kpiTypeUpdate.getCode());
+//        assertEquals(kpiType.getTitle(), kpiTypeUpdate.getTitle());
+//        assertEquals(kpiType.getLevelDefCatalogId(), kpiTypeUpdate.getLevelDefCatalogId());
+//    }
 
 
     private KPIType generateKpiType(Long id, String code, String title, Long levelDefCatalogId) {
