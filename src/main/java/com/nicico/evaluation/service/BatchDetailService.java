@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.BatchDetailDTO;
-import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -39,7 +38,6 @@ public class BatchDetailService implements IBatchDetailService {
     private final IKPITypeService kpiTypeService;
     private final BatchDetailRepository repository;
     private final IPostMeritInstanceService postMeritInstanceService;
-    private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
 
     @Override
     @Transactional(readOnly = true)
@@ -170,17 +168,6 @@ public class BatchDetailService implements IBatchDetailService {
             case "BatchCreate-PostMeritInstance-Excel" -> batchDetailList.forEach(detail -> {
                 try {
                     BaseResponse response = postMeritInstanceService.batchCreate(objectMapper.readValue(detail.getInputDTO(), PostMeritInstanceDTO.BatchCreate.class));
-                    if (response.getStatus() == 200)
-                        updateStatusAndExceptionTitle(detail.getId(), successCatalogId, null);
-                    else
-                        updateStatusAndExceptionTitle(detail.getId(), failCatalogId, response.getMessage());
-                } catch (JsonProcessingException e) {
-                    updateStatusAndExceptionTitle(detail.getId(), failCatalogId, e.getMessage());
-                }
-            });
-            case "BatchCreate-GroupTypeMeritInstance-Excel" -> batchDetailList.forEach(detail -> {
-                try {
-                    BaseResponse response = instanceGroupTypeMeritService.batchCreate(objectMapper.readValue(detail.getInputDTO(), InstanceGroupTypeMeritDTO.BatchCreate.class));
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitle(detail.getId(), successCatalogId, null);
                     else
