@@ -6,9 +6,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface PostMeritInstanceRepository extends JpaRepository<PostMeritInstance, Long>, JpaSpecificationExecutor<PostMeritInstance> {
 
-    List<PostMeritInstance> findAllByPostMeritComponentId(Long postMeritId);
+    Set<PostMeritInstance> findAllByPostMeritComponentId(Long postMeritId);
 }

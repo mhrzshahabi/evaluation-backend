@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = MeritComponentMapper.class)
 public interface PostMeritInstanceMapper {
@@ -20,6 +21,8 @@ public interface PostMeritInstanceMapper {
     PostMeritInstanceDTO.Info entityToDtoInfo(PostMeritInstance entity);
 
     List<PostMeritInstanceDTO.Info> entityToDtoInfoList(List<PostMeritInstance> entities);
+
+    Set<PostMeritInstanceDTO.Create> entityToCreateDtoList(Set<PostMeritInstance> entities);
 
     void update(@MappingTarget PostMeritInstance entity, PostMeritInstanceDTO.Update dto);
 
