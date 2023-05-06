@@ -19,4 +19,17 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1682408456" author="namdari">
+        <sql>
+            create or replace synonym SYN_HRM_COMPANY_STRUCTURE for STG_HRM.view_company_structure_evaluation;
+        </sql>
+    </changeSet>
+
+    <changeSet id="1682408458" author="namdari">
+        <sql>
+            create or replace synonym SYN_HRM_PERSON for STG_HRM.VIEW_PERSON_EVALUATION;
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
