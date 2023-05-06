@@ -1,6 +1,8 @@
 package com.nicico.evaluation.dto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +16,9 @@ import java.util.List;
 public abstract class KPITypeDTO {
 
     @NotNull
+    @Size(max = 255, message = "کد نمی تواند بیشتر از 255 کاراکتر باشد")
     private String code;
+    @Size(max = 255, message = "عنوان نمی تواند بیشتر از 255 کاراکتر باشد")
     @NotNull
     private String title;
     @NotNull
