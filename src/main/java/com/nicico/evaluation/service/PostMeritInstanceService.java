@@ -20,9 +20,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,6 +76,7 @@ public class PostMeritInstanceService implements IPostMeritInstanceService {
     @Transactional
     @PreAuthorize("hasAuthority('C_POST_MERIT_INSTANCE')")
     public PostMeritInstanceDTO.Info create(PostMeritInstanceDTO.Create dto) {
+        if (Objects.nonNull(dto.getId())) return null;
         PostMeritInstance postMeritInstance = mapper.dtoCreateToEntity(dto);
         try {
             PostMeritInstance save = repository.save(postMeritInstance);

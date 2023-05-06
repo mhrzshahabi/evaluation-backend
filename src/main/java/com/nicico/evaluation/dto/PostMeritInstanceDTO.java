@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -26,6 +27,7 @@ public abstract class PostMeritInstanceDTO {
         private InstanceDTO.Info instance;
 
     }
+
     @Getter
     @Setter
     @ApiModel("PostMeritInstanceInfo")
@@ -40,13 +42,26 @@ public abstract class PostMeritInstanceDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostMeritInstanceCreateRq")
-    public static class Create extends PostMeritInstanceDTO {
+    public static class Create {
         @NotNull
         private Long instanceId;
 
+        private Long id;
+
+        @NotNull
+        private Long postMeritComponentId;
+
         @Override
         public boolean equals(Object obj) {
-            return super.equals(obj);
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            PostMeritInstanceDTO.Create that = (PostMeritInstanceDTO.Create) obj;
+            return Objects.equals(instanceId, that.instanceId) && Objects.equals(postMeritComponentId, that.postMeritComponentId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(instanceId, postMeritComponentId);
         }
     }
 
