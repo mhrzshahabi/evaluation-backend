@@ -43,6 +43,11 @@ public abstract class PostMeritInstanceDTO {
     public static class Create extends PostMeritInstanceDTO {
         @NotNull
         private Long instanceId;
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
+        }
     }
 
     @Getter
