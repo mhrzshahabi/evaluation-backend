@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,6 +33,7 @@ public class EvaluationPeriodDTO {
     @ApiModel("EvaluationPeriodInfoRq")
     public static class Info extends EvaluationPeriodDTO {
         private Long id;
+        private List<PostDTO.InfoEvaluationPeriod> postInfoEvaluationPeriod;
     }
 
     @Getter
@@ -39,7 +41,7 @@ public class EvaluationPeriodDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationPeriodCreateRq")
     public static class Create extends EvaluationPeriodDTO {
-
+        private Set<String> postCodes;
     }
 
     @Getter

@@ -60,4 +60,10 @@ public class PostService implements IPostService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    public List<PostDTO.InfoEvaluationPeriod> getAllByPostCode(List<String> postCodes) {
+        List<Post> posts = repository.findByPostCodeIn(postCodes);
+        return mapper.entityToDtoInfoListEvaluationPeriod(posts);
+    }
+
 }

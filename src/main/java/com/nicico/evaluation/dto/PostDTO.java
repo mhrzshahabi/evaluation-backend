@@ -54,6 +54,19 @@ public abstract class PostDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("PostInfoEvaluationPeriod")
+    public static class InfoEvaluationPeriod extends PostDTO {
+        private Long id;
+        private Long postId;
+        private String postCode;
+        private String postTitle;
+        private Long postParentId;
+        private Long postLevel;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PostSpecResponse")
     public static class SpecResponse {
         private Response response;

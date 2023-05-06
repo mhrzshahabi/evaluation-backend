@@ -13,4 +13,6 @@ public interface PostMapper {
 
     List<PostDTO.Info> entityToDtoInfoList(List<Post> entities);
 
+    List<PostDTO.InfoEvaluationPeriod> entityToDtoInfoListEvaluationPeriod(List<Post> entities);
+
 }

@@ -79,4 +79,8 @@
         <createSequence sequenceName="seq_special_case_id" />
     </changeSet>
 
+    <changeSet id="1683352427" author="a.lotfi">
+        <createSequence sequenceName="seq_evaluation_period_post_id" />
+    </changeSet>
+
 </databaseChangeLog>

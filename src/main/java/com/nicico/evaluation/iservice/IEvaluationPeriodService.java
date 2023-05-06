@@ -2,6 +2,10 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
+
+import java.util.List;
+import java.util.Set;
 
 public interface IEvaluationPeriodService {
 
@@ -14,6 +18,8 @@ public interface IEvaluationPeriodService {
     EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto);
 
     EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto);
+
+    List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCodes);
 
     void delete(Long id);
 }
