@@ -30,16 +30,6 @@ public abstract class PostMeritInstanceDTO {
 
     @Getter
     @Setter
-    @ApiModel("PostMeritInstanceInfo")
-    public static class InfoWithoutId extends PostMeritInstanceDTO {
-
-        private PostMeritComponentDTO.Info postMeritComponent;
-        private InstanceDTO.Info instance;
-
-    }
-
-    @Getter
-    @Setter
     @Accessors(chain = true)
     @ApiModel("PostMeritInstanceCreateRq")
     public static class Create {
