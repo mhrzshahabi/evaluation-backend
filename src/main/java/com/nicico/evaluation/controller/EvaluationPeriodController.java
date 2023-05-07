@@ -37,7 +37,7 @@ public class EvaluationPeriodController {
      * @return EvaluationPeriodDTO.Info is the single EvaluationPeriod entity
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<EvaluationPeriodDTO.Info> get(@PathVariable Long id) {
+    public ResponseEntity<EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 

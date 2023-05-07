@@ -20,7 +20,28 @@ public class EvaluationPeriodPostDTO {
     @ApiModel("EvaluationPeriodPostInfoRq")
     public static class Info extends EvaluationPeriodPostDTO {
         private Long id;
-        private List<PostDTO.Info> postInfos;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationPeriodPostInfoRq")
+    public static class InfoWithPostInfo extends EvaluationPeriodPostDTO {
+        private Long id;
+        private List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoEvaluationPeriod;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PostInfoEvaluationPeriod")
+    public static class PostInfoEvaluationPeriod {
+        private Long id;
+        private Long postId;
+        private String postCode;
+        private String postTitle;
+        private Long postParentId;
+        private Long postLevel;
     }
 
     @Getter

@@ -15,4 +15,6 @@ public interface EvaluationPeriodPostRepository extends JpaRepository<Evaluation
 
     List<EvaluationPeriodPost> findAllByEvaluationPeriodId(Long id);
 
+    void deleteByEvaluationPeriodId(Long evaluationPeriodPost);
+
 }

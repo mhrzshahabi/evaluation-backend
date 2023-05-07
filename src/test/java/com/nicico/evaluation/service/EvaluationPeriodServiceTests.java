@@ -100,7 +100,7 @@ public class EvaluationPeriodServiceTests {
         //act
         when(evaluationPeriodRepository.findById(anyLong())).thenReturn(evaluationPeriod);
         when(evaluationPeriodMapper.entityToDtoInfo(any(EvaluationPeriod.class))).thenReturn(evaluationPeriodInfo);
-        EvaluationPeriodDTO.Info evaluationPeriodInfoRes = evaluationPeriodService.get(1L);
+        EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod evaluationPeriodInfoRes = evaluationPeriodService.get(1L);
         //assert
         assertNotNull(evaluationPeriodInfoRes);
         assertEquals(evaluationPeriodInfoRes.getTitle(), evaluationPeriod.get().getTitle());

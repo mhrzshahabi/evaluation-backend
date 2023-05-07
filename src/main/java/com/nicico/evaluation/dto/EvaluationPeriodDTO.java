@@ -33,7 +33,15 @@ public class EvaluationPeriodDTO {
     @ApiModel("EvaluationPeriodInfoRq")
     public static class Info extends EvaluationPeriodDTO {
         private Long id;
-        private List<PostDTO.InfoEvaluationPeriod> postInfoEvaluationPeriod;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationPeriodInfoRq")
+    public static class InfoWithPostInfoEvaluationPeriod extends EvaluationPeriodDTO {
+        private Long id;
+        private List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoEvaluationPeriod;
     }
 
     @Getter

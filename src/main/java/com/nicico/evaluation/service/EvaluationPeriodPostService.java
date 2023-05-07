@@ -24,22 +24,12 @@ public class EvaluationPeriodPostService  implements IEvaluationPeriodPostServic
     private final IPostService postService;
 
     @Override
-    public EvaluationPeriodPostDTO.Info get(Long id) {
-        return null;
-    }
-    @Override
-    public List<EvaluationPeriodPostDTO.Info> getAllByPostCode(String postCode) {
-        List<EvaluationPeriodPost> evaluationPeriodPosts =  repository.findAllByPostCode(postCode);
-        List<EvaluationPeriodPostDTO.Info> evaInfos = mapper.entityToDtoInfoList(evaluationPeriodPosts);
-        return evaInfos;
-    }
-
-    @Override
-    public List<PostDTO.InfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
+    public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
         List<EvaluationPeriodPost> evaluationPeriodPosts =  repository.findAllByEvaluationPeriodId(evaluationPeriodId);
         List<String> postCodes = evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
-        List<PostDTO.InfoEvaluationPeriod> postInfo = postService.getAllByPostCode(postCodes);
-        return  postInfo;
+        List<PostDTO.Info> postInfo = postService.getAllByPostCode(postCodes);
+        List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> evaluationPeriodPostInfos = mapper.postInfoDtoToInfoPostInfoDto(postInfo);
+        return  evaluationPeriodPostInfos;
     }
 
     @Override
@@ -56,7 +46,7 @@ public class EvaluationPeriodPostService  implements IEvaluationPeriodPostServic
     @Override
     public void deleteByEvaluationPeriodId(Long evaluationPeriodId) {
         try {
-            repository.deleteById(evaluationPeriodId);
+            repository.deleteByEvaluationPeriodId(evaluationPeriodId);
         }catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }

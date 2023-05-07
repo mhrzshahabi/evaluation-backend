@@ -35,10 +35,10 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info get(Long id) {
+    public EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod get(Long id) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        List<PostDTO.InfoEvaluationPeriod> postInfoEvaluationPeriods =  evaluationPeriodPostService.getAllByEvaluationPeriodId(id);
-        EvaluationPeriodDTO.Info evaluationPeriodInfoPost = evaluationPeriodMapper.entityToDtoInfo(evaluationPeriod);
+        List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoEvaluationPeriods =  evaluationPeriodPostService.getAllByEvaluationPeriodId(id);
+        EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod evaluationPeriodInfoPost = evaluationPeriodMapper.entityToDtoInfoWithPostInfoEvaluationPeriod(evaluationPeriod);
         evaluationPeriodInfoPost.setPostInfoEvaluationPeriod(postInfoEvaluationPeriods);
         return  evaluationPeriodInfoPost;
     }
@@ -75,6 +75,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCodes){
+        EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(id, postCodes);
         return  evaluationPeriodPostInfos;
     }
@@ -121,7 +122,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @PreAuthorize("hasAuthority('D_EVALUATION_PERIOD')")
     public void delete(Long id) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        //evaluationPeriodPostService.deleteByEvaluationPeriodId(evaluationPeriod.getId());
+        evaluationPeriodPostService.deleteByEvaluationPeriodId(evaluationPeriod.getId());
         evaluationPeriodRepository.delete(evaluationPeriod);
     }
 

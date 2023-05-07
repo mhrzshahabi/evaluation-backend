@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface IEvaluationPeriodService {
 
-    EvaluationPeriodDTO.Info get(Long id);
+    EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod get(Long id);
 
     EvaluationPeriodDTO.SpecResponse list(int count, int startIndex);
 
