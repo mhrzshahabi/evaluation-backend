@@ -6,10 +6,7 @@ import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,12 +35,19 @@ public class CriteriaUtil {
                 } else {
                     operator = EOperator.contains;
                 }
-                if ("NotEqual".equals(criteria.getOperator())) {
-                    operator = EOperator.notEqual;
-                }
                 criteriaRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
+
+                if ("NotEqual".equals(criteria.getOperator())) {
+                    SearchDTO.CriteriaRq inNullRq = makeCriteria(criteria.getField(), null, EOperator.isNull, new ArrayList<>());
+                    SearchDTO.CriteriaRq notNullRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, EOperator.notEqual, new ArrayList<>());
+                    final List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+                    criteriaList.add(inNullRq);
+                    criteriaList.add(notNullRq);
+                    criteriaRq = new SearchDTO.CriteriaRq().setOperator(EOperator.or).setCriteria(criteriaList);
+                }
+
                 //todo
-                if (!criteriaRq.getFieldName().equals("hasEvaluation"))
+                if ((Objects.nonNull(criteriaRq.getFieldName()) && !criteriaRq.getFieldName().equals("hasEvaluation")) || Objects.isNull(criteriaRq.getFieldName()))
                     criteriaRqList.add(criteriaRq);
             });
         }
