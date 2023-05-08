@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "tbl_special_case")
@@ -41,11 +40,11 @@ public class SpecialCase extends Auditable {
     @Column(name = "c_assessor_post_code")
     private String assessorPostCode;
 
-    @Column(name = "d_start_date")
-    private Date startDate;
+    @Column(name = "c_start_date")
+    private String startDate;
 
-    @Column(name = "d_end_date")
-    private Date endDate;
+    @Column(name = "c_end_date")
+    private String endDate;
 
 }
     

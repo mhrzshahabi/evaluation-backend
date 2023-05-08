@@ -502,4 +502,15 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="1681745500" author="MShahabi">
+        <dropColumn tableName="tbl_special_case" columnName="d_start_date"/>
+        <dropColumn tableName="tbl_special_case" columnName="d_end_date"/>
+        <addColumn tableName="tbl_special_case">
+            <column name="c_start_date" type="VARCHAR2(100 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_special_case">
+            <column name="c_end_date" type="VARCHAR2(100 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
