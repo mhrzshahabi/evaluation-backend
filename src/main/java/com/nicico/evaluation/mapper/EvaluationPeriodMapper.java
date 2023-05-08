@@ -13,6 +13,8 @@ public interface EvaluationPeriodMapper {
 
     EvaluationPeriodDTO.Info entityToDtoInfo(EvaluationPeriod entity);
 
+    EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod entityToDtoInfoWithPostInfoEvaluationPeriod(EvaluationPeriod entity);
+
     List<EvaluationPeriodDTO.Info> entityToDtoInfoList(List<EvaluationPeriod> entities);
 
     void update(@MappingTarget EvaluationPeriod entity, EvaluationPeriodDTO.Update dto);
