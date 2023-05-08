@@ -857,6 +857,12 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet author="a.lotfi"  id="1683349068">
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assess_national_code"/>
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assess_post_code"/>
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assessor_national_code"/>
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assessor_post_code"/>
+    </changeSet>
 
     <changeSet author="a.lotfi" id="1683525467">
         <addColumn tableName="tbl_catalog">
