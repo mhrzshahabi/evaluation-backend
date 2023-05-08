@@ -85,11 +85,11 @@ public class EvaluationPeriodController {
      */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
+        final Locale locale = LocaleContextHolder.getLocale();
         try {
             service.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(messageSource.getMessage("message.successful.operation", null, locale), HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
-            final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
