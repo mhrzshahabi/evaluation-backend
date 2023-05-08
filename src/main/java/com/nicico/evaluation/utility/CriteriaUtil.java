@@ -2,10 +2,13 @@ package com.nicico.evaluation.utility;
 
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,8 +33,9 @@ public class CriteriaUtil {
                 if ("select".equals(criteria.getType())) {
                     operator = EOperator.equals;
                 } else if ("date".equals(criteria.getType())) {
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     operator = EOperator.equals;
-                    criteria.setValues(criteria.getValues().stream().map(item -> Long.valueOf((String) item)).collect(Collectors.toList()));
+                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateFormat.format(new Date(Long.parseLong(criteria.getValues().get(0).toString()))))).collect(Collectors.toList()));
                 } else {
                     operator = EOperator.contains;
                 }

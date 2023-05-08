@@ -28,6 +28,10 @@ public abstract class SpecialCaseMapper {
 
     public abstract List<SpecialCaseDTO.Info> entityToDtoInfoList(List<SpecialCase> entities);
 
+    @Mappings({
+            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
+    })
     public abstract void update(@MappingTarget SpecialCase entity, SpecialCaseDTO.Update dto);
 
     @Named("convertDateToString")
