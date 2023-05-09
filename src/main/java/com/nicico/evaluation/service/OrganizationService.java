@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.OrganizationDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -53,4 +54,12 @@ public class OrganizationService implements IOrganizationService {
         }
         return specResponse;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_ORGANIZATION')")
+    public SearchDTO.SearchRs<OrganizationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
 }
