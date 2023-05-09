@@ -1,13 +1,18 @@
 package com.nicico.evaluation.enums;
 
 import lombok.AllArgsConstructor;
+import org.hsqldb.types.Collation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 @AllArgsConstructor
 public enum PersianColumnName {
     CODE("کد"),
-    TITLE("عنوان");
+    TITLE("عنوان"),
+    STATUS("وضعیت"),
+    KPITYPETITLE("نوع");
+
 
     private String persianName;
 
