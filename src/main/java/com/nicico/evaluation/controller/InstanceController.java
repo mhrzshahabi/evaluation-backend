@@ -38,7 +38,7 @@ public class InstanceController {
 
     /**
      * @param criteria is the key value pair for criteria
-     * @return TotalResponse<InstanceDTO.Info> is the list of InstanceInfo entity that match the criteria
+     * @return byte[] is the excel of InstanceInfo entity that match the criteria
      */
     @PostMapping(value = "/export-excel")
     public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {

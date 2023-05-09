@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -10,6 +11,7 @@ import com.nicico.evaluation.iservice.IMeritComponentTypeService;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.repository.MeritComponentRepository;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -121,6 +123,14 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info getByCode(String code) {
         MeritComponent meritComponent = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(meritComponent);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
+    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست مولفه شایستگی");
+        return new ExcelGenerator.ExcelDownload(body);
     }
 
 }
