@@ -14,7 +14,6 @@ import com.nicico.evaluation.model.Batch;
 import com.nicico.evaluation.repository.BatchRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,6 +39,13 @@ public class BatchService implements IBatchService {
     public BatchDTO.Info get(Long id) {
         Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(batch);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_BATCH')")
+    public List<BatchDetailDTO.Info> getDetailByBatchId(Long batchId) {
+        return batchDetailService.findAllBatchDetailListByBatchId(batchId);
     }
 
     @Override
@@ -86,34 +92,6 @@ public class BatchService implements IBatchService {
             return batchDetailService.create(detailCreate);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-        }
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("hasAuthority('U_BATCH')")
-    public BatchDTO.Info update(Long id, BatchDTO.Update dto) {
-        Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        mapper.update(batch, dto);
-        try {
-            Batch save = repository.save(batch);
-            return mapper.entityToDtoInfo(save);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
-        }
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("hasAuthority('D_BATCH')")
-    public void delete(Long id) {
-        Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        try {
-            repository.delete(batch);
-        } catch (DataIntegrityViolationException violationException) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
     }
 

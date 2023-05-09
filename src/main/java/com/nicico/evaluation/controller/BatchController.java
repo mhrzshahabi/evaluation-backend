@@ -2,25 +2,19 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.BatchDTO;
+import com.nicico.evaluation.dto.BatchDetailDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IBatchService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
-import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Locale;
 
 @RequiredArgsConstructor
 @Api(value = "Batch")
@@ -28,8 +22,6 @@ import java.util.Locale;
 @RequestMapping(value = "/api/batch")
 public class BatchController {
 
-    private final ResourceBundleMessageSource messageSource;
-    private final ExceptionUtil exceptionUtil;
     private final IBatchService service;
 
     /**
@@ -39,6 +31,15 @@ public class BatchController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<BatchDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+    }
+
+    /**
+     * @param batchId is the batch id
+     * @return contain list of BatchDetailDTOInfo
+     */
+    @GetMapping(value = "/detail/{batchId}")
+    public ResponseEntity<List<BatchDetailDTO.Info>> getDetailByBatchId(@PathVariable Long batchId) {
+        return new ResponseEntity<>(service.getDetailByBatchId(batchId), HttpStatus.OK);
     }
 
     /**
@@ -61,33 +62,6 @@ public class BatchController {
     }
 
     /**
-     * @param request is  the model of input for update batch entity
-     * @return BatchDTO.Info is the updated batch entity
-     */
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<BatchDTO.Info> update(@PathVariable Long id, @Valid @RequestBody BatchDTO.Update request) {
-        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
-    }
-
-    /**
-     * @param id is the batch id for delete
-     * @return status code only
-     */
-    @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
-        final Locale locale = LocaleContextHolder.getLocale();
-        try {
-            service.delete(id);
-            return new ResponseEntity<>(messageSource.getMessage("message.successful.operation", null, locale), HttpStatus.OK);
-        } catch (DataIntegrityViolationException violationException) {
-            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
-        }
-    }
-
-    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
@@ -95,8 +69,8 @@ public class BatchController {
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<BatchDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                          @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                          @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                        @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                        @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<BatchDTO.Info> data = service.search(request);
         final BatchDTO.Response response = new BatchDTO.Response();
