@@ -3,8 +3,11 @@ package com.nicico.evaluation.utility;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.evaluation.config.CommunicateUIResource;
 import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CriteriaUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(CommunicateUIResource.class);
 
     public static SearchDTO.SearchRq ConvertCriteriaToSearchRequest(List<FilterDTO> list, Integer count, Integer startIndex) {
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
@@ -35,7 +39,17 @@ public class CriteriaUtil {
                 } else if ("date".equals(criteria.getType())) {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     operator = EOperator.equals;
-                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateFormat.format(new Date(Long.parseLong(item.toString()))))).collect(Collectors.toList()));
+                    Date date = new Date(Long.parseLong(criteria.getValues().get(0).toString()));
+                    logger.info(String.valueOf(date));
+
+                    String dateformat = dateFormat.format(date);
+                    logger.info(dateformat);
+
+                    String convert = DateUtil.convertMiToKh(dateformat);
+                    logger.info(convert);
+
+                    criteria.setValues(criteria.getValues().stream().map(item -> convert).collect(Collectors.toList()));
+//                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateFormat.format(new Date(Long.parseLong(item.toString()))))).collect(Collectors.toList()));
                 } else {
                     operator = EOperator.contains;
                 }
