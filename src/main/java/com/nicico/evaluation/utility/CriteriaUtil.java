@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CriteriaUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommunicateUIResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(CriteriaUtil.class);
 
     public static SearchDTO.SearchRq ConvertCriteriaToSearchRequest(List<FilterDTO> list, Integer count, Integer startIndex) {
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
@@ -39,7 +40,14 @@ public class CriteriaUtil {
                 } else if ("date".equals(criteria.getType())) {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     operator = EOperator.equals;
-                    Date date = new Date(Long.parseLong(criteria.getValues().get(0).toString()));
+
+                    Object value = criteria.getValues().get(0);
+                    logger.info(String.valueOf(value));
+
+                    Long longVal = Long.parseLong(value.toString());
+                    logger.info(String.valueOf(longVal));
+
+                    Date date = new Date(longVal);
                     logger.info(String.valueOf(date));
 
                     String dateformat = dateFormat.format(date);
