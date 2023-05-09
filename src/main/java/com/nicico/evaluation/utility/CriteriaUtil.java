@@ -35,7 +35,7 @@ public class CriteriaUtil {
                 } else if ("date".equals(criteria.getType())) {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     operator = EOperator.equals;
-                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateFormat.format(new Date(Long.parseLong(criteria.getValues().get(0).toString()))))).collect(Collectors.toList()));
+                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateFormat.format(new Date(Long.parseLong(item.toString()))))).collect(Collectors.toList()));
                 } else {
                     operator = EOperator.contains;
                 }
