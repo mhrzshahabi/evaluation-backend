@@ -307,6 +307,10 @@
     {
       "code": "D_SPECIAL_CASE",
       "title": "حذف موارد خاص"
+    },
+    {
+      "code": "R_ORGANIZATION",
+      "title": "نمایش سازمان"
     }
   ]
 }
