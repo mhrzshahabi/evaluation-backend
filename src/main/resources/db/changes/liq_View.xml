@@ -133,10 +133,16 @@
     <changeSet author="a.lotfi" id="1683543237">
         <createView viewName="view_organization" replaceIfExists="true">
             <![CDATA[
-          SELECT
-                *
-            FROM
-                SYN_HRM_COMPANY_STRUCTURE
+                select
+                    rownum as id,
+                    org.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_COMPANY_STRUCTURE
+                    )org
             ]]>
         </createView>
     </changeSet>

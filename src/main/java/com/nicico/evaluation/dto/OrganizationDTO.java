@@ -18,6 +18,7 @@ public class OrganizationDTO {
     @ApiModel("OrganizationInfo")
     public static class Info {
         private Long id;
+        private Long companyId;
         private String companyName;
         private Long orgStructureId;
         private String orgStructureName;

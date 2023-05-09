@@ -27,11 +27,9 @@ public class OrganizationService implements IOrganizationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION')")
-    public List<OrganizationDTO.Info> get(Long id) {
-        List<Organization> organizations = repository.findAllById(id);
-        if (organizations.isEmpty())
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
-        return mapper.entityToDtoInfoList(organizations);
+    public OrganizationDTO.Info get(Long id) {
+        Organization organization = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(organization);
     }
 
     @Override

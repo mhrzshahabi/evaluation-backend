@@ -21,7 +21,7 @@ public class OrganizationController {
     private final IOrganizationService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<List<OrganizationDTO.Info>> get(@PathVariable Long id) {
+    public ResponseEntity<OrganizationDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
