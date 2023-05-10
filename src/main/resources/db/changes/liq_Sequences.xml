@@ -83,4 +83,12 @@
         <createSequence sequenceName="seq_evaluation_period_post_id" />
     </changeSet>
 
+    <changeSet id="1683543829" author="semami">
+        <createSequence sequenceName="evaluation_seq_id" />
+    </changeSet>
+
+    <changeSet id="1683543830" author="semami">
+        <createSequence sequenceName="evaluation_item_seq_id" />
+    </changeSet>
+
 </databaseChangeLog>
