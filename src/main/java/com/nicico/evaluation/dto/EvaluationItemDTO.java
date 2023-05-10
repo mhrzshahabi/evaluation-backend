@@ -50,18 +50,7 @@ public abstract class EvaluationItemDTO {
 
         private String typeTitle;
         private Long groupTypeWeight;
-        private List<GroupTypeMeritTuple> groupTypeMerit;
-
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("MeritComponentTupleRq")
-    public static class GroupTypeMeritTuple {
-
-        private GroupTypeMeritDTO.Info groupTypeMerit;
-        private String description;
+        private List<GroupTypeMeritDTO.Info> groupTypeMerit;
 
     }
 

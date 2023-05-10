@@ -43,16 +43,6 @@ public class GroupTypeMeritController {
     public ResponseEntity<GroupTypeMeritDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
-
-    /**
-     * @param assessPostCode is the postCode of assess
-     * @return GroupTypeMeritDTO.Info is the single groupTypeMerit entity
-     */
-    @GetMapping(value = "/evaluation/{assessPostCode}")
-    public ResponseEntity<List<GroupTypeMeritDTO.Info>> getTypeByAssessPostCode(@PathVariable String assessPostCode) {
-        return new ResponseEntity<>(service.getTypeMeritInstanceByAssessPostCode(assessPostCode), HttpStatus.OK);
-    }
-
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page

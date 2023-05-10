@@ -66,6 +66,15 @@ public class EvaluationItemController {
     }
 
     /**
+     * @param assessPostCode is the postCode of asses
+     * @return List<EvaluationItemDTO.CreateItemInfo> is the list of data that need for create evaluation Item
+     */
+    @GetMapping(value = "/item/{assessPostCode}")
+    public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> get(@PathVariable String assessPostCode) {
+        return new ResponseEntity<>(service.getItemInfoByAssessPostCode(assessPostCode), HttpStatus.OK);
+    }
+
+    /**
      * @param request is  the model of input for update evaluationItem entity
      * @return EvaluationItemDTOInfo is the updated evaluationItem entity
      */

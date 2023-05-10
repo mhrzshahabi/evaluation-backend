@@ -3,11 +3,14 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationItemService;
+import com.nicico.evaluation.iservice.IGroupTypeMeritService;
+import com.nicico.evaluation.iservice.IGroupTypeService;
 import com.nicico.evaluation.mapper.EvaluationItemMapper;
 import com.nicico.evaluation.model.EvaluationItem;
-import com.nicico.evaluation.model.KPIType;
+import com.nicico.evaluation.model.GroupType;
 import com.nicico.evaluation.repository.EvaluationItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,11 +30,13 @@ public class EvaluationItemService implements IEvaluationItemService {
     private final EvaluationItemMapper mapper;
     private final EvaluationItemRepository repository;
     private final PageableMapper pageableMapper;
+    private final IGroupTypeService groupTypeService;
+    private final IGroupTypeMeritService groupTypeMeritService;
 
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP')")
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public EvaluationItemDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<EvaluationItem> evaluationItems = repository.findAll(pageable);
@@ -51,7 +57,7 @@ public class EvaluationItemService implements IEvaluationItemService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP')")
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public EvaluationItemDTO.Info get(Long id) {
         EvaluationItem evaluationItem = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(evaluationItem);
@@ -59,15 +65,33 @@ public class EvaluationItemService implements IEvaluationItemService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_GROUP')")
+    @PreAuthorize("hasAuthority('C_EVALUATION_ITEM')")
     public EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto) {
         EvaluationItem evaluationItem = repository.save(mapper.dtoCreateToEntity(dto));
         return mapper.entityToDtoInfo(evaluationItem);
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    public List<EvaluationItemDTO.CreateItemInfo> getItemInfoByAssessPostCode(String assessPostCode) {
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode);
+        List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
+        groupType.forEach(gType -> {
+            EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
+            createItemInfo.setGroupTypeWeight(gType.getWeight());
+            createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
+            List<GroupTypeMeritDTO.Info> groupTypeMerits = groupTypeMeritService.getAllByGroupTypeId(gType.getId());
+            createItemInfo.setGroupTypeMerit(groupTypeMerits);
+            createItemInfoList.add(createItemInfo);
+
+        });
+        return createItemInfoList;
+    }
+
+    @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_GROUP')")
+    @PreAuthorize("hasAuthority('U_EVALUATION_ITEM')")
     public EvaluationItemDTO.Info update(Long id, EvaluationItemDTO.Update dto) {
         EvaluationItem evaluationItem = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(evaluationItem, dto);
@@ -81,7 +105,7 @@ public class EvaluationItemService implements IEvaluationItemService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_GROUP')")
+    @PreAuthorize("hasAuthority('D_EVALUATION_ITEM')")
     public void delete(Long id) {
         EvaluationItem evaluationItem = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
@@ -95,7 +119,7 @@ public class EvaluationItemService implements IEvaluationItemService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP')")
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public SearchDTO.SearchRs<EvaluationItemDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
