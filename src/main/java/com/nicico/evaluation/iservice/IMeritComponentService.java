@@ -1,7 +1,11 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
+import com.nicico.evaluation.utility.ExcelGenerator;
+
+import java.util.List;
 
 public interface IMeritComponentService {
 
@@ -18,5 +22,7 @@ public interface IMeritComponentService {
     SearchDTO.SearchRs<MeritComponentDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     MeritComponentDTO.Info getByCode(String code);
+
+    ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 
 }

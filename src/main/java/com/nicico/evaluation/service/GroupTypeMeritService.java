@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -10,6 +11,7 @@ import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -131,6 +133,14 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public SearchDTO.SearchRs<GroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
+    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست مولفه شایستگی گروه-نوع'");
+        return new ExcelGenerator.ExcelDownload(body);
     }
 
 }

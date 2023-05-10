@@ -130,5 +130,21 @@
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="a.lotfi" id="1683543237">
+        <createView viewName="view_organization" replaceIfExists="true">
+            <![CDATA[
+                select
+                    rownum as id,
+                    org.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_COMPANY_STRUCTURE
+                    )org
+            ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>

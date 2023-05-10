@@ -20,4 +20,17 @@ public interface GroupTypeMeritMapper {
 
     void update(@MappingTarget GroupTypeMerit entity, GroupTypeMeritDTO.Update dto);
 
+    @Mappings({
+            @Mapping(target = "hasInstanceStr", expression = "java(hasInstanceSTR(entity.getHasInstance()))"),
+            @Mapping(target = "groupTypeTitle", source = "groupType.group.title"),
+            @Mapping(target = "kpiTypeTitle", source = "groupType.kpiType.title"),
+            @Mapping(target = "meritComponentTitle", source = "meritComponent.title")
+
+    })
+    GroupTypeMeritDTO.Excel entityToDtoExcel(GroupTypeMerit entity);
+
+    default String hasInstanceSTR(Boolean hasInstance) {
+        return hasInstance ? "دارد" : "ندارد";
+    }
+    
 }

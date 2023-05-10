@@ -535,6 +535,25 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="1681727591" author="MShahabi">
+        <dropColumn tableName="tbl_evaluation_period" columnName="d_start_date"/>
+        <dropColumn tableName="tbl_evaluation_period" columnName="d_end_date"/>
+        <dropColumn tableName="tbl_evaluation_period" columnName="d_start_date_assessment"/>
+        <dropColumn tableName="tbl_evaluation_period" columnName="d_end_date_assessment"/>
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="c_start_date" type="VARCHAR2(100 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="c_end_date" type="VARCHAR2(100 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="c_start_date_assessment" type="VARCHAR2(100 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="c_end_date_assessment" type="VARCHAR2(100 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="1683525925" author="semami">
         <createTable tableName="tbl_evaluation">
             <column name="id" type="NUMBER(19, 0)">

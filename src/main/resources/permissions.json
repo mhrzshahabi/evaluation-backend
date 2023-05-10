@@ -309,6 +309,10 @@
       "title": "حذف موارد خاص"
     },
     {
+      "code": "R_ORGANIZATION",
+      "title": "نمایش سازمان"
+    },
+    {
       "code": "R_EVALUATION",
       "title": "نمایش ارزیابی"
     },

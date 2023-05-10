@@ -88,6 +88,8 @@ public class ExceptionUtil {
                                          '%%TITLE%%'
                                      WHEN column_name LIKE '%%CODE%%' THEN
                                          '%%CODE%%'
+                                     WHEN column_name LIKE 'ID' THEN
+                                         'ID'
                                  END
                              )
                                     """,
@@ -102,7 +104,7 @@ public class ExceptionUtil {
             if (resultList.size() == 1) {
                 columnTitle = resultList.get(0).toString();
             } else {
-                columnTitle = resultList.stream().map(Object::toString).filter(s -> s.contains("_title".toUpperCase()) || s.contains("_code".toUpperCase())).findFirst().orElse("id");
+                columnTitle = resultList.stream().map(Object::toString).filter(s -> s.contains("_title".toUpperCase()) || s.contains("_code".toUpperCase()) || s.contains("_id".toUpperCase())).findFirst().orElse("id");
             }
         }
 
@@ -159,7 +161,7 @@ public class ExceptionUtil {
             sb.append("نامشخص");
         }
         sb.append(") ");
-        sb.append("با عناوین/کد (");
+        sb.append("با عناوین/کد/آی دی (");
         titlesOrCodes.forEach(titleOrCode -> sb.append(titleOrCode).append("، "));
         sb.deleteCharAt(sb.lastIndexOf("،"));
         sb.deleteCharAt(sb.lastIndexOf(" "));

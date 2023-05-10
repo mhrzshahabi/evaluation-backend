@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -26,17 +25,17 @@ public class EvaluationPeriod extends Auditable {
     @Column(name = "c_title")
     private String title;
 
-    @Column(name = "d_start_date")
-    private Date startDate;
+    @Column(name = "c_start_date")
+    private String startDate;
 
-    @Column(name = "d_end_date")
-    private Date endDate;
+    @Column(name = "c_end_date")
+    private String endDate;
 
-    @Column(name = "d_start_date_assessment")
-    private Date startDateAssessment;
+    @Column(name = "c_start_date_assessment")
+    private String startDateAssessment;
 
-    @Column(name = "d_end_date_assessment")
-    private Date endDateAssessment;
+    @Column(name = "c_end_date_assessment")
+    private String endDateAssessment;
 
     @Column(name = "c_description")
     private String description;

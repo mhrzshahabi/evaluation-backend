@@ -1,9 +1,11 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.iservice.IMeritComponentTypeService;
+import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.model.MeritComponentType;
 import org.mapstruct.*;
@@ -36,5 +38,24 @@ public abstract class MeritComponentMapper {
             //todo ui change object to list
             return  meritComponentTypeMapper.entityToDtoInfo(meritComponentTypeList.get(0));
         } else return null;
+    }
+
+    @Mappings({
+            @Mapping(target = "kpiTypeTitle", source = "meritComponentTypes", qualifiedByName = "getKpiTypeTitleByMeritComponentId"),
+            @Mapping(target = "status", source = "id", qualifiedByName = "getStatus"),
+    })
+    public abstract MeritComponentDTO.Excel entityToDtoExcel(MeritComponent entity);
+    @Named("getStatus")
+    String getStatus(Long id){
+        return  "استفاده نشده";
+    }
+    @Named("getKpiTypeTitleByMeritComponentId")
+    String getKpiTypeTitleByMeritComponentId(List<MeritComponentType> meritComponentTypeList) {
+        if (meritComponentTypeList!=null && !meritComponentTypeList.isEmpty()){
+            MeritComponentType meritComponentType = meritComponentTypeList.get(0);
+            if(meritComponentType != null && meritComponentType.getKpiType() != null)
+                return  meritComponentType.getKpiType().getTitle();
+        }
+        return null;
     }
 }

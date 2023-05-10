@@ -143,8 +143,8 @@ public class BatchDetailService implements IBatchDetailService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BatchDetail> findAllBatchDetailListByBatchId(Long batchId) {
-        return repository.findAllByBatchId(batchId);
+    public List<BatchDetailDTO.Info> findAllBatchDetailListByBatchId(Long batchId) {
+        return mapper.entityToDtoInfoList(repository.findAllByBatchId(batchId));
     }
 
     @Async
