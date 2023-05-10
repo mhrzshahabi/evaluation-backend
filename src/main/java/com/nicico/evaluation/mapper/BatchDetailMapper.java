@@ -20,4 +20,7 @@ public interface BatchDetailMapper {
 
     void update(@MappingTarget BatchDetail entity, BatchDetailDTO.Update dto);
 
+    @Mapping(target = "statusCatalog", source = "statusCatalog.title")
+    BatchDetailDTO.Excel entityToDtoExcel(BatchDetail entity);
+
 }

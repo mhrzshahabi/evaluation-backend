@@ -113,7 +113,6 @@ public class SensitiveEventsService implements ISensitiveEventsService {
         request.setCriteria(criteriaRq);
 
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
-
     }
 
 }

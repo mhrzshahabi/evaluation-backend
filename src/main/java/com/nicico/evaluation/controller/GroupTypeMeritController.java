@@ -45,6 +45,15 @@ public class GroupTypeMeritController {
     }
 
     /**
+     * @param assessPostCode is the postCode of assess
+     * @return GroupTypeMeritDTO.Info is the single groupTypeMerit entity
+     */
+    @GetMapping(value = "/evaluation/{assessPostCode}")
+    public ResponseEntity<List<GroupTypeMeritDTO.Info>> getTypeByAssessPostCode(@PathVariable String assessPostCode) {
+        return new ResponseEntity<>(service.getTypeMeritInstanceByAssessPostCode(assessPostCode), HttpStatus.OK);
+    }
+
+    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @return GroupTypeMeritDTO.SpecResponse that contain list of GroupTypeMeritDTO and the number of total entity
@@ -100,8 +109,8 @@ public class GroupTypeMeritController {
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<GroupTypeMeritDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                            @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                            @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                                 @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                 @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<GroupTypeMeritDTO.Info> data = service.search(request);
         final GroupTypeMeritDTO.Response response = new GroupTypeMeritDTO.Response();

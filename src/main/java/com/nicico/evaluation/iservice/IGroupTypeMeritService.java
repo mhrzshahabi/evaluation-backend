@@ -7,9 +7,15 @@ import com.nicico.evaluation.utility.ExcelGenerator;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface IGroupTypeMeritService {
 
     GroupTypeMeritDTO.Info get(Long id);
+
+    List<GroupTypeMeritDTO.Info> getAllByGroupTypeId(Long groupTypeId);
+
+    List<GroupTypeMeritDTO.Info> getTypeMeritInstanceByAssessPostCode(String assessPostCode);
 
     GroupTypeMeritDTO.SpecResponse list(int count, int startIndex);
 

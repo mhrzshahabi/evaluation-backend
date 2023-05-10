@@ -5,17 +5,15 @@ import com.nicico.evaluation.dto.BatchDTO;
 import com.nicico.evaluation.dto.BatchDetailDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 
-import java.util.List;
-
 public interface IBatchService {
 
     BatchDTO.Info get(Long id);
 
-    List<BatchDetailDTO.Info> getDetailByBatchId(Long batchId);
-
     BatchDTO.SpecResponse list(int count, int startIndex);
 
     SearchDTO.SearchRs<BatchDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+
+    SearchDTO.SearchRs<BatchDetailDTO.Info> batchDetailSearch(SearchDTO.SearchRq request, Long batchId) throws NoSuchFieldException, IllegalAccessException;
 
     BaseResponse create(BatchDTO.Create dto);
 

@@ -38,6 +38,21 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
         GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(groupTypeMerit);
     }
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
+    public List<GroupTypeMeritDTO.Info> getAllByGroupTypeId(Long groupTypeId) {
+        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeId(groupTypeId);
+        return mapper.entityToDtoInfoList(groupTypeMerit);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
+    public List<GroupTypeMeritDTO.Info> getTypeMeritInstanceByAssessPostCode(String assessPostCode) {
+        List<GroupTypeMerit> groupTypeMerit = repository.getTypeMeritInstanceByAssessPostCode(assessPostCode);
+        return mapper.entityToDtoInfoList(groupTypeMerit);
+    }
 
     @Override
     @Transactional(readOnly = true)
