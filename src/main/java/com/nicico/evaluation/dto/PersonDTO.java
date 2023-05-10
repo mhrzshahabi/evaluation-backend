@@ -52,6 +52,8 @@ public abstract class PersonDTO {
         private Date deathDate;
         private Long deathCauseId;
         private String deathDescription;
+        private String postCode;
+        private String postTitle;
     }
 
     @Getter
