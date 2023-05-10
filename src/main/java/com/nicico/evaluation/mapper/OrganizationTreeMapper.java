@@ -11,4 +11,7 @@ public interface OrganizationTreeMapper {
     OrganizationTreeDTO.Info entityToDtoInfo(OrganizationTree entity);
 
     List<OrganizationTreeDTO.Info> entityToDtoInfoList(List<OrganizationTree> entities);
+
+    List<OrganizationTreeDTO.InfoTree> entityToDtoInfoTreeList(List<OrganizationTree> entities);
+
 }

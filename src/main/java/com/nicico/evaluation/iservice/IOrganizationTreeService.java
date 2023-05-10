@@ -10,5 +10,7 @@ public interface IOrganizationTreeService {
 
     OrganizationTreeDTO.SpecResponse list(int count, int startIndex);
 
+    List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long parentId);
+
     SearchDTO.SearchRs<OrganizationTreeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 }

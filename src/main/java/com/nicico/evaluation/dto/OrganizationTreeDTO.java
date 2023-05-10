@@ -58,6 +58,20 @@ public class OrganizationTreeDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("OrganizationTreeInfoTree")
+    public static class InfoTree{
+        private Long id;
+        private String fullName;
+        private Long postParentId;
+        private String postCode;
+        private String postTitle;
+        private String nationalCode;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("OrganizationTreeSpecResponse")
     public static class SpecResponse {
         private OrganizationTreeDTO.Response response;
