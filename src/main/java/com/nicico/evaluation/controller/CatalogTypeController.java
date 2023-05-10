@@ -5,6 +5,7 @@ import com.nicico.evaluation.dto.CatalogTypeDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogTypeService;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
@@ -72,11 +73,13 @@ public class CatalogTypeController {
      * @return status code only
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
         final Locale locale = LocaleContextHolder.getLocale();
         try {
             service.delete(id);
-            return new ResponseEntity<>(messageSource.getMessage("message.successful.operation", null, locale), HttpStatus.OK);
+            BaseResponse response = new BaseResponse();
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             String msg = exceptionUtil.getRecordsByParentId(violationException, id);
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);

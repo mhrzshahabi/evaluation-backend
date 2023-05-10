@@ -5,6 +5,7 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.iservice.ISpecialCaseService;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
@@ -72,11 +73,13 @@ public class SpecialCaseController {
      * @return status code only
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
+    public ResponseEntity<BaseResponse> delete(@Validated @PathVariable Long id) {
         final Locale locale = LocaleContextHolder.getLocale();
         try {
             service.delete(id);
-            return new ResponseEntity<>(messageSource.getMessage("message.successful.operation", null, locale), HttpStatus.OK);
+            BaseResponse response = new BaseResponse();
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
         } catch (Exception exception) {
