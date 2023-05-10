@@ -81,10 +81,10 @@ public class BatchController {
      * @param batchId    is the batch id
      * @return TotalResponse<BatchDetailDTO.Info> is the list of batchDetail entity that match the criteria
      */
-    @GetMapping(value = "/detail/{batchId}")
-    public ResponseEntity<BatchDetailDTO.SpecResponse> getDetailByBatchId(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                                @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                                                @RequestBody List<FilterDTO> criteria, @PathVariable Long batchId) throws NoSuchFieldException, IllegalAccessException {
+    @PostMapping(value = "/detail/spec-list/{batchId}")
+    public ResponseEntity<BatchDetailDTO.SpecResponse> detailSearch(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                    @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                    @RequestBody List<FilterDTO> criteria, @PathVariable Long batchId) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<BatchDetailDTO.Info> data = service.batchDetailSearch(request, batchId);
         final BatchDetailDTO.Response response = new BatchDetailDTO.Response();
