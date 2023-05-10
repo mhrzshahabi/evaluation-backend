@@ -146,4 +146,10 @@ public class Personnel {
     @Column(name = "WORK_TURN_ID")
     private Long workTurnId;
 
+    @Column(name = "POST_CODE")
+    private String postCode;
+
+    @Column(name = "POST_TITLE")
+    private String postTitle;
+
 }
