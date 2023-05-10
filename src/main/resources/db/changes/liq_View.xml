@@ -147,4 +147,21 @@
         </createView>
     </changeSet>
 
+    <changeSet author="a.lotfi" id="1683702311">
+        <createView viewName="view_organization_tree" replaceIfExists="true">
+            <![CDATA[
+                select
+                    rownum as id,
+                    orgTree.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_CHART_POST_TREE
+                    )orgTree
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

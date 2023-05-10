@@ -313,6 +313,10 @@
       "title": "نمایش سازمان"
     },
     {
+      "code": "R_ORGANIZATION_TREE",
+      "title": "نمایش درخت سازمان"
+    },
+    {
       "code": "R_EVALUATION",
       "title": "نمایش ارزیابی"
     },
