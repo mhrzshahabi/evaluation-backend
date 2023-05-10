@@ -95,4 +95,16 @@ public abstract class GroupTypeMeritDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("GroupTypeMeritInfo")
+    public static class Excel {
+        private Long id;
+        private String groupTypeTitle;
+        private String kpiTypeTitle;
+        private String meritComponentTitle;
+        private Long weight;
+        private String hasInstanceStr;
+    }
+
 }

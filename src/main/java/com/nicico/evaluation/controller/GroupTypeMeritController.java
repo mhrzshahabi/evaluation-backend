@@ -6,13 +6,16 @@ import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -106,6 +109,19 @@ public class GroupTypeMeritController {
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the excel of group-type-meritInfo list that match the criteria
+     */
+    @PostMapping(value = "/export-excel")
+    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        ExcelGenerator.ExcelDownload excelDownload = service.downloadExcel(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
     }
 
 }

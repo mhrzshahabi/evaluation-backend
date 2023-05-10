@@ -1,7 +1,11 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
+import com.nicico.evaluation.utility.ExcelGenerator;
+
+import java.util.List;
 
 public interface IGroupTypeMeritService {
 
@@ -16,5 +20,7 @@ public interface IGroupTypeMeritService {
     void delete(Long id);
 
     SearchDTO.SearchRs<GroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+
+    ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 
 }

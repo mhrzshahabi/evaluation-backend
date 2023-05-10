@@ -11,7 +11,11 @@ public enum PersianColumnName {
     CODE("کد"),
     TITLE("عنوان"),
     STATUS("وضعیت"),
-    KPITYPETITLE("نوع");
+    KPITYPETITLE("نوع"),
+    GROUPTYPETITLE("گروه"),
+    MERITCOMPONENTTITLE("مولفه شایستگی"),
+    WEIGHT("وزن"),
+    HASINSTANCESTR("مصداق");
 
 
     private String persianName;
