@@ -311,6 +311,10 @@
     {
       "code": "R_ORGANIZATION",
       "title": "نمایش سازمان"
+    },
+    {
+      "code": "R_ORGANIZATION_TREE",
+      "title": "نمایش درخت سازمان"
     }
   ]
 }
