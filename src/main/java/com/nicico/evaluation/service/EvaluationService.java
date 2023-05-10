@@ -35,7 +35,7 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<Evaluation> Evaluations = repository.findAll(pageable);
@@ -56,7 +56,7 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.Info get(Long id) {
         Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(Evaluation);
@@ -64,7 +64,7 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('C_EVALUATION')")
     public EvaluationDTO.Info create(EvaluationDTO.Create dto) {
         Evaluation Evaluation = mapper.dtoCreateToEntity(dto);
         Evaluation = repository.save(Evaluation);
@@ -73,7 +73,7 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('U_EVALUATION')")
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update dto) {
         Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(Evaluation, dto);
@@ -83,7 +83,7 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('D_EVALUATION')")
     public void delete(Long id) {
         Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         repository.delete(Evaluation);
@@ -91,7 +91,7 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('R_EVALUATION')")
     public SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }

@@ -33,17 +33,17 @@ public class EvaluationItemService implements IEvaluationItemService {
     @PreAuthorize("hasAuthority('R_GROUP')")
     public EvaluationItemDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        Page<EvaluationItem> groups = repository.findAll(pageable);
-        List<EvaluationItemDTO.Info> groupInfos = mapper.entityToDtoInfoList(groups.getContent());
+        Page<EvaluationItem> evaluationItems = repository.findAll(pageable);
+        List<EvaluationItemDTO.Info> evaluationItemInfos = mapper.entityToDtoInfoList(evaluationItems.getContent());
 
         EvaluationItemDTO.Response response = new EvaluationItemDTO.Response();
         EvaluationItemDTO.SpecResponse specResponse = new EvaluationItemDTO.SpecResponse();
 
-        if (groupInfos != null) {
-            response.setData(groupInfos)
+        if (evaluationItemInfos != null) {
+            response.setData(evaluationItemInfos)
                     .setStartRow(startIndex)
                     .setEndRow(startIndex + count)
-                    .setTotalRows((int) groups.getTotalElements());
+                    .setTotalRows((int) evaluationItems.getTotalElements());
             specResponse.setResponse(response);
         }
         return specResponse;
@@ -53,16 +53,16 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP')")
     public EvaluationItemDTO.Info get(Long id) {
-        EvaluationItem group = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return mapper.entityToDtoInfo(group);
+        EvaluationItem evaluationItem = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(evaluationItem);
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_GROUP')")
     public EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto) {
-        EvaluationItem group = repository.save(mapper.dtoCreateToEntity(dto));
-        return mapper.entityToDtoInfo(group);
+        EvaluationItem evaluationItem = repository.save(mapper.dtoCreateToEntity(dto));
+        return mapper.entityToDtoInfo(evaluationItem);
     }
 
     @Override
@@ -83,9 +83,9 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Transactional
     @PreAuthorize("hasAuthority('D_GROUP')")
     public void delete(Long id) {
-        EvaluationItem group = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        EvaluationItem evaluationItem = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
-            repository.delete(group);
+            repository.delete(evaluationItem);
         } catch (DataIntegrityViolationException violationException) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint);
         } catch (Exception exception) {
