@@ -2,7 +2,9 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.BatchDetailDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.utility.BaseResponse;
+import com.nicico.evaluation.utility.ExcelGenerator;
 
 import java.util.List;
 
@@ -22,6 +24,6 @@ public interface IBatchDetailService {
 
     void delete(Long id);
 
-    List<BatchDetailDTO.Info> findAllBatchDetailListByBatchId(Long batchId);
+    ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 
 }

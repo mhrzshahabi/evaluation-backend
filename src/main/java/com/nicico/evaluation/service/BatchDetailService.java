@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.BatchDetailDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -13,6 +14,7 @@ import com.nicico.evaluation.mapper.BatchDetailMapper;
 import com.nicico.evaluation.model.BatchDetail;
 import com.nicico.evaluation.repository.BatchDetailRepository;
 import com.nicico.evaluation.utility.BaseResponse;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -143,8 +145,9 @@ public class BatchDetailService implements IBatchDetailService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BatchDetailDTO.Info> findAllBatchDetailListByBatchId(Long batchId) {
-        return mapper.entityToDtoInfoList(repository.findAllByBatchId(batchId));
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست جزئیات اسناد گروهی");
+        return new ExcelGenerator.ExcelDownload(body);
     }
 
     @Async

@@ -65,6 +65,16 @@ public abstract class BatchDetailDTO {
 
     @Getter
     @Setter
+    @ApiModel("BatchDetailExcel")
+    public static class Excel {
+
+        private String description;
+        private String exceptionTitle;
+        private String statusCatalog;
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("BatchDetailSpecResponse")
     public static class SpecResponse {
