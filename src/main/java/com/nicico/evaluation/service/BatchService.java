@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.BatchDTO;
@@ -9,8 +10,10 @@ import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IBatchDetailService;
 import com.nicico.evaluation.iservice.IBatchService;
 import com.nicico.evaluation.iservice.ICatalogService;
+import com.nicico.evaluation.mapper.BatchDetailMapper;
 import com.nicico.evaluation.mapper.BatchMapper;
 import com.nicico.evaluation.model.Batch;
+import com.nicico.evaluation.repository.BatchDetailRepository;
 import com.nicico.evaluation.repository.BatchRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,7 +35,9 @@ public class BatchService implements IBatchService {
     private final BatchRepository repository;
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
+    private final BatchDetailMapper batchDetailMapper;
     private final IBatchDetailService batchDetailService;
+    private final BatchDetailRepository batchDetailRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -39,13 +45,6 @@ public class BatchService implements IBatchService {
     public BatchDTO.Info get(Long id) {
         Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(batch);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_BATCH')")
-    public List<BatchDetailDTO.Info> getDetailByBatchId(Long batchId) {
-        return batchDetailService.findAllBatchDetailListByBatchId(batchId);
     }
 
     @Override
@@ -74,6 +73,28 @@ public class BatchService implements IBatchService {
     @PreAuthorize("hasAuthority('R_BATCH')")
     public SearchDTO.SearchRs<BatchDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_BATCH_DETAIL')")
+    public SearchDTO.SearchRs<BatchDetailDTO.Info> batchDetailSearch(SearchDTO.SearchRq request, Long batchId) throws NoSuchFieldException, IllegalAccessException {
+
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq batchIdCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("batchId")
+                .setValue(batchId);
+
+        criteriaRqList.add(batchIdCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
+        return BaseService.optimizedSearch(batchDetailRepository, batchDetailMapper::entityToDtoInfo, request);
     }
 
     @Override

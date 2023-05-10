@@ -34,15 +34,6 @@ public class BatchController {
     }
 
     /**
-     * @param batchId is the batch id
-     * @return contain list of BatchDetailDTOInfo
-     */
-    @GetMapping(value = "/detail/{batchId}")
-    public ResponseEntity<List<BatchDetailDTO.Info>> getDetailByBatchId(@PathVariable Long batchId) {
-        return new ResponseEntity<>(service.getDetailByBatchId(batchId), HttpStatus.OK);
-    }
-
-    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @return BatchDTO.SpecResponse that contain list of BatchDTO and the number of total entity
@@ -75,6 +66,29 @@ public class BatchController {
         SearchDTO.SearchRs<BatchDTO.Info> data = service.search(request);
         final BatchDTO.Response response = new BatchDTO.Response();
         final BatchDTO.SpecResponse specRs = new BatchDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @param batchId    is the batch id
+     * @return TotalResponse<BatchDetailDTO.Info> is the list of batchDetail entity that match the criteria
+     */
+    @GetMapping(value = "/detail/{batchId}")
+    public ResponseEntity<BatchDetailDTO.SpecResponse> getDetailByBatchId(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                                @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                                @RequestBody List<FilterDTO> criteria, @PathVariable Long batchId) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<BatchDetailDTO.Info> data = service.batchDetailSearch(request, batchId);
+        final BatchDetailDTO.Response response = new BatchDetailDTO.Response();
+        final BatchDetailDTO.SpecResponse specRs = new BatchDetailDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())
