@@ -164,4 +164,39 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_merit_component" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1683628336">
+        <addForeignKeyConstraint baseColumnNames="group_type_merit_id"
+                                 baseTableName="tbl_evaluation_item"
+                                 constraintName="f_evaluation_item_to_group_type_merit" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_group_type_merit" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1683628337">
+        <addForeignKeyConstraint baseColumnNames="evaluation_id"
+                                 baseTableName="tbl_evaluation_item"
+                                 constraintName="f_evaluation_item_to_evaluation" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_evaluation" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1683628985">
+        <addForeignKeyConstraint baseColumnNames="questionnaire_answer_catalog_id"
+                                 baseTableName="tbl_evaluation_item"
+                                 constraintName="f_evaluation_questionnaire_answer_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1683628986">
+        <addForeignKeyConstraint baseColumnNames="post_merit_id"
+                                 baseTableName="tbl_evaluation_item"
+                                 constraintName="f_evaluation_item_to_post_merit" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_post_merit_component" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1683628987">
+        <addForeignKeyConstraint baseColumnNames="method_catalog_id"
+                                 baseTableName="tbl_evaluation"
+                                 constraintName="f_evaluation_method_catalog_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

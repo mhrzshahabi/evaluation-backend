@@ -535,4 +535,67 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="1683525925" author="semami">
+        <createTable tableName="tbl_evaluation">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_PK"/>
+            </column>
+            <column name="c_assess_national_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_assess_post_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_assessor_national_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_assessor_post_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="method_catalog_id" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1683543882" author="semami">
+        <createTable tableName="tbl_evaluation_item">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_evaluation_item_PK"/>
+            </column>
+            <column name="evaluation_id" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_type_merit_id" type="NUMBER(10, 0)"/>
+            <column name="post_merit_id" type="NUMBER(10, 0)"/>
+            <column name="questionnaire_answer_catalog_id" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(3000 CHAR)"/>
+
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

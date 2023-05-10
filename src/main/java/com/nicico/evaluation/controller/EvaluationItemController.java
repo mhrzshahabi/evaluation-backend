@@ -1,14 +1,14 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IGroupTypeMeritService;
+import com.nicico.evaluation.iservice.IEvaluationItemService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,73 +21,70 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 
-@RequiredArgsConstructor
-@Api(value = "Group Type Merit")
-@RestController
-@RequestMapping(value = "/api/group-type-merit")
-public class GroupTypeMeritController {
 
+@RestController
+@RequestMapping("/api/evaluationItem")
+@Api("EvaluationItem Api")
+@Validated
+@AllArgsConstructor
+public class EvaluationItemController {
+
+    private final IEvaluationItemService service;
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
-    private final IGroupTypeMeritService service;
-
-    /**
-     * @param id is the groupTypeMerit id
-     * @return GroupTypeMeritDTO.Info is the single groupTypeMerit entity
-     */
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<GroupTypeMeritDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
-    }
-
-    /**
-     * @param assessPostCode is the postCode of assess
-     * @return GroupTypeMeritDTO.Info is the single groupTypeMerit entity
-     */
-    @GetMapping(value = "/evaluation/{assessPostCode}")
-    public ResponseEntity<List<GroupTypeMeritDTO.Info>> getTypeByAssessPostCode(@PathVariable String assessPostCode) {
-        return new ResponseEntity<>(service.getTypeMeritInstanceByAssessPostCode(assessPostCode), HttpStatus.OK);
-    }
 
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
-     * @return GroupTypeMeritDTO.SpecResponse that contain list of GroupTypeMeritDTO and the number of total entity
+     * @return EvaluationItemDTO.SpecResponse that contain list of evaluationItemInfoDto and the number of total entity
      */
     @GetMapping(value = "/list")
-    public ResponseEntity<GroupTypeMeritDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
+    public ResponseEntity<EvaluationItemDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
     /**
-     * @param request is the model of input for create groupTypeMerit entity
-     * @return GroupTypeMeritDTO.Info is the saved groupTypeMerit entity
+     * @param id is the evaluationItem id
+     * @return EvaluationItemDTO.Info  is the single evaluationItem entity
+     */
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<EvaluationItemDTO.Info> get(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
+        }
+    }
+
+    /**
+     * @param request is the model of input for create evaluationItem entity
+     * @return EvaluationItemDTOInfo is the saved evaluationItem entity
      */
     @PostMapping
-    public ResponseEntity<GroupTypeMeritDTO.Info> create(@Valid @RequestBody GroupTypeMeritDTO.Create request) {
+    public ResponseEntity<EvaluationItemDTO.Info> create(@Valid @RequestBody EvaluationItemDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
-     * @param request is  the model of input for update groupTypeMerit entity
-     * @return GroupTypeMeritDTO.Info is the updated groupTypeMerit entity
+     * @param request is  the model of input for update evaluationItem entity
+     * @return EvaluationItemDTOInfo is the updated evaluationItem entity
      */
     @PutMapping(value = "/{id}")
-    public ResponseEntity<GroupTypeMeritDTO.Info> update(@PathVariable Long id, @Valid @RequestBody GroupTypeMeritDTO.Update request) {
+    public ResponseEntity<EvaluationItemDTO.Info> update(@PathVariable Long id, @Valid @RequestBody EvaluationItemDTO.Update request) {
         return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
     /**
-     * @param id is the groupTypeMerit id for delete
+     * @param id is the evaluationItem id for delete
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
     public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
-        final Locale locale = LocaleContextHolder.getLocale();
         try {
             service.delete(id);
-            return new ResponseEntity<>(messageSource.getMessage("message.successful.operation", null, locale), HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
+            final Locale locale = LocaleContextHolder.getLocale();
             String msg = exceptionUtil.getRecordsByParentId(violationException, id);
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {
@@ -99,16 +96,16 @@ public class GroupTypeMeritController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<GroupTypeMeritDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<EvaluationItemDTO.Info> is the list of evaluationItemInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
-    public ResponseEntity<GroupTypeMeritDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+    public ResponseEntity<EvaluationItemDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupTypeMeritDTO.Info> data = service.search(request);
-        final GroupTypeMeritDTO.Response response = new GroupTypeMeritDTO.Response();
-        final GroupTypeMeritDTO.SpecResponse specRs = new GroupTypeMeritDTO.SpecResponse();
+        SearchDTO.SearchRs<EvaluationItemDTO.Info> data = service.search(request);
+        final EvaluationItemDTO.Response response = new EvaluationItemDTO.Response();
+        final EvaluationItemDTO.SpecResponse specRs = new EvaluationItemDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())

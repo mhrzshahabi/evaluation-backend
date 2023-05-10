@@ -3,9 +3,15 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 
+import java.util.List;
+
 public interface IGroupTypeMeritService {
 
     GroupTypeMeritDTO.Info get(Long id);
+
+    List<GroupTypeMeritDTO.Info> getAllByGroupTypeId(Long groupTypeId);
+
+    List<GroupTypeMeritDTO.Info> getTypeMeritInstanceByAssessPostCode(String assessPostCode);
 
     GroupTypeMeritDTO.SpecResponse list(int count, int startIndex);
 
