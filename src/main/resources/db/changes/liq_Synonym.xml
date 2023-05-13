@@ -31,5 +31,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1682076544" author="MShahabi">
+        <sql>
+            create or replace synonym SYN_HRM_CHART_POST_TREE for STG_HRM.VIEW_CHART_POST_TREE_EVALUATION;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
