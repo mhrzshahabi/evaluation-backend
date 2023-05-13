@@ -39,6 +39,8 @@ public class CriteriaUtil {
                     operator = EOperator.equals;
                 } else if ("date".equals(criteria.getType())) {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
+
                     operator = EOperator.equals;
 
                     Object value = criteria.getValues().get(0);
@@ -46,6 +48,8 @@ public class CriteriaUtil {
 
                     Long longVal = Long.parseLong(value.toString());
                     logger.info(String.valueOf(longVal));
+
+                    //longVal += 14400000L;
 
                     Date date = new Date(longVal);
                     logger.info(String.valueOf(date));
