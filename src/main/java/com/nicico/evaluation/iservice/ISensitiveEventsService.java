@@ -3,9 +3,13 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.SensitiveEventsDTO;
 
+import java.util.List;
+
 public interface ISensitiveEventsService {
 
     SensitiveEventsDTO.Info get(Long id);
+
+    List<SensitiveEventsDTO.Info> getAllByNationalCode(String nationalCode);
 
     SensitiveEventsDTO.SpecResponse list(int count, int startIndex);
 

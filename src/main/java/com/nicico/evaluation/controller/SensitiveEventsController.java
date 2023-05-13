@@ -31,6 +31,7 @@ public class SensitiveEventsController {
     private final ISensitiveEventsService service;
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
+
     /**
      * @param id is the SensitiveEvents id
      * @return SensitiveEventsDTO.Info is the single SensitiveEvents entity
@@ -38,6 +39,15 @@ public class SensitiveEventsController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<SensitiveEventsDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+    }
+
+    /**
+     * @param nationalCode is the SensitiveEvents nationalCode
+     * @return SensitiveEventsDTO.Info is the List of SensitiveEvents entity
+     */
+    @GetMapping(value = "/person/{nationalCode}")
+    public ResponseEntity<List<SensitiveEventsDTO.Info>> getAllByNationalCode(@PathVariable String nationalCode) {
+        return new ResponseEntity<>(service.getAllByNationalCode(nationalCode), HttpStatus.OK);
     }
 
     /**
