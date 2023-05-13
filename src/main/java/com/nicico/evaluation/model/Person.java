@@ -117,6 +117,12 @@ public class Person {
     @Column(name = "DEATH_DESCRIPTION")
     private String deathDescription;
 
+    @Column(name = "POST_CODE")
+    private String postCode;
+
+    @Column(name = "POST_TITLE")
+    private String postTitle;
+
     @Transient
     private String fullName;
 

@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -14,8 +15,10 @@ import java.util.List;
 public abstract class MeritComponentDTO {
 
     @NotNull
+    @Size(max = 255, message = "کد نمی تواند بیشتر از 255 کاراکتر باشد")
     private String code;
     @NotNull
+    @Size(max = 255, message = "عنوان نمی تواند بیشتر از 255 کاراکتر باشد")
     private String title;
 
     @Getter
