@@ -10,7 +10,7 @@ public interface IGroupTypeService {
 
     GroupTypeDTO.Info get(Long id);
 
-    List<GroupType> getTypeByAssessPostCode(String assessPostCode);
+    List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef);
 
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
 

@@ -1109,6 +1109,10 @@
             ]]>
         </sql>
     </changeSet>
-
+    <changeSet id="1683718014" author="semami">
+        <sql>
+            update tbl_catalog_type set c_code = 'SensitiveEventsPolicy' where c_title= 'سیاست رویداد وقایع حساس'
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

@@ -36,8 +36,8 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public List<GroupType> getTypeByAssessPostCode(String assessPostCode) {
-        return repository.getTypeByAssessPostCode(assessPostCode);
+    public List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef) {
+        return repository.getTypeByAssessPostCode(assessPostCode, levelDef);
     }
 
     @Override

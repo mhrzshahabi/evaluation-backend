@@ -17,6 +17,7 @@ public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, Jpa
             " join GroupGrade groupGrade on gr.id =  groupGrade.groupId " +
             " join Grade grade on groupGrade.gradeId= grade.id  " +
             " join GroupPost post on post.postGradeCode= grade.code  " +
-            " where post.groupPostCode = :assessPostCode")
-    List<GroupType> getTypeByAssessPostCode(@Param("assessPostCode") String assessPostCode);
+            " where post.groupPostCode = :assessPostCode and type.levelDefCatalogId = :levelDef ")
+    List<GroupType> getTypeByAssessPostCode(@Param("assessPostCode") String assessPostCode, @Param("levelDef") String levelDef);
+
 }

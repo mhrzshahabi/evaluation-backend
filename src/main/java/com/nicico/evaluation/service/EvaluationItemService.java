@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.LEVEL_DEF_GROUP;
+
 @RequiredArgsConstructor
 @Service
 public class EvaluationItemService implements IEvaluationItemService {
@@ -75,7 +77,7 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public List<EvaluationItemDTO.CreateItemInfo> getItemInfoByAssessPostCode(String assessPostCode) {
-        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode);
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_GROUP);
         List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();

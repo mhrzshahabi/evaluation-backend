@@ -26,7 +26,6 @@ import java.util.List;
 public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritService {
 
     private final PageableMapper pageableMapper;
-    private final IInstanceService instanceService;
     private final InstanceGroupTypeMeritMapper mapper;
     private final InstanceGroupTypeMeritRepository repository;
 
