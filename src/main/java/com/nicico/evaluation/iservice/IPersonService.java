@@ -7,6 +7,8 @@ public interface IPersonService {
 
     PersonDTO.Info get(Long id);
 
+    PersonDTO.Info getByNationalCode(String nationalCode);
+
     PersonDTO.SpecResponse list(int count, int startIndex);
 
     SearchDTO.SearchRs<PersonDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
