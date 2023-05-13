@@ -38,6 +38,20 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
+    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long parentId) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        List<OrganizationTree> organizationTrees = null;
+        if (parentId == 0) {
+            organizationTrees = repository.findAllByPostParentId(null, pageable);
+        } else {
+            organizationTrees = repository.findAllByPostParentId(parentId, pageable);
+        }
+        return mapper.entityToDtoInfoTreeList(organizationTrees);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
     public OrganizationTreeDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<OrganizationTree> organizationTrees = repository.findAll(pageable);

@@ -30,6 +30,11 @@ public class OrganizationTreeController {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/list-tree")
+    public ResponseEntity<List<OrganizationTreeDTO.InfoTree>> listTree(@RequestParam int count, @RequestParam int startIndex, @RequestParam(defaultValue = "0") Long parentId) {
+        return new ResponseEntity<>(service.listTree(count, startIndex, parentId), HttpStatus.OK);
+    }
+
     @PostMapping(value = "/spec-list")
     public ResponseEntity<OrganizationTreeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                    @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
@@ -45,5 +50,7 @@ public class OrganizationTreeController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+
 
 }
