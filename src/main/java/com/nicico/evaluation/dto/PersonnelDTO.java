@@ -59,6 +59,8 @@ public abstract class PersonnelDTO {
         private Long terminationContractId;
         private String terminationContractName;
         private Long workTurnId;
+        private String postCode;
+        private String postTitle;
     }
 
     @Getter

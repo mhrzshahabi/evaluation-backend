@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.BatchDTO;
@@ -9,12 +10,13 @@ import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IBatchDetailService;
 import com.nicico.evaluation.iservice.IBatchService;
 import com.nicico.evaluation.iservice.ICatalogService;
+import com.nicico.evaluation.mapper.BatchDetailMapper;
 import com.nicico.evaluation.mapper.BatchMapper;
 import com.nicico.evaluation.model.Batch;
+import com.nicico.evaluation.repository.BatchDetailRepository;
 import com.nicico.evaluation.repository.BatchRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,7 +35,9 @@ public class BatchService implements IBatchService {
     private final BatchRepository repository;
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
+    private final BatchDetailMapper batchDetailMapper;
     private final IBatchDetailService batchDetailService;
+    private final BatchDetailRepository batchDetailRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -71,6 +76,28 @@ public class BatchService implements IBatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_BATCH_DETAIL')")
+    public SearchDTO.SearchRs<BatchDetailDTO.Info> batchDetailSearch(SearchDTO.SearchRq request, Long batchId) throws NoSuchFieldException, IllegalAccessException {
+
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq batchIdCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("batchId")
+                .setValue(batchId);
+
+        criteriaRqList.add(batchIdCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
+        return BaseService.optimizedSearch(batchDetailRepository, batchDetailMapper::entityToDtoInfo, request);
+    }
+
+    @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @PreAuthorize("hasAuthority('C_BATCH')")
     public BaseResponse create(BatchDTO.Create dto) {
@@ -86,34 +113,6 @@ public class BatchService implements IBatchService {
             return batchDetailService.create(detailCreate);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-        }
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("hasAuthority('U_BATCH')")
-    public BatchDTO.Info update(Long id, BatchDTO.Update dto) {
-        Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        mapper.update(batch, dto);
-        try {
-            Batch save = repository.save(batch);
-            return mapper.entityToDtoInfo(save);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
-        }
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("hasAuthority('D_BATCH')")
-    public void delete(Long id) {
-        Batch batch = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        try {
-            repository.delete(batch);
-        } catch (DataIntegrityViolationException violationException) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
     }
 

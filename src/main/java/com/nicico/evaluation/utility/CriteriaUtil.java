@@ -2,20 +2,25 @@ package com.nicico.evaluation.utility;
 
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.evaluation.config.CommunicateUIResource;
 import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CriteriaUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(CriteriaUtil.class);
 
     public static SearchDTO.SearchRq ConvertCriteriaToSearchRequest(List<FilterDTO> list, Integer count, Integer startIndex) {
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
@@ -33,17 +38,42 @@ public class CriteriaUtil {
                 if ("select".equals(criteria.getType())) {
                     operator = EOperator.equals;
                 } else if ("date".equals(criteria.getType())) {
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     operator = EOperator.equals;
-                    criteria.setValues(criteria.getValues().stream().map(item -> Long.valueOf((String) item)).collect(Collectors.toList()));
+
+                    Object value = criteria.getValues().get(0);
+                    logger.info(String.valueOf(value));
+
+                    Long longVal = Long.parseLong(value.toString());
+                    logger.info(String.valueOf(longVal));
+
+                    Date date = new Date(longVal);
+                    logger.info(String.valueOf(date));
+
+                    String dateformat = dateFormat.format(date);
+                    logger.info(dateformat);
+
+                    String convert = DateUtil.convertMiToKh(dateformat);
+                    logger.info(convert);
+
+                    criteria.setValues(criteria.getValues().stream().map(item -> convert).collect(Collectors.toList()));
+//                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateFormat.format(new Date(Long.parseLong(item.toString()))))).collect(Collectors.toList()));
                 } else {
                     operator = EOperator.contains;
                 }
-                if ("NotEqual".equals(criteria.getOperator())) {
-                    operator = EOperator.notEqual;
-                }
                 criteriaRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
+
+                if ("NotEqual".equals(criteria.getOperator())) {
+                    SearchDTO.CriteriaRq inNullRq = makeCriteria(criteria.getField(), null, EOperator.isNull, new ArrayList<>());
+                    SearchDTO.CriteriaRq notNullRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, EOperator.notEqual, new ArrayList<>());
+                    final List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+                    criteriaList.add(inNullRq);
+                    criteriaList.add(notNullRq);
+                    criteriaRq = new SearchDTO.CriteriaRq().setOperator(EOperator.or).setCriteria(criteriaList);
+                }
+
                 //todo
-                if (!criteriaRq.getFieldName().equals("hasEvaluation"))
+                if ((Objects.nonNull(criteriaRq.getFieldName()) && !criteriaRq.getFieldName().equals("hasEvaluation")) || Objects.isNull(criteriaRq.getFieldName()))
                     criteriaRqList.add(criteriaRq);
             });
         }

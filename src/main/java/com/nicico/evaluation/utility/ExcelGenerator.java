@@ -20,15 +20,16 @@ import javax.servlet.ServletOutputStream;
 
 import java.lang.reflect.Field;
 
-public class ExcelGenerator<T>{
+public class ExcelGenerator<T> {
 
     @Getter
     @Setter
-    public static class ExcelDownload{
+    public static class ExcelDownload {
         private String contentType;
         private String headerValue;
         private byte[] content;
-        public ExcelDownload(byte[] content){
+
+        public ExcelDownload(byte[] content) {
             String currentDateTime = new SimpleDateFormat("yyyy/MM/dd___HH-mm-ss").format(new Date());
             this.contentType = "application/octet-stream";
             this.headerValue = "attachment; filename=data_" + currentDateTime + ".xlsx";
@@ -45,17 +46,18 @@ public class ExcelGenerator<T>{
         workbook = new XSSFWorkbook();
     }
 
-    public ExcelGenerator(List <T> data) {
+    public ExcelGenerator(List<T> data) {
         this.setData(data);
         workbook = new XSSFWorkbook();
     }
 
-    public void setData(List <T> data) {
+    public void setData(List<T> data) {
         this.data = data;
         this.getDataFields();
     }
-    private String getFullHeaderName(){
-        return  "فاوا گستر مس";
+
+    private String getFullHeaderName() {
+        return "فاوا گستر مس";
     }
 
     private void getDataFields() {
@@ -64,9 +66,9 @@ public class ExcelGenerator<T>{
     }
 
     private void createSheet(String sheetName) {
-        if(Objects.isNull(sheetName) || sheetName.trim().isEmpty()) {
+        if (Objects.isNull(sheetName) || sheetName.trim().isEmpty()) {
             sheetName = this.data.get(0).getClass().getName();
-            sheetName = sheetName.substring(sheetName.lastIndexOf(".")+1);
+            sheetName = sheetName.substring(sheetName.lastIndexOf(".") + 1);
         }
         sheet = workbook.createSheet(sheetName);
         sheet.setRightToLeft(Boolean.TRUE);
@@ -74,7 +76,7 @@ public class ExcelGenerator<T>{
         sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 9));
     }
 
-    private CellStyle getCellStyle(Integer fontHeight, Boolean isBold){
+    private CellStyle getCellStyle(Integer fontHeight, Boolean isBold) {
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setBold(isBold);
@@ -83,54 +85,50 @@ public class ExcelGenerator<T>{
         return style;
     }
 
-
-    private void writeFullHeader(){
+    private void writeFullHeader() {
         Row row = sheet.createRow(0);
         CellStyle style = getCellStyle(26, Boolean.TRUE);
         style.setAlignment(HorizontalAlignment.CENTER);
         createCell(row, 0, getFullHeaderName(), style);
     }
 
-    private void writeSubFullHeader(String subFullHeader){
+    private void writeSubFullHeader(String subFullHeader) {
         Row row = sheet.createRow(1);
         CellStyle style = getCellStyle(20, Boolean.TRUE);
         style.setAlignment(HorizontalAlignment.CENTER);
         createCell(row, 0, subFullHeader, style);
     }
 
-
-
     private void writeHeader() {
         Row row = sheet.createRow(2);
         CellStyle style = getCellStyle(18, Boolean.TRUE);
         style.setAlignment(HorizontalAlignment.CENTER);
         int count = 0;
-        String fieldName =  null;
-        for(Field f : this.dataFields) {
+        String fieldName = null;
+        for (Field f : this.dataFields) {
             fieldName = f.getName().toLowerCase();
-            if(fieldName.equals("id"))
+            if (fieldName.equals("id"))
                 continue;
             createCell(row, count, PersianColumnName.getPersianColumnName(fieldName), style);
             count++;
         }
     }
 
-
-
-    private void write() throws IllegalArgumentException, IllegalAccessException  {
+    private void write() throws IllegalArgumentException, IllegalAccessException {
         int rowCount = 3;
         CellStyle style = getCellStyle(16, Boolean.FALSE);
         for (T record : this.data) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
-            for(Field f : this.dataFields) {
-                if(f.getName().toLowerCase().equals("id"))
+            for (Field f : this.dataFields) {
+                if (f.getName().toLowerCase().equals("id"))
                     continue;
                 f.setAccessible(true);
                 createCell(row, columnCount++, f.get(record), style);
             }
         }
     }
+
     private void createCell(Row row, int columnCount, Object valueOfCell, CellStyle style) {
         Cell cell = row.createCell(columnCount);
         if (valueOfCell instanceof Integer) {
@@ -146,7 +144,6 @@ public class ExcelGenerator<T>{
         sheet.autoSizeColumn(columnCount, true);
     }
 
-
     public void generateSheet(String sheetName, String subFullHeader) {
         try {
             createSheet(sheetName);
@@ -159,9 +156,8 @@ public class ExcelGenerator<T>{
         }
     }
 
-
-    public void getExcelToResponse(ServletOutputStream outputStream)  {
-        try{
+    public void getExcelToResponse(ServletOutputStream outputStream) {
+        try {
             workbook.write(outputStream);
             workbook.close();
         } catch (IOException e) {
@@ -170,15 +166,14 @@ public class ExcelGenerator<T>{
     }
 
     public ByteArrayOutputStream getExcel() {
-        try( ByteArrayOutputStream byteStream = new ByteArrayOutputStream();) {
+        try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream();) {
             workbook.write(byteStream);
             workbook.close();
             return byteStream;
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
-
 
 }

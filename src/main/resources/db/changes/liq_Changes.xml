@@ -857,5 +857,268 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet author="a.lotfi"  id="1683349068">
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assess_national_code"/>
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assess_post_code"/>
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assessor_national_code"/>
+        <addNotNullConstraint tableName="tbl_special_case" columnName="c_assessor_post_code"/>
+    </changeSet>
 
+    <changeSet author="a.lotfi" id="1683525467">
+        <addColumn tableName="tbl_catalog">
+            <column name="c_value" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="a.lotfi" id="1683525017">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'نحوه تخصیص',
+                    'AllocationMethod',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description,
+                                     c_value)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'موارد خاص',
+                    'Special-case',
+                    '',
+                    NULL);
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description,
+                                     c_value)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'چارت سازمانی',
+                    'Organizational-chart',
+                    '',
+                    NULL);
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="a.lotfi" id="1683525869">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'پاسخ های پرسشنامه',
+                    'QuestionnaireAnswers',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description,
+                                     c_value)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'خیلی ضعیف',
+                    'Very-weak',
+                    '',
+                    '20');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description,
+                                     c_value)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ضعیف',
+                    'Weak',
+                    '',
+                    '40');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description,
+                                     c_value)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'متوسط',
+                    'Medium',
+                    '',
+                    '60');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description,
+                                     c_value)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'خوب',
+                    'Good',
+                    '',
+                    '80');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description,
+                                     c_value)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'a.lotfi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'بسیار خوب',
+                    'Very-good',
+                    '',
+                    '100');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="1683955726" author="semami">
+        <dropColumn tableName="tbl_sensitive_events" columnName="d_event_date"/>
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="d_event_date" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn tableName="tbl_sensitive_events" columnName="d_to_date"/>
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="d_to_date" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

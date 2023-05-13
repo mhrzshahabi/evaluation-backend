@@ -89,4 +89,15 @@ public abstract class MeritComponentDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("MeritComponentExcel")
+    public static class Excel {
+        private Long id;
+        private String code;
+        private String title;
+        private String kpiTypeTitle;
+        private String status;
+    }
+
 }

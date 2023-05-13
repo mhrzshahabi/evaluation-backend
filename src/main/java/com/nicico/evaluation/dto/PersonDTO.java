@@ -23,6 +23,7 @@ public abstract class PersonDTO {
         private Long personelId;
         private String firstName;
         private String lastName;
+        private String fullName;
         private String nationalCode;
         private String fatherName;
         private String motherName;
@@ -51,6 +52,8 @@ public abstract class PersonDTO {
         private Date deathDate;
         private Long deathCauseId;
         private String deathDescription;
+        private String postCode;
+        private String postTitle;
     }
 
     @Getter

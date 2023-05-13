@@ -3,7 +3,9 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
 import com.nicico.evaluation.mapper.EvaluationPeriodMapper;
 import com.nicico.evaluation.model.EvaluationPeriod;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -26,12 +29,17 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     private final EvaluationPeriodRepository evaluationPeriodRepository;
     private final PageableMapper pageableMapper;
 
+    private final IEvaluationPeriodPostService evaluationPeriodPostService;
+
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info get(Long id) {
+    public EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod get(Long id) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return evaluationPeriodMapper.entityToDtoInfo(evaluationPeriod);
+        List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoEvaluationPeriods = evaluationPeriodPostService.getAllByEvaluationPeriodId(id);
+        EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod evaluationPeriodInfoPost = evaluationPeriodMapper.entityToDtoInfoWithPostInfoEvaluationPeriod(evaluationPeriod);
+        evaluationPeriodInfoPost.setPostInfoEvaluationPeriod(postInfoEvaluationPeriods);
+        return evaluationPeriodInfoPost;
     }
 
     @Override
@@ -65,16 +73,27 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
+    public List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCodes) {
+        evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(id, postCodes);
+        return evaluationPeriodPostInfos;
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
-        EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
         try {
-            if (this.isValidDates(evaluationPeriod.getStartDate(), evaluationPeriod.getEndDate(),
-                    evaluationPeriod.getStartDateAssessment(), evaluationPeriod.getEndDateAssessment())
-            ){
+            if (this.isValidDates(dto.getStartDate(), dto.getEndDate(),
+                    dto.getStartDateAssessment(), dto.getEndDateAssessment())
+            ) {
+                EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
-                return evaluationPeriodMapper.entityToDtoInfo(save);
-            }
-            throw new Exception();
+                List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(save.getId(), dto.getPostCodes());
+                EvaluationPeriodDTO.Info evaluationPeriodInfo = evaluationPeriodMapper.entityToDtoInfo(save);
+                return evaluationPeriodInfo;
+            } else
+                throw new Exception();
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
@@ -85,7 +104,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) {
         try {
-            if (this.isValidDates(dto.getStartDate(), dto.getEndDate(), dto.getStartDateAssessment(), dto.getEndDateAssessment())){
+            if (this.isValidDates(dto.getStartDate(), dto.getEndDate(), dto.getStartDateAssessment(), dto.getEndDateAssessment())) {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
                 evaluationPeriodMapper.update(evaluationPeriod, dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
@@ -102,11 +121,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @PreAuthorize("hasAuthority('D_EVALUATION_PERIOD')")
     public void delete(Long id) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        evaluationPeriodPostService.deleteByEvaluationPeriodId(evaluationPeriod.getId());
         evaluationPeriodRepository.delete(evaluationPeriod);
     }
 
 
-    private boolean isValidDates(Date startDate, Date endDate, Date startDateAssessment, Date endDateAssessment){
+    private boolean isValidDates(Date startDate, Date endDate, Date startDateAssessment, Date endDateAssessment) {
         return startDateAssessment.compareTo(startDate) > 0 &&
                 startDateAssessment.compareTo(endDate) < 0 &&
                 startDateAssessment.compareTo(endDateAssessment) < 0 &&

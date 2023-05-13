@@ -2,9 +2,12 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
+import com.nicico.evaluation.model.EvaluationPeriodPost;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Api(value = " Evaluation Period")
@@ -34,7 +38,7 @@ public class EvaluationPeriodController {
      * @return EvaluationPeriodDTO.Info is the single EvaluationPeriod entity
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<EvaluationPeriodDTO.Info> get(@PathVariable Long id) {
+    public ResponseEntity<EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
@@ -46,6 +50,16 @@ public class EvaluationPeriodController {
     @GetMapping(value = "/list")
     public ResponseEntity<EvaluationPeriodDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
+    }
+
+    /**
+     * @param id is the id of EvaluationPeriod entity
+     * @param postCodes is the List of String of post code for evaluation period post entity
+     * @return EvaluationPeriodDTO.Info is the saved EvaluationPeriod entity
+     */
+    @PostMapping(value = "/create-evaluation-period-post")
+    public ResponseEntity<List<EvaluationPeriodPostDTO.Info>> createEvaluationPeriodPost(@RequestParam Long id, @RequestParam Set<String> postCodes) {
+        return new ResponseEntity<>(service.createEvaluationPeriodPost(id, postCodes), HttpStatus.CREATED);
     }
 
     /**
@@ -71,12 +85,14 @@ public class EvaluationPeriodController {
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
+    public ResponseEntity<BaseResponse> delete(@Validated @PathVariable Long id) {
+        final Locale locale = LocaleContextHolder.getLocale();
         try {
             service.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            BaseResponse response = new BaseResponse();
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
-            final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);

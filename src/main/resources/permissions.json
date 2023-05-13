@@ -307,6 +307,46 @@
     {
       "code": "D_SPECIAL_CASE",
       "title": "حذف موارد خاص"
+    },
+    {
+      "code": "R_ORGANIZATION",
+      "title": "نمایش سازمان"
+    },
+    {
+      "code": "R_ORGANIZATION_TREE",
+      "title": "نمایش درخت سازمان"
+    },
+    {
+      "code": "R_EVALUATION",
+      "title": "نمایش ارزیابی"
+    },
+    {
+      "code": "C_EVALUATION",
+      "title": "ایجاد ارزیابی"
+    },
+    {
+      "code": "U_EVALUATION",
+      "title": "ویرایش ارزیابی"
+    },
+    {
+      "code": "D_EVALUATION",
+      "title": "حذف ارزیابی"
+    },
+    {
+      "code": "R_EVALUATION_ITEM",
+      "title": "نمایش آیتم ارزیابی"
+    },
+    {
+      "code": "C_EVALUATION_ITEM",
+      "title": "ایجاد آیتم ارزیابی"
+    },
+    {
+      "code": "U_EVALUATION_ITEM",
+      "title": "ویرایش آیتم ارزیابی"
+    },
+    {
+      "code": "D_EVALUATION_ITEM",
+      "title": "حذف آیتم ارزیابی"
     }
   ]
 }

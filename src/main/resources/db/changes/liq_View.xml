@@ -81,6 +81,7 @@
             ]]>
         </createView>
     </changeSet>
+
     <changeSet author="semami" id="1682421852">
         <createView viewName="view_personnel" replaceIfExists="true">
             <![CDATA[
@@ -97,6 +98,7 @@
             ]]>
         </createView>
     </changeSet>
+
     <changeSet author="semami" id="1682489292">
         <createView viewName="view_person" replaceIfExists="true">
             <![CDATA[
@@ -127,6 +129,74 @@
                 LEFT JOIN tbl_group_grade ON syn_hrm_view_grade.c_post_grade_code = tbl_group_grade.c_grade_code
             WHERE
                 syn_hrm_view_grade.c_post_grade_code is not null
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="a.lotfi" id="1683543237">
+        <createView viewName="view_organization" replaceIfExists="true">
+            <![CDATA[
+                select
+                    rownum as id,
+                    org.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_COMPANY_STRUCTURE
+                    )org
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="a.lotfi" id="1683702311">
+        <createView viewName="view_organization_tree" replaceIfExists="true">
+            <![CDATA[
+                select
+                    rownum as id,
+                    orgTree.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_CHART_POST_TREE
+                    )orgTree
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681832415">
+        <createView viewName="view_person" replaceIfExists="true">
+            <![CDATA[
+                  select
+                    rownum as id,
+                    person.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_PERSON
+                    )person
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681832567">
+        <createView viewName="view_personnel" replaceIfExists="true">
+            <![CDATA[
+                 select
+                    rownum as id,
+                    personnel.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            syn_hrm_personnel
+                    )personnel
             ]]>
         </createView>
     </changeSet>

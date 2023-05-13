@@ -5,6 +5,7 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeService;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
@@ -72,12 +73,14 @@ public class GroupTypeController {
      * @return status code only
      */
     @DeleteMapping(value = {"/{id}"})
-    public ResponseEntity<String> delete(@Validated @PathVariable Long id) {
+    public ResponseEntity<BaseResponse> delete(@Validated @PathVariable Long id) {
+        final Locale locale = LocaleContextHolder.getLocale();
         try {
             service.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            BaseResponse response = new BaseResponse();
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
-            final Locale locale = LocaleContextHolder.getLocale();
             String msg = exceptionUtil.getRecordsByParentId(violationException, id);
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale) + msg);
         } catch (Exception exception) {

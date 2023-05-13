@@ -4,10 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Getter
@@ -119,4 +116,18 @@ public class Person {
 
     @Column(name = "DEATH_DESCRIPTION")
     private String deathDescription;
+
+    @Column(name = "POST_CODE")
+    private String postCode;
+
+    @Column(name = "POST_TITLE")
+    private String postTitle;
+
+    @Transient
+    private String fullName;
+
+    @PostLoad
+    public void updateStatistics() {
+        fullName = firstName + " " + lastName;
+    }
 }
