@@ -16,9 +16,7 @@ public abstract class EvaluationItemDTO {
 
     @NotNull
     private Long evaluationId;
-    @NotNull
     private Long groupTypeMeritId;
-    @NotNull
     private Long postMeritComponentId;
     @NotNull
     private Long questionnaireAnswerCatalogId;
