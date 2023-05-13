@@ -4,9 +4,13 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 
+import java.util.List;
+
 public interface IPostMeritComponentService {
 
     PostMeritComponentDTO.Info get(Long id);
+
+    List<PostMeritComponentDTO.Info> getByPostCode(String groupPostCode);
 
     PostMeritComponentDTO.SpecResponse list(int count, int startIndex);
 
