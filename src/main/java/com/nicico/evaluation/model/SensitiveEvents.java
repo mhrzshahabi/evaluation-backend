@@ -30,11 +30,10 @@ public class SensitiveEvents extends Auditable {
 
     @NotNull
     @Column(name = "d_event_date")
-    private Date eventDate;
+    private String eventDate;
 
-    @NotNull
     @Column(name = "d_to_date")
-    private Date toDate;
+    private String toDate;
 
     @NotNull
     @Column(name = "n_level_effect")
