@@ -19,7 +19,7 @@ public class InstanceDTO {
     @Size(max = 255, message = "کد نمی تواند بیشتر از 255 کاراکتر باشد")
     private String code;
     @NotNull
-    @Size(max = 255, message = "کد نمی تواند بیشتر از 255 کاراکتر باشد")
+    @Size(max = 255, message = "عنوان نمی تواند بیشتر از 255 کاراکتر باشد")
     private String title;
 
     @Getter
