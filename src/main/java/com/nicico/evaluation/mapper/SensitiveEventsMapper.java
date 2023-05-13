@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = SpecialCaseMapper.class)
 public abstract class SensitiveEventsMapper {
 
     @Value("${ui.landing.fmsGroupId}")
@@ -23,15 +23,25 @@ public abstract class SensitiveEventsMapper {
     @Autowired
     AttachmentService attachmentService;
 
+    @Mappings({
+            @Mapping(target = "eventDate", source = "eventDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "toDate", source = "toDate", qualifiedByName = "convertDateToString")
+    })
     public abstract SensitiveEvents dtoCreateToEntity(SensitiveEventsDTO.Create dto);
 
     @Mappings({
+            @Mapping(target = "eventDate", source = "eventDate", qualifiedByName = "convertStringToDate"),
+            @Mapping(target = "toDate", source = "toDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "attachment", source = "id", qualifiedByName = "getAttachment"),
     })
     public abstract SensitiveEventsDTO.Info entityToDtoInfo(SensitiveEvents entity);
 
     public abstract List<SensitiveEventsDTO.Info> entityToDtoInfoList(List<SensitiveEvents> entities);
 
+    @Mappings({
+            @Mapping(target = "eventDate", source = "eventDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "toDate", source = "toDate", qualifiedByName = "convertDateToString")
+    })
     public abstract void update(@MappingTarget SensitiveEvents entity, SensitiveEventsDTO.Update dto);
 
     @Named("getAttachment")

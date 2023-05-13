@@ -1109,6 +1109,16 @@
             ]]>
         </sql>
     </changeSet>
-
-
+    <changeSet id="1683955726" author="semami">
+        <dropColumn tableName="tbl_sensitive_events" columnName="d_event_date"/>
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="d_event_date" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn tableName="tbl_sensitive_events" columnName="d_to_date"/>
+        <addColumn tableName="tbl_sensitive_events">
+            <column name="d_to_date" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
