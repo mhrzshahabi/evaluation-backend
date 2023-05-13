@@ -84,7 +84,8 @@ public class EvaluationItemService implements IEvaluationItemService {
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
             List<GroupTypeMeritDTO.Info> groupTypeMerits = groupTypeMeritService.getAllByGroupTypeId(gType.getId());
-            createItemInfo.setGroupTypeMerit(groupTypeMerits);
+            List<EvaluationItemDTO.GroupTypeMeritTupleDTO> groupTypeMeritTupleDTOS = mapper.groupTypeMeritDTOToDtoInfoList(groupTypeMerits);
+            createItemInfo.setGroupTypeMerit(groupTypeMeritTupleDTOS);
             createItemInfoList.add(createItemInfo);
 
         });

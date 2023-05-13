@@ -17,7 +17,6 @@ public abstract class PostMeritComponentDTO {
     private String groupPostCode;
     @NotNull
     private Long meritComponentId;
-    private Long evaluationItemId;
     @NotNull
     private Long weight;
 

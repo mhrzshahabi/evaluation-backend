@@ -1114,5 +1114,8 @@
             update tbl_catalog_type set c_code = 'SensitiveEventsPolicy' where c_title= 'سیاست رویداد وقایع حساس'
         </sql>
     </changeSet>
+    <changeSet id="1683960009" author="semami">
+        <dropColumn tableName="tbl_post_merit_component" columnName="evaluation_item_id"></dropColumn>
+    </changeSet>
 
 </databaseChangeLog>

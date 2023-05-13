@@ -39,9 +39,6 @@ public class PostMeritComponent extends Auditable {
     @Column(name = "merit_component_id")
     private Long meritComponentId;
 
-    @Column(name = "evaluation_item_id")
-    private Long evaluationItemId;
-
     @OneToMany(mappedBy = "postMeritComponent", fetch = FetchType.LAZY)
     private List<PostMeritInstance> postMeritInstanceList;
 
