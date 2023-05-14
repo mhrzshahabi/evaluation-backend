@@ -49,9 +49,10 @@ public class OrganizationTreeService implements IOrganizationTreeService {
         return mapper.entityToDtoInfoTreeList(organizationTrees);
     }
 
-    public  Long countChildNode(Long postParentId){
-        if(postParentId > 0)
-            return repository.countByPostParentId(postParentId);
+    @Override
+    public Long countChildNode(Long postId) {
+        if (postId > 0)
+            return repository.countByPostParentId(postId);
         return 0L;
     }
 

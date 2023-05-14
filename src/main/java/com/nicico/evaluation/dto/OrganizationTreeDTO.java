@@ -1,7 +1,6 @@
 package com.nicico.evaluation.dto;
 
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -63,21 +62,11 @@ public class OrganizationTreeDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("OrganizationTreeInfoTree")
-    public static class InfoTree{
+    public static class InfoTree {
         private Long id;
         private Long postParentId;
         private String nameFa;
-    }
-
-    public static interface CustomQuery{
-        Long getId();
-        Long getPostId();
-        Long getPostParentId();
-        String getFullName();
-        String getNationalCode();
-        String getPostTitle();
-        String getPostCode();
-        Long getChildCount();
+        private Long childNode;
     }
 
     @Getter
