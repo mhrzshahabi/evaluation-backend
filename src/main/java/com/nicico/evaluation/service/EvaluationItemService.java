@@ -78,6 +78,13 @@ public class EvaluationItemService implements IEvaluationItemService {
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('C_EVALUATION_ITEM')")
+    public List<EvaluationItemDTO.Info> createAll(List<EvaluationItemDTO.Create> requests) {
+        return requests.stream().map(this::create).toList();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public List<EvaluationItemDTO.CreateItemInfo> getItemInfoByAssessPostCode(String assessPostCode) {
