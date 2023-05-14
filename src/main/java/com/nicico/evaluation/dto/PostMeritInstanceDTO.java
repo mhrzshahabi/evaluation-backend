@@ -24,7 +24,7 @@ public abstract class PostMeritInstanceDTO {
 
         private Long id;
         private PostMeritComponentDTO.Info postMeritComponent;
-        private List<PostMeritInstanceDTO.InstanceTupleDTO> instanceGroupTypeMerits;
+        private PostMeritInstanceDTO.InstanceTupleDTO instance;
 
     }
 

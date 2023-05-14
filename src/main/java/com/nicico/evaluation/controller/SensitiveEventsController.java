@@ -46,7 +46,7 @@ public class SensitiveEventsController {
      * @return SensitiveEventsDTO.Info is the List of SensitiveEvents entity
      */
     @GetMapping(value = "/person/{nationalCode}")
-    public ResponseEntity<List<SensitiveEventsDTO.Info>> getAllByNationalCode(@PathVariable String nationalCode) {
+    public ResponseEntity<List<SensitiveEventsDTO.Info>> getAllByAssessNationalCode(@PathVariable String nationalCode) {
         return new ResponseEntity<>(service.getAllByNationalCode(nationalCode), HttpStatus.OK);
     }
 
