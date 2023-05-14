@@ -49,6 +49,7 @@ public class Attachment<E> extends Auditable {
             idType = "long", metaType = "string",
             metaValues = {
                     @MetaValue(targetEntity = SensitiveEvents.class, value = EvaluationConstant.SENSITIVE_EVENTS),
+                    @MetaValue(targetEntity = Batch.class, value = EvaluationConstant.BATCH),
             }
     )
     @JoinColumn(name = "f_object_id", nullable = false, insertable = false, updatable = false)

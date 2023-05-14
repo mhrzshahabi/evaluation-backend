@@ -3,10 +3,12 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.AttachmentDTO;
 import com.nicico.evaluation.dto.BatchDTO;
 import com.nicico.evaluation.dto.BatchDetailDTO;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IAttachmentService;
 import com.nicico.evaluation.iservice.IBatchDetailService;
 import com.nicico.evaluation.iservice.IBatchService;
 import com.nicico.evaluation.iservice.ICatalogService;
@@ -16,6 +18,7 @@ import com.nicico.evaluation.model.Batch;
 import com.nicico.evaluation.repository.BatchDetailRepository;
 import com.nicico.evaluation.repository.BatchRepository;
 import com.nicico.evaluation.utility.BaseResponse;
+import com.nicico.evaluation.utility.EvaluationConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +39,7 @@ public class BatchService implements IBatchService {
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
     private final BatchDetailMapper batchDetailMapper;
+    private final IAttachmentService attachmentService;
     private final IBatchDetailService batchDetailService;
     private final BatchDetailRepository batchDetailRepository;
 
@@ -105,6 +109,12 @@ public class BatchService implements IBatchService {
             Batch batch = mapper.dtoCreateToEntity(dto);
             batch.setStatusCatalogId(catalogService.getByCode("In-progress").getId());
             Batch save = repository.save(batch);
+
+            AttachmentDTO.Create attachmentCreate = mapper.dtoCreateToAttachmentDtoCreate(dto);
+            attachmentCreate.setObjectType(EvaluationConstant.BATCH);
+            attachmentCreate.setObjectId(save.getId());
+            attachmentService.create(attachmentCreate);
+
             BatchDetailDTO.CreateList detailCreate = new BatchDetailDTO.CreateList();
             CatalogDTO.Info catalogDTO = catalogService.get(dto.getTitleCatalogId());
             detailCreate.setInputDetails(dto.getInputDetails());
