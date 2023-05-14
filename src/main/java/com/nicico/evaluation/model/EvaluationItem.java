@@ -45,6 +45,14 @@ public class EvaluationItem extends Auditable {
     @Column(name = "questionnaire_answer_catalog_id")
     private Long questionnaireAnswerCatalogId;
 
+    @NotNull
+    @Column(name = "questionnaire_answer_catalog_value")
+    private Long questionnaireAnswerCatalogValue;
+
+    @NotNull
+    @Column(name = "questionnaire_answer_catalog_code")
+    private String questionnaireAnswerCatalogCode;
+
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_merit_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_item_to_post_merit"))
