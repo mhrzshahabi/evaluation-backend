@@ -15,8 +15,6 @@ public interface IGroupTypeMeritService {
 
     List<GroupTypeMeritDTO.Info> getAllByGroupTypeId(Long groupTypeId);
 
-    List<GroupTypeMeritDTO.Info> getTypeMeritInstanceByAssessPostCode(String assessPostCode);
-
     GroupTypeMeritDTO.SpecResponse list(int count, int startIndex);
 
     GroupTypeMeritDTO.Info create(GroupTypeMeritDTO.Create dto);

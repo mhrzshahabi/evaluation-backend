@@ -54,8 +54,11 @@ public class GroupTypeMerit extends Auditable {
     private Boolean hasInstance;
 
     @PostLoad
-    public void updateHasInstance(){
+    public void updateHasInstance() {
         hasInstance = !instanceGroupTypeMerits.isEmpty();
     }
+
+    @Transient
+    private String description;
 
 }

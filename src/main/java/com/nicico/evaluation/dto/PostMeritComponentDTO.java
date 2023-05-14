@@ -17,7 +17,6 @@ public abstract class PostMeritComponentDTO {
     private String groupPostCode;
     @NotNull
     private Long meritComponentId;
-    private Long evaluationItemId;
     @NotNull
     private Long weight;
 
@@ -28,6 +27,7 @@ public abstract class PostMeritComponentDTO {
 
         private Long id;
         private MeritComponentDTO.Info meritComponent;
+        private List<PostMeritInstanceDTO.InstanceTupleDTO> postMeritInstanceList;
 
     }
 

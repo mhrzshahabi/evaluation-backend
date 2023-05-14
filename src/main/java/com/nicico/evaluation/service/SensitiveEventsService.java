@@ -40,6 +40,14 @@ public class SensitiveEventsService implements ISensitiveEventsService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS')")
+    public List<SensitiveEventsDTO.Info> getAllByNationalCode(String nationalCode) {
+        List<SensitiveEvents> allByNationalCode = repository.findAllByNationalCode(nationalCode);
+        return mapper.entityToDtoInfoList(allByNationalCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS')")
     public SensitiveEventsDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<SensitiveEvents> sensitiveEvents = repository.findAll(pageable);

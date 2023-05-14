@@ -13,10 +13,12 @@ import java.util.List;
 public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, JpaSpecificationExecutor<GroupType> {
     @Query(" from GroupType groupType  " +
             " join KPIType type on type.id = groupType.kpiTypeId " +
+            " join Catalog catalog on catalog.id = type.levelDefCatalogId " +
             " join Group gr on gr.id = groupType.groupId " +
             " join GroupGrade groupGrade on gr.id =  groupGrade.groupId " +
             " join Grade grade on groupGrade.gradeId= grade.id  " +
-            " join Post post on post.postGradeCode= grade.code  " +
-            " where post.postCode = :assessPostCode")
-    List<GroupType> getTypeByAssessPostCode(@Param("assessPostCode") String assessPostCode);
+            " join GroupPost post on post.postGradeCode= grade.code  " +
+            " where post.groupPostCode = :assessPostCode and catalog.code = :levelDef ")
+    List<GroupType> getTypeByAssessPostCode(@Param("assessPostCode") String assessPostCode, @Param("levelDef") String levelDef);
+
 }

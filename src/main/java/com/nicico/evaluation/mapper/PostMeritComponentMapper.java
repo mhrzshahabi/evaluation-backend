@@ -9,7 +9,7 @@ import org.mapstruct.Mappings;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = MeritComponentMapper.class)
+@Mapper(componentModel = "spring", uses = {MeritComponentMapper.class, PostMeritInstanceMapper.class})
 public interface PostMeritComponentMapper {
 
     PostMeritComponent dtoCreateToEntity(PostMeritComponentDTO.Create dto);

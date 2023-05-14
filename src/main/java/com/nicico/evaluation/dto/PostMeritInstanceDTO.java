@@ -24,9 +24,19 @@ public abstract class PostMeritInstanceDTO {
 
         private Long id;
         private PostMeritComponentDTO.Info postMeritComponent;
-        private InstanceDTO.Info instance;
+        private PostMeritInstanceDTO.InstanceTupleDTO instance;
 
     }
+
+    @Getter
+    @Setter
+    @ApiModel("InstanceTupleInfo")
+    public static class InstanceTupleDTO {
+
+        private Long id;
+        private String title;
+    }
+
 
     @Getter
     @Setter

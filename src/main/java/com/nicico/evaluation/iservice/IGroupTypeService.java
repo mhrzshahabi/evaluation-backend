@@ -2,6 +2,7 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
+import com.nicico.evaluation.model.GroupType;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public interface IGroupTypeService {
 
     GroupTypeDTO.Info get(Long id);
 
-//    List<GroupTypeDTO.Info> getTypeByAssessPostCode(String assessPostCode);
+    List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef);
 
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
 
