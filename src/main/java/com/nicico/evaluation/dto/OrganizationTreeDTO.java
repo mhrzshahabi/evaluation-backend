@@ -62,14 +62,11 @@ public class OrganizationTreeDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("OrganizationTreeInfoTree")
-    public static class InfoTree{
+    public static class InfoTree {
         private Long id;
-        private String fullName;
         private Long postParentId;
-        private String postCode;
-        private String postTitle;
-        private String nationalCode;
-
+        private String nameFa;
+        private Long childNode;
     }
 
     @Getter

@@ -40,13 +40,20 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
     public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long parentId) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        List<OrganizationTree> organizationTrees = null;
+        List<OrganizationTree> organizationTrees;
         if (parentId == 0) {
             organizationTrees = repository.findAllByPostParentId(null, pageable);
         } else {
             organizationTrees = repository.findAllByPostParentId(parentId, pageable);
         }
         return mapper.entityToDtoInfoTreeList(organizationTrees);
+    }
+
+    @Override
+    public Long countChildNode(Long postId) {
+        if (postId > 0)
+            return repository.countByPostParentId(postId);
+        return 0L;
     }
 
     @Override
