@@ -33,6 +33,8 @@ public abstract class BatchDTO {
     public static class Create extends BatchDTO {
         private Long titleCatalogId;
         private List<Object> inputDetails;
+        private String groupId;
+        private String fmsKey;
     }
 
     @Getter

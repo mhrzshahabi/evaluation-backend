@@ -91,7 +91,7 @@ public class CatalogService implements ICatalogService {
 
     @Override
     @Transactional(readOnly = true)
-    public CatalogDTO.SpecResponse levelDefList(String code) {
+    public CatalogDTO.SpecResponse catalogListByCatalogTypeCode(String code) {
         List<Catalog> allByCatalogTypeCode = repository.findAllByCatalogTypeCode(code);
         List<CatalogDTO.Info> catalogInfos =  mapper.entityToDtoInfoList(allByCatalogTypeCode);
         final CatalogDTO.Response response = new CatalogDTO.Response();
@@ -111,8 +111,8 @@ public class CatalogService implements ICatalogService {
     }
 
     @Override
-    public Catalog getByCode(String code) {
+    public CatalogDTO.PureInfo getByCode(String code) {
         Optional<Catalog> optionalCatalog = repository.findByCode(code);
-        return optionalCatalog.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoPureInfo(optionalCatalog.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
     }
 }

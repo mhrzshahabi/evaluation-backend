@@ -2,7 +2,6 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.CatalogDTO;
-import com.nicico.evaluation.model.Catalog;
 import org.springframework.web.bind.annotation.RequestParam;
 
 public interface ICatalogService {
@@ -17,10 +16,10 @@ public interface ICatalogService {
 
     void delete(Long id);
 
-    CatalogDTO.SpecResponse levelDefList(String code);
+    CatalogDTO.SpecResponse catalogListByCatalogTypeCode(String code);
 
     SearchDTO.SearchRs<CatalogDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    Catalog getByCode(String code);
+    CatalogDTO.PureInfo getByCode(String code);
 
 }
