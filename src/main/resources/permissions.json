@@ -347,6 +347,10 @@
     {
       "code": "D_EVALUATION_ITEM",
       "title": "حذف آیتم ارزیابی"
+    },
+    {
+      "code": "R_POST_RELATION",
+      "title": "نمایش ارتباط پست ها"
     }
   ]
 }
