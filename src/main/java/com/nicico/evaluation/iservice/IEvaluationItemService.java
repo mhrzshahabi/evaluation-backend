@@ -17,6 +17,8 @@ public interface IEvaluationItemService {
 
     List<EvaluationItemDTO.CreateItemInfo> getItemInfoByAssessPostCode(String assessPostCode);
 
+    List<EvaluationItemDTO.CreateItemInfo> getItemUpdateInfo(Long id);
+
     EvaluationItemDTO.Info update(Long id, EvaluationItemDTO.Update dto);
 
     void delete(Long id);

@@ -95,6 +95,20 @@ public class EvaluationItemService implements IEvaluationItemService {
         return createItemInfoList;
     }
 
+    @Override
+    public List<EvaluationItemDTO.CreateItemInfo> getItemUpdateInfo(Long id) {
+
+//        List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
+//        List<EvaluationItem> allByEAndEvaluationId = repository.findAllByEAndEvaluationId(id);
+//        allByEAndEvaluationId.forEach(item->{
+//        if(Objects.nonNull(item.getGroupTypeMeritId())
+//
+//        });
+//
+//        return createItemInfoList;
+        return null;
+    }
+
     private void setInfoForGroupTypeMerit(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_GROUP);
         groupType.forEach(gType -> {
