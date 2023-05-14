@@ -13,6 +13,8 @@ public interface IEvaluationItemService {
 
     EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto);
 
+    List<EvaluationItemDTO.Info> createAll(List<EvaluationItemDTO.Create> requests);
+
     List<EvaluationItemDTO.CreateItemInfo> getItemInfoByAssessPostCode(String assessPostCode);
 
     EvaluationItemDTO.Info update(Long id, EvaluationItemDTO.Update dto);
