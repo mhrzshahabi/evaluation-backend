@@ -38,8 +38,6 @@ public class OrganizationTreeDTO {
         private Long postStatusId;
         private String postStatusName;
         private Long postDepartmentId;
-        private String fullPathPostCode;
-        private String fullPathPostName;
         private String fullPathPostId;
         private Long personnelId;
         private Long personId;
@@ -53,6 +51,11 @@ public class OrganizationTreeDTO {
         private String departmentId;
         private String departmentCode;
         private String departmentName;
+        private String postParentCode;
+        private String postParentTitle;
+        private String firstNameParent;
+        private String lastNameParent;
+        private String nationalCodeParent;
     }
 
     @Getter

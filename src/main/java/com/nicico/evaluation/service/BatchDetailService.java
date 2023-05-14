@@ -119,12 +119,13 @@ public class BatchDetailService implements IBatchDetailService {
 
     @Override
     @PreAuthorize("hasAuthority('U_BATCH_DETAIL')")
-    public void updateStatusAndExceptionTitle(Long id, Long statusCatalogId, String exceptionTitle) {
+    public void updateStatusAndExceptionTitleAndDescription(Long id, Long statusCatalogId, String exceptionTitle, String description) {
         Optional<BatchDetail> optionalBatchDetail = repository.findById(id);
         if (optionalBatchDetail.isPresent()) {
             BatchDetail batchDetail = optionalBatchDetail.get();
             batchDetail.setStatusCatalogId(statusCatalogId);
             batchDetail.setExceptionTitle(exceptionTitle);
+            batchDetail.setDescription(description);
             repository.save(batchDetail);
         }
     }
@@ -145,7 +146,8 @@ public class BatchDetailService implements IBatchDetailService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
+    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست جزئیات اسناد گروهی");
         return new ExcelGenerator.ExcelDownload(body);
     }
@@ -159,24 +161,28 @@ public class BatchDetailService implements IBatchDetailService {
         switch (dto.getServiceType()) {
             case "BatchCreate-KPIType-Excel" -> batchDetailList.forEach(detail -> {
                 try {
-                    BaseResponse response = kpiTypeService.batchCreate(objectMapper.readValue(detail.getInputDTO(), KPITypeDTO.Create.class));
+                    KPITypeDTO.Create batchCreate = objectMapper.readValue(detail.getInputDTO(), KPITypeDTO.Create.class);
+                    BaseResponse response = kpiTypeService.batchCreate(batchCreate);
+                    String description = "کد با عنوان " + batchCreate.getTitle();
                     if (response.getStatus() == 200)
-                        updateStatusAndExceptionTitle(detail.getId(), successCatalogId, null);
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
                     else
-                        updateStatusAndExceptionTitle(detail.getId(), failCatalogId, response.getMessage());
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
                 } catch (JsonProcessingException e) {
-                    updateStatusAndExceptionTitle(detail.getId(), failCatalogId, e.getMessage());
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
                 }
             });
             case "BatchCreate-PostMeritInstance-Excel" -> batchDetailList.forEach(detail -> {
                 try {
-                    BaseResponse response = postMeritInstanceService.batchCreate(objectMapper.readValue(detail.getInputDTO(), PostMeritInstanceDTO.BatchCreate.class));
+                    PostMeritInstanceDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), PostMeritInstanceDTO.BatchCreate.class);
+                    BaseResponse response = postMeritInstanceService.batchCreate(batchCreate);
+                    String description = "کدپست: " + batchCreate.getGroupPostCode() + " کدشایستگی: " + batchCreate.getMeritComponentCode() + " کدمصداق: " + batchCreate.getInstanceCode();
                     if (response.getStatus() == 200)
-                        updateStatusAndExceptionTitle(detail.getId(), successCatalogId, null);
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
                     else
-                        updateStatusAndExceptionTitle(detail.getId(), failCatalogId, response.getMessage());
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
                 } catch (JsonProcessingException e) {
-                    updateStatusAndExceptionTitle(detail.getId(), failCatalogId, e.getMessage());
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
                 }
             });
         }

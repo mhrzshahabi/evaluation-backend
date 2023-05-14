@@ -38,30 +38,12 @@ public class CriteriaUtil {
                 if ("select".equals(criteria.getType())) {
                     operator = EOperator.equals;
                 } else if ("date".equals(criteria.getType())) {
+                    operator = EOperator.equals;
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
-
-                    operator = EOperator.equals;
-
-                    Object value = criteria.getValues().get(0);
-                    logger.info(String.valueOf(value));
-
-                    Long longVal = Long.parseLong(value.toString());
-                    logger.info(String.valueOf(longVal));
-
-                    //longVal += 14400000L;
-
-                    Date date = new Date(longVal);
-                    logger.info(String.valueOf(date));
-
+                    Date date = new Date(Long.parseLong(criteria.getValues().get(0).toString()));
                     String dateformat = dateFormat.format(date);
-                    logger.info(dateformat);
-
-                    String convert = DateUtil.convertMiToKh(dateformat);
-                    logger.info(convert);
-
-                    criteria.setValues(criteria.getValues().stream().map(item -> convert).collect(Collectors.toList()));
-//                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateFormat.format(new Date(Long.parseLong(item.toString()))))).collect(Collectors.toList()));
+                    criteria.setValues(criteria.getValues().stream().map(item -> DateUtil.convertMiToKh(dateformat)).collect(Collectors.toList()));
                 } else {
                     operator = EOperator.contains;
                 }
