@@ -38,6 +38,7 @@ public abstract class EvaluationItemDTO {
         private EvaluationDTO.Info evaluation;
         private GroupTypeMeritDTO.Info groupTypeMerit;
         private PostMeritComponentDTO.Info postMeritComponent;
+        private CatalogDTO.Info questionnaireAnswerCatalog;
 
     }
 
