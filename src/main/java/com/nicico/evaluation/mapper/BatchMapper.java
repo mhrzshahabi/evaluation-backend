@@ -1,5 +1,6 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.AttachmentDTO;
 import com.nicico.evaluation.dto.BatchDTO;
 import com.nicico.evaluation.model.Batch;
 import org.mapstruct.*;
@@ -20,5 +21,7 @@ public interface BatchMapper {
     List<BatchDTO.Info> entityToDtoInfoList(List<Batch> entities);
 
     void update(@MappingTarget Batch entity, BatchDTO.Update dto);
+
+    AttachmentDTO.Create dtoCreateToAttachmentDtoCreate(BatchDTO.Create dto);
 
 }

@@ -20,6 +20,8 @@ public abstract class EvaluationItemDTO {
     private Long postMeritComponentId;
     @NotNull
     private Long questionnaireAnswerCatalogId;
+    private Long questionnaireAnswerCatalogValue;
+    private String questionnaireAnswerCatalogCode;
     private String description;
 
     @Getter
@@ -38,6 +40,7 @@ public abstract class EvaluationItemDTO {
         private EvaluationDTO.Info evaluation;
         private GroupTypeMeritDTO.Info groupTypeMerit;
         private PostMeritComponentDTO.Info postMeritComponent;
+        private CatalogDTO.Info questionnaireAnswerCatalog;
 
     }
 

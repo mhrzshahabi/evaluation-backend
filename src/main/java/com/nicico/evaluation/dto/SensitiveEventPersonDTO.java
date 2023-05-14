@@ -23,7 +23,7 @@ public abstract class SensitiveEventPersonDTO {
     @Setter
     @ApiModel("SensitiveEventPersonInfo")
     public static class Info extends SensitiveEventPersonDTO {
-
+        private Long id;
         private SensitiveEventsDTO.Info sensitiveEvent;
         private MeritComponentTupleDTO meritComponent;
     }

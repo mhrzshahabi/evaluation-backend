@@ -1129,5 +1129,11 @@
     <changeSet id="1683960009" author="semami">
         <dropColumn tableName="tbl_post_merit_component" columnName="evaluation_item_id"></dropColumn>
     </changeSet>
+    <changeSet id="1684048298" author="semami">
+        <addColumn tableName="tbl_evaluation_item">
+            <column name="questionnaire_answer_catalog_code" type="varchar(255)"/>
+            <column name="questionnaire_answer_catalog_value" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -61,16 +61,18 @@ public class EvaluationItemController {
      * @return EvaluationItemDTOInfo is the saved evaluationItem entity
      */
     @PostMapping
-    public ResponseEntity<EvaluationItemDTO.Info> create(@Valid @RequestBody EvaluationItemDTO.Create request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    public ResponseEntity<List<EvaluationItemDTO.Info>> create(@Valid @RequestBody List<EvaluationItemDTO.Create> request) {
+        return new ResponseEntity<>(service.createAll(request), HttpStatus.CREATED);
     }
 
     /**
      * @param assessPostCode is the postCode of asses
      * @return List<EvaluationItemDTO.CreateItemInfo> is the list of data that need for create evaluation Item
      */
-    @GetMapping(value = "/item/{assessPostCode}")
-    public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> get(@PathVariable String assessPostCode) {
+    @GetMapping(value = "/getEvaluationItemInfo")
+    public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> get(@RequestParam String assessPostCode) {
+        if (assessPostCode.contains("/"))
+            assessPostCode = assessPostCode.substring(0, assessPostCode.indexOf("/"));
         return new ResponseEntity<>(service.getItemInfoByAssessPostCode(assessPostCode), HttpStatus.OK);
     }
 
