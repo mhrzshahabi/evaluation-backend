@@ -1131,8 +1131,8 @@
     </changeSet>
     <changeSet id="1684048298" author="semami">
         <addColumn tableName="tbl_evaluation_item">
-            <column name="evaluation_item_code" type="varchar(255)"/>
-            <column name="evaluation_item_value" type="NUMBER(10, 0)"/>
+            <column name="questionnaire_answer_catalog_code" type="varchar(255)"/>
+            <column name="questionnaire_answer_catalog_value" type="NUMBER(10, 0)"/>
         </addColumn>
     </changeSet>
 
