@@ -20,7 +20,7 @@ public interface IBatchDetailService {
 
     BatchDetailDTO.Info update(Long id, BatchDetailDTO.Update dto);
 
-    void updateStatusAndExceptionTitle(Long id, Long statusCatalogId, String exceptionTitle);
+    void updateStatusAndExceptionTitleAndDescription(Long id, Long statusCatalogId, String exceptionTitle, String description);
 
     void delete(Long id);
 
