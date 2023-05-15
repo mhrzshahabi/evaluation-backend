@@ -10,6 +10,7 @@ import com.nicico.evaluation.model.EvaluationPeriodPost;
 import com.nicico.evaluation.repository.EvaluationPeriodPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,29 +25,17 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     private final IPostRelationService postRelationService;
     private final EvaluationPeriodPostRepository repository;
 
-    private List<String> getAllPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
-        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
-        return evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
-    }
-
-    private Set<String> removeDuplicatePostCode(Long evaluationPeriodId, Set<String> postCodes) {
-        List<String> postCodesInDb = getAllPostCodeByEvaluationPeriodId(evaluationPeriodId);
-        Set<String> newPostCodes = new HashSet<>();
-        for (String pc : postCodes) {
-            if (postCodesInDb.stream().noneMatch(pc::equals))
-                newPostCodes.add(pc);
-        }
-        return newPostCodes;
-    }
-
     @Override
+    @Transactional(readOnly = true)
     public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
-        List<String> postCodes = getAllPostCodeByEvaluationPeriodId(evaluationPeriodId);
+        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
+        List<String> postCodes =  evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
         List<PostRelationDTO.Info> postInfo = postRelationService.getAllByPostCode(postCodes);
-        return mapper.postInfoDtoToInfoPostInfoDto(postInfo);
+        return mapper.postInfoDtoToInfoPostInfoDto(evaluationPeriodPosts, postInfo);
     }
 
     @Override
+    @Transactional
     public List<EvaluationPeriodPostDTO.Info> createAll(Long evaluationPeriodId, Set<String> postCodes) {
         try {
             postCodes = removeDuplicatePostCode(evaluationPeriodId, postCodes);
@@ -61,6 +50,14 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     }
 
     @Override
+    @Transactional
+    public void delete(Long id) {
+        EvaluationPeriodPost evaluationPeriodPost = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        repository.delete(evaluationPeriodPost);
+    }
+
+    @Override
+    @Transactional
     public void deleteByEvaluationPeriodId(Long evaluationPeriodId) {
         try {
             repository.deleteByEvaluationPeriodId(evaluationPeriodId);
@@ -70,6 +67,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     }
 
     @Override
+    @Transactional
     public void deleteByEvaluationPeriodIdAndPostCode(Long evaluationPeriodId, String postCode) {
         try {
             repository.findByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode)
@@ -78,6 +76,21 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
+    }
+
+    private List<String> getAllPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
+        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
+        return evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
+    }
+
+    private Set<String> removeDuplicatePostCode(Long evaluationPeriodId, Set<String> postCodes) {
+        List<String> postCodesInDb = getAllPostCodeByEvaluationPeriodId(evaluationPeriodId);
+        Set<String> newPostCodes = new HashSet<>();
+        for (String pc : postCodes) {
+            if (postCodesInDb.stream().noneMatch(pc::equals))
+                newPostCodes.add(pc);
+        }
+        return newPostCodes;
     }
 
 }

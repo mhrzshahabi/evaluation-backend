@@ -3,14 +3,10 @@ package com.nicico.evaluation.utility;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.evaluation.config.CommunicateUIResource;
 import com.nicico.evaluation.dto.FilterDTO;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -19,8 +15,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class CriteriaUtil {
-
-    private static final Logger logger = LoggerFactory.getLogger(CriteriaUtil.class);
 
     public static SearchDTO.SearchRq ConvertCriteriaToSearchRequest(List<FilterDTO> list, Integer count, Integer startIndex) {
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();

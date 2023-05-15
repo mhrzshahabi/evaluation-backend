@@ -8,6 +8,8 @@ import java.util.Set;
 
 public interface IEvaluationPeriodPostService {
 
+    void delete(Long id);
+
     void deleteByEvaluationPeriodId(Long evaluationPeriodId);
 
     void deleteByEvaluationPeriodIdAndPostCode(Long evaluationPeriodId, String postCode);
