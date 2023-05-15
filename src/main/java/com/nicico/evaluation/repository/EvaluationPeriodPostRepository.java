@@ -11,8 +11,6 @@ import java.util.Optional;
 @Repository
 public interface EvaluationPeriodPostRepository extends JpaRepository<EvaluationPeriodPost, Long>, JpaSpecificationExecutor<EvaluationPeriodPost> {
 
-    List<EvaluationPeriodPost> findAllByPostCode(String postCode);
-
     List<EvaluationPeriodPost> findAllByEvaluationPeriodId(Long id);
 
     Optional<EvaluationPeriodPost> findByEvaluationPeriodIdAndPostCode(Long evaluationPeriodPost, String postCode);

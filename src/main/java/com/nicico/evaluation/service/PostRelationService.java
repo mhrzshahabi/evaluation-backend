@@ -61,4 +61,10 @@ public class PostRelationService implements IPostRelationService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    public List<PostRelationDTO.Info> getAllByPostCode(List<String> postCodes) {
+        List<PostRelation> posts = repository.findByPostCodeIn(postCodes);
+        return mapper.entityToDtoInfoList(posts);
+    }
+
 }
