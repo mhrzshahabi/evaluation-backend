@@ -59,11 +59,20 @@ public class EvaluationDTO {
         private Long id;
         private CatalogDTO.Info methodCatalog;
         private CatalogDTO.Info statusCatalog;
-        private EvaluationPeriodDTO.Info evaluationPeriod;
+        private EvaluationPeriodTupleDTO evaluationPeriod;
         private String fullName;
 
     }
 
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationUpdateRq")
+    public static class EvaluationPeriodTupleDTO {
+        private Long id;
+        private String title;
+    }
 
     @Getter
     @Setter
