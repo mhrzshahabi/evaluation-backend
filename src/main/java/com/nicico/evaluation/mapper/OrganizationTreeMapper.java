@@ -19,6 +19,8 @@ public abstract class OrganizationTreeMapper {
 
     public abstract OrganizationTreeDTO.Info entityToDtoInfo(OrganizationTree entity);
 
+    public abstract OrganizationTreeDTO.InfoDetail entityToDtoInfoDetail(OrganizationTree entity);
+
     public abstract List<OrganizationTreeDTO.Info> entityToDtoInfoList(List<OrganizationTree> entities);
 
     public List<OrganizationTreeDTO.InfoTree> entityToDtoInfoTreeList(List<OrganizationTree> entities) {

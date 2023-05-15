@@ -24,6 +24,10 @@ public class OrganizationTreeController {
     public ResponseEntity<List<OrganizationTreeDTO.Info>> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
+    @GetMapping(value = "/get-detail/{id}")
+    public ResponseEntity<OrganizationTreeDTO.InfoDetail> getDetail(@PathVariable Long id) {
+        return new ResponseEntity<>(service.getDetail(id), HttpStatus.OK);
+    }
 
     @GetMapping(value = "/list")
     public ResponseEntity<OrganizationTreeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
