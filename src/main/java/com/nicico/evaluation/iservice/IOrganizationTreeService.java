@@ -10,7 +10,7 @@ public interface IOrganizationTreeService {
 
     OrganizationTreeDTO.SpecResponse list(int count, int startIndex);
 
-    List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long parentId);
+    List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long parentId);
 
     Long countChildNode(Long postId);
 
