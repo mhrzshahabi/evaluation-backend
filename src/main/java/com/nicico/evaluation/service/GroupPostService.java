@@ -62,7 +62,7 @@ public class GroupPostService implements IGroupPostService {
 
     @Override
     public GroupPostDTO.Info getByCode(String code) {
-        GroupPost groupPost = repository.findFirstByGroupPostCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        GroupPost groupPost = repository.findFirstByGroupPostCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "GroupPost", "گروه پستی یافت نشد"));
         return mapper.entityToDtoInfo(groupPost);
     }
 
