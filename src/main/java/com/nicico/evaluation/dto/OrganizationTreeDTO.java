@@ -68,6 +68,7 @@ public class OrganizationTreeDTO {
         private String postGroupCode;
         private String postCode;
         private Long postLevel;
+        private String postStatusName;
         private String departmentName;
         private Date startDatePost;
         private Date effectiveDate;
