@@ -1,10 +1,10 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
-import com.nicico.evaluation.dto.PostDTO;
+import com.nicico.evaluation.dto.PostRelationDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
-import com.nicico.evaluation.iservice.IPostService;
+import com.nicico.evaluation.iservice.IPostRelationService;
 import com.nicico.evaluation.mapper.EvaluationPeriodPostMapper;
 import com.nicico.evaluation.model.EvaluationPeriodPost;
 import com.nicico.evaluation.repository.EvaluationPeriodPostRepository;
@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @Service
 public class EvaluationPeriodPostService implements IEvaluationPeriodPostService {
 
-    private final EvaluationPeriodPostRepository repository;
     private final EvaluationPeriodPostMapper mapper;
-    private final IPostService postService;
+    private final IPostRelationService postRelationService;
+    private final EvaluationPeriodPostRepository repository;
 
     private List<String> getAllPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
         List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
@@ -42,10 +42,9 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     @Override
     public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
         List<String> postCodes = getAllPostCodeByEvaluationPeriodId(evaluationPeriodId);
-        List<PostDTO.Info> postInfo = postService.getAllByPostCode(postCodes);
+        List<PostRelationDTO.Info> postInfo = postRelationService.getAllByPostCode(postCodes);
         return mapper.postInfoDtoToInfoPostInfoDto(postInfo);
     }
-
 
     @Override
     public List<EvaluationPeriodPostDTO.Info> createAll(Long evaluationPeriodId, Set<String> postCodes) {
@@ -53,7 +52,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
             postCodes = removeDuplicatePostCode(evaluationPeriodId, postCodes);
             if (postCodes.isEmpty())
                 throw new Exception();
-            List<EvaluationPeriodPost> evaluationPeriodPosts = mapper.listPostCodeToEntites(evaluationPeriodId, postCodes);
+            List<EvaluationPeriodPost> evaluationPeriodPosts = mapper.listPostCodeToEntities(evaluationPeriodId, postCodes);
             evaluationPeriodPosts = repository.saveAll(evaluationPeriodPosts);
             return mapper.entityToDtoInfoList(evaluationPeriodPosts);
         } catch (Exception exception) {

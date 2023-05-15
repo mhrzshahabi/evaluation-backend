@@ -25,10 +25,9 @@ import java.util.Set;
 @Service
 public class EvaluationPeriodService implements IEvaluationPeriodService {
 
+    private final PageableMapper pageableMapper;
     private final EvaluationPeriodMapper evaluationPeriodMapper;
     private final EvaluationPeriodRepository evaluationPeriodRepository;
-    private final PageableMapper pageableMapper;
-
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
 
     @Override

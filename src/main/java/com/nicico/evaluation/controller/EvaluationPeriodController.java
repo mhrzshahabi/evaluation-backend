@@ -57,16 +57,16 @@ public class EvaluationPeriodController {
      * @return EvaluationPeriodDTO.Info is the saved EvaluationPeriod entity
      */
     @PostMapping(value = "/create-evaluation-period-post")
-    public ResponseEntity<List<EvaluationPeriodPostDTO.Info>> createEvaluationPeriodPost(@RequestParam Long id, @RequestParam Set<String> postCodes) {
+    public ResponseEntity<List<EvaluationPeriodPostDTO.Info>> createEvaluationPeriodPost(@RequestParam Long id, @RequestBody Set<String> postCodes) {
         return new ResponseEntity<>(service.createEvaluationPeriodPost(id, postCodes), HttpStatus.CREATED);
     }
 
     /**
      * @param id       is the id of EvaluationPeriod entity
      * @param postCode is the String of post code for evaluation period post entity
-     * @return EvaluationPeriodDTO.Info is the saved EvaluationPeriod entity
+     * @return BaseResponse is the status code and message
      */
-    @PostMapping(value = "/delete-evaluation-period-post")
+    @DeleteMapping(value = "/delete-evaluation-period-post")
     public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@RequestParam Long id, @RequestParam String postCode) {
         final Locale locale = LocaleContextHolder.getLocale();
         try {
