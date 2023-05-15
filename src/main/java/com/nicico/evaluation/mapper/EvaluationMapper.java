@@ -1,25 +1,48 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.iservice.IPersonService;
 import com.nicico.evaluation.model.Evaluation;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface EvaluationMapper {
+@Mapper(componentModel = "spring", uses = SpecialCaseMapper.class)
+public abstract class EvaluationMapper {
 
-    EvaluationDTO.Excel entityToDtoExcel(Evaluation entity);
+    @Lazy
+    @Autowired
+    IPersonService personService;
 
-    List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
+    public abstract EvaluationDTO.Excel entityToDtoExcel(Evaluation entity);
 
-    Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
+    public abstract List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
 
-    EvaluationDTO.Info entityToDtoInfo(Evaluation entity);
+    @Mappings({
+            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
+    })
+    public abstract Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
 
-    List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
+    @Mappings({
+            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
+            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
+            @Mapping(target = "fullName", source = "entity", qualifiedByName = "getFullName"),
+    })
+    public abstract EvaluationDTO.Info entityToDtoInfo(Evaluation entity);
 
-    void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
+    public abstract List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
 
+    @Mappings({
+            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
+    })
+    public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
+
+    @Named("getFullName")
+    public String getFullName(Evaluation evaluation) {
+        return personService.getByNationalCode(evaluation.getAssessNationalCode()).getFullName();
+    }
 }

@@ -199,4 +199,18 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_catalog" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1684065166">
+        <addForeignKeyConstraint baseColumnNames="status_catalog_id"
+                                 baseTableName="tbl_evaluation"
+                                 constraintName="f_evaluation_status_catalog_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1684065216">
+        <addForeignKeyConstraint baseColumnNames="evaluation_period_id"
+                                 baseTableName="tbl_evaluation"
+                                 constraintName="f_evaluation_to_evaluation_period" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_evaluation_period" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

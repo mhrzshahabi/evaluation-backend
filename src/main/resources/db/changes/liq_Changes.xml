@@ -1135,5 +1135,14 @@
             <column name="questionnaire_answer_catalog_value" type="NUMBER(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1684064844" author="semami">
+        <addColumn tableName="tbl_evaluation">
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="evaluation_period_id" type="NUMBER(10, 0)"/>
+            <column name="average_score" type="NUMBER(10, 0)"/>
+            <column name="d_end_date" type="varchar(255)"/>
+            <column name="d_start_date" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

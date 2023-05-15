@@ -77,6 +77,15 @@ public class EvaluationItemController {
     }
 
     /**
+     * @param id is the id of evaluation
+     * @return List<EvaluationItemDTO.CreateItemInfo> is the list of data that need for create evaluation Item
+     */
+    @GetMapping(value = "/getEvaluationItemUpdateInfo")
+    public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> getUpdateInfo(@RequestParam Long id) {
+        return new ResponseEntity<>(service.getItemUpdateInfo(id), HttpStatus.OK);
+    }
+
+    /**
      * @param request is  the model of input for update evaluationItem entity
      * @return EvaluationItemDTOInfo is the updated evaluationItem entity
      */
