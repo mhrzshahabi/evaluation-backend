@@ -213,4 +213,25 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_evaluation_period" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1684133883">
+        <addForeignKeyConstraint baseColumnNames="post_merit_instance_id"
+                                 baseTableName="tbl_evaluation_item_instance"
+                                 constraintName="f_evaluation_item_instance_to_post_merit_instance" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_post_merit_instance" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1684133884">
+        <addForeignKeyConstraint baseColumnNames="instance_group_type_merit_id"
+                                 baseTableName="tbl_evaluation_item_instance"
+                                 constraintName="f_evaluation_item_instance_to_instance_group_type_merit" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_instance_group_type_merit" validate="true"/>
+    </changeSet>
+    <changeSet author="semami" id="1684133885">
+        <addForeignKeyConstraint baseColumnNames="evaluation_item_id"
+                                 baseTableName="tbl_evaluation_item_instance"
+                                 constraintName="f_evaluation_item_instance_to_evaluation_item" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_evaluation_item" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

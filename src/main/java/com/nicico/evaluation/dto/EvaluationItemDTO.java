@@ -29,6 +29,7 @@ public abstract class EvaluationItemDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationItemCreateRq")
     public static class Create extends EvaluationItemDTO {
+        private Long averageScore;
     }
 
     @Getter
@@ -41,6 +42,7 @@ public abstract class EvaluationItemDTO {
         private GroupTypeMeritDTO.Info groupTypeMerit;
         private PostMeritComponentDTO.Info postMeritComponent;
         private CatalogDTO.Info questionnaireAnswerCatalog;
+        private List<EvaluationItemInstanceDTO.Info> evaluationItemInstanceList;
 
     }
 
@@ -64,8 +66,30 @@ public abstract class EvaluationItemDTO {
         private Long groupTypeMeritId;
         private MeritComponentDTO.Info meritComponent;
         private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
-        private List<PostMeritInstanceDTO.InstanceTupleDTO> postMeritInstanceList;
         private String description;
+        private Long evaluationId;
+        private Long evaluationItemId;
+        private Long questionnaireAnswerCatalogId;
+        private Long questionnaireAnswerCatalogValue;
+        private String questionnaireAnswerCatalogCode;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("MeritInfo")
+    public static class PostMeritTupleDTO {
+
+        private Long postMeritId;
+        private Long groupTypeMeritId;
+        private MeritComponentDTO.Info meritComponent;
+        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
+        private String description;
+        private Long evaluationId;
+        private Long evaluationItemId;
+        private Long questionnaireAnswerCatalogId;
+        private Long questionnaireAnswerCatalogValue;
+        private String questionnaireAnswerCatalogCode;
 
     }
 
@@ -86,6 +110,7 @@ public abstract class EvaluationItemDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationItemUpdateRq")
     public static class Update extends EvaluationItemDTO {
+        private Long averageScore;
 
     }
 

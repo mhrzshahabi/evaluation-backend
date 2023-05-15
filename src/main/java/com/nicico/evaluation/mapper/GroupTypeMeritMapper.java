@@ -1,8 +1,12 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.model.GroupTypeMerit;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -18,6 +22,11 @@ public interface GroupTypeMeritMapper {
 
     List<GroupTypeMeritDTO.Info> entityToDtoInfoList(List<GroupTypeMerit> entities);
 
+    List<EvaluationItemDTO.MeritTupleDTO> entityToEvaluationItemDtoList(List<GroupTypeMerit> entities);
+
+    @Mapping(target = "groupTypeMeritId", source = "id")
+    EvaluationItemDTO.MeritTupleDTO entityToEvaluationItemDtoInfo(GroupTypeMeritDTO.Info groupTypeMeritDTO);
+
     void update(@MappingTarget GroupTypeMerit entity, GroupTypeMeritDTO.Update dto);
 
     @Mappings({
@@ -32,5 +41,5 @@ public interface GroupTypeMeritMapper {
     default String hasInstanceSTR(Boolean hasInstance) {
         return hasInstance ? "دارد" : "ندارد";
     }
-    
+
 }

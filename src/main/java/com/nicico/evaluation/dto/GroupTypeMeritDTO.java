@@ -30,7 +30,6 @@ public abstract class GroupTypeMeritDTO {
         private GroupTypeDTO.Info groupType;
         private Boolean hasInstance;
         private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
-        private String description;
 
     }
 

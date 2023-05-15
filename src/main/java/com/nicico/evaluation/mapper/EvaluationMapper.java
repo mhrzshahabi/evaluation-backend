@@ -29,6 +29,12 @@ public abstract class EvaluationMapper {
     @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
+    })
+    public abstract EvaluationDTO.Update entityToUpdateDto(Evaluation entity);
+
+    @Mappings({
+            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
+            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "fullName", source = "entity", qualifiedByName = "getFullName"),
     })
     public abstract EvaluationDTO.Info entityToDtoInfo(Evaluation entity);

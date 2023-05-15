@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -64,5 +65,7 @@ public class EvaluationItem extends Auditable {
     @Column(name = "c_description")
     private String description;
 
+    @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.LAZY)
+    private List<EvaluationItemInstance> evaluationItemInstanceList;
 
 }

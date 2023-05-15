@@ -1,5 +1,6 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.model.PostMeritComponent;
 import org.mapstruct.Mapper;
@@ -24,4 +25,9 @@ public interface PostMeritComponentMapper {
     List<PostMeritComponentDTO.Info> entityToDtoInfoList(List<PostMeritComponent> entities);
 
     void update(@MappingTarget PostMeritComponent entity, PostMeritComponentDTO.Update dto);
+
+    List<EvaluationItemDTO.MeritTupleDTO> postMeritDtoToEvaluationItemInfoList(List<PostMeritComponent> groupTypeMerits);
+
+    @Mapping(target = "postMeritId", source = "id")
+    EvaluationItemDTO.MeritTupleDTO postMeritDtoToEvaluationItemInfo(PostMeritComponent groupTypeMerit);
 }

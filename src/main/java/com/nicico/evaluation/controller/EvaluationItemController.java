@@ -73,7 +73,7 @@ public class EvaluationItemController {
     public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> get(@RequestParam String assessPostCode) {
         if (assessPostCode.contains("/"))
             assessPostCode = assessPostCode.substring(0, assessPostCode.indexOf("/"));
-        return new ResponseEntity<>(service.getItemInfoByAssessPostCode(assessPostCode), HttpStatus.OK);
+        return new ResponseEntity<>(service.getInfoByAssessPostCodeForCreate(assessPostCode), HttpStatus.OK);
     }
 
     /**
@@ -82,7 +82,7 @@ public class EvaluationItemController {
      */
     @GetMapping(value = "/getEvaluationItemUpdateInfo")
     public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> getUpdateInfo(@RequestParam Long id) {
-        return new ResponseEntity<>(service.getItemUpdateInfo(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.getInfoByEvaluationIdForUpdate(id), HttpStatus.OK);
     }
 
     /**

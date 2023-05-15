@@ -11,7 +11,5 @@ import java.util.Optional;
 @Repository
 public interface PostMeritComponentRepository extends JpaRepository<PostMeritComponent, Long>, JpaSpecificationExecutor<PostMeritComponent> {
 
-    Optional<PostMeritComponent> findByGroupPostCodeAndMeritComponentId(String groupPostCode, Long meritComponentId);
-
     List<PostMeritComponent> findAllByGroupPostCode(String groupPostCode);
 }
