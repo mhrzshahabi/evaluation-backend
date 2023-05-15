@@ -37,4 +37,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1682257438" author="MShahabi">
+        <sql>
+            create or replace synonym SYN_HRM_POST_RELATION for STG_HRM.VIEW_POST_RELATION_EVALUATION;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
