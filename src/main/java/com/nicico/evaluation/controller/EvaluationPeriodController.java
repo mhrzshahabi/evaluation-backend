@@ -5,6 +5,7 @@ import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Api(value = " Evaluation Period")
@@ -31,6 +31,7 @@ public class EvaluationPeriodController {
 
     private final IEvaluationPeriodService service;
     private final ResourceBundleMessageSource messageSource;
+    private final IEvaluationPeriodPostService evaluationPeriodPostService;
 
     /**
      * @param id is the EvaluationPeriod id
@@ -52,40 +53,21 @@ public class EvaluationPeriodController {
     }
 
     /**
-     * @param id        is the id of EvaluationPeriod entity
-     * @param postCodes is the List of String of post code for evaluation period post entity
-     * @return EvaluationPeriodDTO.Info is the saved EvaluationPeriod entity
-     */
-    @PostMapping(value = "/create-evaluation-period-post")
-    public ResponseEntity<List<EvaluationPeriodPostDTO.Info>> createEvaluationPeriodPost(@RequestParam Long id, @RequestBody Set<String> postCodes) {
-        return new ResponseEntity<>(service.createEvaluationPeriodPost(id, postCodes), HttpStatus.CREATED);
-    }
-
-    /**
-     * @param id       is the id of EvaluationPeriod entity
-     * @param postCode is the String of post code for evaluation period post entity
-     * @return BaseResponse is the status code and message
-     */
-    @DeleteMapping(value = "/delete-evaluation-period-post")
-    public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@RequestParam Long id, @RequestParam String postCode) {
-        final Locale locale = LocaleContextHolder.getLocale();
-        try {
-            service.deleteEvaluationPeriodPost(id, postCode);
-            BaseResponse response = new BaseResponse();
-            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
-        }
-    }
-
-    /**
      * @param request is the model of input for create EvaluationPeriod entity
      * @return EvaluationPeriodDTO.Info is the saved EvaluationPeriod entity
      */
     @PostMapping
     public ResponseEntity<EvaluationPeriodDTO.Info> create(@Valid @RequestBody EvaluationPeriodDTO.Create request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    }
+
+    /**
+     * @param request is the model of input for createPost EvaluationPeriod entity
+     * @return EvaluationPeriodDTO.Info is the saved EvaluationPeriod entity
+     */
+    @PostMapping(value = "/create-evaluation-period-post")
+    public ResponseEntity<List<EvaluationPeriodPostDTO.Info>> createEvaluationPeriodPost(@RequestBody EvaluationPeriodDTO.CreatePost request) {
+        return new ResponseEntity<>(service.createEvaluationPeriodPost(request.getId(), request.getPostCodes()), HttpStatus.CREATED);
     }
 
     /**
@@ -111,6 +93,23 @@ public class EvaluationPeriodController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (DataIntegrityViolationException violationException) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null, messageSource.getMessage("exception.integrity.constraint", null, locale));
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
+        }
+    }
+
+    /**
+     * @param evaluationPeriodPostId is the id of EvaluationPeriodPost entity
+     * @return BaseResponse is the status code and message
+     */
+    @DeleteMapping(value = "/delete-evaluation-period-post/{evaluationPeriodPostId}")
+    public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@PathVariable Long evaluationPeriodPostId) {
+        final Locale locale = LocaleContextHolder.getLocale();
+        try {
+            evaluationPeriodPostService.delete(evaluationPeriodPostId);
+            BaseResponse response = new BaseResponse();
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }
