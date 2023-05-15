@@ -2,10 +2,8 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IGroupTypeService;
 import com.nicico.evaluation.mapper.GroupTypeMapper;
 import com.nicico.evaluation.model.GroupType;
@@ -17,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,32 +24,21 @@ public class GroupTypeService implements IGroupTypeService {
     private final GroupTypeMapper mapper;
     private final PageableMapper pageableMapper;
     private final GroupTypeRepository repository;
-    private final IGroupTypeMeritService groupTypeMeritService;
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public GroupTypeDTO.Info get(Long id) {
         GroupType groupType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(groupType);
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
-//    public List<GroupTypeDTO.Info> getTypeByAssessPostCode(String assessPostCode) {
-//        List<GroupType> groupType = repository.getTypeByAssessPostCode(assessPostCode);
-//        List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
-//        groupType.forEach(gType -> {
-//            EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
-//            createItemInfo.setGroupTypeWeight(gType.getWeight());
-//            createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
-//            List<EvaluationItemDTO.GroupTypeMeritTuple> groupTypeMerits = groupTypeMeritService.getAllByGroupTypeId(gType.getId());
-//            createItemInfo.setGroupTypeMerit(groupTypeMerits);
-//
-//        });
-//        return mapper.entityToDtoInfoList(groupType);
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef) {
+        return repository.getTypeByAssessPostCode(assessPostCode, levelDef);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -77,7 +63,7 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('C_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
     public GroupTypeDTO.Info create(GroupTypeDTO.Create dto) {
         GroupType groupType = mapper.dtoCreateToEntity(dto);
         try {
@@ -90,7 +76,7 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('U_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('U_GROUP_TYPE')")
     public GroupTypeDTO.Info update(Long id, GroupTypeDTO.Update dto) {
         GroupType groupType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(groupType, dto);
@@ -104,7 +90,7 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('D_GROUP_TYPE')")
     public void delete(Long id) {
         GroupType groupType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         repository.delete(groupType);
@@ -112,7 +98,7 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }

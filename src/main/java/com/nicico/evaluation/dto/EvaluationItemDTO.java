@@ -16,12 +16,12 @@ public abstract class EvaluationItemDTO {
 
     @NotNull
     private Long evaluationId;
-    @NotNull
     private Long groupTypeMeritId;
-    @NotNull
     private Long postMeritComponentId;
     @NotNull
     private Long questionnaireAnswerCatalogId;
+    private Long questionnaireAnswerCatalogValue;
+    private String questionnaireAnswerCatalogCode;
     private String description;
 
     @Getter
@@ -40,6 +40,7 @@ public abstract class EvaluationItemDTO {
         private EvaluationDTO.Info evaluation;
         private GroupTypeMeritDTO.Info groupTypeMerit;
         private PostMeritComponentDTO.Info postMeritComponent;
+        private CatalogDTO.Info questionnaireAnswerCatalog;
 
     }
 
@@ -50,17 +51,20 @@ public abstract class EvaluationItemDTO {
 
         private String typeTitle;
         private Long groupTypeWeight;
-        private List<GroupTypeMeritTuple> groupTypeMerit;
+        private List<MeritTupleDTO> meritTuple;
 
     }
 
     @Getter
     @Setter
-    @Accessors(chain = true)
-    @ApiModel("MeritComponentTupleRq")
-    public static class GroupTypeMeritTuple {
+    @ApiModel("MeritInfo")
+    public static class MeritTupleDTO {
 
-        private GroupTypeMeritDTO.Info groupTypeMerit;
+        private Long postMeritId;
+        private Long groupTypeMeritId;
+        private MeritComponentDTO.Info meritComponent;
+        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
+        private List<PostMeritInstanceDTO.InstanceTupleDTO> postMeritInstanceList;
         private String description;
 
     }

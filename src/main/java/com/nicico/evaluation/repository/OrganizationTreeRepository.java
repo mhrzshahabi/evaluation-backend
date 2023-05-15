@@ -12,5 +12,7 @@ import java.util.List;
 public interface OrganizationTreeRepository extends JpaRepository<OrganizationTree, Long>, JpaSpecificationExecutor<OrganizationTree> {
     List<OrganizationTree> findAllByOrgStructureId(Long orgStructureId);
 
-    List<OrganizationTree> findAllByPostParentId(Long postParentId, Pageable pageable);
+    List<OrganizationTree> findAllByPostParentIdAndOrgStructureId(Long postParentId, Long orgStructureId, Pageable pageable);
+
+    Long countByPostParentId(Long postId);
 }

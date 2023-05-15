@@ -42,6 +42,14 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
+    public List<PostMeritComponentDTO.Info> getByPostCode(String groupPostCode) {
+        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCode(groupPostCode);
+        return mapper.entityToDtoInfoList(byGroupPostCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
     public PostMeritComponentDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<PostMeritComponent> postMeritComponents = repository.findAll(pageable);

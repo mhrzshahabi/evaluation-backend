@@ -59,19 +59,15 @@ public class OrganizationTree {
     private String postStatusName;
     @Column(name = "post_department_id")
     private Long postDepartmentId;
-    @Column(name = "full_path_post_code")
-    private String fullPathPostCode;
-    @Column(name = "full_path_post_name")
-    private String fullPathPostName;
     @Column(name = "full_path_post_id")
     private String fullPathPostId;
     @Column(name = "personnel_id")
     private Long personnelId;
     @Column(name = "person_id")
     private Long personId;
-    @Column(name = "p_first_name")
+    @Column(name = "first_name")
     private String firstName;
-    @Column(name = "p_last_name")
+    @Column(name = "last_name")
     private String lastName;
     @Column(name = "full_name")
     private String fullName;
@@ -89,5 +85,14 @@ public class OrganizationTree {
     private String departmentCode;
     @Column(name = "department_name")
     private String departmentName;
-
+    @Column(name = "POST_PARENT_CODE")
+    private String postParentCode;
+    @Column(name = "POST_PARENT_TITLE")
+    private String postParentTitle;
+    @Column(name = "FIRST_NAME_PARENT")
+    private String firstNameParent;
+    @Column(name = "LAST_NAME_PARENT")
+    private String lastNameParent;
+    @Column(name = "NATIONAL_CODE_PARENT")
+    private String nationalCodeParent;
 }

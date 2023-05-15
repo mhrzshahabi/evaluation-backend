@@ -30,6 +30,9 @@ public class Catalog extends Auditable {
     @Column(name = "c_description")
     private String description;
 
+    @Column(name = "c_value")
+    private String value;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_catalog_type_id", insertable = false, updatable = false)
     private CatalogType catalogType;

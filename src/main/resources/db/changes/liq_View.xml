@@ -201,4 +201,38 @@
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1682156219">
+        <createView viewName="view_organization_tree" replaceIfExists="true">
+            <![CDATA[
+                select
+                    rownum as id,
+                    orgTree.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_CHART_POST_TREE
+                    )orgTree
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1682157107">
+        <createView viewName="view_post_relation" replaceIfExists="true">
+            <![CDATA[
+                select
+                    rownum as id,
+                    postRelation.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_POST_RELATION
+                    ) postRelation
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

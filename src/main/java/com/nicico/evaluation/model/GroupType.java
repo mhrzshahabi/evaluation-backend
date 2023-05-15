@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.List;
 // گروه - نوع
 
 @Getter
@@ -53,5 +54,8 @@ public class GroupType extends Auditable {
     @NotNull
     @Column(name = "n_weight")
     private Long weight;
+
+    @OneToMany(mappedBy = "groupType", fetch = FetchType.LAZY)
+    private List<GroupTypeMerit> groupTypeMeritList;
 
 }

@@ -15,6 +15,7 @@ public class CatalogDTO implements Serializable {
 
     private String title;
     private String code;
+    private String value;
 
     @Getter
     @Setter
@@ -25,6 +26,15 @@ public class CatalogDTO implements Serializable {
         private String description;
         private Long catalogTypeId;
         private CatalogTypeDTO catalogType;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CatalogPureInfo")
+    public static class PureInfo extends CatalogDTO {
+        private Long id;
+        private String description;
     }
 
     @Getter

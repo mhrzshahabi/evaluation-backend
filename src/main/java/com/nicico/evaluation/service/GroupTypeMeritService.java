@@ -49,14 +49,6 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
-    public List<GroupTypeMeritDTO.Info> getTypeMeritInstanceByAssessPostCode(String assessPostCode) {
-        List<GroupTypeMerit> groupTypeMerit = repository.getTypeMeritInstanceByAssessPostCode(assessPostCode);
-        return mapper.entityToDtoInfoList(groupTypeMerit);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public GroupTypeMeritDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<GroupTypeMerit> groupTypeMerits = repository.findAll(pageable);

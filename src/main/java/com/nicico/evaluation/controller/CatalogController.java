@@ -42,6 +42,15 @@ public class CatalogController {
     }
 
     /**
+     * @param code is the Catalog code
+     * @return is the single Catalog entity
+     */
+    @GetMapping(value = "/by-code/{code}")
+    public ResponseEntity<CatalogDTO.PureInfo> getByCode(@PathVariable String code) {
+        return new ResponseEntity<>(service.getByCode(code), HttpStatus.OK);
+    }
+
+    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @return CatalogDTO.SpecResponse that contain list of CatalogDTO and the number of total entity
@@ -94,7 +103,15 @@ public class CatalogController {
      */
     @GetMapping(value = "/level-def-list")
     public ResponseEntity<CatalogDTO.SpecResponse> levelDefList() {
-        return new ResponseEntity<>(service.levelDefList(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
+        return new ResponseEntity<>(service.catalogListByCatalogTypeCode(EvaluationConstant.LEVEL_DEF), HttpStatus.OK);
+    }
+
+    /**
+     * @return list of CatalogDTO.SpecResponse with catalogType code equals BATCH_TITLES
+     */
+    @GetMapping(value = "/batch-title-list")
+    public ResponseEntity<CatalogDTO.SpecResponse> batchTitleList() {
+        return new ResponseEntity<>(service.catalogListByCatalogTypeCode(EvaluationConstant.BATCH_TITLES), HttpStatus.OK);
     }
 
     /**

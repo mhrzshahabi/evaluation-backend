@@ -1,6 +1,6 @@
 package com.nicico.evaluation.repository;
 
-import com.nicico.evaluation.model.EvaluationItem;
+import com.nicico.evaluation.model.PostRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, Long>, JpaSpecificationExecutor<EvaluationItem> {
+public interface PostRelationRepository extends JpaRepository<PostRelation, Long>, JpaSpecificationExecutor<PostRelation> {
 
-    List<EvaluationItem> findAllByEvaluationId(Long id);
+    List<PostRelation> findByPostCodeIn(List<String> postCode);
+
 }

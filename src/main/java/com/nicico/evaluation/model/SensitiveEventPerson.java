@@ -48,4 +48,10 @@ public class SensitiveEventPerson extends Auditable {
     @NotNull
     @Column(name = "n_participation")
     private Long participation;
+
+    @Transient
+    String firstName;
+
+    @Transient
+    String lastName;
 }

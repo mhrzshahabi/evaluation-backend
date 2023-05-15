@@ -16,12 +16,14 @@ public abstract class SensitiveEventPersonDTO {
     private Long sensitiveEventId;
     private Long meritComponentId;
     private Long participation;
+    private String firstName;
+    private String lastName;
 
     @Getter
     @Setter
     @ApiModel("SensitiveEventPersonInfo")
     public static class Info extends SensitiveEventPersonDTO {
-
+        private Long id;
         private SensitiveEventsDTO.Info sensitiveEvent;
         private MeritComponentTupleDTO meritComponent;
     }

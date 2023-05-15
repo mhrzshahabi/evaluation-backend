@@ -21,5 +21,7 @@ public interface IEvaluationPeriodService {
 
     List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCodes);
 
+    void deleteEvaluationPeriodPost(Long id, String postCode);
+
     void delete(Long id);
 }

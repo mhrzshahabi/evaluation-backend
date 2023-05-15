@@ -14,4 +14,5 @@ public interface CatalogBeanMapper {
     Catalog dtoCreateToEntity(CatalogDTO.Create create);
     CatalogDTO.Info entityToDtoInfo(Catalog catalog);
     List<CatalogDTO.Info> entityToDtoInfoList(List<Catalog> catalog);
+    CatalogDTO.PureInfo entityToDtoPureInfo(Catalog catalog);
 }

@@ -20,7 +20,7 @@ public interface InstanceGroupTypeMeritMapper {
             @Mapping(target = "id", source = "instance.id"),
             @Mapping(target = "title", source = "instance.title"),
     })
-    InstanceGroupTypeMeritDTO.InstanceTupleDTO  entityToTupleDTOInfo(InstanceGroupTypeMerit entity);
+    InstanceGroupTypeMeritDTO.InstanceTupleDTO entityToTupleDTOInfo(InstanceGroupTypeMerit entity);
 
     List<InstanceGroupTypeMeritDTO.Info> entityToDtoInfoList(List<InstanceGroupTypeMerit> entities);
 

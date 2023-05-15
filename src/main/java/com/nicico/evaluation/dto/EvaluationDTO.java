@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -24,7 +25,16 @@ public class EvaluationDTO {
     private String assessorPostCode;
     @NotNull
     private Long methodCatalogId;
-
+    @NotNull
+    private Date startDate;
+    @NotNull
+    private Date endDate;
+    @NotNull
+    private Long averageScore;
+    @NotNull
+    private Long statusCatalogId;
+    @NotNull
+    private Long evaluationPeriodId;
 
     @Getter
     @Setter
@@ -48,8 +58,21 @@ public class EvaluationDTO {
     public static class Info extends EvaluationDTO {
         private Long id;
         private CatalogDTO.Info methodCatalog;
+        private CatalogDTO.Info statusCatalog;
+        private EvaluationPeriodTupleDTO evaluationPeriod;
+        private String fullName;
+
     }
 
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationUpdateRq")
+    public static class EvaluationPeriodTupleDTO {
+        private Long id;
+        private String title;
+    }
 
     @Getter
     @Setter
