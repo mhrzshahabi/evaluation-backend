@@ -28,9 +28,10 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     @Override
     @Transactional(readOnly = true)
     public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
-        List<String> postCodes = getAllPostCodeByEvaluationPeriodId(evaluationPeriodId);
+        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
+        List<String> postCodes =  evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
         List<PostRelationDTO.Info> postInfo = postRelationService.getAllByPostCode(postCodes);
-        return mapper.postInfoDtoToInfoPostInfoDto(postInfo);
+        return mapper.postInfoDtoToInfoPostInfoDto(evaluationPeriodPosts, postInfo);
     }
 
     @Override
