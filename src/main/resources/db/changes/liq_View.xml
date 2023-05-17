@@ -167,23 +167,6 @@
         </createView>
     </changeSet>
 
-    <changeSet author="MShahabi" id="1681832415">
-        <createView viewName="view_person" replaceIfExists="true">
-            <![CDATA[
-                  select
-                    rownum as id,
-                    person.*
-                    from
-                    (
-                        select
-                            *
-                        from
-                            SYN_HRM_PERSON
-                    )person
-            ]]>
-        </createView>
-    </changeSet>
-
     <changeSet author="MShahabi" id="1681832567">
         <createView viewName="view_personnel" replaceIfExists="true">
             <![CDATA[
@@ -197,6 +180,23 @@
                         from
                             syn_hrm_personnel
                     )personnel
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681832415">
+        <createView viewName="view_person" replaceIfExists="true">
+            <![CDATA[
+                  select
+                    rownum as id,
+                    person.*
+                    from
+                    (
+                        select
+                            *
+                        from
+                            SYN_HRM_PERSON
+                    )person
             ]]>
         </createView>
     </changeSet>

@@ -62,8 +62,8 @@ public class PostRelationService implements IPostRelationService {
     }
 
     @Override
-    public List<PostRelationDTO.Info> getAllByPostCode(List<String> postCodes) {
-        List<PostRelation> posts = repository.findByPostCodeIn(postCodes);
+    public List<PostRelationDTO.Info> getAllByPostCode(List<String> postCode) {
+        List<PostRelation> posts = repository.findByPostCodeIn(postCode);
         return mapper.entityToDtoInfoList(posts);
     }
 

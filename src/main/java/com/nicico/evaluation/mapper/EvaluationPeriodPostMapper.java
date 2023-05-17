@@ -38,9 +38,9 @@ public interface EvaluationPeriodPostMapper {
         return tmp;
     }
 
-    default List<EvaluationPeriodPost> listPostCodeToEntities(Long evaluationPeriodId, Set<String> postCodes){
+    default List<EvaluationPeriodPost> listPostCodeToEntities(Long evaluationPeriodId, Set<String> postCode){
         List<EvaluationPeriodPost> evaluationPeriodPosts = new ArrayList<>();
-        for(String postcode : postCodes){
+        for(String postcode : postCode){
             EvaluationPeriodPost temp = new EvaluationPeriodPost();
             temp.setEvaluationPeriodId(evaluationPeriodId);
             temp.setPostCode(postcode.trim());

@@ -29,19 +29,19 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     @Transactional(readOnly = true)
     public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
         List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
-        List<String> postCodes =  evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
-        List<PostRelationDTO.Info> postInfo = postRelationService.getAllByPostCode(postCodes);
+        List<String> postCode =  evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
+        List<PostRelationDTO.Info> postInfo = postRelationService.getAllByPostCode(postCode);
         return mapper.postInfoDtoToInfoPostInfoDto(evaluationPeriodPosts, postInfo);
     }
 
     @Override
     @Transactional
-    public List<EvaluationPeriodPostDTO.Info> createAll(Long evaluationPeriodId, Set<String> postCodes) {
+    public List<EvaluationPeriodPostDTO.Info> createAll(Long evaluationPeriodId, Set<String> postCode) {
         try {
-            postCodes = removeDuplicatePostCode(evaluationPeriodId, postCodes);
-            if (postCodes.isEmpty())
+            postCode = removeDuplicatePostCode(evaluationPeriodId, postCode);
+            if (postCode.isEmpty())
                 throw new Exception();
-            List<EvaluationPeriodPost> evaluationPeriodPosts = mapper.listPostCodeToEntities(evaluationPeriodId, postCodes);
+            List<EvaluationPeriodPost> evaluationPeriodPosts = mapper.listPostCodeToEntities(evaluationPeriodId, postCode);
             evaluationPeriodPosts = repository.saveAll(evaluationPeriodPosts);
             return mapper.entityToDtoInfoList(evaluationPeriodPosts);
         } catch (Exception exception) {
@@ -83,10 +83,10 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
         return evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
     }
 
-    private Set<String> removeDuplicatePostCode(Long evaluationPeriodId, Set<String> postCodes) {
+    private Set<String> removeDuplicatePostCode(Long evaluationPeriodId, Set<String> postCode) {
         List<String> postCodesInDb = getAllPostCodeByEvaluationPeriodId(evaluationPeriodId);
         Set<String> newPostCodes = new HashSet<>();
-        for (String pc : postCodes) {
+        for (String pc : postCode) {
             if (postCodesInDb.stream().noneMatch(pc::equals))
                 newPostCodes.add(pc);
         }

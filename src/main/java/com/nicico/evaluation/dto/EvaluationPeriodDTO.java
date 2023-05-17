@@ -49,7 +49,7 @@ public class EvaluationPeriodDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationPeriodCreateRq")
     public static class Create extends EvaluationPeriodDTO {
-        private Set<String> postCodes;
+        private Set<String> postCode;
     }
 
     @Getter
@@ -58,7 +58,7 @@ public class EvaluationPeriodDTO {
     @ApiModel("EvaluationPeriodCreatePostRq")
     public static class CreatePost {
         private Long id;
-        private Set<String> postCodes;
+        private Set<String> postCode;
     }
 
     @Getter
