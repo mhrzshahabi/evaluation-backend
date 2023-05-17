@@ -37,11 +37,11 @@ public class EvaluationPeriodPostDTO {
     @ApiModel("PostInfoEvaluationPeriod")
     public static class PostInfoEvaluationPeriod {
         private Long id;
-        private Long postId;
+        private Long evaluationPeriodPostId;
         private String postCode;
         private String postTitle;
-        private Long postParentId;
-        private Long postLevel;
+        private String postCodeParent;
+        private String postTitleParent;
     }
 
     @Getter

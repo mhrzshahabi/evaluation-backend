@@ -38,13 +38,22 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long parentId) {
+    public OrganizationTreeDTO.InfoDetail getDetail(Long id) {
+        OrganizationTree organizationTree = repository.findById(id)
+                .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfoDetail(organizationTree);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
+    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long parentId) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         List<OrganizationTree> organizationTrees;
         if (parentId == 0) {
-            organizationTrees = repository.findAllByPostParentId(null, pageable);
+            organizationTrees = repository.findAllByPostParentIdAndOrgStructureId(null, orgStructureId, pageable);
         } else {
-            organizationTrees = repository.findAllByPostParentId(parentId, pageable);
+            organizationTrees = repository.findAllByPostParentIdAndOrgStructureId(parentId, orgStructureId, pageable);
         }
         return mapper.entityToDtoInfoTreeList(organizationTrees);
     }

@@ -24,6 +24,10 @@ public class OrganizationTreeController {
     public ResponseEntity<List<OrganizationTreeDTO.Info>> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
+    @GetMapping(value = "/get-detail/{id}")
+    public ResponseEntity<OrganizationTreeDTO.InfoDetail> getDetail(@PathVariable Long id) {
+        return new ResponseEntity<>(service.getDetail(id), HttpStatus.OK);
+    }
 
     @GetMapping(value = "/list")
     public ResponseEntity<OrganizationTreeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
@@ -31,8 +35,10 @@ public class OrganizationTreeController {
     }
 
     @GetMapping(value = "/list-tree")
-    public ResponseEntity<List<OrganizationTreeDTO.InfoTree>> listTree(@RequestParam int count, @RequestParam int startIndex, @RequestParam(defaultValue = "0") Long parentId) {
-        return new ResponseEntity<>(service.listTree(count, startIndex, parentId), HttpStatus.OK);
+    public ResponseEntity<List<OrganizationTreeDTO.InfoTree>> listTree(@RequestParam int count, @RequestParam int startIndex,
+                                                                       @RequestParam Long orgStructureId,
+                                                                       @RequestParam(defaultValue = "0") Long parentId) {
+        return new ResponseEntity<>(service.listTree(count, startIndex, orgStructureId, parentId), HttpStatus.OK);
     }
 
     @PostMapping(value = "/spec-list")
@@ -50,7 +56,6 @@ public class OrganizationTreeController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-
 
 
 }

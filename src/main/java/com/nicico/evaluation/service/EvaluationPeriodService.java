@@ -25,10 +25,9 @@ import java.util.Set;
 @Service
 public class EvaluationPeriodService implements IEvaluationPeriodService {
 
+    private final PageableMapper pageableMapper;
     private final EvaluationPeriodMapper evaluationPeriodMapper;
     private final EvaluationPeriodRepository evaluationPeriodRepository;
-    private final PageableMapper pageableMapper;
-
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
 
     @Override
@@ -77,6 +76,13 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(id, postCodes);
         return evaluationPeriodPostInfos;
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('D_EVALUATION_PERIOD')")
+    public void deleteEvaluationPeriodPost(Long id, String postCode) {
+        evaluationPeriodPostService.deleteByEvaluationPeriodIdAndPostCode(id, postCode);
     }
 
     @Override

@@ -163,7 +163,7 @@ public class BatchDetailService implements IBatchDetailService {
                 try {
                     KPITypeDTO.Create batchCreate = objectMapper.readValue(detail.getInputDTO(), KPITypeDTO.Create.class);
                     BaseResponse response = kpiTypeService.batchCreate(batchCreate);
-                    String description = "کد با عنوان " + batchCreate.getTitle();
+                    String description = "نوع با عنوان " + batchCreate.getTitle();
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
                     else

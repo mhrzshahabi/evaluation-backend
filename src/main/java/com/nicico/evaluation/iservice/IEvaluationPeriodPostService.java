@@ -8,7 +8,13 @@ import java.util.Set;
 
 public interface IEvaluationPeriodPostService {
 
+    void delete(Long id);
+
     void deleteByEvaluationPeriodId(Long evaluationPeriodId);
+
+    void deleteByEvaluationPeriodIdAndPostCode(Long evaluationPeriodId, String postCode);
+
     List<EvaluationPeriodPostDTO.Info> createAll(Long evaluationPeriodId, Set<String> postCodes);
+
     List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId);
 }

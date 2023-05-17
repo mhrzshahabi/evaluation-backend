@@ -98,7 +98,7 @@ public class InstanceService implements IInstanceService {
 
     @Override
     public InstanceDTO.Info getByCode(String code) {
-        Instance instance = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        Instance instance = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "Instance", "مصداق یافت نشد"));
         return mapper.entityToDtoInfo(instance);
     }
 
