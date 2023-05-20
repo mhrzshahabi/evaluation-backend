@@ -198,6 +198,18 @@ public class EvaluationItemService implements IEvaluationItemService {
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = getAllGroupTypeMeritByEvalId(evaluationId);
+
+            meritTupleDtoList.forEach(meritTupleDTO -> {
+                if (meritTupleDTO.getEvaluationItemInstance()!=null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()){
+                    List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList= new ArrayList<>();
+                    meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple -> {
+                        instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance());
+                    });
+                    meritTupleDTO.setInstances(instanceTupleDTOList);
+                    meritTupleDTO.setEvaluationItemInstance(null);
+                }
+
+            });
             createItemInfo.setMeritTuple(meritTupleDtoList);
             createItemInfoList.add(createItemInfo);
 
@@ -213,6 +225,18 @@ public class EvaluationItemService implements IEvaluationItemService {
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
             List<EvaluationItemDTO.PostMeritTupleDTO> meritTupleDtoList = getAllPostMeritByEvalId(evaluationId);
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS = mapper.entityToMeritTupleInfoList(meritTupleDtoList);
+
+            meritTupleDTOS.forEach(meritTupleDTO -> {
+                if (meritTupleDTO.getEvaluationItemInstance()!=null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()){
+                    List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList= new ArrayList<>();
+                    meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple -> {
+                        instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance());
+                    });
+                    meritTupleDTO.setInstances(instanceTupleDTOList);
+                    meritTupleDTO.setEvaluationItemInstance(null);
+                }
+
+            });
             createItemInfo.setMeritTuple(meritTupleDTOS);
             createItemInfoList.add(createItemInfo);
 
