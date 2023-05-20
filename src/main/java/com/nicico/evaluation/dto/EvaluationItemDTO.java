@@ -30,6 +30,7 @@ public abstract class EvaluationItemDTO {
     @ApiModel("EvaluationItemCreateRq")
     public static class Create extends EvaluationItemDTO {
         private Long averageScore;
+        private List<Long> instanceIds;
     }
 
     @Getter
@@ -42,7 +43,7 @@ public abstract class EvaluationItemDTO {
         private GroupTypeMeritDTO.Info groupTypeMerit;
         private PostMeritComponentDTO.Info postMeritComponent;
         private CatalogDTO.Info questionnaireAnswerCatalog;
-        private List<EvaluationItemInstanceDTO.Info> evaluationItemInstanceList;
+        private List<EvaluationItemInstanceTuple> evaluationItemInstanceList;
 
     }
 
@@ -59,13 +60,23 @@ public abstract class EvaluationItemDTO {
 
     @Getter
     @Setter
+    @ApiModel("InstanceTupleInfo")
+    public static class InstanceTupleDTO {
+
+        private Long id;
+        private String title;
+    }
+
+    @Getter
+    @Setter
     @ApiModel("MeritInfo")
     public static class MeritTupleDTO {
 
         private Long postMeritId;
         private Long groupTypeMeritId;
         private MeritComponentDTO.Info meritComponent;
-        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
+        private List<InstanceTupleDTO> instances;
+        private List<EvaluationItemInstanceTuple> evaluationItemInstance;
         private String description;
         private Long evaluationId;
         private Long evaluationItemId;
@@ -77,13 +88,47 @@ public abstract class EvaluationItemDTO {
 
     @Getter
     @Setter
-    @ApiModel("MeritInfo")
+    @ApiModel("PostMeritInstanceTuple")
+    public static class PostMeritInstanceTuple {
+
+        private Long id;
+      //  private Long postMeritComponentId;
+//        private Long instanceId;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("InstanceGroupTypeMeritTuple")
+    public static class InstanceGroupTypeMeritTuple {
+
+        private Long id;
+        private Long groupTypeMeritId;
+        private Long instanceId;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("EvaluationItemInstanceTuple")
+    public static class EvaluationItemInstanceTuple {
+
+        private Long id;
+        private InstanceTupleDTO instance;
+        private PostMeritInstanceTuple postMeritInstance;
+        private InstanceGroupTypeMeritTuple instanceGroupTypeMerit;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("PostMeritTupleInfo")
     public static class PostMeritTupleDTO {
 
         private Long postMeritId;
         private Long groupTypeMeritId;
         private MeritComponentDTO.Info meritComponent;
-        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
+       // private List<InstanceTupleDTO> instances;
+        private List<EvaluationItemInstanceTuple> evaluationItemInstance;
         private String description;
         private Long evaluationId;
         private Long evaluationItemId;
@@ -93,17 +138,6 @@ public abstract class EvaluationItemDTO {
 
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("InstanceTupleRq")
-    public class InstanceTupleDTO {
-
-        @NotNull
-        private String id;
-        @NotNull
-        private String title;
-    }
 
     @Getter
     @Setter

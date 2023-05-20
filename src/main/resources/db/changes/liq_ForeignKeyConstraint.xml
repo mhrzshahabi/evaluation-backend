@@ -234,4 +234,11 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_evaluation_item" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1684328621">
+        <addForeignKeyConstraint baseColumnNames="instance_id"
+                                 baseTableName="tbl_evaluation_item_instance"
+                                 constraintName="f_evaluation_item_to_instance" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_instance" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

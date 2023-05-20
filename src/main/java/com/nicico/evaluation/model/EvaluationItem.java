@@ -66,6 +66,6 @@ public class EvaluationItem extends Auditable {
     private String description;
 
     @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.LAZY)
-    private List<EvaluationItemInstance> evaluationItemInstanceList;
+    private List<EvaluationItemInstance> evaluationItemInstance;
 
 }

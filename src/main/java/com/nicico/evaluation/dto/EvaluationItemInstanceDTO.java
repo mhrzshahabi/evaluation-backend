@@ -18,6 +18,8 @@ public abstract class EvaluationItemInstanceDTO {
     private Long evaluationItemId;
     private Long postMeritInstanceId;
     private Long instanceGroupTypeMeritId;
+    @NotNull
+    private Long instanceId;
 
 
     @Getter
@@ -33,6 +35,19 @@ public abstract class EvaluationItemInstanceDTO {
     public static class Info extends EvaluationItemInstanceDTO {
 
         private Long id;
+        private PostMeritInstanceDTO.Info postMeritInstance;
+        private InstanceGroupTypeMeritDTO.Info instanceGroupTypeMerit;
+        private EvaluationItemDTO.Info evaluationItem;
+        private InstanceTupleDTO instance;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("InstanceTupleInfo")
+    public static class InstanceTupleDTO {
+
+        private Long id;
+        private String title;
     }
 
     @Getter

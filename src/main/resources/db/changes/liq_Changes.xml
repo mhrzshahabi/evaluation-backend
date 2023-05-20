@@ -1144,5 +1144,10 @@
             <column name="d_start_date" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1684328574" author="semami">
+        <addColumn tableName="tbl_evaluation_item_instance">
+            <column name="instance_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

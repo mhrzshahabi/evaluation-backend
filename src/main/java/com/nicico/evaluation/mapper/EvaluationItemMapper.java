@@ -1,11 +1,10 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.dto.EvaluationItemInstanceDTO;
+import com.nicico.evaluation.iservice.IEvaluationItemInstanceService;
 import com.nicico.evaluation.model.EvaluationItem;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -15,6 +14,8 @@ public abstract class EvaluationItemMapper {
 
     @Autowired
     MeritComponentMapper meritComponentMapper;
+    @Autowired
+    IEvaluationItemInstanceService evaluationItemInstanceService;
 
     public abstract EvaluationItem dtoCreateToEntity(EvaluationItemDTO.Create dto);
 
@@ -28,15 +29,18 @@ public abstract class EvaluationItemMapper {
 
     public abstract List<EvaluationItemDTO.MeritTupleDTO> entityToUpdateInfoDtoList(List<EvaluationItem> entities);
 
+
     @Mappings({
             @Mapping(target = "evaluationItemId", source = "id"),
-            @Mapping(target = "groupTypeMeritId", source = "groupTypeMeritId"),
             @Mapping(target = "meritComponent", source = "groupTypeMerit.meritComponent"),
             @Mapping(target = "meritComponent.id", source = "groupTypeMerit.meritComponent.id"),
             @Mapping(target = "meritComponent.title", source = "groupTypeMerit.meritComponent.title"),
-            @Mapping(target = "meritComponent.meritComponentTypes", ignore = true)
+            @Mapping(target = "meritComponent.meritComponentTypes", ignore = true),
+            @Mapping(target = "groupTypeMerit.instanceGroupTypeMerits", ignore = true),
     })
     public abstract EvaluationItemDTO.MeritTupleDTO entityToUpdateInfoDto(EvaluationItem entity);
+
+    public abstract EvaluationItemDTO.InstanceTupleDTO instanceTupleToEvalItemInstance(EvaluationItemInstanceDTO.Info evalItemInstance);
 
     public abstract List<EvaluationItemDTO.PostMeritTupleDTO> entityToPostMeritInfoDtoList(List<EvaluationItem> entities);
 
@@ -46,7 +50,7 @@ public abstract class EvaluationItemMapper {
             @Mapping(target = "meritComponent", source = "postMeritComponent.meritComponent"),
             @Mapping(target = "meritComponent.id", source = "postMeritComponent.meritComponent.id"),
             @Mapping(target = "meritComponent.title", source = "postMeritComponent.meritComponent.title"),
-            @Mapping(target = "meritComponent.meritComponentTypes", ignore = true)
+            @Mapping(target = "meritComponent.meritComponentTypes", ignore = true),
     })
     public abstract EvaluationItemDTO.PostMeritTupleDTO entityToPostMeritInfo(EvaluationItem entity);
 
@@ -55,4 +59,5 @@ public abstract class EvaluationItemMapper {
     public abstract EvaluationItemDTO.MeritTupleDTO entityToMeritTupleInfo(EvaluationItemDTO.PostMeritTupleDTO postMeritTuple);
 
     public abstract void update(@MappingTarget EvaluationItem entity, EvaluationItemDTO.Update dto);
+
 }

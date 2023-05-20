@@ -2,17 +2,14 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationItemMapper;
-import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Evaluation;
 import com.nicico.evaluation.model.EvaluationItem;
 import com.nicico.evaluation.model.GroupType;
 import com.nicico.evaluation.repository.EvaluationItemRepository;
-import com.nicico.evaluation.repository.EvaluationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -33,8 +30,6 @@ public class EvaluationItemService implements IEvaluationItemService {
 
     private final EvaluationItemMapper mapper;
     private final EvaluationItemRepository repository;
-    private final EvaluationRepository evaluationRepository;
-    private final EvaluationMapper evaluationMapper;
     private final PageableMapper pageableMapper;
     private final IEvaluationService evaluationService;
     private final IGroupTypeService groupTypeService;
@@ -94,10 +89,9 @@ public class EvaluationItemService implements IEvaluationItemService {
         EvaluationItem entity = mapper.dtoCreateToEntity(dto);
         try {
             EvaluationItem evaluationItem = repository.save(entity);
-            Evaluation evaluation = evaluationRepository.findById(dto.getEvaluationId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+            Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
             evaluation.setAverageScore(dto.getAverageScore());
-            EvaluationDTO.Update evaluationDTO = evaluationMapper.entityToUpdateDto(evaluation);
-            evaluationService.update(dto.getEvaluationId(), evaluationDTO);
+            evaluationService.update(dto.getEvaluationId(), evaluation);
             return mapper.entityToDtoInfo(evaluationItem);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
@@ -118,10 +112,9 @@ public class EvaluationItemService implements IEvaluationItemService {
         EvaluationItem evaluationItem = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
             EvaluationItem save = repository.save(evaluationItem);
-            Evaluation evaluation = evaluationRepository.findById(dto.getEvaluationId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+            Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
             evaluation.setAverageScore(dto.getAverageScore());
-            EvaluationDTO.Update evaluationDTO = evaluationMapper.entityToUpdateDto(evaluation);
-            evaluationService.update(dto.getEvaluationId(), evaluationDTO);
+            evaluationService.update(dto.getEvaluationId(), evaluation);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
