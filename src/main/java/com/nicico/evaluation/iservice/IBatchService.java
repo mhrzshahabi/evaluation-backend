@@ -17,4 +17,6 @@ public interface IBatchService {
 
     BaseResponse create(BatchDTO.Create dto);
 
+    void updateStatus(Long id, Long statusCatalogId);
+
 }

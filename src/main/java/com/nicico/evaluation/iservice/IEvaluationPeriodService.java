@@ -19,7 +19,7 @@ public interface IEvaluationPeriodService {
 
     EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto);
 
-    List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCodes);
+    List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCode);
 
     void deleteEvaluationPeriodPost(Long id, String postCode);
 

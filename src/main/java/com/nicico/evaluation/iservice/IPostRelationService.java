@@ -13,6 +13,6 @@ public interface IPostRelationService {
 
     SearchDTO.SearchRs<PostRelationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    List<PostRelationDTO.Info> getAllByPostCode(List<String> postCodes);
+    List<PostRelationDTO.Info> getAllByPostCode(List<String> postCode);
 
 }
