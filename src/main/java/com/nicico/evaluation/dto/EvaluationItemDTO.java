@@ -76,13 +76,27 @@ public abstract class EvaluationItemDTO {
         private Long groupTypeMeritId;
         private MeritComponentDTO.Info meritComponent;
         private List<InstanceTupleDTO> instances;
+        private Long questionnaireAnswerCatalogValue;
+
+
         private List<EvaluationItemInstanceTuple> evaluationItemInstance;
         private String description;
         private Long evaluationId;
         private Long evaluationItemId;
         private Long questionnaireAnswerCatalogId;
-        private Long questionnaireAnswerCatalogValue;
+        private CatalogInfoTuple catalogInfoTuple;
         private String questionnaireAnswerCatalogCode;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("CatalogInfoTuple")
+    public static class CatalogInfoTuple {
+
+        private Long id;
+        private Long postMeritComponentId;
+        private Long instanceId;
 
     }
 
@@ -92,7 +106,7 @@ public abstract class EvaluationItemDTO {
     public static class PostMeritInstanceTuple {
 
         private Long id;
-      //  private Long postMeritComponentId;
+        //  private Long postMeritComponentId;
 //        private Long instanceId;
 
     }
@@ -127,7 +141,7 @@ public abstract class EvaluationItemDTO {
         private Long postMeritId;
         private Long groupTypeMeritId;
         private MeritComponentDTO.Info meritComponent;
-       // private List<InstanceTupleDTO> instances;
+        // private List<InstanceTupleDTO> instances;
         private List<EvaluationItemInstanceTuple> evaluationItemInstance;
         private String description;
         private Long evaluationId;
