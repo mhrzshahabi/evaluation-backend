@@ -14,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,22 +30,23 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM_INSTANCE')")
     public EvaluationItemInstanceDTO.Info get(Long id) {
         EvaluationItemInstance evaluationItemInstance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(evaluationItemInstance);
     }
-     @Override
+
+    @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM_INSTANCE')")
     public List<EvaluationItemInstanceDTO.Info> getAllByEvaluationItemId(Long evaluationItemId) {
-         List<EvaluationItemInstance> allByEvaluationItemId = repository.getAllByEvaluationItemId(evaluationItemId);
-         return mapper.entityToDtoInfoList(allByEvaluationItemId);
+        List<EvaluationItemInstance> allByEvaluationItemId = repository.getAllByEvaluationItemId(evaluationItemId);
+        return mapper.entityToDtoInfoList(allByEvaluationItemId);
     }
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM_INSTANCE')")
     public EvaluationItemInstanceDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<EvaluationItemInstance> evaluationItemInstances = repository.findAll(pageable);
@@ -65,7 +67,7 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
 
     @Override
     @Transactional(readOnly = true)
-//    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM_INSTANCE')")
     public SearchDTO.SearchRs<EvaluationItemInstanceDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
 
@@ -73,7 +75,7 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('C_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('C_EVALUATION_ITEM_INSTANCE')")
     public EvaluationItemInstanceDTO.Info create(EvaluationItemInstanceDTO.Create dto) {
         EvaluationItemInstance evaluationItemInstance = mapper.dtoCreateToEntity(dto);
         try {
@@ -85,7 +87,7 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     }
 
     @Override
-//    @PreAuthorize("hasAuthority('C_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('C_EVALUATION_ITEM_INSTANCE')")
     public BaseResponse batchCreate(EvaluationItemInstanceDTO.Create dto) {
         BaseResponse response = new BaseResponse();
         try {
@@ -101,7 +103,7 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('U_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('U_EVALUATION_ITEM_INSTANCE')")
     public EvaluationItemInstanceDTO.Info update(Long id, EvaluationItemInstanceDTO.Update dto) {
         EvaluationItemInstance kPIType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(kPIType, dto);
@@ -115,7 +117,7 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('D_KPI_TYPE')")
+    @PreAuthorize("hasAuthority('D_EVALUATION_ITEM_INSTANCE')")
     public void delete(Long id) {
         EvaluationItemInstance kPIType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {

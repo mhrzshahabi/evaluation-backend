@@ -351,6 +351,22 @@
     {
       "code": "R_POST_RELATION",
       "title": "نمایش ارتباط پست ها"
+    },
+    {
+      "code": "R_EVALUATION_ITEM_INSTANCE",
+      "title": "نمایش مصداق های آیتم ارزیابی"
+    },
+    {
+      "code": "C_EVALUATION_ITEM_INSTANCE",
+      "title": "ایجاد مصداق های آیتم ارزیابی"
+    },
+    {
+      "code": "U_EVALUATION_ITEM_INSTANCE",
+      "title": "ویرایش مصداق های آیتم ارزیابی"
+    },
+    {
+      "code": "D_EVALUATION_ITEM_INSTANCE",
+      "title": "حذف مصداق های آیتم ارزیابی"
     }
   ]
 }

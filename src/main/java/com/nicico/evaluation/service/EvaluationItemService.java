@@ -177,7 +177,7 @@ public class EvaluationItemService implements IEvaluationItemService {
                     catalogDTO.setId(answer.getId());
                     convertedAnswerListByCatalog.add(catalogDTO);
 
-                    /* converted weight form each item => item / total items weight */
+                    /* converted weight form each item by sum of merits weight => item / total items weight */
                     CatalogDTO.Info totalItemWeightConvertedCatalogDTO = new CatalogDTO.Info();
                     totalItemWeightConvertedCatalogDTO.setId(answer.getId());
                     totalItemWeightConvertedCatalogDTO.setCode(answer.getCode());
