@@ -2,14 +2,14 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.*;
+import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.FilterDTO;
+import com.nicico.evaluation.dto.OrganizationTreeDTO;
+import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.*;
+import com.nicico.evaluation.iservice.IEvaluationService;
 import com.nicico.evaluation.mapper.EvaluationMapper;
-import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
-import com.nicico.evaluation.model.OrganizationTree;
-import com.nicico.evaluation.model.SpecialCase;
 import com.nicico.evaluation.repository.EvaluationRepository;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,9 +29,6 @@ public class EvaluationService implements IEvaluationService {
     private final EvaluationMapper mapper;
     private final EvaluationRepository repository;
     private final PageableMapper pageableMapper;
-    private final ISpecialCaseService specialCaseService;
-    private final IOrganizationTreeService organizationTreeService;
-    private final ICatalogService catalogService;
 
     @Override
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
@@ -73,9 +69,9 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION')")
     public EvaluationDTO.Info create(EvaluationDTO.Create dto) {
-        Evaluation evaluation = mapper.dtoCreateToEntity(dto);
-        evaluation = repository.save(evaluation);
-        return mapper.entityToDtoInfo(evaluation);
+        Evaluation Evaluation = mapper.dtoCreateToEntity(dto);
+        Evaluation = repository.save(Evaluation);
+        return mapper.entityToDtoInfo(Evaluation);
     }
 
     @Override
@@ -108,40 +104,6 @@ public class EvaluationService implements IEvaluationService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION')")
-    public EvaluationDTO.Info updateStatus(Long id) {
-        Evaluation evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        EvaluationDTO.Info evaluationInfo = mapper.entityToDtoInfo(evaluation);
-        if (evaluationInfo.getEndDate().compareTo(new Date()) < 0) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
-        }
-        Long catalogId = null;
-        if (evaluation.getStatusCatalog().getCode().equals("Finalized")) {
-            catalogId = catalogService.getByCode("Awaiting-review").getId();
-        } else {
-            catalogId = catalogService.getByCode("Finalized").getId();
-        }
-        evaluation.setStatusCatalogId(catalogId);
-        Evaluation save = repository.save(evaluation);
-        return mapper.entityToDtoInfo(save);
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("hasAuthority('U_EVALUATION')")
-    public List<EvaluationDTO.Info> updateStatusAll(List<Long> ids, Long statusCatalogId){
-        List<Evaluation> evaluations = repository.findAllByIdIn(ids);
-        Long firstStatusCatalogId = evaluations.get(0).getStatusCatalogId();
-        if(!evaluations.stream().allMatch(x -> x.getStatusCatalogId().equals(firstStatusCatalogId) )){
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
-        }
-        evaluations.stream().forEach(x-> x.setStatusCatalogId(statusCatalogId));
-        evaluations = repository.saveAll(evaluations);
-        return mapper.entityToDtoInfoList(evaluations);
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("hasAuthority('U_EVALUATION')")
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update dto) {
         Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(Evaluation, dto);
@@ -162,6 +124,53 @@ public class EvaluationService implements IEvaluationService {
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO) {
+        BaseResponse response = new BaseResponse();
+        final Locale locale = LocaleContextHolder.getLocale();
+        try {
+            changeStatusDTO.getEvaluationIds().forEach(id->{
+                Optional<Evaluation> optionalEvaluation = repository.findById(id);
+                if (optionalEvaluation.isPresent()){
+                    Evaluation evaluation = optionalEvaluation.get();
+                    switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
+                        case "next" -> {
+                            if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Initial-registration")) {
+                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
+                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                            }
+                            else if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
+                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Finalized");
+                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                            }
+                            repository.save(evaluation);
+                        }
+                        case "previous" ->{
+                            if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Finalized")) {
+                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
+                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                            }
+                            else if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
+                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Initial-registration");
+                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+
+                            }
+                            repository.save(evaluation);
+                        }
+                    }
+                }
+            });
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            response.setStatus(200);
+            return response;
+        }catch (Exception e){
+            response.setMessage(messageSource.getMessage("exception.un-managed", null, locale));
+            response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
+            return response;
+        }
     }
 
 }
