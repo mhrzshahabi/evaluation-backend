@@ -71,6 +71,9 @@ public class Evaluation extends Auditable {
     private Long evaluationPeriodId;
 
     @Transient
-    private String fullName;
+    private String assessFullName;
+
+    @Transient
+    private String assessorFullName;
 
 }

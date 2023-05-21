@@ -60,7 +60,8 @@ public class EvaluationDTO {
         private CatalogDTO.Info methodCatalog;
         private CatalogDTO.Info statusCatalog;
         private EvaluationPeriodTupleDTO evaluationPeriod;
-        private String fullName;
+        private String assessFullName;
+        private String assessorFullName;
 
     }
 
