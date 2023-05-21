@@ -23,7 +23,7 @@ public class CriteriaUtil {
         searchRq.setStartIndex(startRow);
         searchRq.setCount(count != null ? count : 30);
         searchRq.setSortBy("id");
-        searchRq.setDistinct(true);
+//        searchRq.setDistinct(true);
 
         if (list != null && !list.isEmpty()) {
             list.forEach(criteria -> {
