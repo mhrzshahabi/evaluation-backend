@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 @Repository
@@ -13,6 +14,8 @@ public interface EvaluationPeriodPostRepository extends JpaRepository<Evaluation
 
     List<EvaluationPeriodPost> findAllByEvaluationPeriodId(Long id);
     List<EvaluationPeriodPost> findAllByPostCode(String postCode);
+    List<EvaluationPeriodPost> findAllByPostCodeIn(Set<String> postCode);
+
 
     Optional<EvaluationPeriodPost> findByEvaluationPeriodIdAndPostCode(Long evaluationPeriodPost, String postCode);
 

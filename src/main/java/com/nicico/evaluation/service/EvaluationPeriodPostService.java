@@ -45,7 +45,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
 //            postCode = removeDuplicatePostCode(evaluationPeriod.getId(), postCode);
 //            if (postCode.isEmpty())
 //                throw new Exception();
-            postCode = check(newEvaluationPeriod, postCode);
+            postCode = check1(newEvaluationPeriod, postCode);
             if (postCode.isEmpty())
                 throw new Exception();
             List<EvaluationPeriodPost> evaluationPeriodPosts = mapper.listPostCodeToEntities(newEvaluationPeriod.getId(), postCode);
@@ -85,6 +85,33 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
         }
     }
 
+    private Set<String> check1(EvaluationPeriod newEvaluationPeriod, Set<String> postCode){
+        Boolean canAdded = Boolean.FALSE;
+        Set<String> newPostCodes = new HashSet<>();
+        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByPostCodeIn(postCode);
+        for(String pc : postCode){
+            if(evaluationPeriodPosts.stream().anyMatch(x -> x.getEvaluationPeriodId().equals(newEvaluationPeriod.getId()) && x.getPostCode().equals(pc)) )
+                continue;
+            List<EvaluationPeriodPost> evaluationPeriodPostsFilter =  evaluationPeriodPosts.stream().filter(x-> x.getPostCode().equals(pc)).collect(Collectors.toList());
+            canAdded = Boolean.TRUE;
+            for(EvaluationPeriodPost epp : evaluationPeriodPostsFilter) {
+                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(epp.getEvaluationPeriodId())
+                        .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+                if (newEvaluationPeriod.getStartDate().equals(evaluationPeriod.getStartDate()) &&
+                        newEvaluationPeriod.getEndDate().equals(evaluationPeriod.getEndDate()) &&
+                        newEvaluationPeriod.getStartDateAssessment().equals(evaluationPeriod.getStartDateAssessment()) &&
+                        newEvaluationPeriod.getEndDateAssessment().equals(evaluationPeriod.getEndDateAssessment())
+                ) {
+                    canAdded = Boolean.FALSE;
+                    break;
+                }
+            }
+            if(canAdded)
+                newPostCodes.add(pc);
+        }
+        return newPostCodes;
+    }
+
     private Set<String> check(EvaluationPeriod newEvaluationPeriod, Set<String> postCode){
         Boolean canAdded = Boolean.FALSE;
         Set<String> newPostCodes = new HashSet<>();
@@ -104,8 +131,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
                             newEvaluationPeriod.getEndDateAssessment().equals(evaluationPeriod.getEndDateAssessment())
                     ) {
                         canAdded = Boolean.FALSE;
-                    }else{
-                        canAdded = Boolean.TRUE;
+                        break;
                     }
                 }
             }
