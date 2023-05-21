@@ -1,10 +1,12 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationItemDTO;
-import com.nicico.evaluation.dto.EvaluationItemInstanceDTO;
 import com.nicico.evaluation.iservice.IEvaluationItemInstanceService;
 import com.nicico.evaluation.model.EvaluationItem;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -40,8 +42,6 @@ public abstract class EvaluationItemMapper {
             @Mapping(target = "weight", source = "groupTypeMerit.weight"),
     })
     public abstract EvaluationItemDTO.MeritTupleDTO entityToUpdateInfoDto(EvaluationItem entity);
-
-    public abstract EvaluationItemDTO.InstanceTupleDTO instanceTupleToEvalItemInstance(EvaluationItemInstanceDTO.Info evalItemInstance);
 
     public abstract List<EvaluationItemDTO.PostMeritTupleDTO> entityToPostMeritInfoDtoList(List<EvaluationItem> entities);
 

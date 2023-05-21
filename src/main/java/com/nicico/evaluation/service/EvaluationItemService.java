@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
@@ -250,11 +251,11 @@ public class EvaluationItemService implements IEvaluationItemService {
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = getAllGroupTypeMeritByEvalId(evaluationId);
 
             meritTupleDtoList.forEach(meritTupleDTO -> {
-                if (meritTupleDTO.getEvaluationItemInstance() != null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
+                if (Objects.nonNull(meritTupleDTO.getEvaluationItemInstance()) && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
                     List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList = new ArrayList<>();
-                    meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple -> {
-                        instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance());
-                    });
+                    meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple ->
+                            instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance())
+                    );
                     meritTupleDTO.setInstances(instanceTupleDTOList);
                     meritTupleDTO.setEvaluationItemInstance(null);
                 }
@@ -277,11 +278,11 @@ public class EvaluationItemService implements IEvaluationItemService {
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS = mapper.entityToMeritTupleInfoList(meritTupleDtoList);
 
             meritTupleDTOS.forEach(meritTupleDTO -> {
-                if (meritTupleDTO.getEvaluationItemInstance() != null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
+                if (Objects.nonNull(meritTupleDTO.getEvaluationItemInstance()) && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
                     List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList = new ArrayList<>();
-                    meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple -> {
-                        instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance());
-                    });
+                    meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple ->
+                            instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance())
+                    );
                     meritTupleDTO.setInstances(instanceTupleDTOList);
                     meritTupleDTO.setEvaluationItemInstance(null);
                 }

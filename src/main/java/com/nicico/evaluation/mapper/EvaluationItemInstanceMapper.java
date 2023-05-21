@@ -26,9 +26,4 @@ public interface EvaluationItemInstanceMapper {
 
     void update(@MappingTarget EvaluationItemInstance entity, EvaluationItemInstanceDTO.Update dto);
 
-    @Mappings({
-            @Mapping(target = "id", source = "instance.id"),
-            @Mapping(target = "title", source = "instance.title"),
-    })
-    EvaluationItemInstanceDTO.InstanceTupleDTO entityToTupleDTOInfo(EvaluationItemInstance entity);
 }
