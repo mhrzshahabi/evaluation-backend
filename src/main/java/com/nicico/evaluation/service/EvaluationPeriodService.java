@@ -73,8 +73,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCode) {
-        evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(id, postCode);
+        EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(evaluationPeriod, postCode);
         return evaluationPeriodPostInfos;
     }
 
@@ -95,7 +95,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
             ) {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
-                List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(save.getId(), dto.getPostCode());
+                List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(save, dto.getPostCode());
                 EvaluationPeriodDTO.Info evaluationPeriodInfo = evaluationPeriodMapper.entityToDtoInfo(save);
                 return evaluationPeriodInfo;
             } else
