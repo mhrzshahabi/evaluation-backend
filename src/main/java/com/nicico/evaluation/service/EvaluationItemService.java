@@ -230,6 +230,8 @@ public class EvaluationItemService implements IEvaluationItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public List<EvaluationItemDTO.CreateItemInfo> getInfoByEvaluationIdForUpdate(Long id) {
 
         String assessPostCode = evaluationService.get(id).getAssessPostCode();
