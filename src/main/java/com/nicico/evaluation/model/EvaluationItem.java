@@ -65,7 +65,7 @@ public class EvaluationItem extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.EAGER)
     private List<EvaluationItemInstance> evaluationItemInstance;
 
 }

@@ -37,6 +37,7 @@ public abstract class EvaluationItemMapper {
             @Mapping(target = "meritComponent.title", source = "groupTypeMerit.meritComponent.title"),
             @Mapping(target = "meritComponent.meritComponentTypes", ignore = true),
             @Mapping(target = "groupTypeMerit.instanceGroupTypeMerits", ignore = true),
+            @Mapping(target = "weight", source = "groupTypeMerit.weight"),
     })
     public abstract EvaluationItemDTO.MeritTupleDTO entityToUpdateInfoDto(EvaluationItem entity);
 
@@ -51,6 +52,7 @@ public abstract class EvaluationItemMapper {
             @Mapping(target = "meritComponent.id", source = "postMeritComponent.meritComponent.id"),
             @Mapping(target = "meritComponent.title", source = "postMeritComponent.meritComponent.title"),
             @Mapping(target = "meritComponent.meritComponentTypes", ignore = true),
+            @Mapping(target = "weight", source = "postMeritComponent.weight"),
     })
     public abstract EvaluationItemDTO.PostMeritTupleDTO entityToPostMeritInfo(EvaluationItem entity);
 

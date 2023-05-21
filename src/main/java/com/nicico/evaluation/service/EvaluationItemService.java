@@ -237,6 +237,7 @@ public class EvaluationItemService implements IEvaluationItemService {
         List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
         getGroupTypeMeritInfoForUpdate(id, assessPostCode, createItemInfoList);
         getPostMeritInfoForUpdate(id, createItemInfoList);
+        calculateAndSetTotalWeight(createItemInfoList);
         return createItemInfoList;
     }
 
