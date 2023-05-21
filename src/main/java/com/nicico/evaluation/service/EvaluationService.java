@@ -151,13 +151,8 @@ public class EvaluationService implements IEvaluationService {
                 Optional<Evaluation> optionalEvaluation = repository.findById(id);
                 if (optionalEvaluation.isPresent()){
                     Evaluation evaluation = optionalEvaluation.get();
-                    Date evaluationDate = null;
-                    try {
-                        String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
-                        evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
+                    Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
                     if(evaluationDate != null && evaluationDate.before(new Date())) {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next" -> {
