@@ -1149,5 +1149,7 @@
             <column name="instance_id" type="NUMBER(10, 0)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet id="1684646302" author="semami">
+        <modifyDataType tableName="tbl_catalog" columnName="c_value" newDataType="FLOAT(22)"/>
+    </changeSet>
 </databaseChangeLog>

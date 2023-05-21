@@ -15,7 +15,7 @@ public class CatalogDTO implements Serializable {
 
     private String title;
     private String code;
-    private String value;
+    private Double value;
 
     @Getter
     @Setter

@@ -7,4 +7,5 @@ public class EvaluationConstant {
     public static final String LEVEL_DEF_GROUP = "group";
     public static final String LEVEL_DEF_POST = "organizationalPosition";
     public static final String BATCH_TITLES = "BatchTitles";
+    public static final String QUESTIONNAIRE_ANSWERS = "QuestionnaireAnswers";
 }

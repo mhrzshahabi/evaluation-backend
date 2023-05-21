@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.*;
@@ -21,8 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nicico.evaluation.utility.EvaluationConstant.LEVEL_DEF_GROUP;
-import static com.nicico.evaluation.utility.EvaluationConstant.LEVEL_DEF_POST;
+import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +35,7 @@ public class EvaluationItemService implements IEvaluationItemService {
     private final IGroupTypeService groupTypeService;
     private final IGroupTypeMeritService groupTypeMeritService;
     private final IPostMeritComponentService postMeritComponentService;
+    private final ICatalogService catalogService;
 
 
     @Override
@@ -150,7 +151,55 @@ public class EvaluationItemService implements IEvaluationItemService {
         List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
         getGroupTypeMeritInfoForCreate(assessPostCode, createItemInfoList);
         getPostMeritInfoForCreate(assessPostCode, createItemInfoList);
+        calculateAndSetTotalWeight(createItemInfoList);
+
         return createItemInfoList;
+    }
+
+    private void calculateAndSetTotalWeight(List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+
+        List<CatalogDTO.Info> answerListByCatalog = catalogService.catalogByCatalogTypeCode(QUESTIONNAIRE_ANSWERS);
+        createItemInfoList.forEach(item -> {
+            Double sumMeritsWeight = item.getMeritTuple().stream().mapToDouble(EvaluationItemDTO.MeritTupleDTO::getWeight).sum();
+
+            item.getMeritTuple().forEach(merit -> {
+
+                List<CatalogDTO.Info> convertedAnswerListByCatalog = new ArrayList<>();
+                List<CatalogDTO.Info> groupTypeWeightConvertedByCatalog = new ArrayList<>();
+                List<CatalogDTO.Info> totalItemWeightConvertedByCatalog = new ArrayList<>();
+
+                answerListByCatalog.forEach(answer -> {
+
+                    /* converted weight form each item */
+                    CatalogDTO.Info catalogDTO = new CatalogDTO.Info();
+                    catalogDTO.setValue((merit.getWeight() * answer.getValue()) / 100);
+                    catalogDTO.setCode(answer.getCode());
+                    catalogDTO.setId(answer.getId());
+                    convertedAnswerListByCatalog.add(catalogDTO);
+
+                    /* converted weight form each item => item / total items weight */
+                    CatalogDTO.Info totalItemWeightConvertedCatalogDTO = new CatalogDTO.Info();
+                    totalItemWeightConvertedCatalogDTO.setId(answer.getId());
+                    totalItemWeightConvertedCatalogDTO.setCode(answer.getCode());
+                    totalItemWeightConvertedCatalogDTO.setValue(catalogDTO.getValue() / sumMeritsWeight);
+                    totalItemWeightConvertedByCatalog.add(totalItemWeightConvertedCatalogDTO);
+
+                    /* converted weight form each item by group type weight => (item / total items weight) * group type weight */
+                    CatalogDTO.Info groupTypeWightConvertedCatalogDTO = new CatalogDTO.Info();
+                    groupTypeWightConvertedCatalogDTO.setId(answer.getId());
+                    groupTypeWightConvertedCatalogDTO.setCode(answer.getCode());
+                    groupTypeWightConvertedCatalogDTO.setValue(totalItemWeightConvertedCatalogDTO.getValue() * item.getGroupTypeWeight());
+                    groupTypeWeightConvertedByCatalog.add(groupTypeWightConvertedCatalogDTO);
+
+                });
+
+                merit.setAnswerInfo(answerListByCatalog);
+                merit.setAnswerConvertedInfo(convertedAnswerListByCatalog);
+                merit.setTotalItemWeightConvertedByCatalog(totalItemWeightConvertedByCatalog);
+                merit.setGroupTypeWeightConvertedByCatalog(groupTypeWeightConvertedByCatalog);
+
+            });
+        });
     }
 
     private void getGroupTypeMeritInfoForCreate(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
@@ -200,8 +249,8 @@ public class EvaluationItemService implements IEvaluationItemService {
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = getAllGroupTypeMeritByEvalId(evaluationId);
 
             meritTupleDtoList.forEach(meritTupleDTO -> {
-                if (meritTupleDTO.getEvaluationItemInstance()!=null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()){
-                    List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList= new ArrayList<>();
+                if (meritTupleDTO.getEvaluationItemInstance() != null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
+                    List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList = new ArrayList<>();
                     meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple -> {
                         instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance());
                     });
@@ -227,8 +276,8 @@ public class EvaluationItemService implements IEvaluationItemService {
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS = mapper.entityToMeritTupleInfoList(meritTupleDtoList);
 
             meritTupleDTOS.forEach(meritTupleDTO -> {
-                if (meritTupleDTO.getEvaluationItemInstance()!=null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()){
-                    List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList= new ArrayList<>();
+                if (meritTupleDTO.getEvaluationItemInstance() != null && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
+                    List<EvaluationItemDTO.InstanceTupleDTO> instanceTupleDTOList = new ArrayList<>();
                     meritTupleDTO.getEvaluationItemInstance().forEach(evaluationItemInstanceTuple -> {
                         instanceTupleDTOList.add(evaluationItemInstanceTuple.getInstance());
                     });
