@@ -213,4 +213,11 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_evaluation_period" validate="true"/>
     </changeSet>
+    <changeSet author="a.lotfi" id="1684652895">
+        <addForeignKeyConstraint baseColumnNames="status_catalog_id"
+                                 baseTableName="tbl_evaluation_period"
+                                 constraintName="f_evaluation_period_status_catalog_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

@@ -59,12 +59,31 @@ public class EvaluationController {
     }
 
     /**
+     * @param request is the model of input for create evaluation entity
+     * @return EvaluationDTOInfo is the saved evaluation entity
+     */
+    @PostMapping(value = "/create-list")
+    public ResponseEntity<List<EvaluationDTO.Info>> createList(@Valid @RequestBody List<EvaluationDTO.Create> request) {
+        return new ResponseEntity<>(service.createList(request), HttpStatus.CREATED);
+    }
+
+    /**
      * @param request is  the model of input for update evaluation entity
      * @return EvaluationDTOInfo is the updated evaluation entity
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<EvaluationDTO.Info> update(@PathVariable Long id, @Valid @RequestBody EvaluationDTO.Update request) {
         return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/update-status/{id}")
+    public ResponseEntity<EvaluationDTO.Info> updateStatus(@PathVariable Long id) {
+        return new ResponseEntity<>(service.updateStatus(id), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/update-status-all")
+    public ResponseEntity<List<EvaluationDTO.Info>> updateStatusAll(@RequestBody List<Long> ids, @RequestBody Long statusCatalogId) {
+        return new ResponseEntity<>(service.updateStatusAll(ids, statusCatalogId), HttpStatus.OK);
     }
 
     /**

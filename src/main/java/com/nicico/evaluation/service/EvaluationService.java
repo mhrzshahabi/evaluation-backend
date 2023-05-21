@@ -2,12 +2,14 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.EvaluationDTO;
-import com.nicico.evaluation.dto.FilterDTO;
+import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IEvaluationService;
+import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationMapper;
+import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
+import com.nicico.evaluation.model.OrganizationTree;
+import com.nicico.evaluation.model.SpecialCase;
 import com.nicico.evaluation.repository.EvaluationRepository;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,6 +30,9 @@ public class EvaluationService implements IEvaluationService {
     private final EvaluationMapper mapper;
     private final EvaluationRepository repository;
     private final PageableMapper pageableMapper;
+    private final ISpecialCaseService specialCaseService;
+    private final IOrganizationTreeService organizationTreeService;
+    private final ICatalogService catalogService;
 
     @Override
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
@@ -66,9 +73,70 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION')")
     public EvaluationDTO.Info create(EvaluationDTO.Create dto) {
-        Evaluation Evaluation = mapper.dtoCreateToEntity(dto);
-        Evaluation = repository.save(Evaluation);
-        return mapper.entityToDtoInfo(Evaluation);
+        Evaluation evaluation = mapper.dtoCreateToEntity(dto);
+        evaluation = repository.save(evaluation);
+        return mapper.entityToDtoInfo(evaluation);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('C_EVALUATION')")
+    public List<EvaluationDTO.Info> createList(List<EvaluationDTO.Create> dto) {
+        List<EvaluationDTO.Info> evaluationInfo = new ArrayList<>();
+        List<Evaluation> evaluations = mapper.dtoCreateToEntityList(dto);
+        for (Evaluation e : evaluations) {
+            List<Evaluation> evaluationss =
+                    repository.findByEvaluationPeriodIdAndAssessPostCodeAndEndDate(e.getEvaluationPeriodId(), e.getAssessPostCode(), e.getEndDate());
+            if (evaluationss.size() > 0) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+            }
+            SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(e.getAssessNationalCode(), e.getAssessPostCode());
+            if (scInfo != null) {
+                e.setAssessorPostCode(scInfo.getAssessorPostCode());
+                e.setAssessorNationalCode(scInfo.getAssessorNationalCode());
+            } else {
+                OrganizationTreeDTO.Info organizationTreeInfo = organizationTreeService.getByPostCodeAndNationalCode(e.getAssessPostCode(), e.getAssessNationalCode());
+                e.setAssessorPostCode(organizationTreeInfo.getPostParentCode());
+                e.setAssessorNationalCode(organizationTreeInfo.getNationalCodeParent());
+            }
+            e = repository.save(e);
+            evaluationInfo.add(mapper.entityToDtoInfo(e));
+        }
+        return evaluationInfo;
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('U_EVALUATION')")
+    public EvaluationDTO.Info updateStatus(Long id) {
+        Evaluation evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        EvaluationDTO.Info evaluationInfo = mapper.entityToDtoInfo(evaluation);
+        if (evaluationInfo.getEndDate().compareTo(new Date()) < 0) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+        }
+        Long catalogId = null;
+        if (evaluation.getStatusCatalog().getCode().equals("Finalized")) {
+            catalogId = catalogService.getByCode("Awaiting-review").getId();
+        } else {
+            catalogId = catalogService.getByCode("Finalized").getId();
+        }
+        evaluation.setStatusCatalogId(catalogId);
+        Evaluation save = repository.save(evaluation);
+        return mapper.entityToDtoInfo(save);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('U_EVALUATION')")
+    public List<EvaluationDTO.Info> updateStatusAll(List<Long> ids, Long statusCatalogId){
+        List<Evaluation> evaluations = repository.findAllByIdIn(ids);
+        Long firstStatusCatalogId = evaluations.get(0).getStatusCatalogId();
+        if(!evaluations.stream().allMatch(x -> x.getStatusCatalogId().equals(firstStatusCatalogId) )){
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+        }
+        evaluations.stream().forEach(x-> x.setStatusCatalogId(statusCatalogId));
+        evaluations = repository.saveAll(evaluations);
+        return mapper.entityToDtoInfoList(evaluations);
     }
 
     @Override

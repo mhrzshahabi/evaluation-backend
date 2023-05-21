@@ -1144,5 +1144,10 @@
             <column name="d_start_date" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1684652497" author="a.lotfi">
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

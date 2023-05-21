@@ -5,5 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, JpaSpecificationExecutor<Evaluation> {}
+public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, JpaSpecificationExecutor<Evaluation> {
+    List<Evaluation> findByEvaluationPeriodIdAndAssessPostCodeAndEndDate(Long id, String assessPostCode, String endDate);
+    List<Evaluation> findAllByIdIn(List<Long> id);
+}

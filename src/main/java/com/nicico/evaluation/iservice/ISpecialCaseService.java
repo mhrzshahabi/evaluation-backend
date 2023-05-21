@@ -4,9 +4,12 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 
+import java.util.List;
+
 public interface ISpecialCaseService {
 
     SpecialCaseDTO.Info get(Long id);
+    SpecialCaseDTO.Info getByAssessNationalCodeAndAssessPostCode(String nationalCode, String postCode);
 
     SpecialCaseDTO.SpecResponse list(int count, int startIndex);
 
