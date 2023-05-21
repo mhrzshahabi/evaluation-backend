@@ -1,7 +1,6 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.evaluation.dto.ChangeStatusDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -22,10 +21,6 @@ public interface IEvaluationService {
     List<EvaluationDTO.Info> createList(List<EvaluationDTO.Create> dto);
 
     EvaluationDTO.Info update(Long id, EvaluationDTO.Update dto);
-
-    EvaluationDTO.Info updateStatus(Long id);
-
-    List<EvaluationDTO.Info> updateStatusAll(List<Long> ids, Long statusCatalogId);
 
     void delete(Long id);
 

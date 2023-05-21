@@ -1,6 +1,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
@@ -8,19 +9,27 @@ import com.nicico.evaluation.dto.OrganizationTreeDTO;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationService;
+import com.nicico.evaluation.iservice.IOrganizationTreeService;
+import com.nicico.evaluation.iservice.ISpecialCaseService;
 import com.nicico.evaluation.mapper.EvaluationMapper;
+import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
+import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +38,11 @@ public class EvaluationService implements IEvaluationService {
     private final EvaluationMapper mapper;
     private final EvaluationRepository repository;
     private final PageableMapper pageableMapper;
+    private final CatalogRepository catalogRepository;
+    private final ResourceBundleMessageSource messageSource;
+    private final ISpecialCaseService specialCaseService;
+    private final IOrganizationTreeService organizationTreeService;
+
 
     @Override
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
@@ -132,37 +146,47 @@ public class EvaluationService implements IEvaluationService {
         BaseResponse response = new BaseResponse();
         final Locale locale = LocaleContextHolder.getLocale();
         try {
-            changeStatusDTO.getEvaluationIds().forEach(id->{
+            List<Long> ids = changeStatusDTO.getEvaluationIds();
+            for(Long id : ids){
                 Optional<Evaluation> optionalEvaluation = repository.findById(id);
                 if (optionalEvaluation.isPresent()){
                     Evaluation evaluation = optionalEvaluation.get();
-                    switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
-                        case "next" -> {
-                            if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Initial-registration")) {
-                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
-                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                    Date evaluationDate = null;
+                    try {
+                        String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
+                        evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if(evaluationDate != null && evaluationDate.before(new Date())) {
+                        switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
+                            case "next" -> {
+                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Initial-registration")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Finalized");
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                }
+                                repository.save(evaluation);
                             }
-                            else if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
-                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Finalized");
-                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                            }
-                            repository.save(evaluation);
-                        }
-                        case "previous" ->{
-                            if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Finalized")) {
-                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
-                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                            }
-                            else if (evaluation.getStatusCatalog().getCode()!=null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
-                                Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Initial-registration");
-                                optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                            case "previous" -> {
+                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Finalized")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Initial-registration");
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
 
+                                }
+                                repository.save(evaluation);
                             }
-                            repository.save(evaluation);
                         }
+                    }else {
+                        throw new Exception();
                     }
                 }
-            });
+            }
             response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
             response.setStatus(200);
             return response;
