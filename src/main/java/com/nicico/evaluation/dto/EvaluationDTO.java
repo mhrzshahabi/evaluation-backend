@@ -113,4 +113,15 @@ public class EvaluationDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ChangeStatusDTO")
+    public static class ChangeStatusDTO {
+        @NotNull
+        private List<Long> evaluationIds;
+        @NotNull
+        private String status;
+
+    }
 }
