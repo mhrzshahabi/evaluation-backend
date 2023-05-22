@@ -42,19 +42,9 @@ public class Evaluation extends Auditable {
     @JoinColumn(name = "method_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_method_catalog_to_catalog"))
     private Catalog methodCatalog;
 
-    @NotNull
     @Column(name = "method_catalog_id")
     private Long methodCatalogId;
 
-    @NotNull
-    @Column(name = "d_start_date")
-    private String startDate;
-
-    @NotNull
-    @Column(name = "d_end_date")
-    private String endDate;
-
-    @NotNull
     @Column(name = "average_score")
     private Long averageScore;
 

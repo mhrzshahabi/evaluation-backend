@@ -20,4 +20,6 @@ public interface IOrganizationTreeService {
     SearchDTO.SearchRs<OrganizationTreeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     OrganizationTreeDTO.Info getByPostCodeAndNationalCode(String postCode, String nationalCode);
+    OrganizationTreeDTO.Info getByPostCode(String postCode);
+
 }
