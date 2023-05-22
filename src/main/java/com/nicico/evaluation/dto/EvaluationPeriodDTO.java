@@ -1,5 +1,6 @@
 package com.nicico.evaluation.dto;
 
+import com.nicico.evaluation.model.Catalog;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -27,12 +28,14 @@ public class EvaluationPeriodDTO {
     private Date endDateAssessment;
     private String description;
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("EvaluationPeriodInfoRq")
     public static class Info extends EvaluationPeriodDTO {
         private Long id;
+        private Catalog statusCatalog;
     }
 
     @Getter

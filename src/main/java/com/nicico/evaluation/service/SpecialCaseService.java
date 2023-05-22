@@ -41,6 +41,15 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
+    public SpecialCaseDTO.Info getByAssessNationalCodeAndAssessPostCode(String nationalCode, String postCode) {
+        SpecialCase specialcase = specialCaseRepository.findByAssessNationalCodeAndAssessPostCode(nationalCode, postCode)
+                .orElse(null);
+        return specialCaseMapper.entityToDtoInfo(specialcase);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SpecialCaseDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<SpecialCase> specialCases = specialCaseRepository.findAll(pageable);

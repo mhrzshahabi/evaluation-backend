@@ -1152,4 +1152,10 @@
     <changeSet id="1684646302" author="semami">
         <modifyDataType tableName="tbl_catalog" columnName="c_value" newDataType="FLOAT(22)"/>
     </changeSet>
+    <changeSet id="1684652497" author="a.lotfi">
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
