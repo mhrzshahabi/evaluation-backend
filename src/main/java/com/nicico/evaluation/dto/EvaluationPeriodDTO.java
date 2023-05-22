@@ -1,5 +1,6 @@
 package com.nicico.evaluation.dto;
 
+import com.nicico.evaluation.model.Catalog;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -26,6 +27,7 @@ public class EvaluationPeriodDTO {
     @NotNull
     private Date endDateAssessment;
     private String description;
+    private Catalog statusCatalog;
 
     @Getter
     @Setter
