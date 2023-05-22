@@ -61,6 +61,15 @@ public class EvaluationController {
     }
 
     /**
+     * @param request is the model of input for create evaluation entity
+     * @return EvaluationDTOInfo is the saved evaluation entity
+     */
+    @PostMapping(value = "/create-list")
+    public ResponseEntity<List<EvaluationDTO.Info>> createList(@Valid @RequestBody List<EvaluationDTO.Create> request) {
+        return new ResponseEntity<>(service.createList(request), HttpStatus.CREATED);
+    }
+
+    /**
      * @param request is  the model of input for update evaluation entity
      * @return EvaluationDTOInfo is the updated evaluation entity
      */

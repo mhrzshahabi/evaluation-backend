@@ -92,4 +92,11 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     public SearchDTO.SearchRs<OrganizationTreeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
+
+    @Override
+    public OrganizationTreeDTO.Info getByPostCodeAndNationalCode(String postCode, String nationalCode) {
+        OrganizationTree organizationTree = repository.findByPostCodeAndNationalCode(postCode, nationalCode)
+                .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return  mapper.entityToDtoInfo(organizationTree);
+    }
 }

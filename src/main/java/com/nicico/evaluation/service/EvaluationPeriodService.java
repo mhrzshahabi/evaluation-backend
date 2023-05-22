@@ -95,7 +95,9 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
             ) {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
-                List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(save, dto.getPostCode());
+                if(dto.getPostCode() != null && !dto.getPostCode().isEmpty()) {
+                    List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(save, dto.getPostCode());
+                }
                 EvaluationPeriodDTO.Info evaluationPeriodInfo = evaluationPeriodMapper.entityToDtoInfo(save);
                 return evaluationPeriodInfo;
             } else

@@ -27,6 +27,12 @@ public abstract class EvaluationMapper {
     public abstract Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
 
     @Mappings({
+            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
+    })
+    public abstract List<Evaluation> dtoCreateToEntityList(List<EvaluationDTO.Create> dto);
+
+    @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
     })
