@@ -27,7 +27,6 @@ public class EvaluationItemInstance extends Auditable {
     @JoinColumn(name = "post_merit_instance_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_evaluation_item_instance_to_post_merit_instance"))
     private PostMeritInstance postMeritInstance;
 
-    @NotNull
     @Column(name = "post_merit_instance_id")
     private Long postMeritInstanceId;
 
@@ -36,7 +35,6 @@ public class EvaluationItemInstance extends Auditable {
     @JoinColumn(name = "instance_group_type_merit_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_evaluation_item_instance_to_instance_group_type_merit"))
     private InstanceGroupTypeMerit instanceGroupTypeMerit;
 
-    @NotNull
     @Column(name = "instance_group_type_merit_id")
     private Long instanceGroupTypeMeritId;
 
