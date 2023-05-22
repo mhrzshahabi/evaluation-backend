@@ -102,19 +102,23 @@ public class EvaluationService implements IEvaluationService {
         List<EvaluationDTO.Info> evaluationInfo = new ArrayList<>();
         List<Evaluation> evaluations = mapper.dtoCreateToEntityList(dto);
         for (Evaluation e : evaluations) {
-            List<Evaluation> evaluationss =
+            List<Evaluation> evaluationList =
                     repository.findByEvaluationPeriodIdAndAssessPostCodeAndEndDate(e.getEvaluationPeriodId(), e.getAssessPostCode(), e.getEndDate());
-            if (evaluationss.size() > 0) {
+            if (evaluationList.size() > 0) {
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
             }
             SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(e.getAssessNationalCode(), e.getAssessPostCode());
             if (scInfo != null) {
                 e.setAssessorPostCode(scInfo.getAssessorPostCode());
                 e.setAssessorNationalCode(scInfo.getAssessorNationalCode());
+                e.setAssessorFullName(scInfo.getAssessorFullName());
+                e.setAssessFullName(scInfo.getAssessFullName());
             } else {
                 OrganizationTreeDTO.Info organizationTreeInfo = organizationTreeService.getByPostCodeAndNationalCode(e.getAssessPostCode(), e.getAssessNationalCode());
                 e.setAssessorPostCode(organizationTreeInfo.getPostParentCode());
                 e.setAssessorNationalCode(organizationTreeInfo.getNationalCodeParent());
+                e.setAssessorFullName(organizationTreeInfo.getFirstNameParent()+" "+organizationTreeInfo.getLastNameParent());
+                e.setAssessFullName(organizationTreeInfo.getFullName());
             }
             e = repository.save(e);
             evaluationInfo.add(mapper.entityToDtoInfo(e));

@@ -1157,6 +1157,15 @@
             <column name="status_catalog_id" type="NUMBER(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1684652498" author="namdari">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_assessor_full_name" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_assess_full_name" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="1684743891" author="semami">
         <sql>
             update tbl_catalog set c_title = 'در انتظار تکمیل'  where c_code = 'Awaiting-review'
