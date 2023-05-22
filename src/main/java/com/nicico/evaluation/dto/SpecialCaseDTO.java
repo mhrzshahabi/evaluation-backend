@@ -32,8 +32,10 @@ public class SpecialCaseDTO {
     @NotNull
     private String assessorPostCode;
 
+    @NotNull
     private Date startDate;
 
+    @NotNull
     private Date endDate;
 
     @Getter
