@@ -1,8 +1,10 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.ChangeStatusDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.model.Evaluation;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,4 +32,5 @@ public interface IEvaluationService {
 
     SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+    BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
 }
