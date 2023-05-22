@@ -27,7 +27,7 @@ public class EvaluationPeriodDTO {
     @NotNull
     private Date endDateAssessment;
     private String description;
-    private Catalog statusCatalog;
+
 
     @Getter
     @Setter
@@ -35,6 +35,7 @@ public class EvaluationPeriodDTO {
     @ApiModel("EvaluationPeriodInfoRq")
     public static class Info extends EvaluationPeriodDTO {
         private Long id;
+        private Catalog statusCatalog;
     }
 
     @Getter
