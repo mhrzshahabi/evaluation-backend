@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
@@ -38,12 +39,13 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
         GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(groupTypeMerit);
     }
+
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
-    public List<GroupTypeMeritDTO.Info> getAllByGroupTypeId(Long groupTypeId) {
+    public List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupType(Long groupTypeId) {
         List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeId(groupTypeId);
-        return mapper.entityToDtoInfoList(groupTypeMerit);
+        return mapper.entityToEvaluationItemDtoList(groupTypeMerit);
     }
 
     @Override

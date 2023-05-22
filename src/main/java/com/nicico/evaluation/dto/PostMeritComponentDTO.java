@@ -33,6 +33,28 @@ public abstract class PostMeritComponentDTO {
 
     @Getter
     @Setter
+    @ApiModel("PostMeritComponentInfoWithInstance")
+    public static class InfoWithInstance extends PostMeritComponentDTO {
+
+        private Long id;
+        private MeritComponentDTO.Info meritComponent;
+        private List<PostMeritInstanceTupleDto> postMeritInstanceList;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PostMeritInstanceRq")
+    public static class PostMeritInstanceTupleDto {
+
+        private Long id;
+        private Long postMeritComponentId;
+        private InstanceGroupTypeMeritDTO.InstanceTupleDTO instance;
+
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("PostMeritComponentCreateRq")
     public static class Create extends PostMeritComponentDTO {

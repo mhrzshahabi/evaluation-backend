@@ -11,13 +11,17 @@ public interface IEvaluationItemService {
 
     EvaluationItemDTO.Info get(Long id);
 
+    List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId);
+
+    List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId);
+
     EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto);
 
     List<EvaluationItemDTO.Info> createAll(List<EvaluationItemDTO.Create> requests);
 
-    List<EvaluationItemDTO.CreateItemInfo> getItemInfoByAssessPostCode(String assessPostCode);
+    List<EvaluationItemDTO.CreateItemInfo> getInfoByAssessPostCodeForCreate(String assessPostCode);
 
-    List<EvaluationItemDTO.CreateItemInfo> getItemUpdateInfo(Long id);
+    List<EvaluationItemDTO.CreateItemInfo> getInfoByEvaluationIdForUpdate(Long id);
 
     EvaluationItemDTO.Info update(Long id, EvaluationItemDTO.Update dto);
 

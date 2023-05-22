@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupPostService;
@@ -42,9 +43,9 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
-    public List<PostMeritComponentDTO.Info> getByPostCode(String groupPostCode) {
+    public List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String groupPostCode) {
         List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCode(groupPostCode);
-        return mapper.entityToDtoInfoList(byGroupPostCode);
+        return mapper.postMeritDtoToEvaluationItemInfoList(byGroupPostCode);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 
@@ -10,7 +11,7 @@ public interface IPostMeritComponentService {
 
     PostMeritComponentDTO.Info get(Long id);
 
-    List<PostMeritComponentDTO.Info> getByPostCode(String groupPostCode);
+    List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String groupPostCode);
 
     PostMeritComponentDTO.SpecResponse list(int count, int startIndex);
 
