@@ -73,6 +73,13 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION')")
+    public Evaluation getById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    }
+
+    @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION')")
     public EvaluationDTO.Info create(EvaluationDTO.Create dto) {
@@ -87,6 +94,17 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update dto) {
         Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(Evaluation, dto);
+        Evaluation save = repository.save(Evaluation);
+        return mapper.entityToDtoInfo(save);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('U_EVALUATION')")
+    public EvaluationDTO.Info update(Long id, Evaluation evaluation) {
+        Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        EvaluationDTO.Update evaluationDTO = mapper.entityToUpdateDto(evaluation);
+        mapper.update(Evaluation, evaluationDTO);
         Evaluation save = repository.save(Evaluation);
         return mapper.entityToDtoInfo(save);
     }

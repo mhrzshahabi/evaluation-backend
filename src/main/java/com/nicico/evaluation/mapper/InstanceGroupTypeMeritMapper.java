@@ -28,7 +28,5 @@ public interface InstanceGroupTypeMeritMapper {
 
     List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> entityToTupleDTOInstanceList(List<InstanceGroupTypeMerit> entities);
 
-//    List<InstanceGroupTypeMeritDTO.InstanceTupleDTO>
-
     void update(@MappingTarget InstanceGroupTypeMerit entity, InstanceGroupTypeMeritDTO.Update dto);
 }

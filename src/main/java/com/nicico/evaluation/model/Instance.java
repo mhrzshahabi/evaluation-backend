@@ -34,4 +34,7 @@ public class Instance extends Auditable {
 
     @OneToMany(mappedBy = "instance", fetch = FetchType.LAZY)
     private List<PostMeritInstance> postMeritInstances;
+
+    @OneToMany(mappedBy = "instance", fetch = FetchType.EAGER)
+    private List<EvaluationItemInstance> evaluationItemInstanceList;
 }

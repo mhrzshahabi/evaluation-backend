@@ -12,6 +12,8 @@ public interface IGroupTypeService {
 
     List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef);
 
+    List<GroupType> getTypeByEvaluationId(Long evaluationId, String levelDef);
+
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
 
     GroupTypeDTO.Info create(GroupTypeDTO.Create dto);
