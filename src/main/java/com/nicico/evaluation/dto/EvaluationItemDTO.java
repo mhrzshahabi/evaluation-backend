@@ -31,6 +31,8 @@ public abstract class EvaluationItemDTO {
     public static class Create extends EvaluationItemDTO {
         private Long averageScore;
         private List<Long> instanceIds;
+        private List<Long> postMeritInstanceIds;
+        private List<Long> instanceGroupTypeMeritIds;
     }
 
     @Getter
@@ -85,6 +87,9 @@ public abstract class EvaluationItemDTO {
         private List<EvaluationItemInstanceTuple> evaluationItemInstance;
         private String description;
         private Long evaluationId;
+        private List<Long> postMeritInstanceIds;
+        private List<GroupTypeMeritDTO.InfoWithInstance> instanceGroupTypeMerits;
+        private List<PostMeritComponentDTO.InfoWithInstance> postMeritInstanceList;
         private Long evaluationItemId;
         private Long questionnaireAnswerCatalogId;
         private Long questionnaireAnswerCatalogValue;

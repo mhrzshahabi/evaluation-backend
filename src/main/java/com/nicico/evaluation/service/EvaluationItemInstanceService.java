@@ -87,6 +87,13 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('C_EVALUATION_ITEM_INSTANCE')")
+    public List<EvaluationItemInstanceDTO.Info> createAll(List<EvaluationItemInstanceDTO.Create> requests) {
+        return requests.stream().map(this::create).toList();
+    }
+
+    @Override
     @PreAuthorize("hasAuthority('C_EVALUATION_ITEM_INSTANCE')")
     public BaseResponse batchCreate(EvaluationItemInstanceDTO.Create dto) {
         BaseResponse response = new BaseResponse();

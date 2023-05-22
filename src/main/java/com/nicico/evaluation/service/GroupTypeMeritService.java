@@ -48,7 +48,6 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
         return mapper.entityToEvaluationItemDtoList(groupTypeMerit);
     }
 
-
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")

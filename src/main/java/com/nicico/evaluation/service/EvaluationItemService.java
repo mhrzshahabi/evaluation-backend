@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.dto.EvaluationItemInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationItemMapper;
@@ -37,6 +38,7 @@ public class EvaluationItemService implements IEvaluationItemService {
     private final IGroupTypeMeritService groupTypeMeritService;
     private final IPostMeritComponentService postMeritComponentService;
     private final ICatalogService catalogService;
+    private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
 
     @Override
@@ -91,13 +93,25 @@ public class EvaluationItemService implements IEvaluationItemService {
         EvaluationItem entity = mapper.dtoCreateToEntity(dto);
         try {
             EvaluationItem evaluationItem = repository.save(entity);
-            Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
-            evaluation.setAverageScore(dto.getAverageScore());
-            evaluationService.update(dto.getEvaluationId(), evaluation);
+            UpdateEvaluation(dto);
+
+            List<EvaluationItemInstanceDTO.Create> createInstanceList = new ArrayList<>();
+            EvaluationItemInstanceDTO.Create createInstance = new EvaluationItemInstanceDTO.Create();
+
+            //   evaluationItemInstanceService.createAll(createInstanceList);
             return mapper.entityToDtoInfo(evaluationItem);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    private void UpdateEvaluation(EvaluationItemDTO.Create dto) {
+        Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
+        evaluation.setAverageScore(dto.getAverageScore());
+        Long statusByCatalogType = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream()
+                .filter(status -> status.getCode().equals(FINALIZED)).findFirst().orElseThrow().getId();
+        evaluation.setStatusCatalogId(statusByCatalogType);
+        evaluationService.update(dto.getEvaluationId(), evaluation);
     }
 
     @Override

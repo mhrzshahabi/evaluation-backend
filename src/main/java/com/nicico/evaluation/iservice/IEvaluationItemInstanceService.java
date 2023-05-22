@@ -18,6 +18,8 @@ public interface IEvaluationItemInstanceService {
 
     EvaluationItemInstanceDTO.Info create(EvaluationItemInstanceDTO.Create dto);
 
+    List<EvaluationItemInstanceDTO.Info> createAll(List<EvaluationItemInstanceDTO.Create> dto);
+
     BaseResponse batchCreate(EvaluationItemInstanceDTO.Create dto);
 
     EvaluationItemInstanceDTO.Info update(Long id, EvaluationItemInstanceDTO.Update dto);

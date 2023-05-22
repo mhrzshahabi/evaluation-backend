@@ -3,7 +3,6 @@ package com.nicico.evaluation.mapper;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
-import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,7 +27,7 @@ public interface GroupTypeMeritMapper {
 
     @Mapping(target = "groupTypeMeritId", source = "id")
     @Mapping(target = "instances", source = "instanceGroupTypeMerits")
-    EvaluationItemDTO.MeritTupleDTO entityToEvaluationItemDtoInfo(GroupTypeMeritDTO.Info groupTypeMeritDTO);
+    EvaluationItemDTO.MeritTupleDTO entityToEvaluationItemDtoInfo(GroupTypeMerit entity);
 
     EvaluationItemDTO.InstanceTupleDTO instanceToPostMeritInstance(InstanceGroupTypeMeritDTO.InstanceTupleDTO postMeritInstance);
 
