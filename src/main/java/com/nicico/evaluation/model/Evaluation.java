@@ -25,11 +25,17 @@ public class Evaluation extends Auditable {
     @Column(name = "c_assess_post_code")
     private String assessPostCode;
 
+    @Column(name = "c_assess_full_name")
+    private String assessFullName;
+
     @Column(name = "c_assessor_national_code")
     private String assessorNationalCode;
 
     @Column(name = "c_assessor_post_code")
     private String assessorPostCode;
+
+    @Column(name = "c_assessor_full_name")
+    private String assessorFullName;
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,10 +76,8 @@ public class Evaluation extends Auditable {
     @Column(name = "evaluation_period_id")
     private Long evaluationPeriodId;
 
-    @Transient
-    private String assessFullName;
 
-    @Transient
-    private String assessorFullName;
+
+
 
 }

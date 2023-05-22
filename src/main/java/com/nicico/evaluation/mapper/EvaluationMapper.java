@@ -41,8 +41,6 @@ public abstract class EvaluationMapper {
     @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
-            @Mapping(target = "assessFullName", source = "entity", qualifiedByName = "getAssessFullName"),
-            @Mapping(target = "assessorFullName", source = "entity", qualifiedByName = "getAssessorFullName"),
     })
     public abstract EvaluationDTO.Info entityToDtoInfo(Evaluation entity);
 
@@ -54,12 +52,5 @@ public abstract class EvaluationMapper {
     })
     public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
 
-    @Named("getAssessorFullName")
-    public String getAssessorFullName(Evaluation evaluation) {
-        return personService.getByNationalCode(evaluation.getAssessorNationalCode()).getFullName();
-    }
-     @Named("getAssessFullName")
-    public String getAssessFullName(Evaluation evaluation) {
-        return personService.getByNationalCode(evaluation.getAssessNationalCode()).getFullName();
-    }
+
 }
