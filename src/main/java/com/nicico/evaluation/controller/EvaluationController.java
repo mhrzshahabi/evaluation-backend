@@ -78,16 +78,6 @@ public class EvaluationController {
         return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/update-status/{id}")
-    public ResponseEntity<EvaluationDTO.Info> updateStatus(@PathVariable Long id) {
-        return new ResponseEntity<>(service.updateStatus(id), HttpStatus.OK);
-    }
-
-    @PutMapping(value = "/update-status-all")
-    public ResponseEntity<List<EvaluationDTO.Info>> updateStatusAll(@RequestBody List<Long> ids, @RequestBody Long statusCatalogId) {
-        return new ResponseEntity<>(service.updateStatusAll(ids, statusCatalogId), HttpStatus.OK);
-    }
-
     /**
      * @param id is the evaluation id for delete
      * @return status code only
