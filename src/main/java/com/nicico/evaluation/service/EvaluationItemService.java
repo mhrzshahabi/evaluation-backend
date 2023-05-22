@@ -94,15 +94,35 @@ public class EvaluationItemService implements IEvaluationItemService {
         try {
             EvaluationItem evaluationItem = repository.save(entity);
             UpdateEvaluation(dto);
+            createAllEvaluationInstance(dto, evaluationItem);
 
-            List<EvaluationItemInstanceDTO.Create> createInstanceList = new ArrayList<>();
-            EvaluationItemInstanceDTO.Create createInstance = new EvaluationItemInstanceDTO.Create();
-
-            //   evaluationItemInstanceService.createAll(createInstanceList);
             return mapper.entityToDtoInfo(evaluationItem);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    private void createAllEvaluationInstance(EvaluationItemDTO.Create dto, EvaluationItem evaluationItem) {
+
+        List<EvaluationItemInstanceDTO.Create> createInstanceList = new ArrayList<>();
+        if (Objects.nonNull(dto.getPostMeritInstanceList()) && !dto.getPostMeritInstanceList().isEmpty()) {
+            dto.getPostMeritInstanceList().forEach(postMeritInstance -> {
+                EvaluationItemInstanceDTO.Create createInstance = new EvaluationItemInstanceDTO.Create();
+                createInstance.setInstanceId(postMeritInstance.getInstanceId());
+                createInstance.setPostMeritInstanceId(postMeritInstance.getId());
+                createInstance.setEvaluationItemId(evaluationItem.getId());
+                createInstanceList.add(createInstance);
+            });
+        } else if (Objects.nonNull(dto.getInstanceGroupTypeMerits()) && !dto.getInstanceGroupTypeMerits().isEmpty()) {
+            dto.getInstanceGroupTypeMerits().forEach(instanceGroupTypeMerit -> {
+                EvaluationItemInstanceDTO.Create createInstance = new EvaluationItemInstanceDTO.Create();
+                createInstance.setInstanceId(instanceGroupTypeMerit.getInstanceId());
+                createInstance.setPostMeritInstanceId(instanceGroupTypeMerit.getId());
+                createInstance.setEvaluationItemId(evaluationItem.getId());
+                createInstanceList.add(createInstance);
+            });
+        }
+        evaluationItemInstanceService.createAll(createInstanceList);
     }
 
     private void UpdateEvaluation(EvaluationItemDTO.Create dto) {

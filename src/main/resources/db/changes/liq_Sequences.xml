@@ -90,5 +90,8 @@
     <changeSet id="1683543830" author="semami">
         <createSequence sequenceName="evaluation_item_seq_id" />
     </changeSet>
+    <changeSet id="1684742745" author="semami">
+        <createSequence sequenceName="seq_evaluation_item_instance_id" />
+    </changeSet>
 
 </databaseChangeLog>
