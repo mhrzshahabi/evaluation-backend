@@ -12,36 +12,36 @@ import java.util.Date;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public abstract class SpecialCaseMapper {
+public interface SpecialCaseMapper {
 
     @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
     })
-    public abstract SpecialCase dtoCreateToEntity(SpecialCaseDTO.Create dto);
+     SpecialCase dtoCreateToEntity(SpecialCaseDTO.Create dto);
 
     @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate")
     })
-    public abstract SpecialCaseDTO.Info entityToDtoInfo(SpecialCase entity);
+     SpecialCaseDTO.Info entityToDtoInfo(SpecialCase entity);
 
-    public abstract List<SpecialCaseDTO.Info> entityToDtoInfoList(List<SpecialCase> entities);
+     List<SpecialCaseDTO.Info> entityToDtoInfoList(List<SpecialCase> entities);
 
     @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
     })
-    public abstract void update(@MappingTarget SpecialCase entity, SpecialCaseDTO.Update dto);
+     void update(@MappingTarget SpecialCase entity, SpecialCaseDTO.Update dto);
 
     @Named("convertDateToString")
-    String convertDateToString(Date date) {
+   default String convertDateToString(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return DateUtil.convertMiToKh(dateFormat.format(date));
     }
 
     @Named("convertStringToDate")
-    Date convertStringToDate(String date) throws ParseException {
+    default Date convertStringToDate(String date) throws ParseException {
         String miDate = DateUtil.convertKhToMi1(date);
         return new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
     }
