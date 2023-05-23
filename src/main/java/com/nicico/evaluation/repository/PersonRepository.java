@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface PersonRepository extends JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
 
     Person findAllByNationalCode(String nationalCode);
+    Person findByPostCode(String postCode);
+
 }

@@ -5,13 +5,11 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.EvaluationDTO;
-import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.OrganizationTreeDTO;
-import com.nicico.evaluation.dto.SpecialCaseDTO;
+import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
+import com.nicico.evaluation.iservice.IPersonService;
 import com.nicico.evaluation.iservice.ISpecialCaseService;
 import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Catalog;
@@ -99,30 +97,44 @@ public class EvaluationService implements IEvaluationService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION')")
-    public List<EvaluationDTO.Info> createList(List<EvaluationDTO.Create> dto) {
+    public List<EvaluationDTO.Info> createList(List<EvaluationDTO.CreateList> dto) {
         List<EvaluationDTO.Info> evaluationInfo = new ArrayList<>();
-        List<Evaluation> evaluations = mapper.dtoCreateToEntityList(dto);
-        for (Evaluation e : evaluations) {
+        for (EvaluationDTO.CreateList evaluationCreate : dto) {
+            Evaluation evaluation = new Evaluation();
+            Catalog catalog = catalogRepository.findByCode("Initial-registration").orElse(null);
+            if(catalog != null)
+                evaluation.setStatusCatalogId(catalog.getId());
+            evaluation.setEvaluationPeriodId(evaluationCreate.getEvaluationPeriodId());
+            OrganizationTreeDTO.Info orgTreeInfo  = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
             List<Evaluation> evaluationList =
-                    repository.findByEvaluationPeriodIdAndAssessPostCodeAndEndDate(e.getEvaluationPeriodId(), e.getAssessPostCode(), e.getEndDate());
+                    repository.findByEvaluationPeriodIdAndAssessPostCode(evaluationCreate.getEvaluationPeriodId(), evaluationCreate.getPostCode());
             if (evaluationList.size() > 0) {
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
             }
-            SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(e.getAssessNationalCode(), e.getAssessPostCode());
+            SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(orgTreeInfo.getNationalCode(), evaluationCreate.getPostCode());
             if (scInfo != null) {
-                e.setAssessorPostCode(scInfo.getAssessorPostCode());
-                e.setAssessorNationalCode(scInfo.getAssessorNationalCode());
-                e.setAssessorFullName(scInfo.getAssessorFullName());
-                e.setAssessFullName(scInfo.getAssessFullName());
+                evaluation.setAssessorPostCode(scInfo.getAssessorPostCode());
+                evaluation.setAssessorNationalCode(scInfo.getAssessorNationalCode());
+                evaluation.setAssessorFullName(scInfo.getAssessorFullName());
+                evaluation.setAssessFullName(scInfo.getAssessFullName());
+
+                evaluation.setAssessNationalCode(scInfo.getAssessorNationalCode());
+
+                evaluation.setAssessPostCode(evaluationCreate.getPostCode());
             } else {
-                OrganizationTreeDTO.Info organizationTreeInfo = organizationTreeService.getByPostCodeAndNationalCode(e.getAssessPostCode(), e.getAssessNationalCode());
-                e.setAssessorPostCode(organizationTreeInfo.getPostParentCode());
-                e.setAssessorNationalCode(organizationTreeInfo.getNationalCodeParent());
-                e.setAssessorFullName(organizationTreeInfo.getFirstNameParent() + " " + organizationTreeInfo.getLastNameParent());
-                e.setAssessFullName(organizationTreeInfo.getFullName());
+                evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode() );
+
+                evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent() == null ? " " : orgTreeInfo.getNationalCodeParent());
+
+                evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent()+" "+orgTreeInfo.getLastNameParent());
+                evaluation.setAssessFullName(orgTreeInfo.getFullName());
+
+                evaluation.setAssessNationalCode(orgTreeInfo.getNationalCodeParent() == null ? " " : orgTreeInfo.getNationalCodeParent());
+
+                evaluation.setAssessPostCode(evaluationCreate.getPostCode());
             }
-            e = repository.save(e);
-            evaluationInfo.add(mapper.entityToDtoInfo(e));
+            evaluation = repository.save(evaluation);
+            evaluationInfo.add(mapper.entityToDtoInfo(evaluation));
         }
         return evaluationInfo;
     }

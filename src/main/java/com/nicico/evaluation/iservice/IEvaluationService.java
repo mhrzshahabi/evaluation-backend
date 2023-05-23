@@ -21,7 +21,7 @@ public interface IEvaluationService {
 
     EvaluationDTO.Info create(EvaluationDTO.Create dto);
 
-    List<EvaluationDTO.Info> createList(List<EvaluationDTO.Create> dto);
+    List<EvaluationDTO.Info> createList(List<EvaluationDTO.CreateList> dto);
 
     EvaluationDTO.Info update(Long id, EvaluationDTO.Update dto);
 

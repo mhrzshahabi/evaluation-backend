@@ -45,6 +45,14 @@ public class PersonService implements IPersonService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_PERSON')")
+    public PersonDTO.Info getByPostCode(String postCode) {
+        Person person = repository.findByPostCode(postCode);
+        return mapper.entityToDtoInfo(person);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_PERSON')")
     public PersonDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<Person> persons = repository.findAll(pageable);

@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, JpaSpecificationExecutor<Evaluation> {
-    List<Evaluation> findByEvaluationPeriodIdAndAssessPostCodeAndEndDate(Long id, String assessPostCode, String endDate);
+    List<Evaluation> findByEvaluationPeriodIdAndAssessPostCode(Long id, String assessPostCode);
     List<Evaluation> findAllByIdIn(List<Long> id);
 }
