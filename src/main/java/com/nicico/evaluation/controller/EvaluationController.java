@@ -65,7 +65,7 @@ public class EvaluationController {
      * @return EvaluationDTOInfo is the saved evaluation entity
      */
     @PostMapping(value = "/create-list")
-    public ResponseEntity<List<EvaluationDTO.Info>> createList(@Valid @RequestBody List<EvaluationDTO.Create> request) {
+    public ResponseEntity<List<EvaluationDTO.Info>> createList(@Valid @RequestBody List<EvaluationDTO.CreateList> request) {
         return new ResponseEntity<>(service.createList(request), HttpStatus.CREATED);
     }
 

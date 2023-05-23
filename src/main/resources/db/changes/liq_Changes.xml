@@ -1165,6 +1165,15 @@
             <column name="c_assess_full_name" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1684753476" author="a.lotfi">
+        <dropColumn tableName="tbl_evaluation" columnName="d_start_date"/>
+        <dropColumn tableName="tbl_evaluation" columnName="d_end_date"/>
+    </changeSet>
+    <changeSet id="1684760677" author="a.lotfi">
+        <dropNotNullConstraint  columnName="method_catalog_id"
+                                tableName="tbl_evaluation"/>
+    </changeSet>
+
 
 
 </databaseChangeLog>

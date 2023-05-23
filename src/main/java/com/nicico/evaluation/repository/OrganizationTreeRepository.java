@@ -16,6 +16,7 @@ public interface OrganizationTreeRepository extends JpaRepository<OrganizationTr
     List<OrganizationTree> findAllByPostParentIdAndOrgStructureId(Long postParentId, Long orgStructureId, Pageable pageable);
 
     Optional<OrganizationTree> findByPostCodeAndNationalCode(String postCode, String nationalCode);
+    Optional<OrganizationTree> findByPostCode(String postCode);
 
     Long countByPostParentId(Long postId);
 }

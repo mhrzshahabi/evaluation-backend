@@ -12,6 +12,8 @@ import com.nicico.evaluation.model.EvaluationPeriodPost;
 import com.nicico.evaluation.repository.EvaluationPeriodPostRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,8 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     private final EvaluationPeriodPostMapper mapper;
     private final IPostRelationService postRelationService;
     private final EvaluationPeriodPostRepository repository;
+    private final ResourceBundleMessageSource messageSource;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -47,11 +51,15 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
 //                throw new Exception();
             postCode = check1(newEvaluationPeriod, postCode);
             if (postCode.isEmpty())
-                throw new Exception();
+                throw new Exception("equal");
             List<EvaluationPeriodPost> evaluationPeriodPosts = mapper.listPostCodeToEntities(newEvaluationPeriod.getId(), postCode);
             evaluationPeriodPosts = repository.saveAll(evaluationPeriodPosts);
             return mapper.entityToDtoInfoList(evaluationPeriodPosts);
         } catch (Exception exception) {
+            if(exception.getMessage().equals("equal")){
+                String errmsg = messageSource.getMessage("message.equal.evaluation.period", null, LocaleContextHolder.getLocale());
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null, errmsg);
+            }
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
     }

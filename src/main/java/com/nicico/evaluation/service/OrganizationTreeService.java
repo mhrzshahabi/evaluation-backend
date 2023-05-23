@@ -99,4 +99,11 @@ public class OrganizationTreeService implements IOrganizationTreeService {
                 .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return  mapper.entityToDtoInfo(organizationTree);
     }
+
+    @Override
+    public OrganizationTreeDTO.Info getByPostCode(String postCode) {
+        OrganizationTree organizationTree = repository.findByPostCode(postCode)
+                .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return  mapper.entityToDtoInfo(organizationTree);
+    }
 }
