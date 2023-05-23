@@ -17,4 +17,5 @@ public interface CatalogRepository extends JpaRepository<Catalog, Long>, JpaSpec
     List<Catalog> findAllByCatalogTypeCode(@Param("code") String code);
 
     Optional<Catalog> findByCode(String code);
+    List<Catalog> findAllByCodeIn(List<String> codes);
 }
