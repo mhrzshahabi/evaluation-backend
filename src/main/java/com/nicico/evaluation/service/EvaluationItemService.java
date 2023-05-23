@@ -209,6 +209,7 @@ public class EvaluationItemService implements IEvaluationItemService {
                     CatalogDTO.Info catalogDTO = new CatalogDTO.Info();
                     catalogDTO.setValue((merit.getWeight() * answer.getValue()) / 100);
                     catalogDTO.setCode(answer.getCode());
+                    catalogDTO.setTitle(answer.getTitle());
                     catalogDTO.setId(answer.getId());
                     convertedAnswerListByCatalog.add(catalogDTO);
 
@@ -216,6 +217,7 @@ public class EvaluationItemService implements IEvaluationItemService {
                     CatalogDTO.Info totalItemWeightConvertedCatalogDTO = new CatalogDTO.Info();
                     totalItemWeightConvertedCatalogDTO.setId(answer.getId());
                     totalItemWeightConvertedCatalogDTO.setCode(answer.getCode());
+                    totalItemWeightConvertedCatalogDTO.setTitle(answer.getTitle());
                     totalItemWeightConvertedCatalogDTO.setValue(catalogDTO.getValue() / sumMeritsWeight);
                     totalItemWeightConvertedByCatalog.add(totalItemWeightConvertedCatalogDTO);
 
@@ -223,6 +225,7 @@ public class EvaluationItemService implements IEvaluationItemService {
                     CatalogDTO.Info groupTypeWightConvertedCatalogDTO = new CatalogDTO.Info();
                     groupTypeWightConvertedCatalogDTO.setId(answer.getId());
                     groupTypeWightConvertedCatalogDTO.setCode(answer.getCode());
+                    groupTypeWightConvertedCatalogDTO.setTitle(answer.getTitle());
                     groupTypeWightConvertedCatalogDTO.setValue(totalItemWeightConvertedCatalogDTO.getValue() * item.getGroupTypeWeight());
                     groupTypeWeightConvertedByCatalog.add(groupTypeWightConvertedCatalogDTO);
 
