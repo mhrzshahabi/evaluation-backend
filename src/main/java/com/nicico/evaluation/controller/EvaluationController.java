@@ -1,10 +1,13 @@
 package com.nicico.evaluation.controller;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationService;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -59,6 +63,15 @@ public class EvaluationController {
     }
 
     /**
+     * @param request is the model of input for create evaluation entity
+     * @return EvaluationDTOInfo is the saved evaluation entity
+     */
+    @PostMapping(value = "/create-list")
+    public ResponseEntity<List<EvaluationDTO.Info>> createList(@Valid @RequestBody List<EvaluationDTO.CreateList> request) {
+        return new ResponseEntity<>(service.createList(request), HttpStatus.CREATED);
+    }
+
+    /**
      * @param request is  the model of input for update evaluation entity
      * @return EvaluationDTOInfo is the updated evaluation entity
      */
@@ -85,6 +98,15 @@ public class EvaluationController {
     }
 
     /**
+     * @param ChangeStatusDTO is id of evaluation for change status and is next or previous for change status
+     * @return Boolean is the result of function
+     */
+    @PostMapping(value = "/change-status")
+    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO ChangeStatusDTO) {
+        return new ResponseEntity<>(service.changeStatus(ChangeStatusDTO), HttpStatus.OK);
+    }
+
+    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
@@ -95,6 +117,42 @@ public class EvaluationController {
                                                              @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                              @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<EvaluationDTO.Info> data = service.search(request);
+        final EvaluationDTO.Response response = new EvaluationDTO.Response();
+        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<EvaluationDTO.Info> is the list of EvaluationInfo entity that match the criteria
+     */
+    @PostMapping(value = "/spec-list/assessorNationalCode")
+    public ResponseEntity<EvaluationDTO.SpecResponse> searchByAssessorNationalCode(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                                   @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                                   @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq nationalCodeCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("assessorNationalCode")
+                .setValue(SecurityUtil.getNationalCode());
+
+        criteriaRqList.add(nationalCodeCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
         SearchDTO.SearchRs<EvaluationDTO.Info> data = service.search(request);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();

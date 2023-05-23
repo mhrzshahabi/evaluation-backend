@@ -49,6 +49,7 @@ public class Attachment<E> extends Auditable {
             idType = "long", metaType = "string",
             metaValues = {
                     @MetaValue(targetEntity = SensitiveEvents.class, value = EvaluationConstant.SENSITIVE_EVENTS),
+                    @MetaValue(targetEntity = SensitiveEventPerson.class, value = EvaluationConstant.SENSITIVE_EVENT_PERSON),
                     @MetaValue(targetEntity = Batch.class, value = EvaluationConstant.BATCH),
             }
     )

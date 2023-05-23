@@ -42,6 +42,13 @@ public class GroupTypeService implements IGroupTypeService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public List<GroupType> getTypeByEvaluationId(Long evaluationId, String levelDef) {
+        return repository.getTypeByEvaluationId(evaluationId, levelDef);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public GroupTypeDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);

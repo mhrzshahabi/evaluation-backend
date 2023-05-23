@@ -67,7 +67,7 @@ public class EvaluationPeriodController {
      */
     @PostMapping(value = "/create-evaluation-period-post")
     public ResponseEntity<List<EvaluationPeriodPostDTO.Info>> createEvaluationPeriodPost(@RequestBody EvaluationPeriodDTO.CreatePost request) {
-        return new ResponseEntity<>(service.createEvaluationPeriodPost(request.getId(), request.getPostCodes()), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.createEvaluationPeriodPost(request.getId(), request.getPostCode()), HttpStatus.CREATED);
     }
 
     /**

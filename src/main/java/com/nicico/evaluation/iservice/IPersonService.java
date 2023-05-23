@@ -8,6 +8,7 @@ public interface IPersonService {
     PersonDTO.Info get(Long id);
 
     PersonDTO.Info getByNationalCode(String nationalCode);
+    PersonDTO.Info getByPostCode(String postCode);
 
     PersonDTO.SpecResponse list(int count, int startIndex);
 

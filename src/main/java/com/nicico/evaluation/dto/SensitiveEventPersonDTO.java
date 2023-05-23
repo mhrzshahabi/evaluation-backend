@@ -26,6 +26,8 @@ public abstract class SensitiveEventPersonDTO {
         private Long id;
         private SensitiveEventsDTO.Info sensitiveEvent;
         private MeritComponentTupleDTO meritComponent;
+        private AttachmentDTO.AttachInfo attachment;
+
     }
 
     @Getter

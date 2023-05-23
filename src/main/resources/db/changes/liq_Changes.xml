@@ -1144,5 +1144,41 @@
             <column name="d_start_date" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1684328574" author="semami">
+        <addColumn tableName="tbl_evaluation_item_instance">
+            <column name="instance_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1684646302" author="semami">
+        <modifyDataType tableName="tbl_catalog" columnName="c_value" newDataType="FLOAT(22)"/>
+    </changeSet>
+    <changeSet id="1684652497" author="a.lotfi">
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1684652498" author="namdari">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_assessor_full_name" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_assess_full_name" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1684753476" author="a.lotfi">
+        <dropColumn tableName="tbl_evaluation" columnName="d_start_date"/>
+        <dropColumn tableName="tbl_evaluation" columnName="d_end_date"/>
+    </changeSet>
+    <changeSet id="1684760677" author="a.lotfi">
+        <dropNotNullConstraint  columnName="method_catalog_id"
+                                tableName="tbl_evaluation"/>
+    </changeSet>
+
+
+    <changeSet id="1684743891" author="semami">
+        <sql>
+            update tbl_catalog set c_title = 'در انتظار تکمیل'  where c_code = 'Awaiting-review'
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

@@ -93,7 +93,7 @@ public class CatalogService implements ICatalogService {
     @Transactional(readOnly = true)
     public CatalogDTO.SpecResponse catalogListByCatalogTypeCode(String code) {
         List<Catalog> allByCatalogTypeCode = repository.findAllByCatalogTypeCode(code);
-        List<CatalogDTO.Info> catalogInfos =  mapper.entityToDtoInfoList(allByCatalogTypeCode);
+        List<CatalogDTO.Info> catalogInfos = mapper.entityToDtoInfoList(allByCatalogTypeCode);
         final CatalogDTO.Response response = new CatalogDTO.Response();
         final CatalogDTO.SpecResponse specRs = new CatalogDTO.SpecResponse();
         response.setData(catalogInfos)
@@ -102,6 +102,13 @@ public class CatalogService implements ICatalogService {
                 .setTotalRows(catalogInfos.size());
         specRs.setResponse(response);
         return specRs;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatalogDTO.Info> catalogByCatalogTypeCode(String code) {
+        List<Catalog> allByCatalogTypeCode = repository.findAllByCatalogTypeCode(code);
+        return mapper.entityToDtoInfoList(allByCatalogTypeCode);
     }
 
     @Override

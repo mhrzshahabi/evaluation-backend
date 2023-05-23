@@ -25,30 +25,26 @@ public class Evaluation extends Auditable {
     @Column(name = "c_assess_post_code")
     private String assessPostCode;
 
+    @Column(name = "c_assess_full_name")
+    private String assessFullName;
+
     @Column(name = "c_assessor_national_code")
     private String assessorNationalCode;
 
     @Column(name = "c_assessor_post_code")
     private String assessorPostCode;
 
+    @Column(name = "c_assessor_full_name")
+    private String assessorFullName;
+
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "method_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_method_catalog_to_catalog"))
     private Catalog methodCatalog;
 
-    @NotNull
     @Column(name = "method_catalog_id")
     private Long methodCatalogId;
 
-    @NotNull
-    @Column(name = "d_start_date")
-    private String startDate;
-
-    @NotNull
-    @Column(name = "d_end_date")
-    private String endDate;
-
-    @NotNull
     @Column(name = "average_score")
     private Long averageScore;
 
@@ -70,7 +66,8 @@ public class Evaluation extends Auditable {
     @Column(name = "evaluation_period_id")
     private Long evaluationPeriodId;
 
-    @Transient
-    private String fullName;
+
+
+
 
 }

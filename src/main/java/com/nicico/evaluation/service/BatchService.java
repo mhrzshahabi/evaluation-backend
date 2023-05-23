@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -123,6 +124,17 @@ public class BatchService implements IBatchService {
             return batchDetailService.create(detailCreate);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('U_BATCH')")
+    public void updateStatus(Long id, Long statusCatalogId) {
+        Optional<Batch> optionalBatch = repository.findById(id);
+        if (optionalBatch.isPresent()) {
+            Batch batch = optionalBatch.get();
+            batch.setStatusCatalogId(statusCatalogId);
+            repository.save(batch);
         }
     }
 

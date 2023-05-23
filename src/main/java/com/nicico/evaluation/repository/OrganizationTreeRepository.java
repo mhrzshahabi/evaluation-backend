@@ -7,12 +7,16 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrganizationTreeRepository extends JpaRepository<OrganizationTree, Long>, JpaSpecificationExecutor<OrganizationTree> {
     List<OrganizationTree> findAllByOrgStructureId(Long orgStructureId);
 
     List<OrganizationTree> findAllByPostParentIdAndOrgStructureId(Long postParentId, Long orgStructureId, Pageable pageable);
+
+    Optional<OrganizationTree> findByPostCodeAndNationalCode(String postCode, String nationalCode);
+    Optional<OrganizationTree> findByPostCode(String postCode);
 
     Long countByPostParentId(Long postId);
 }

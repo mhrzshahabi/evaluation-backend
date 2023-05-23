@@ -47,6 +47,15 @@ public class InstanceDTO {
         //todo
         private Boolean hasEvaluation = false;
         List<PostMeritInstanceTupleDTO> postMeritInstances;
+        List<EvaluationItemInstanceTuple> evaluationItemInstanceList;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("EvaluationItemInstanceTuple")
+    public static class EvaluationItemInstanceTuple {
+
+        private Long id;
     }
 
     @Getter

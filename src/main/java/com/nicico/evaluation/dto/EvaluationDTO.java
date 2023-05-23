@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,10 +26,6 @@ public class EvaluationDTO {
     private String assessorPostCode;
     @NotNull
     private Long methodCatalogId;
-    @NotNull
-    private Date startDate;
-    @NotNull
-    private Date endDate;
     @NotNull
     private Long averageScore;
     @NotNull
@@ -51,6 +48,15 @@ public class EvaluationDTO {
     @ApiModel("EvaluationCreateRq")
     public static class Create extends EvaluationDTO {
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationCreateListRq")
+    public static class CreateList {
+        private String postCode;
+        @NotNull
+        private Long evaluationPeriodId;
+    }
 
     @Getter
     @Setter
@@ -60,7 +66,8 @@ public class EvaluationDTO {
         private CatalogDTO.Info methodCatalog;
         private CatalogDTO.Info statusCatalog;
         private EvaluationPeriodTupleDTO evaluationPeriod;
-        private String fullName;
+        private String assessFullName;
+        private String assessorFullName;
 
     }
 
@@ -112,4 +119,15 @@ public class EvaluationDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ChangeStatusDTO")
+    public static class ChangeStatusDTO {
+        @NotNull
+        private List<Long> evaluationIds;
+        @NotNull
+        private String status;
+
+    }
 }

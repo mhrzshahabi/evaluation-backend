@@ -17,9 +17,13 @@ public abstract class AttachmentDTO {
     private String fileName;
     private Long fileTypeId;
     private String description;
+    @NotNull(message = "آی دی نمی تواند خالی باشد")
     private Long objectId;
+    @NotNull(message = "نوع فایل نمی تواند خالی باشد")
     private String objectType;
+    @NotNull
     private String groupId;
+    @NotNull
     private String fmsKey;
 
     @Getter

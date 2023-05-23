@@ -29,6 +29,10 @@ public abstract class EvaluationItemDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationItemCreateRq")
     public static class Create extends EvaluationItemDTO {
+        private Long averageScore;
+        private List<Long> instanceIds;
+        private List<PostMeritInstanceTuple> postMeritInstanceList;
+        private List<InstanceGroupTypeMeritTuple> instanceGroupTypeMerits;
     }
 
     @Getter
@@ -41,6 +45,7 @@ public abstract class EvaluationItemDTO {
         private GroupTypeMeritDTO.Info groupTypeMerit;
         private PostMeritComponentDTO.Info postMeritComponent;
         private CatalogDTO.Info questionnaireAnswerCatalog;
+        private List<EvaluationItemInstanceTuple> evaluationItemInstanceList;
 
     }
 
@@ -57,35 +62,98 @@ public abstract class EvaluationItemDTO {
 
     @Getter
     @Setter
+    @ApiModel("InstanceTupleInfo")
+    public static class InstanceTupleDTO {
+
+        private Long id;
+        private String title;
+    }
+
+    @Getter
+    @Setter
     @ApiModel("MeritInfo")
     public static class MeritTupleDTO {
 
         private Long postMeritId;
         private Long groupTypeMeritId;
         private MeritComponentDTO.Info meritComponent;
-        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
-        private List<PostMeritInstanceDTO.InstanceTupleDTO> postMeritInstanceList;
+        private Long weight;
+        private List<InstanceTupleDTO> instances;
+        private List<CatalogDTO.Info> answerInfo;
+        private List<CatalogDTO.Info> answerConvertedInfo;
+        private List<CatalogDTO.Info> totalItemWeightConvertedByCatalog;
+        private List<CatalogDTO.Info> groupTypeWeightConvertedByCatalog;
+
+        private List<EvaluationItemInstanceTuple> evaluationItemInstance;
         private String description;
+        private Long evaluationId;
+        private List<InstanceGroupTypeMeritTuple> instanceGroupTypeMerits;
+        private List<PostMeritInstanceTuple> postMeritInstanceList;
+        private Long evaluationItemId;
+        private Long questionnaireAnswerCatalogId;
+        private Long questionnaireAnswerCatalogValue;
+        private String questionnaireAnswerCatalogCode;
 
     }
 
     @Getter
     @Setter
-    @Accessors(chain = true)
-    @ApiModel("InstanceTupleRq")
-    public class InstanceTupleDTO {
+    @ApiModel("PostMeritInstanceTuple")
+    public static class PostMeritInstanceTuple {
 
-        @NotNull
-        private String id;
-        @NotNull
-        private String title;
+        private Long id;
+        private Long instanceId;
+
     }
+
+    @Getter
+    @Setter
+    @ApiModel("InstanceGroupTypeMeritTuple")
+    public static class InstanceGroupTypeMeritTuple {
+
+        private Long id;
+        private Long instanceId;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("EvaluationItemInstanceTuple")
+    public static class EvaluationItemInstanceTuple {
+
+        private Long id;
+        private InstanceTupleDTO instance;
+        private PostMeritInstanceTuple postMeritInstance;
+        private InstanceGroupTypeMeritTuple instanceGroupTypeMerit;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("PostMeritTupleInfo")
+    public static class PostMeritTupleDTO {
+
+        private Long postMeritId;
+        private Long groupTypeMeritId;
+        private Long weight;
+        private MeritComponentDTO.Info meritComponent;
+        // private List<InstanceTupleDTO> instances;
+        private List<EvaluationItemInstanceTuple> evaluationItemInstance;
+        private String description;
+        private Long evaluationId;
+        private Long evaluationItemId;
+        private Long questionnaireAnswerCatalogId;
+        private Long questionnaireAnswerCatalogValue;
+        private String questionnaireAnswerCatalogCode;
+
+    }
+
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("EvaluationItemUpdateRq")
     public static class Update extends EvaluationItemDTO {
+        private Long averageScore;
 
     }
 

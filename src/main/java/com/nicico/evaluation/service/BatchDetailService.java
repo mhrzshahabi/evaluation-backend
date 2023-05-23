@@ -16,6 +16,8 @@ import com.nicico.evaluation.repository.BatchDetailRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,7 @@ import java.util.Optional;
 @Service
 public class BatchDetailService implements IBatchDetailService {
 
+    private IBatchService batchService;
     private final BatchDetailMapper mapper;
     private final ObjectMapper objectMapper;
     private final PageableMapper pageableMapper;
@@ -40,6 +43,11 @@ public class BatchDetailService implements IBatchDetailService {
     private final IKPITypeService kpiTypeService;
     private final BatchDetailRepository repository;
     private final IPostMeritInstanceService postMeritInstanceService;
+
+    @Autowired
+    public void setBatchService(@Lazy IBatchService batchService) {
+        this.batchService = batchService;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -152,7 +160,7 @@ public class BatchDetailService implements IBatchDetailService {
         return new ExcelGenerator.ExcelDownload(body);
     }
 
-    @Async
+    @Async("threadPoolAsync")
     void batchCreate(BatchDetailDTO.CreateList dto) {
 
         Long successCatalogId = catalogService.getByCode("Successful").getId();
@@ -186,6 +194,8 @@ public class BatchDetailService implements IBatchDetailService {
                 }
             });
         }
+        Long completedCatalogId = catalogService.getByCode("Completed").getId();
+        batchService.updateStatus(dto.getBatchId(), completedCatalogId);
     }
 
 }

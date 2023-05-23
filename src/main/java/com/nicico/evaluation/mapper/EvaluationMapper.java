@@ -20,29 +20,22 @@ public abstract class EvaluationMapper {
 
     public abstract List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
 
-    @Mappings({
-            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
-            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
-    })
+
     public abstract Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
 
-    @Mappings({
-            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
-            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
-            @Mapping(target = "fullName", source = "entity", qualifiedByName = "getFullName"),
-    })
+
+    public abstract List<Evaluation> dtoCreateToEntityList(List<EvaluationDTO.Create> dto);
+
+
+    public abstract EvaluationDTO.Update entityToUpdateDto(Evaluation entity);
+
+
     public abstract EvaluationDTO.Info entityToDtoInfo(Evaluation entity);
 
     public abstract List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
 
-    @Mappings({
-            @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
-            @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
-    })
+
     public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
 
-    @Named("getFullName")
-    public String getFullName(Evaluation evaluation) {
-        return personService.getByNationalCode(evaluation.getAssessNationalCode()).getFullName();
-    }
+
 }
