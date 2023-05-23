@@ -1,41 +1,29 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
-import com.nicico.evaluation.iservice.IPersonService;
 import com.nicico.evaluation.model.Evaluation;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = SpecialCaseMapper.class)
-public abstract class EvaluationMapper {
+public interface EvaluationMapper {
 
-    @Lazy
-    @Autowired
-    IPersonService personService;
+    EvaluationDTO.Excel entityToDtoExcel(Evaluation entity);
 
-    public abstract EvaluationDTO.Excel entityToDtoExcel(Evaluation entity);
+    List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
 
-    public abstract List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
+    Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
 
+    List<Evaluation> dtoCreateToEntityList(List<EvaluationDTO.Create> dto);
 
-    public abstract Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
+    EvaluationDTO.Update entityToUpdateDto(Evaluation entity);
 
+    EvaluationDTO.Info entityToDtoInfo(Evaluation entity);
 
-    public abstract List<Evaluation> dtoCreateToEntityList(List<EvaluationDTO.Create> dto);
+    List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
 
-
-    public abstract EvaluationDTO.Update entityToUpdateDto(Evaluation entity);
-
-
-    public abstract EvaluationDTO.Info entityToDtoInfo(Evaluation entity);
-
-    public abstract List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
-
-
-    public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
+    void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
 
 
 }
