@@ -98,11 +98,11 @@ public class EvaluationService implements IEvaluationService {
     @PreAuthorize("hasAuthority('C_EVALUATION')")
     public List<EvaluationDTO.Info> createList(List<EvaluationDTO.CreateList> dto) {
         List<EvaluationDTO.Info> evaluationInfo = new ArrayList<>();
+        List<Catalog> methodTypes = catalogRepository.findAllByCodeIn(List.of("Special-case", "Organizational-chart"));
+        Catalog catalogStatus = catalogRepository.findByCode("Initial-registration").orElse(null);
         for (EvaluationDTO.CreateList evaluationCreate : dto) {
             Evaluation evaluation = new Evaluation();
-            Catalog catalog = catalogRepository.findByCode("Initial-registration").orElse(null);
-            if(catalog != null)
-                evaluation.setStatusCatalogId(catalog.getId());
+            evaluation.setStatusCatalogId(catalogStatus.getId());
             evaluation.setEvaluationPeriodId(evaluationCreate.getEvaluationPeriodId());
             OrganizationTreeDTO.Info orgTreeInfo  = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
             List<Evaluation> evaluationList =
@@ -116,21 +116,19 @@ public class EvaluationService implements IEvaluationService {
                 evaluation.setAssessorNationalCode(scInfo.getAssessorNationalCode());
                 evaluation.setAssessorFullName(scInfo.getAssessorFullName());
                 evaluation.setAssessFullName(scInfo.getAssessFullName());
-
-                evaluation.setAssessNationalCode(scInfo.getAssessorNationalCode());
-
+                evaluation.setAssessNationalCode(scInfo.getAssessNationalCode());
                 evaluation.setAssessPostCode(evaluationCreate.getPostCode());
+                Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Special-case")).findFirst().orElseThrow().getId();
+                evaluation.setMethodCatalogId(methodCatalogId);
             } else {
                 evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode() );
-
-                evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent() == null ? " " : orgTreeInfo.getNationalCodeParent());
-
+                evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent());
                 evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent()+" "+orgTreeInfo.getLastNameParent());
                 evaluation.setAssessFullName(orgTreeInfo.getFullName());
-
-                evaluation.setAssessNationalCode(orgTreeInfo.getNationalCodeParent() == null ? " " : orgTreeInfo.getNationalCodeParent());
-
+                evaluation.setAssessNationalCode(orgTreeInfo.getNationalCode());
                 evaluation.setAssessPostCode(evaluationCreate.getPostCode());
+                Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Organizational-chart")).findFirst().orElseThrow().getId();
+                evaluation.setMethodCatalogId(methodCatalogId);
             }
             evaluation = repository.save(evaluation);
             evaluationInfo.add(mapper.entityToDtoInfo(evaluation));

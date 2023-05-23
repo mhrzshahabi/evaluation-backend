@@ -1173,6 +1173,10 @@
         <dropNotNullConstraint  columnName="method_catalog_id"
                                 tableName="tbl_evaluation"/>
     </changeSet>
+    <changeSet id="1684834121" author="a.lotfi">
+        <addNotNullConstraint columnName="method_catalog_id"
+                              tableName="tbl_evaluation" />
+    </changeSet>
 
 
 
