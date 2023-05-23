@@ -1179,5 +1179,10 @@
     </changeSet>
 
 
+    <changeSet id="1684743891" author="semami">
+        <sql>
+            update tbl_catalog set c_title = 'در انتظار تکمیل'  where c_code = 'Awaiting-review'
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
