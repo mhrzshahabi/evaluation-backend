@@ -234,5 +234,52 @@
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="namdari" id="1681883251">
+        <createView viewName="view_group_post" replaceIfExists="true">
+            <![CDATA[
+           SELECT
+                    ROWNUM AS id,
+                    groupPost."POST_ID",groupPost."POST_GRADE_ID",groupPost."POST_GRADE_CODE",groupPost."POST_GRADE_TITLE",groupPost."POST_GRADE_CODE_PARENT",groupPost."POST_GRADE_TITLE_PARENT",groupPost."GROUP_POST_CODE",groupPost."POST_TITLE",groupPost."POST_PARENT_ID",groupPost."POST_LEVEL",groupPost."POST_FULL_PATH_CODE",groupPost."POST_MOSAVAB",groupPost."POST_COMPANY_ID",groupPost."POST_COMPANY_CODE",groupPost."POST_COMPANY_NAME",groupPost."COST_CENTER_ID",groupPost."COST_CENTER_CODE",groupPost."COST_CENTER_TITLE",groupPost."HOZE_CODE",groupPost."HOZE_TITLE",groupPost."MOJTAMA_CODE",groupPost."MOJTAMA_TITLE",groupPost."OMOOR_CODE",groupPost."OMOOR_TITLE",groupPost."MOAVENAT_CODE",groupPost."MOAVENAT_TITLE",groupPost."GHESMAT_CODE",groupPost."GHESMAT_TITLE",groupPost."VAHED_CODE",groupPost."VAHED_TITLE"
+                FROM
+                    (
+                        SELECT   DISTINCT
+                            MIN(post_id) OVER (PARTITION BY post_group_code)  as post_id,
+                            MIN(post_grade_id) OVER (PARTITION BY post_group_code)  as  post_grade_id,
+                            MIN(post_grade_code) OVER (PARTITION BY post_group_code)  as  post_grade_code,
+                            MIN(post_grade_title) OVER (PARTITION BY post_group_code)  as  post_grade_title,
+                            MIN(post_grade_code_parent) OVER (PARTITION BY post_group_code)  as  post_grade_code_parent,
+                            MIN(post_grade_title_parent) OVER (PARTITION BY post_group_code)  as  post_grade_title_parent,
+                            post_group_code group_post_code,
+                            MIN(post_title) OVER (PARTITION BY post_group_code)  as  post_title,
+                            MIN(post_parent_id) OVER (PARTITION BY post_group_code)  as  post_parent_id,
+                            MIN(post_level) OVER (PARTITION BY post_group_code)  as  post_level,
+                            MIN(post_full_path_code) OVER (PARTITION BY post_group_code)  as  post_full_path_code,
+                            MIN(post_mosavab) OVER (PARTITION BY post_group_code)  as  post_mosavab,
+                            MIN(post_company_id) OVER (PARTITION BY post_group_code)  as  post_company_id,
+                            MIN(post_company_code) OVER (PARTITION BY post_group_code)  as  post_company_code,
+                            MIN(post_company_name) OVER (PARTITION BY post_group_code)  as  post_company_name,
+                            MIN(cost_center_id) OVER (PARTITION BY post_group_code)  as  cost_center_id,
+                            MIN(cost_center_code) OVER (PARTITION BY post_group_code)  as  cost_center_code,
+                            MIN(cost_center_title) OVER (PARTITION BY post_group_code)  as  cost_center_title,
+                            MIN(hoze_code) OVER (PARTITION BY post_group_code)  as  hoze_code,
+                            MIN(hoze_title) OVER (PARTITION BY post_group_code)  as  hoze_title,
+                            MIN(mojtama_code) OVER (PARTITION BY post_group_code)  as  mojtama_code,
+                            MIN(mojtama_title) OVER (PARTITION BY post_group_code)  as  mojtama_title,
+                            MIN(omoor_code) OVER (PARTITION BY post_group_code)  as  omoor_code,
+                            MIN(omoor_title) OVER (PARTITION BY post_group_code)  as  omoor_title,
+                            MIN(moavenat_code) OVER (PARTITION BY post_group_code)  as  moavenat_code,
+                            MIN(moavenat_title) OVER (PARTITION BY post_group_code)  as  moavenat_title,
+                            MIN(ghesmat_code) OVER (PARTITION BY post_group_code)  as  ghesmat_code,
+                            MIN(ghesmat_title) OVER (PARTITION BY post_group_code)  as  ghesmat_title,
+                            MIN(vahed_code) OVER (PARTITION BY post_group_code)  as  vahed_code,
+                            MIN(vahed_title) OVER (PARTITION BY post_group_code)  as  vahed_title
+                        FROM
+                            syn_hrm_post
+
+                    ) groupPost
+            ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>
