@@ -1,7 +1,9 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
@@ -27,7 +29,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -117,7 +118,7 @@ public class EvaluationService implements IEvaluationService {
                 OrganizationTreeDTO.Info organizationTreeInfo = organizationTreeService.getByPostCodeAndNationalCode(e.getAssessPostCode(), e.getAssessNationalCode());
                 e.setAssessorPostCode(organizationTreeInfo.getPostParentCode());
                 e.setAssessorNationalCode(organizationTreeInfo.getNationalCodeParent());
-                e.setAssessorFullName(organizationTreeInfo.getFirstNameParent()+" "+organizationTreeInfo.getLastNameParent());
+                e.setAssessorFullName(organizationTreeInfo.getFirstNameParent() + " " + organizationTreeInfo.getLastNameParent());
                 e.setAssessFullName(organizationTreeInfo.getFullName());
             }
             e = repository.save(e);
@@ -169,13 +170,13 @@ public class EvaluationService implements IEvaluationService {
         final Locale locale = LocaleContextHolder.getLocale();
         try {
             List<Long> ids = changeStatusDTO.getEvaluationIds();
-            for(Long id : ids){
+            for (Long id : ids) {
                 Optional<Evaluation> optionalEvaluation = repository.findById(id);
-                if (optionalEvaluation.isPresent()){
+                if (optionalEvaluation.isPresent()) {
                     Evaluation evaluation = optionalEvaluation.get();
                     String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
                     Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
-                    if(evaluationDate != null && evaluationDate.before(new Date())) {
+                    if (evaluationDate != null && evaluationDate.before(new Date())) {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next" -> {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Initial-registration")) {
@@ -199,7 +200,7 @@ public class EvaluationService implements IEvaluationService {
                                 repository.save(evaluation);
                             }
                         }
-                    }else {
+                    } else {
                         throw new Exception();
                     }
                 }
@@ -207,7 +208,7 @@ public class EvaluationService implements IEvaluationService {
             response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
             response.setStatus(200);
             return response;
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setMessage(messageSource.getMessage("exception.un-managed", null, locale));
             response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
             return response;
