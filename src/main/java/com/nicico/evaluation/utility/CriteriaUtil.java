@@ -90,4 +90,20 @@ public class CriteriaUtil {
         return criteriaRq;
     }
 
+    public static SearchDTO.SearchRq addCriteria(SearchDTO.SearchRq request, EOperator operator, String field, EOperator innerOperator,Object value) {
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(operator)
+                .setFieldName(field)
+                .setValue(value);
+
+        criteriaRqList.add(postCodeCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(innerOperator)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+        return request;
+    }
 }

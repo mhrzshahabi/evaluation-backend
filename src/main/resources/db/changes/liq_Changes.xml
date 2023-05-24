@@ -1189,5 +1189,15 @@
             <column name="c_assess_real_post_code" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1684760677-1" author="namdari">
+        <addNotNullConstraint  columnName="status_catalog_id"
+                                tableName="tbl_evaluation_period"/>
+    </changeSet>
 
+    <changeSet id="1681900356-1" author="namdari">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_assess_real_post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="special_case_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

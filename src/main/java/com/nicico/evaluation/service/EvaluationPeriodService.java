@@ -1,25 +1,33 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
 import com.nicico.evaluation.mapper.EvaluationPeriodMapper;
+import com.nicico.evaluation.model.Catalog;
+import com.nicico.evaluation.model.Evaluation;
 import com.nicico.evaluation.model.EvaluationPeriod;
+import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +37,9 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     private final EvaluationPeriodMapper evaluationPeriodMapper;
     private final EvaluationPeriodRepository evaluationPeriodRepository;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
+    private final ICatalogService catalogService;
+    private final CatalogRepository catalogRepository;
+    private final ResourceBundleMessageSource messageSource;
 
     @Override
     @Transactional(readOnly = true)
@@ -94,12 +105,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     dto.getStartDateAssessment(), dto.getEndDateAssessment())
             ) {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
+                evaluationPeriod.setStatusCatalogId(catalogService.getByCode("period-initial-registration").getId());
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
                 if(dto.getPostCode() != null && !dto.getPostCode().isEmpty()) {
-                    List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(save, dto.getPostCode());
+                    evaluationPeriodPostService.createAll(save, dto.getPostCode());
                 }
-                EvaluationPeriodDTO.Info evaluationPeriodInfo = evaluationPeriodMapper.entityToDtoInfo(save);
-                return evaluationPeriodInfo;
+                return evaluationPeriodMapper.entityToDtoInfo(save);
             } else
                 throw new Exception();
         } catch (Exception exception) {
@@ -131,6 +142,53 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         evaluationPeriodPostService.deleteByEvaluationPeriodId(evaluationPeriod.getId());
         evaluationPeriodRepository.delete(evaluationPeriod);
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO) {
+        BaseResponse response = new BaseResponse();
+        final Locale locale = LocaleContextHolder.getLocale();
+        try {
+            List<Long> ids = changeStatusDTO.getEvaluationIds();
+            for (Long id : ids) {
+                Optional<EvaluationPeriod> optionalEvaluationPeriod = evaluationPeriodRepository.findById(id);
+                if (optionalEvaluationPeriod.isPresent()) {
+                    EvaluationPeriod evaluationPeriod = optionalEvaluationPeriod.get();
+                        switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
+                            case "next" -> {
+                                if (evaluationPeriod.getStatusCatalog().getCode() != null && evaluationPeriod.getStatusCatalog().getCode().equals("period-initial-registration")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("period-awaiting-review");
+                                    optionalCatalog.ifPresent(catalog -> evaluationPeriod.setStatusCatalogId(catalog.getId()));
+                                } else if (evaluationPeriod.getStatusCatalog().getCode() != null && evaluationPeriod.getStatusCatalog().getCode().equals("period-awaiting-review")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("period-finalized");
+                                    optionalCatalog.ifPresent(catalog -> evaluationPeriod.setStatusCatalogId(catalog.getId()));
+                                }
+                                evaluationPeriodRepository.save(evaluationPeriod);
+                            }
+                            case "previous" -> {
+                                if (evaluationPeriod.getStatusCatalog().getCode() != null && evaluationPeriod.getStatusCatalog().getCode().equals("period-finalized")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("period-awaiting-review");
+                                    optionalCatalog.ifPresent(catalog -> evaluationPeriod.setStatusCatalogId(catalog.getId()));
+                                } else if (evaluationPeriod.getStatusCatalog().getCode() != null && evaluationPeriod.getStatusCatalog().getCode().equals("period-awaiting-review")) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("period-initial-registration");
+                                    optionalCatalog.ifPresent(catalog -> evaluationPeriod.setStatusCatalogId(catalog.getId()));
+
+                                }
+                                evaluationPeriodRepository.save(evaluationPeriod);
+                            }
+                        }
+
+                }
+            }
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            response.setStatus(200);
+            return response;
+        } catch (Exception e) {
+            response.setMessage(messageSource.getMessage("exception.un-managed", null, locale));
+            response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
+            return response;
+        }
     }
 
 
