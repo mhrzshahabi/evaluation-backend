@@ -119,6 +119,8 @@ public class EvaluationService implements IEvaluationService {
                 evaluation.setAssessFullName(scInfo.getAssessFullName());
                 evaluation.setAssessNationalCode(scInfo.getAssessNationalCode());
                 evaluation.setAssessPostCode(evaluationCreate.getPostCode());
+                evaluation.setAssessRealPostCode(scInfo.getAssessRealPostCode());
+                evaluation.setSpecialCaseId(scInfo.getId());
                 Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Special-case")).findFirst().orElseThrow().getId();
                 evaluation.setMethodCatalogId(methodCatalogId);
             } else {
@@ -128,6 +130,7 @@ public class EvaluationService implements IEvaluationService {
                 evaluation.setAssessFullName(orgTreeInfo.getFullName());
                 evaluation.setAssessNationalCode(orgTreeInfo.getNationalCode());
                 evaluation.setAssessPostCode(evaluationCreate.getPostCode());
+                evaluation.setAssessRealPostCode(evaluationCreate.getPostCode());
                 Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Organizational-chart")).findFirst().orElseThrow().getId();
                 evaluation.setMethodCatalogId(methodCatalogId);
             }
@@ -223,6 +226,11 @@ public class EvaluationService implements IEvaluationService {
             response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
             return response;
         }
+    }
+
+    @Override
+    public List<String> getUsedPostInEvaluation(Long evaluationPeriodId) {
+        return repository.getUsedPostInEvaluation(evaluationPeriodId);
     }
 
 }

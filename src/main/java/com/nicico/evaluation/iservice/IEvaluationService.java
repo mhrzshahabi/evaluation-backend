@@ -32,4 +32,6 @@ public interface IEvaluationService {
     SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
+
+    List<String> getUsedPostInEvaluation(Long evaluationPeriodId);
 }
