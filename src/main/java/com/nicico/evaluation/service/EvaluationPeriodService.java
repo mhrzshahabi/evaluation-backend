@@ -5,6 +5,7 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
 import com.nicico.evaluation.mapper.EvaluationPeriodMapper;
@@ -29,6 +30,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     private final EvaluationPeriodMapper evaluationPeriodMapper;
     private final EvaluationPeriodRepository evaluationPeriodRepository;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
+    private final ICatalogService catalogService;
 
     @Override
     @Transactional(readOnly = true)
@@ -94,12 +96,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     dto.getStartDateAssessment(), dto.getEndDateAssessment())
             ) {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
+                evaluationPeriod.setStatusCatalogId(catalogService.getByCode("period-initial-registration").getId());
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
                 if(dto.getPostCode() != null && !dto.getPostCode().isEmpty()) {
-                    List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostInfos = evaluationPeriodPostService.createAll(save, dto.getPostCode());
+                    evaluationPeriodPostService.createAll(save, dto.getPostCode());
                 }
-                EvaluationPeriodDTO.Info evaluationPeriodInfo = evaluationPeriodMapper.entityToDtoInfo(save);
-                return evaluationPeriodInfo;
+                return evaluationPeriodMapper.entityToDtoInfo(save);
             } else
                 throw new Exception();
         } catch (Exception exception) {

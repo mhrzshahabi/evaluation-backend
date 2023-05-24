@@ -44,7 +44,7 @@ public class EvaluationPeriod extends Auditable {
     @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_period_status_catalog_to_catalog"))
     private Catalog statusCatalog;
 
-    @Column(name = "status_catalog_id")
+    @Column(name = "status_catalog_id", nullable = false)
     private Long statusCatalogId;
 
 }
