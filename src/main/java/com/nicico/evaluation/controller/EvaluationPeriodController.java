@@ -1,6 +1,8 @@
 package com.nicico.evaluation.controller;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.dto.FilterDTO;
@@ -20,8 +22,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @RequiredArgsConstructor
 @Api(value = " Evaluation Period")
@@ -136,5 +144,43 @@ public class EvaluationPeriodController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<EvaluationPeriodDTO.Info> is the list of EvaluationPeriodInfo entity that match the criteria
+     */
+    @PostMapping(value = "/active/spec-list")
+    public ResponseEntity<EvaluationPeriodDTO.SpecResponse> activeEvaluationPeriodList(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                                       @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+//        final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
+//                .setOperator(EOperator.greaterOrEqual)
+//                .setFieldName("startDate")
+//                .setValue(DateUtil.todayDate());
+//
+//        criteriaRqList.add(postCodeCriteriaRq);
+//        criteriaRqList.add(request.getCriteria());
+//
+//        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+//                .setOperator(EOperator.and)
+//                .setCriteria(criteriaRqList);
+//        request.setCriteria(criteriaRq);
+
+
+        SearchDTO.SearchRs<EvaluationPeriodDTO.Info> data = service.search(request);
+        final EvaluationPeriodDTO.Response response = new EvaluationPeriodDTO.Response();
+        final EvaluationPeriodDTO.SpecResponse specRs = new EvaluationPeriodDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 
 }
