@@ -31,6 +31,9 @@ public class SpecialCase extends Auditable {
     @Column(name = "c_assess_post_code")
     private String assessPostCode;
 
+    @Column(name = "c_assess_real_post_code")
+    private String assessRealPostCode;
+
     @Column(name = "c_assessor_full_name")
     private String assessorFullName;
 
