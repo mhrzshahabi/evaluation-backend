@@ -59,7 +59,7 @@ class GroupGradeServiceTest {
         // Setup
         // Configure GroupGradeRepository.findById(...).
         final Optional<GroupGrade> groupGrade = Optional.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findById(0L)).thenReturn(groupGrade);
 
         // Configure GroupGradeMapper.entityToDtoInfo(...).
@@ -85,7 +85,7 @@ class GroupGradeServiceTest {
         grade.setGroupId(0L);
         grade.setGroup(null);
         info.setGrade(grade);
-        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(info);
 
         // Run the test
@@ -110,7 +110,7 @@ class GroupGradeServiceTest {
 
         // Configure GroupGradeRepository.findAll(...).
         final Page<GroupGrade> groupGrades = new PageImpl<>(
-                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle")));
+                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle")));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(groupGrades);
 
         // Configure GroupGradeMapper.entityToDtoInfoList(...).
@@ -138,7 +138,7 @@ class GroupGradeServiceTest {
         info.setGrade(grade);
         final List<GroupGradeDTO.Info> infos = List.of(info);
         when(mockMapper.entityToDtoInfoList(
-                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                         "gradeTitle")))).thenReturn(infos);
 
         // Run the test
@@ -154,11 +154,11 @@ class GroupGradeServiceTest {
 
         // Configure GroupGradeRepository.findAll(...).
         final Page<GroupGrade> groupGrades = new PageImpl<>(
-                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle")));
+                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle")));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(groupGrades);
 
         when(mockMapper.entityToDtoInfoList(
-                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                         "gradeTitle")))).thenReturn(null);
 
         // Run the test
@@ -174,11 +174,11 @@ class GroupGradeServiceTest {
 
         // Configure GroupGradeRepository.findAll(...).
         final Page<GroupGrade> groupGrades = new PageImpl<>(
-                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle")));
+                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle")));
         when(mockRepository.findAll(any(Pageable.class))).thenReturn(groupGrades);
 
         when(mockMapper.entityToDtoInfoList(
-                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+                List.of(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                         "gradeTitle")))).thenReturn(Collections.emptyList());
 
         // Run the test
@@ -198,14 +198,14 @@ class GroupGradeServiceTest {
         final List<GroupGradeDTO.Create> requests = List.of(create);
 
         // Configure GroupGradeMapper.dtoCreateToEntity(...).
-        final GroupGrade groupGrade = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
         when(mockMapper.dtoCreateToEntity(any(GroupGradeDTO.Create.class))).thenReturn(groupGrade);
 
         // Configure GroupGradeRepository.save(...).
-        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
-        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(groupGrade1);
 
         // Configure GroupGradeMapper.entityToDtoInfo(...).
@@ -231,7 +231,7 @@ class GroupGradeServiceTest {
         grade.setGroupId(0L);
         grade.setGroup(null);
         info.setGrade(grade);
-        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(info);
 
         // Run the test
@@ -250,14 +250,14 @@ class GroupGradeServiceTest {
         dto.setGradeId(0L);
 
         // Configure GroupGradeMapper.dtoCreateToEntity(...).
-        final GroupGrade groupGrade = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
         when(mockMapper.dtoCreateToEntity(any(GroupGradeDTO.Create.class))).thenReturn(groupGrade);
 
         // Configure GroupGradeRepository.save(...).
-        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
-        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(groupGrade1);
 
         // Configure GroupGradeMapper.entityToDtoInfo(...).
@@ -283,7 +283,7 @@ class GroupGradeServiceTest {
         grade.setGroupId(0L);
         grade.setGroup(null);
         info.setGrade(grade);
-        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(info);
 
         // Run the test
@@ -314,14 +314,14 @@ class GroupGradeServiceTest {
         when(mockRepository.findAllByGradeIdIn(List.of(0L))).thenReturn(Collections.emptyList());
 
         // Configure GroupGradeMapper.dtoCreateToEntity(...).
-        final GroupGrade groupGrade = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
         when(mockMapper.dtoCreateToEntity(any(GroupGradeDTO.Create.class))).thenReturn(groupGrade);
 
         // Configure GroupGradeRepository.save(...).
-        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
-        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(groupGrade1);
 
         // Configure GroupGradeMapper.entityToDtoInfo(...).
@@ -347,7 +347,7 @@ class GroupGradeServiceTest {
         grade.setGroupId(0L);
         grade.setGroup(null);
         info1.setGrade(grade);
-        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(info1);
 
         // Run the test
@@ -368,7 +368,7 @@ class GroupGradeServiceTest {
 
         // Configure GroupGradeRepository.findAllByGroupId(...).
         final List<GroupGrade> groupGrades = List.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findAllByGroupId(0L)).thenReturn(groupGrades);
 
         when(mockRepository.findById(0L)).thenReturn(Optional.empty());
@@ -388,12 +388,12 @@ class GroupGradeServiceTest {
 
         // Configure GroupGradeRepository.findAllByGroupId(...).
         final List<GroupGrade> groupGrades = List.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findAllByGroupId(0L)).thenReturn(groupGrades);
 
         // Configure GroupGradeRepository.findById(...).
         final Optional<GroupGrade> groupGrade = Optional.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findById(0L)).thenReturn(groupGrade);
 
         // Configure IGradeService.getAllByCodeIn(...).
@@ -409,14 +409,14 @@ class GroupGradeServiceTest {
         when(mockRepository.findAllByGradeIdIn(List.of(0L))).thenReturn(Collections.emptyList());
 
         // Configure GroupGradeMapper.dtoCreateToEntity(...).
-        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade1 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
         when(mockMapper.dtoCreateToEntity(any(GroupGradeDTO.Create.class))).thenReturn(groupGrade1);
 
         // Configure GroupGradeRepository.save(...).
-        final GroupGrade groupGrade2 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        final GroupGrade groupGrade2 = new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle");
-        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockRepository.save(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(groupGrade2);
 
         // Configure GroupGradeMapper.entityToDtoInfo(...).
@@ -442,7 +442,7 @@ class GroupGradeServiceTest {
         grade.setGroupId(0L);
         grade.setGroup(null);
         info1.setGrade(grade);
-        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(info1);
 
         // Run the test
@@ -450,7 +450,7 @@ class GroupGradeServiceTest {
 
         // Verify the results
         verify(mockRepository).delete(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
     }
 
 
@@ -459,7 +459,7 @@ class GroupGradeServiceTest {
         // Setup
         // Configure GroupGradeRepository.findById(...).
         final Optional<GroupGrade> groupGrade = Optional.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findById(0L)).thenReturn(groupGrade);
 
         // Run the test
@@ -467,7 +467,7 @@ class GroupGradeServiceTest {
 
         // Verify the results
         verify(mockRepository).delete(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
     }
 
     @Test
@@ -485,7 +485,7 @@ class GroupGradeServiceTest {
         // Setup
         // Configure GroupGradeRepository.findById(...).
         final Optional<GroupGrade> groupGrade = Optional.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findById(0L)).thenReturn(groupGrade);
 
         // Run the test
@@ -493,7 +493,7 @@ class GroupGradeServiceTest {
 
         // Verify the results
         verify(mockRepository).delete(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
     }
 
     @Test
@@ -512,7 +512,7 @@ class GroupGradeServiceTest {
 
         // Configure GroupGradeRepository.findFirstByGradeCode(...).
         final Optional<GroupGrade> groupGrade = Optional.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findFirstByGradeCode("code")).thenReturn(groupGrade);
 
         // Configure GroupGradeMapper.entityToDtoInfo(...).
@@ -538,7 +538,7 @@ class GroupGradeServiceTest {
         grade1.setGroupId(0L);
         grade1.setGroup(null);
         info.setGrade(grade1);
-        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(info);
 
         // Run the test
@@ -563,11 +563,11 @@ class GroupGradeServiceTest {
     @Test
     void testGetGroupGradeByGroup() {
         // Setup
-        final Group group = new Group(0L, "code", "title", false);
+        final Group group = new Group(0L, "code", "title", false, null);
 
         // Configure GroupGradeRepository.findAllByGroupId(...).
         final List<GroupGrade> groupGrades = List.of(
-                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L, "gradeTitle"));
+                new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L, "gradeTitle"));
         when(mockRepository.findAllByGroupId(0L)).thenReturn(groupGrades);
 
         // Configure GroupGradeMapper.entityToDtoInfo(...).
@@ -593,7 +593,7 @@ class GroupGradeServiceTest {
         grade.setGroupId(0L);
         grade.setGroup(null);
         info.setGrade(grade);
-        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false), 0L,
+        when(mockMapper.entityToDtoInfo(new GroupGrade(0L, 0L, "gradeCode", new Group(0L, "code", "title", false, null), 0L,
                 "gradeTitle"))).thenReturn(info);
 
         // Run the test
@@ -605,7 +605,7 @@ class GroupGradeServiceTest {
     @Test
     void testGetGroupGradeByGroup_GroupGradeRepositoryReturnsNoItems() {
         // Setup
-        final Group group = new Group(0L, "code", "title", false);
+        final Group group = new Group(0L, "code", "title", false, null);
         when(mockRepository.findAllByGroupId(0L)).thenReturn(Collections.emptyList());
 
         // Run the test
