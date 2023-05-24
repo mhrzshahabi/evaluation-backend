@@ -83,6 +83,7 @@ public class OrganizationTreeDTO {
     @ApiModel("OrganizationTreeInfoTree")
     public static class InfoTree {
         private Long id;
+        private Long postId;
         private Long postParentId;
         private String nameFa;
         private Long childNode;
