@@ -155,22 +155,8 @@ public class EvaluationPeriodController {
     public ResponseEntity<EvaluationPeriodDTO.SpecResponse> activeEvaluationPeriodList(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                                        @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-
-        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-//        final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
-//                .setOperator(EOperator.greaterOrEqual)
-//                .setFieldName("startDate")
-//                .setValue(DateUtil.todayDate());
-//
-//        criteriaRqList.add(postCodeCriteriaRq);
-//        criteriaRqList.add(request.getCriteria());
-//
-//        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
-//                .setOperator(EOperator.and)
-//                .setCriteria(criteriaRqList);
-//        request.setCriteria(criteriaRq);
-
-
+        CriteriaUtil.addCriteria(request,EOperator.greaterOrEqual,"startDate",EOperator.and);
+        CriteriaUtil.addCriteria(request,EOperator.lessOrEqual,"endDate",EOperator.and);
         SearchDTO.SearchRs<EvaluationPeriodDTO.Info> data = service.search(request);
         final EvaluationPeriodDTO.Response response = new EvaluationPeriodDTO.Response();
         final EvaluationPeriodDTO.SpecResponse specRs = new EvaluationPeriodDTO.SpecResponse();
