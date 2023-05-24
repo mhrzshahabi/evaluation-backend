@@ -107,14 +107,15 @@ public class EvaluationPeriodController {
     }
 
     /**
-     * @param evaluationPeriodPostId is the id of EvaluationPeriodPost entity
+     * @param evaluationPeriodId is the id of evaluationPeriod entity
+     * @param postCode is the postCode
      * @return BaseResponse is the status code and message
      */
-    @DeleteMapping(value = "/delete-evaluation-period-post/{evaluationPeriodPostId}")
-    public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@PathVariable Long evaluationPeriodPostId) {
+    @DeleteMapping(value = "/delete-evaluation-period-post")
+    public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@RequestParam Long evaluationPeriodId, @RequestParam String postCode) {
         final Locale locale = LocaleContextHolder.getLocale();
         try {
-            evaluationPeriodPostService.delete(evaluationPeriodPostId);
+            evaluationPeriodPostService.deleteByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode);
             BaseResponse response = new BaseResponse();
             response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
             return new ResponseEntity<>(response, HttpStatus.OK);
