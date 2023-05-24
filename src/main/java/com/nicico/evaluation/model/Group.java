@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
+
 //گروه
 @Getter
 @Setter
@@ -32,5 +34,8 @@ public class Group extends Auditable {
 
     @Column(name = "b_merit_definition_allowed")
     private Boolean definitionAllowed;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE)
+    private List<GroupGrade> groupGrade;
 
 }

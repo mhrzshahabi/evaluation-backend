@@ -135,11 +135,11 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
 
     private boolean isValidDates(Date startDate, Date endDate, Date startDateAssessment, Date endDateAssessment) {
-        return startDateAssessment.compareTo(startDate) > 0 &&
+        return startDateAssessment.compareTo(startDate) >= 0 &&
                 startDateAssessment.compareTo(endDate) < 0 &&
                 startDateAssessment.compareTo(endDateAssessment) < 0 &&
                 endDateAssessment.compareTo(startDate) > 0 &&
-                endDateAssessment.compareTo(endDate) < 0 &&
+                endDateAssessment.compareTo(endDate) <= 0 &&
                 endDateAssessment.compareTo(startDateAssessment) > 0;
     }
 }
