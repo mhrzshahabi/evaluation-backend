@@ -96,6 +96,7 @@ public class PostRelationController {
 
         List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
         List<String> usedPost=iEvaluationService.getUsedPostInEvaluation(evaluationPeriodId);
+     if (!usedPost.isEmpty())
         postCodes.removeAll(usedPost);
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
