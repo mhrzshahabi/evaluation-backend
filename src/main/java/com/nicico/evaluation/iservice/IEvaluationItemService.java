@@ -11,6 +11,8 @@ public interface IEvaluationItemService {
 
     EvaluationItemDTO.Info get(Long id);
 
+    List<EvaluationItemDTO.Info> getByEvalId(Long evaluationId);
+
     List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId);
 
     List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId);
@@ -29,5 +31,6 @@ public interface IEvaluationItemService {
 
     SearchDTO.SearchRs<EvaluationItemDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+    void deleteAll(List<Long> ids);
 }
 
