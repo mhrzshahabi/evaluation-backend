@@ -666,7 +666,7 @@
             <column name="d_to_date" type="TIMESTAMP"/>
         </addColumn>
     </changeSet>
-     <changeSet author="semami" id="1682938091">
+    <changeSet author="semami" id="1682938091">
         <addColumn tableName="tbl_sensitive_events">
             <column name="c_national_code" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
@@ -711,7 +711,7 @@
         </sql>
     </changeSet>
 
-    <changeSet author="a.lotfi"  id="1683023514">
+    <changeSet author="a.lotfi" id="1683023514">
         <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_title"/>
         <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date"/>
         <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date"/>
@@ -857,7 +857,7 @@
             ]]>
         </sql>
     </changeSet>
-    <changeSet author="a.lotfi"  id="1683349068">
+    <changeSet author="a.lotfi" id="1683349068">
         <addNotNullConstraint tableName="tbl_special_case" columnName="c_assess_national_code"/>
         <addNotNullConstraint tableName="tbl_special_case" columnName="c_assess_post_code"/>
         <addNotNullConstraint tableName="tbl_special_case" columnName="c_assessor_national_code"/>
@@ -1121,11 +1121,13 @@
             <column name="d_to_date" type="varchar(255)"/>
         </addColumn>
     </changeSet>
-    <changeSet id="1683718014" author="semami">
-        <sql>
-            update tbl_catalog_type set c_code = 'SensitiveEventsPolicy' where c_title= 'سیاست رویداد وقایع حساس'
-        </sql>
-    </changeSet>
+<!--    <changeSet id="1683718014" author="semami">-->
+<!--        <sql>-->
+<!--            update tbl_catalog_type-->
+<!--            set c_code = 'SensitiveEventsPolicy'-->
+<!--            where c_title = 'سیاست رویداد وقایع حساس'-->
+<!--        </sql>-->
+<!--    </changeSet>-->
     <changeSet id="1683960009" author="semami">
         <dropColumn tableName="tbl_post_merit_component" columnName="evaluation_item_id"></dropColumn>
     </changeSet>
@@ -1170,17 +1172,19 @@
         <dropColumn tableName="tbl_evaluation" columnName="d_end_date"/>
     </changeSet>
     <changeSet id="1684760677" author="a.lotfi">
-        <dropNotNullConstraint  columnName="method_catalog_id"
-                                tableName="tbl_evaluation"/>
+        <dropNotNullConstraint columnName="method_catalog_id"
+                               tableName="tbl_evaluation"/>
     </changeSet>
     <changeSet id="1684834121" author="a.lotfi">
         <addNotNullConstraint columnName="method_catalog_id"
-                              tableName="tbl_evaluation" />
+                              tableName="tbl_evaluation"/>
     </changeSet>
 
     <changeSet id="1684743891" author="semami">
         <sql>
-            update tbl_catalog set c_title = 'در انتظار تکمیل'  where c_code = 'Awaiting-review'
+            update tbl_catalog
+            set c_title = 'در انتظار تکمیل'
+            where c_code = 'Awaiting-review'
         </sql>
     </changeSet>
 
@@ -1190,8 +1194,8 @@
         </addColumn>
     </changeSet>
     <changeSet id="1684760677-1" author="namdari">
-        <addNotNullConstraint  columnName="status_catalog_id"
-                                tableName="tbl_evaluation_period"/>
+        <addNotNullConstraint columnName="status_catalog_id"
+                              tableName="tbl_evaluation_period"/>
     </changeSet>
 
     <changeSet id="1681900356-1" author="namdari">
@@ -1200,4 +1204,106 @@
             <column name="special_case_id" type="NUMBER(10, 0)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="namdari" id="1684743891-1">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'وضعیت دوره ارزیابی',
+                    'EvaluationPeriodStatus',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ثبت اولیه',
+                    'period-initial-registration',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در حال اجرا',
+                    'period-awaiting-review',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'خاتمه یافته',
+                    'period-finalized',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
