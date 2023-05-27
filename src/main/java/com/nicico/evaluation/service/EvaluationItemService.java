@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -153,9 +152,10 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION_ITEM')")
-    public EvaluationItemDTO.Info update(Long id, EvaluationItemDTO.Update dto) {
-        EvaluationItem evaluationItem = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    public EvaluationItemDTO.Info update(EvaluationItemDTO.Update dto) {
+        EvaluationItem evaluationItem = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
+            mapper.update(evaluationItem, dto);
             EvaluationItem save = repository.save(evaluationItem);
             Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
             evaluation.setAverageScore(dto.getAverageScore());
@@ -164,6 +164,13 @@ public class EvaluationItemService implements IEvaluationItemService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('U_EVALUATION_ITEM')")
+    public List<EvaluationItemDTO.Info> updateAll(List<EvaluationItemDTO.Update> requests) {
+        return requests.stream().map(this::update).toList();
     }
 
     @Override
