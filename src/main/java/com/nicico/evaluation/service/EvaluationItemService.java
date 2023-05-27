@@ -73,6 +73,14 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    public List<EvaluationItemDTO.Info> getByEvalId(Long evaluationId) {
+        List<EvaluationItem> evaluationItem = repository.getAllByEvaluationId(evaluationId);
+        return mapper.entityToDtoInfoList(evaluationItem);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId) {
         List<EvaluationItem> allPostMeritByEvalId = repository.getAllPostMeritByEvalId(evaluationId);
         return mapper.entityToPostMeritInfoDtoList(allPostMeritByEvalId);
@@ -331,6 +339,14 @@ public class EvaluationItemService implements IEvaluationItemService {
             createItemInfoList.add(createItemInfo);
 
         });
+    }
+
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('D_EVALUATION_ITEM')")
+    public void deleteAll(List<Long> ids) {
+        ids.forEach(this::delete);
     }
 
 }

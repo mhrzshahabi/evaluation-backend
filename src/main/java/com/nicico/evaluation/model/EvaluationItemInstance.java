@@ -47,7 +47,7 @@ public class EvaluationItemInstance extends Auditable {
     private Long instanceId;
 
     @Setter(AccessLevel.NONE)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "evaluation_item_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_evaluation_item_instance_to_evaluation_item"))
     private EvaluationItem evaluationItem;
 

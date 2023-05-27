@@ -2,6 +2,8 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -10,6 +12,8 @@ public interface IEvaluationItemService {
     EvaluationItemDTO.SpecResponse list(int count, int startIndex);
 
     EvaluationItemDTO.Info get(Long id);
+
+    List<EvaluationItemDTO.Info> getByEvalId(Long evaluationId);
 
     List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId);
 
@@ -29,5 +33,6 @@ public interface IEvaluationItemService {
 
     SearchDTO.SearchRs<EvaluationItemDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+    void deleteAll(List<Long> ids);
 }
 

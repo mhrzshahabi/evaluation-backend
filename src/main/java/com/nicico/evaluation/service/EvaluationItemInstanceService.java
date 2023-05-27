@@ -2,10 +2,12 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.EvaluationItemInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationItemInstanceService;
 import com.nicico.evaluation.mapper.EvaluationItemInstanceMapper;
+import com.nicico.evaluation.model.EvaluationItem;
 import com.nicico.evaluation.model.EvaluationItemInstance;
 import com.nicico.evaluation.repository.EvaluationItemInstanceRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -39,8 +41,8 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM_INSTANCE')")
-    public List<EvaluationItemInstanceDTO.Info> getAllByEvaluationItemId(Long evaluationItemId) {
-        List<EvaluationItemInstance> allByEvaluationItemId = repository.getAllByEvaluationItemId(evaluationItemId);
+    public List<EvaluationItemInstanceDTO.Info> getAllByEvaluationItemId(List<Long> evaluationItemIds) {
+        List<EvaluationItemInstance> allByEvaluationItemId = repository.getAllByEvaluationItemIdIn(evaluationItemIds);
         return mapper.entityToDtoInfoList(allByEvaluationItemId);
     }
 
@@ -112,10 +114,10 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION_ITEM_INSTANCE')")
     public EvaluationItemInstanceDTO.Info update(Long id, EvaluationItemInstanceDTO.Update dto) {
-        EvaluationItemInstance kPIType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        mapper.update(kPIType, dto);
+        EvaluationItemInstance evaluationItemInstance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        mapper.update(evaluationItemInstance, dto);
         try {
-            EvaluationItemInstance save = repository.save(kPIType);
+            EvaluationItemInstance save = repository.save(evaluationItemInstance);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
@@ -126,9 +128,9 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     @Transactional
     @PreAuthorize("hasAuthority('D_EVALUATION_ITEM_INSTANCE')")
     public void delete(Long id) {
-        EvaluationItemInstance kPIType = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        EvaluationItemInstance evaluationItemInstance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
-            repository.delete(kPIType);
+            repository.delete(evaluationItemInstance);
         } catch (DataIntegrityViolationException violationException) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint);
         } catch (Exception exception) {
@@ -136,4 +138,10 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
         }
     }
 
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('D_EVALUATION_ITEM_INSTANCE')")
+    public void deleteAll(List<Long> ids) {
+        ids.forEach(this::delete);
+    }
 }
