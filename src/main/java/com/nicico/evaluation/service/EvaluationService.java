@@ -214,8 +214,7 @@ public class EvaluationService implements IEvaluationService {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Initial-registration");
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
 
-                                    List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
-                                    evaluationItemService.deleteAll(itemIds);
+                                    deleteItems(evaluation);
 
                                 }
                                 repository.save(evaluation);
@@ -234,6 +233,11 @@ public class EvaluationService implements IEvaluationService {
             response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
             return response;
         }
+    }
+
+    private void deleteItems(Evaluation evaluation) {
+        List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
+        evaluationItemService.deleteAll(itemIds);
     }
 
     @Override
