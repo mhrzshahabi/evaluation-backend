@@ -1121,13 +1121,11 @@
             <column name="d_to_date" type="varchar(255)"/>
         </addColumn>
     </changeSet>
-<!--    <changeSet id="1683718014" author="semami">-->
-<!--        <sql>-->
-<!--            update tbl_catalog_type-->
-<!--            set c_code = 'SensitiveEventsPolicy'-->
-<!--            where c_title = 'سیاست رویداد وقایع حساس'-->
-<!--        </sql>-->
-<!--    </changeSet>-->
+    <changeSet id="1683718014" author="semami">
+        <sql>
+            update tbl_catalog_type set c_code = 'SensitiveEventsPolicy' where c_title= 'سیاست رویداد وقایع حساس'
+        </sql>
+    </changeSet>
     <changeSet id="1683960009" author="semami">
         <dropColumn tableName="tbl_post_merit_component" columnName="evaluation_item_id"></dropColumn>
     </changeSet>
@@ -1305,5 +1303,7 @@
             ]]>
         </sql>
     </changeSet>
-
+    <changeSet id="1683543882-1" author="semami">
+        <dropNotNullConstraint tableName="tbl_evaluation_item" columnName="questionnaire_answer_catalog_id"/>
+    </changeSet>
 </databaseChangeLog>
