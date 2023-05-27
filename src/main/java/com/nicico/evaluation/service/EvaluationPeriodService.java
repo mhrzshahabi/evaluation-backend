@@ -112,8 +112,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                 }
                 return evaluationPeriodMapper.entityToDtoInfo(save);
             } else
-                throw new Exception();
+                throw new Exception("NotInEvalPeriod");
         } catch (Exception exception) {
+            if(exception.getMessage().equals("NotInEvalPeriod")){
+                String errorMessage = messageSource.getMessage("message.notinevaluationperiod.evaluation.period", null, LocaleContextHolder.getLocale());
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null, errorMessage);
+            }
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
     }
