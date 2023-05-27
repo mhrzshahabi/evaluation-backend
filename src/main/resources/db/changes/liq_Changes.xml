@@ -1178,11 +1178,26 @@
                               tableName="tbl_evaluation" />
     </changeSet>
 
-
     <changeSet id="1684743891" author="semami">
         <sql>
             update tbl_catalog set c_title = 'در انتظار تکمیل'  where c_code = 'Awaiting-review'
         </sql>
     </changeSet>
 
+    <changeSet id="1681900356" author="MShahabi">
+        <addColumn tableName="tbl_special_case">
+            <column name="c_assess_real_post_code" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1684760677-1" author="namdari">
+        <addNotNullConstraint  columnName="status_catalog_id"
+                                tableName="tbl_evaluation_period"/>
+    </changeSet>
+
+    <changeSet id="1681900356-1" author="namdari">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_assess_real_post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="special_case_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

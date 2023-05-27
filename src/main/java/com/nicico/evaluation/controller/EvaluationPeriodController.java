@@ -1,6 +1,9 @@
 package com.nicico.evaluation.controller;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.dto.FilterDTO;
@@ -20,8 +23,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @RequiredArgsConstructor
 @Api(value = " Evaluation Period")
@@ -99,14 +108,15 @@ public class EvaluationPeriodController {
     }
 
     /**
-     * @param evaluationPeriodPostId is the id of EvaluationPeriodPost entity
+     * @param evaluationPeriodId is the id of evaluationPeriod entity
+     * @param postCode is the postCode
      * @return BaseResponse is the status code and message
      */
-    @DeleteMapping(value = "/delete-evaluation-period-post/{evaluationPeriodPostId}")
-    public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@PathVariable Long evaluationPeriodPostId) {
+    @DeleteMapping(value = "/delete-evaluation-period-post")
+    public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@RequestParam Long evaluationPeriodId, @RequestParam String postCode) {
         final Locale locale = LocaleContextHolder.getLocale();
         try {
-            evaluationPeriodPostService.delete(evaluationPeriodPostId);
+            evaluationPeriodPostService.deleteByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode);
             BaseResponse response = new BaseResponse();
             response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -135,6 +145,39 @@ public class EvaluationPeriodController {
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<EvaluationPeriodDTO.Info> is the list of EvaluationPeriodInfo entity that match the criteria
+     */
+    @PostMapping(value = "/active/spec-list")
+    public ResponseEntity<EvaluationPeriodDTO.SpecResponse> activeEvaluationPeriodList(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                                       @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        CriteriaUtil.addCriteria(request,EOperator.greaterOrEqual,"startDate",EOperator.and,DateUtil.todayDate());
+        CriteriaUtil.addCriteria(request,EOperator.lessOrEqual,"endDate",EOperator.and,DateUtil.todayDate());
+        CriteriaUtil.addCriteria(request,EOperator.equals,"statusCatalog.code",EOperator.and,"period-awaiting-review");
+        SearchDTO.SearchRs<EvaluationPeriodDTO.Info> data = service.search(request);
+        final EvaluationPeriodDTO.Response response = new EvaluationPeriodDTO.Response();
+        final EvaluationPeriodDTO.SpecResponse specRs = new EvaluationPeriodDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param ChangeStatusDTO is id of evaluation for change status and is next or previous for change status
+     * @return Boolean is the result of function
+     */
+    @PostMapping(value = "/change-status")
+    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO ChangeStatusDTO) {
+        return new ResponseEntity<>(service.changeStatus(ChangeStatusDTO), HttpStatus.OK);
     }
 
 }

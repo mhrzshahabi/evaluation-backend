@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -17,6 +19,8 @@ public abstract class PostMeritComponentDTO {
     private String groupPostCode;
     @NotNull
     private Long meritComponentId;
+    @Min(value = 0, message = " وزن باید عددی بین صفر تا 100 باشد")
+    @Max(value = 100, message = " وزن باید عددی بین صفر تا 100 باشد")
     @NotNull
     private Long weight;
 

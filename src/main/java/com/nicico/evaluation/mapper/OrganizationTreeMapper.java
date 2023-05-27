@@ -4,10 +4,12 @@ import com.nicico.evaluation.dto.OrganizationTreeDTO;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
 import com.nicico.evaluation.model.OrganizationTree;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -23,24 +25,27 @@ public abstract class OrganizationTreeMapper {
 
     public abstract List<OrganizationTreeDTO.Info> entityToDtoInfoList(List<OrganizationTree> entities);
 
-    public List<OrganizationTreeDTO.InfoTree> entityToDtoInfoTreeList(List<OrganizationTree> entities) {
-        List<OrganizationTreeDTO.InfoTree> infoTrees = new ArrayList<>();
+    @Mappings({
+            @Mapping(target = "nameFa", source = "entity", qualifiedByName = "getNameFaFromEntity"),
+            @Mapping(target = "childNode", source = "postId", qualifiedByName = "getChildNodeFromPostId")
+    })
+    public abstract OrganizationTreeDTO.InfoTree entityToDtoInfoTree(OrganizationTree entity);
 
-        for (OrganizationTree org : entities) {
-            OrganizationTreeDTO.InfoTree infoTree = new OrganizationTreeDTO.InfoTree();
-            infoTree.setId((org.getId()));
-            infoTree.setPostParentId((org.getPostParentId()));
+    public abstract List<OrganizationTreeDTO.InfoTree> entityToDtoInfoTreeList(List<OrganizationTree> entities);
 
-            infoTree.setNameFa(String.format("%s|%s|%s|%s",
-                    org.getNationalCode(),
-                    org.getPostCode(),
-                    org.getFullName(),
-                    org.getPostTitle()
-            ));
-            infoTree.setChildNode(organizationTreeService.countChildNode(org.getPostId()));
-            infoTrees.add(infoTree);
-        }
-        return infoTrees;
+    @Named("getNameFaFromEntity")
+    String getNameFaFromEntity(OrganizationTree entity) {
+        return String.format("%s|%s|%s|%s",
+                entity.getNationalCode(),
+                entity.getPostCode(),
+                entity.getFullName(),
+                entity.getPostTitle()
+        );
+    }
+
+    @Named("getChildNodeFromPostId")
+    Long getChildNodeFromPostId(Long postId) {
+        return organizationTreeService.countChildNode(postId);
     }
 
 }

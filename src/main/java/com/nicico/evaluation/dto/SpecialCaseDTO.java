@@ -17,24 +17,18 @@ import java.util.List;
 public class SpecialCaseDTO {
 
     private String assessFullName;
-
     @NotNull
     private String assessNationalCode;
-
     @NotNull
     private String assessPostCode;
-
+    private String assessRealPostCode;
     private String assessorFullName;
-
     @NotNull
     private String assessorNationalCode;
-
     @NotNull
     private String assessorPostCode;
-
     @NotNull
     private Date startDate;
-
     @NotNull
     private Date endDate;
 

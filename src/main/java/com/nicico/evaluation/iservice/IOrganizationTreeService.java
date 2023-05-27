@@ -13,13 +13,14 @@ public interface IOrganizationTreeService {
 
     OrganizationTreeDTO.SpecResponse list(int count, int startIndex);
 
-    List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long parentId);
+    List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId);
 
     Long countChildNode(Long postId);
 
     SearchDTO.SearchRs<OrganizationTreeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     OrganizationTreeDTO.Info getByPostCodeAndNationalCode(String postCode, String nationalCode);
+
     OrganizationTreeDTO.Info getByPostCode(String postCode);
 
 }

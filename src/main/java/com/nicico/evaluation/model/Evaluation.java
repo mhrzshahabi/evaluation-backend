@@ -66,8 +66,11 @@ public class Evaluation extends Auditable {
     @Column(name = "evaluation_period_id")
     private Long evaluationPeriodId;
 
+    @Column(name = "c_assess_real_post_code", nullable = false)
+    private String assessRealPostCode;
 
-
+    @Column(name = "special_case_id")
+    private Long specialCaseId;
 
 
 }
