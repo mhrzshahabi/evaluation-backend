@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface CatalogRepository extends JpaRepository<Catalog, Long>, JpaSpecificationExecutor<Catalog> {
 
-    @Query("from Catalog catalog join CatalogType type  on catalog.catalogTypeId= type.id where type.code = :code ")
+    @Query("from Catalog catalog join CatalogType type  on catalog.catalogTypeId= type.id where type.code = :code order by catalog.value")
     List<Catalog> findAllByCatalogTypeCode(@Param("code") String code);
 
     Optional<Catalog> findByCode(String code);

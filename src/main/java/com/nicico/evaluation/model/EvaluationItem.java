@@ -21,7 +21,7 @@ public class EvaluationItem extends Auditable {
     private Long id;
 
     @Setter(AccessLevel.NONE)
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "evaluation_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_item_to_evaluation"))
     private Evaluation evaluation;
 

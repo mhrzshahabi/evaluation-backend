@@ -39,7 +39,7 @@ public class EvaluationService implements IEvaluationService {
     private final ISpecialCaseService specialCaseService;
     private final IOrganizationTreeService organizationTreeService;
     private IEvaluationItemService evaluationItemService;
-    private IEvaluationItemInstanceService evaluationItemInstanceService;
+    private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -215,7 +215,8 @@ public class EvaluationService implements IEvaluationService {
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
 
                                     List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
-                                    List<Long> itemInstanceIds = evaluationItemInstanceService.getAllByEvaluationItemId(itemIds).stream().map(EvaluationItemInstanceDTO.Info::getId).toList();
+                                    List<EvaluationItemInstanceDTO.Info> allByEvaluationItemId = evaluationItemInstanceService.getAllByEvaluationItemId(itemIds);
+                                    List<Long> itemInstanceIds = allByEvaluationItemId.stream().map(EvaluationItemInstanceDTO.Info::getId).toList();
                                     evaluationItemInstanceService.deleteAll(itemInstanceIds);
                                     evaluationItemService.deleteAll(itemIds);
 

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -125,7 +126,7 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @PreAuthorize("hasAuthority('D_EVALUATION_ITEM_INSTANCE')")
     public void delete(Long id) {
         EvaluationItemInstance evaluationItemInstance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
@@ -139,7 +140,6 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     }
 
     @Override
-    @Transactional
     @PreAuthorize("hasAuthority('D_EVALUATION_ITEM_INSTANCE')")
     public void deleteAll(List<Long> ids) {
         ids.forEach(this::delete);
