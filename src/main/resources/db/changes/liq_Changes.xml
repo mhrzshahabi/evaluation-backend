@@ -1200,4 +1200,7 @@
             <column name="special_case_id" type="NUMBER(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1683543882-1" author="semami">
+        <dropNotNullConstraint tableName="tbl_evaluation_item" columnName="questionnaire_answer_catalog_id"/>
+    </changeSet>
 </databaseChangeLog>
