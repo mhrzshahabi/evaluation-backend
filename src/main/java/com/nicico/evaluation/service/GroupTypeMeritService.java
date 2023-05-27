@@ -119,6 +119,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @PreAuthorize("hasAuthority('D_GROUP_TYPE_MERIT')")
     public void delete(Long id) {
         GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        instanceGroupTypeMeritService.deleteByGroupTypeMerit(groupTypeMerit.getId());
         repository.delete(groupTypeMerit);
     }
 

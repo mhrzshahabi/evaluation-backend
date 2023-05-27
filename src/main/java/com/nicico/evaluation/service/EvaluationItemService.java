@@ -126,7 +126,7 @@ public class EvaluationItemService implements IEvaluationItemService {
             dto.getInstanceGroupTypeMerits().forEach(instanceGroupTypeMerit -> {
                 EvaluationItemInstanceDTO.Create createInstance = new EvaluationItemInstanceDTO.Create();
                 createInstance.setInstanceId(instanceGroupTypeMerit.getInstanceId());
-                createInstance.setPostMeritInstanceId(instanceGroupTypeMerit.getId());
+                createInstance.setInstanceGroupTypeMeritId(instanceGroupTypeMerit.getId());
                 createInstance.setEvaluationItemId(evaluationItem.getId());
                 createInstanceList.add(createInstance);
             });

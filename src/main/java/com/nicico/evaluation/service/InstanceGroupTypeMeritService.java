@@ -126,6 +126,13 @@ public class InstanceGroupTypeMeritService implements IInstanceGroupTypeMeritSer
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('D_INSTANCE_GROUP_TYPE_MERIT')")
+    public void deleteByGroupTypeMerit(Long groupTypeMeritId) {
+        repository.deleteByGroupTypeMeritId(groupTypeMeritId);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('D_INSTANCE_GROUP_TYPE_MERIT')")
     public void deleteAll(List<Long> ids) {
         ids.forEach(this::delete);
     }

@@ -27,6 +27,8 @@ public interface IInstanceGroupTypeMeritService {
 
     void delete(Long id);
 
+    void deleteByGroupTypeMerit(Long groupTypeMeritId);
+
     void deleteAll(List<Long> ids);
 
     SearchDTO.SearchRs<InstanceGroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
