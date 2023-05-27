@@ -215,9 +215,6 @@ public class EvaluationService implements IEvaluationService {
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
 
                                     List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
-                                    List<EvaluationItemInstanceDTO.Info> allByEvaluationItemId = evaluationItemInstanceService.getAllByEvaluationItemId(itemIds);
-                                    List<Long> itemInstanceIds = allByEvaluationItemId.stream().map(EvaluationItemInstanceDTO.Info::getId).toList();
-                                    evaluationItemInstanceService.deleteAll(itemInstanceIds);
                                     evaluationItemService.deleteAll(itemIds);
 
                                 }

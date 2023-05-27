@@ -62,7 +62,7 @@ public class EvaluationItem extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE )
     private List<EvaluationItemInstance> evaluationItemInstance;
 
 }

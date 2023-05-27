@@ -126,7 +126,7 @@ public class EvaluationItemInstanceService implements IEvaluationItemInstanceSer
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @PreAuthorize("hasAuthority('D_EVALUATION_ITEM_INSTANCE')")
     public void delete(Long id) {
         EvaluationItemInstance evaluationItemInstance = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
