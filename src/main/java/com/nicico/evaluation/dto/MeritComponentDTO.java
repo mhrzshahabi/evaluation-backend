@@ -37,6 +37,13 @@ public abstract class MeritComponentDTO {
 
     @Getter
     @Setter
+    @ApiModel("MeritComponentInfo")
+    public static class InfoDetail extends MeritComponentDTO {
+        private Long id;
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("MeritComponentCreateRq")
     public static class Create extends MeritComponentDTO {
