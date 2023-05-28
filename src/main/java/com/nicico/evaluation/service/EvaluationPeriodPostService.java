@@ -1,10 +1,10 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.dto.PostRelationDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
-import com.nicico.evaluation.iservice.IEvaluationPeriodService;
 import com.nicico.evaluation.iservice.IPostRelationService;
 import com.nicico.evaluation.mapper.EvaluationPeriodPostMapper;
 import com.nicico.evaluation.model.EvaluationPeriod;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,13 +32,14 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     private final IPostRelationService postRelationService;
     private final EvaluationPeriodPostRepository repository;
     private final ResourceBundleMessageSource messageSource;
+    private final EvaluationService evaluationService;
 
 
     @Override
     @Transactional(readOnly = true)
     public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
         List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
-        List<String> postCode =  evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
+        List<String> postCode = evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
         List<PostRelationDTO.Info> postInfo = postRelationService.getAllByPostCode(postCode);
         return mapper.postInfoDtoToInfoPostInfoDto(evaluationPeriodPosts, postInfo);
     }
@@ -56,7 +58,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
             evaluationPeriodPosts = repository.saveAll(evaluationPeriodPosts);
             return mapper.entityToDtoInfoList(evaluationPeriodPosts);
         } catch (Exception exception) {
-            if(exception.getMessage().equals("equal")){
+            if (exception.getMessage().equals("equal")) {
                 String errmsg = messageSource.getMessage("message.equal.evaluation.period", null, LocaleContextHolder.getLocale());
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null, errmsg);
             }
@@ -84,6 +86,12 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     @Override
     @Transactional
     public void deleteByEvaluationPeriodIdAndPostCode(Long evaluationPeriodId, String postCode) {
+
+        EvaluationDTO.Info evaluation = evaluationService.getAllByPeriodIdAndAssessPostCode(evaluationPeriodId, postCode);
+        if (Objects.nonNull(evaluation))
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable, "", messageSource.getMessage(
+                    "message.cant.remove.used.post",
+                    new Object[]{evaluation.getEvaluationPeriod().getTitle()}, LocaleContextHolder.getLocale()));
         try {
             repository.findByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode)
                     .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
@@ -93,16 +101,16 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
         }
     }
 
-    private Set<String> check1(EvaluationPeriod newEvaluationPeriod, Set<String> postCode){
+    private Set<String> check1(EvaluationPeriod newEvaluationPeriod, Set<String> postCode) {
         Boolean canAdded = Boolean.FALSE;
         Set<String> newPostCodes = new HashSet<>();
         List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByPostCodeIn(postCode);
-        for(String pc : postCode){
-            if(evaluationPeriodPosts.stream().anyMatch(x -> x.getEvaluationPeriodId().equals(newEvaluationPeriod.getId()) && x.getPostCode().equals(pc)) )
+        for (String pc : postCode) {
+            if (evaluationPeriodPosts.stream().anyMatch(x -> x.getEvaluationPeriodId().equals(newEvaluationPeriod.getId()) && x.getPostCode().equals(pc)))
                 continue;
-            List<EvaluationPeriodPost> evaluationPeriodPostsFilter =  evaluationPeriodPosts.stream().filter(x-> x.getPostCode().equals(pc)).collect(Collectors.toList());
+            List<EvaluationPeriodPost> evaluationPeriodPostsFilter = evaluationPeriodPosts.stream().filter(x -> x.getPostCode().equals(pc)).collect(Collectors.toList());
             canAdded = Boolean.TRUE;
-            for(EvaluationPeriodPost epp : evaluationPeriodPostsFilter) {
+            for (EvaluationPeriodPost epp : evaluationPeriodPostsFilter) {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(epp.getEvaluationPeriodId())
                         .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
                 if (newEvaluationPeriod.getStartDate().equals(evaluationPeriod.getStartDate()) &&
@@ -114,26 +122,25 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
                     break;
                 }
             }
-            if(canAdded)
+            if (canAdded)
                 newPostCodes.add(pc);
         }
         return newPostCodes;
     }
 
-    private Set<String> check(EvaluationPeriod newEvaluationPeriod, Set<String> postCode){
+    private Set<String> check(EvaluationPeriod newEvaluationPeriod, Set<String> postCode) {
         Boolean canAdded = Boolean.FALSE;
         Set<String> newPostCodes = new HashSet<>();
         List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(newEvaluationPeriod.getId());
         List<String> postCodesInDb = evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
-        for(String pc : postCode){
-            if (postCodesInDb.stream().noneMatch(pc::equals))
-            {
+        for (String pc : postCode) {
+            if (postCodesInDb.stream().noneMatch(pc::equals)) {
                 canAdded = Boolean.TRUE;
                 List<EvaluationPeriodPost> evaluationPeriodPosts1 = repository.findAllByPostCode(pc);
-                for(EvaluationPeriodPost epp : evaluationPeriodPosts1){
+                for (EvaluationPeriodPost epp : evaluationPeriodPosts1) {
                     EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(epp.getEvaluationPeriodId())
                             .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-                    if(newEvaluationPeriod.getStartDate().equals(evaluationPeriod.getStartDate()) &&
+                    if (newEvaluationPeriod.getStartDate().equals(evaluationPeriod.getStartDate()) &&
                             newEvaluationPeriod.getEndDate().equals(evaluationPeriod.getEndDate()) &&
                             newEvaluationPeriod.getStartDateAssessment().equals(evaluationPeriod.getStartDateAssessment()) &&
                             newEvaluationPeriod.getEndDateAssessment().equals(evaluationPeriod.getEndDateAssessment())
@@ -143,7 +150,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
                     }
                 }
             }
-            if(canAdded)
+            if (canAdded)
                 newPostCodes.add(pc);
         }
         return newPostCodes;

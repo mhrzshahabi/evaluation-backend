@@ -109,20 +109,18 @@ public class EvaluationPeriodController {
 
     /**
      * @param evaluationPeriodId is the id of evaluationPeriod entity
-     * @param postCode is the postCode
+     * @param postCode           is the postCode
      * @return BaseResponse is the status code and message
      */
     @DeleteMapping(value = "/delete-evaluation-period-post")
     public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@RequestParam Long evaluationPeriodId, @RequestParam String postCode) {
         final Locale locale = LocaleContextHolder.getLocale();
-        try {
-            evaluationPeriodPostService.deleteByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode);
-            BaseResponse response = new BaseResponse();
-            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
-        }
+
+        evaluationPeriodPostService.deleteByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode);
+        BaseResponse response = new BaseResponse();
+        response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 
     /**
@@ -155,11 +153,11 @@ public class EvaluationPeriodController {
      */
     @PostMapping(value = "/active/spec-list")
     public ResponseEntity<EvaluationPeriodDTO.SpecResponse> activeEvaluationPeriodList(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                                       @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                                                       @RequestParam(value = "count", required = false, defaultValue = "30") Integer count, @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        CriteriaUtil.addCriteria(request,EOperator.lessOrEqual,"startDate",EOperator.and,DateUtil.todayDate());
-        CriteriaUtil.addCriteria(request,EOperator.greaterOrEqual,"endDate",EOperator.and,DateUtil.todayDate());
-        CriteriaUtil.addCriteria(request,EOperator.equals,"statusCatalog.code",EOperator.and,"period-awaiting-review");
+        CriteriaUtil.addCriteria(request, EOperator.lessOrEqual, "startDate", EOperator.and, DateUtil.todayDate());
+        CriteriaUtil.addCriteria(request, EOperator.greaterOrEqual, "endDate", EOperator.and, DateUtil.todayDate());
+        CriteriaUtil.addCriteria(request, EOperator.equals, "statusCatalog.code", EOperator.and, "period-awaiting-review");
         SearchDTO.SearchRs<EvaluationPeriodDTO.Info> data = service.search(request);
         final EvaluationPeriodDTO.Response response = new EvaluationPeriodDTO.Response();
         final EvaluationPeriodDTO.SpecResponse specRs = new EvaluationPeriodDTO.SpecResponse();
