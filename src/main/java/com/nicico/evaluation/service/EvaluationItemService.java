@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -73,6 +74,14 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
+    public List<EvaluationItemDTO.Info> getByEvalId(Long evaluationId) {
+        List<EvaluationItem> evaluationItem = repository.getAllByEvaluationId(evaluationId);
+        return mapper.entityToDtoInfoList(evaluationItem);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
     public List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId) {
         List<EvaluationItem> allPostMeritByEvalId = repository.getAllPostMeritByEvalId(evaluationId);
         return mapper.entityToPostMeritInfoDtoList(allPostMeritByEvalId);
@@ -117,7 +126,7 @@ public class EvaluationItemService implements IEvaluationItemService {
             dto.getInstanceGroupTypeMerits().forEach(instanceGroupTypeMerit -> {
                 EvaluationItemInstanceDTO.Create createInstance = new EvaluationItemInstanceDTO.Create();
                 createInstance.setInstanceId(instanceGroupTypeMerit.getInstanceId());
-                createInstance.setPostMeritInstanceId(instanceGroupTypeMerit.getId());
+                createInstance.setInstanceGroupTypeMeritId(instanceGroupTypeMerit.getId());
                 createInstance.setEvaluationItemId(evaluationItem.getId());
                 createInstanceList.add(createInstance);
             });
@@ -331,6 +340,13 @@ public class EvaluationItemService implements IEvaluationItemService {
             createItemInfoList.add(createItemInfo);
 
         });
+    }
+
+
+    @Override
+    @PreAuthorize("hasAuthority('D_EVALUATION_ITEM')")
+    public void deleteAll(List<Long> ids) {
+        ids.forEach(this::delete);
     }
 
 }

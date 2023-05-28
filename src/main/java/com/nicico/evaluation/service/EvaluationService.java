@@ -1,16 +1,11 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IEvaluationService;
-import com.nicico.evaluation.iservice.IOrganizationTreeService;
-import com.nicico.evaluation.iservice.IPersonService;
-import com.nicico.evaluation.iservice.ISpecialCaseService;
+import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
@@ -19,6 +14,8 @@ import com.nicico.evaluation.repository.EvaluationRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
@@ -41,7 +38,13 @@ public class EvaluationService implements IEvaluationService {
     private final ResourceBundleMessageSource messageSource;
     private final ISpecialCaseService specialCaseService;
     private final IOrganizationTreeService organizationTreeService;
+    private IEvaluationItemService evaluationItemService;
+    private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
+    @Autowired
+    public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
+        this.evaluationItemService = evaluationItemService;
+    }
 
     @Override
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
@@ -105,7 +108,7 @@ public class EvaluationService implements IEvaluationService {
             Evaluation evaluation = new Evaluation();
             evaluation.setStatusCatalogId(catalogStatus.getId());
             evaluation.setEvaluationPeriodId(evaluationCreate.getEvaluationPeriodId());
-            OrganizationTreeDTO.Info orgTreeInfo  = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
+            OrganizationTreeDTO.Info orgTreeInfo = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
             List<Evaluation> evaluationList =
                     repository.findByEvaluationPeriodIdAndAssessPostCode(evaluationCreate.getEvaluationPeriodId(), evaluationCreate.getPostCode());
             if (evaluationList.size() > 0) {
@@ -124,9 +127,9 @@ public class EvaluationService implements IEvaluationService {
                 Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Special-case")).findFirst().orElseThrow().getId();
                 evaluation.setMethodCatalogId(methodCatalogId);
             } else {
-                evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode() );
+                evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode());
                 evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent());
-                evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent()+" "+orgTreeInfo.getLastNameParent());
+                evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent() + " " + orgTreeInfo.getLastNameParent());
                 evaluation.setAssessFullName(orgTreeInfo.getFullName());
                 evaluation.setAssessNationalCode(orgTreeInfo.getNationalCode());
                 evaluation.setAssessPostCode(evaluationCreate.getPostCode());
@@ -195,6 +198,8 @@ public class EvaluationService implements IEvaluationService {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Initial-registration")) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    createEvaluationItems(evaluation);
+
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Finalized");
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
@@ -208,6 +213,8 @@ public class EvaluationService implements IEvaluationService {
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Initial-registration");
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+
+                                    deleteItems(evaluation);
 
                                 }
                                 repository.save(evaluation);
@@ -228,9 +235,35 @@ public class EvaluationService implements IEvaluationService {
         }
     }
 
+    private void deleteItems(Evaluation evaluation) {
+        List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
+        evaluationItemService.deleteAll(itemIds);
+    }
+
     @Override
     public List<String> getUsedPostInEvaluation(Long evaluationPeriodId) {
         return repository.getUsedPostInEvaluation(evaluationPeriodId);
+    }
+
+    private void createEvaluationItems(Evaluation evaluation) {
+        List<EvaluationItemDTO.Create> requests = new ArrayList<>();
+        List<EvaluationItemDTO.CreateItemInfo> infoByAssessPostCodeForCreate =
+                evaluationItemService.getInfoByAssessPostCodeForCreate(evaluation.getAssessPostCode().substring(0, evaluation.getAssessPostCode().indexOf("/")));
+        infoByAssessPostCodeForCreate.forEach(info -> {
+            List<EvaluationItemDTO.MeritTupleDTO> items = info.getMeritTuple();
+            items.forEach(item -> {
+                EvaluationItemDTO.Create evaluationItemDTO = new EvaluationItemDTO.Create();
+                evaluationItemDTO.setEvaluationId(evaluation.getId());
+                List<Long> instances = item.getInstances().stream().map(EvaluationItemDTO.InstanceTupleDTO::getId).toList();
+                evaluationItemDTO.setInstanceIds(instances);
+                evaluationItemDTO.setGroupTypeMeritId(item.getGroupTypeMeritId());
+                evaluationItemDTO.setPostMeritComponentId(item.getPostMeritId());
+                evaluationItemDTO.setInstanceGroupTypeMerits(item.getInstanceGroupTypeMerits());
+                evaluationItemDTO.setPostMeritInstanceList(item.getPostMeritInstanceList());
+                requests.add(evaluationItemDTO);
+            });
+        });
+        evaluationItemService.createAll(requests);
     }
 
 }

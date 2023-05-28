@@ -21,6 +21,7 @@ public abstract class MeritComponentTypeDTO {
     public static class Info extends MeritComponentTypeDTO {
 
         private KPITypeDTO.Info kpiType;
+        private MeritComponentDTO.InfoDetail meritComponent;
         private Long id;
     }
 

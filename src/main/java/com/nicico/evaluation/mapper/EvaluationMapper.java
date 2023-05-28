@@ -1,8 +1,11 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.model.Evaluation;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 

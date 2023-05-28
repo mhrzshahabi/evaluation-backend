@@ -3,6 +3,8 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationItemInstanceDTO;
 import com.nicico.evaluation.utility.BaseResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ public interface IEvaluationItemInstanceService {
 
     EvaluationItemInstanceDTO.Info get(Long id);
 
-    List<EvaluationItemInstanceDTO.Info> getAllByEvaluationItemId(Long evaluationItemId);
+    List<EvaluationItemInstanceDTO.Info> getAllByEvaluationItemId(List<Long> evaluationItemId);
 
     EvaluationItemInstanceDTO.SpecResponse list(int count, int startIndex);
 
@@ -26,4 +28,5 @@ public interface IEvaluationItemInstanceService {
 
     void delete(Long id);
 
+    void deleteAll(List<Long> ids);
 }
