@@ -23,4 +23,6 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                 GROUP BY tbl_evaluation.c_assess_post_code
                           """, nativeQuery = true)
     List<String> getUsedPostInEvaluation(Long id);
+
+    Evaluation findByEvaluationPeriodIdAndAssessRealPostCode(Long evalPeriodId, String assessPostCode);
 }
