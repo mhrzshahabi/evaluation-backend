@@ -58,30 +58,36 @@ public class PostRelationController {
                                                                                    @RequestParam(value = "evaluationPeriodId") Long evaluationPeriodId,
                                                                                    @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
 
-        List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
-
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
-                .setOperator(EOperator.inSet)
-                .setFieldName("postCode")
-                .setValue(postCodes);
-
-        criteriaRqList.add(postCodeCriteriaRq);
-        criteriaRqList.add(request.getCriteria());
-
-        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
-                .setOperator(EOperator.and)
-                .setCriteria(criteriaRqList);
-        request.setCriteria(criteriaRq);
-
-        SearchDTO.SearchRs<PostRelationDTO.Info> data = service.search(request);
         final PostRelationDTO.Response response = new PostRelationDTO.Response();
         final PostRelationDTO.SpecResponse specRs = new PostRelationDTO.SpecResponse();
-        response.setData(data.getList())
-                .setStartRow(startIndex)
-                .setEndRow(startIndex + data.getList().size())
-                .setTotalRows(data.getTotalCount().intValue());
+        List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
+        if (postCodes.isEmpty()) {
+            response.setData(new ArrayList<>())
+                    .setStartRow(0)
+                    .setEndRow(0)
+                    .setTotalRows(0);
+        } else {
+            SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+            final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.inSet)
+                    .setFieldName("postCode")
+                    .setValue(postCodes);
+
+            criteriaRqList.add(postCodeCriteriaRq);
+            criteriaRqList.add(request.getCriteria());
+
+            final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.and)
+                    .setCriteria(criteriaRqList);
+            request.setCriteria(criteriaRq);
+
+            SearchDTO.SearchRs<PostRelationDTO.Info> data = service.search(request);
+            response.setData(data.getList())
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + data.getList().size())
+                    .setTotalRows(data.getTotalCount().intValue());
+        }
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
