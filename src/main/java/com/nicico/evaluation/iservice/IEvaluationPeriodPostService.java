@@ -18,4 +18,6 @@ public interface IEvaluationPeriodPostService {
     List<EvaluationPeriodPostDTO.Info> createAll(EvaluationPeriod evaluationPeriod, Set<String> postCode);
 
     List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId);
+
+    List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId);
 }

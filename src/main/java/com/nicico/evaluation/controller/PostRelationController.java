@@ -6,7 +6,6 @@ import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.PostRelationDTO;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
-import com.nicico.evaluation.iservice.IEvaluationService;
 import com.nicico.evaluation.iservice.IPostRelationService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
@@ -26,7 +25,6 @@ public class PostRelationController {
 
     private final IPostRelationService service;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
-    private final IEvaluationService iEvaluationService;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PostRelationDTO.Info> get(@PathVariable Long id) {
@@ -96,16 +94,13 @@ public class PostRelationController {
 
         final PostRelationDTO.Response response = new PostRelationDTO.Response();
         final PostRelationDTO.SpecResponse specRs = new PostRelationDTO.SpecResponse();
-        List<String> postCodes = new ArrayList<>(evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList());
+        List<String> postCodes = evaluationPeriodPostService.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId);
         if (postCodes.isEmpty()) {
             response.setData(new ArrayList<>())
                     .setStartRow(0)
                     .setEndRow(0)
                     .setTotalRows(0);
         } else {
-            List<String> usedPost = iEvaluationService.getUsedPostInEvaluation(evaluationPeriodId);
-            if (!usedPost.isEmpty() && !postCodes.isEmpty())
-                postCodes.removeAll(usedPost);
             SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
             final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
             final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()

@@ -11,6 +11,7 @@ import com.nicico.evaluation.model.EvaluationPeriod;
 import com.nicico.evaluation.model.EvaluationPeriodPost;
 import com.nicico.evaluation.repository.EvaluationPeriodPostRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
+import com.nicico.evaluation.repository.PostRelationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -29,7 +30,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
 
     private final EvaluationPeriodRepository evaluationPeriodRepository;
     private final EvaluationPeriodPostMapper mapper;
-    private final IPostRelationService postRelationService;
+    private final PostRelationRepository postRelationRepository;
     private final EvaluationPeriodPostRepository repository;
     private final ResourceBundleMessageSource messageSource;
     private final EvaluationService evaluationService;
@@ -38,10 +39,8 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     @Override
     @Transactional(readOnly = true)
     public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
-        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
-        List<String> postCode = evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
-        List<PostRelationDTO.Info> postInfo = postRelationService.getAllByPostCode(postCode);
-        return mapper.postInfoDtoToInfoPostInfoDto(evaluationPeriodPosts, postInfo);
+        List<?> list = postRelationRepository.getPostInfoEvaluationPeriodList(evaluationPeriodId);
+        return mapper.objectToInfoPostInfoDto(list);
     }
 
     @Override
@@ -128,47 +127,12 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
         return newPostCodes;
     }
 
-    private Set<String> check(EvaluationPeriod newEvaluationPeriod, Set<String> postCode) {
-        Boolean canAdded = Boolean.FALSE;
-        Set<String> newPostCodes = new HashSet<>();
-        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(newEvaluationPeriod.getId());
-        List<String> postCodesInDb = evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
-        for (String pc : postCode) {
-            if (postCodesInDb.stream().noneMatch(pc::equals)) {
-                canAdded = Boolean.TRUE;
-                List<EvaluationPeriodPost> evaluationPeriodPosts1 = repository.findAllByPostCode(pc);
-                for (EvaluationPeriodPost epp : evaluationPeriodPosts1) {
-                    EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(epp.getEvaluationPeriodId())
-                            .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-                    if (newEvaluationPeriod.getStartDate().equals(evaluationPeriod.getStartDate()) &&
-                            newEvaluationPeriod.getEndDate().equals(evaluationPeriod.getEndDate()) &&
-                            newEvaluationPeriod.getStartDateAssessment().equals(evaluationPeriod.getStartDateAssessment()) &&
-                            newEvaluationPeriod.getEndDateAssessment().equals(evaluationPeriod.getEndDateAssessment())
-                    ) {
-                        canAdded = Boolean.FALSE;
-                        break;
-                    }
-                }
-            }
-            if (canAdded)
-                newPostCodes.add(pc);
-        }
-        return newPostCodes;
-    }
 
-//    private List<String> getAllPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
-//        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
-//        return evaluationPeriodPosts.stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toList());
-//    }
-//
-//    private Set<String> removeDuplicatePostCode(Long evaluationPeriodId, Set<String> postCode) {
-//        List<String> postCodesInDb = getAllPostCodeByEvaluationPeriodId(evaluationPeriodId);
-//        Set<String> newPostCodes = new HashSet<>();
-//        for (String pc : postCode) {
-//            if (postCodesInDb.stream().noneMatch(pc::equals))
-//                newPostCodes.add(pc);
-//        }
-//        return newPostCodes;
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
+        return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId);
+
+    }
 
 }

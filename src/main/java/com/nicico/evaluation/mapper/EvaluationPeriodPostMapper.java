@@ -17,30 +17,32 @@ import java.util.Set;
 public interface EvaluationPeriodPostMapper {
 
     EvaluationPeriodPostDTO.Info entityToDtoInfo(EvaluationPeriodPost entity);
+
     List<EvaluationPeriodPostDTO.Info> entityToDtoInfoList(List<EvaluationPeriodPost> entities);
 
 
-    default List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoDtoToInfoPostInfoDto(List<EvaluationPeriodPost> entities, List<PostRelationDTO.Info> postInfo){
-        List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> tmp = new ArrayList<>();
-        for(EvaluationPeriodPost epp : entities){
-            PostRelationDTO.Info postInfoTemp =  postInfo.stream().filter(x-> x.getPostCode().equals(epp.getPostCode())).findFirst().orElse(null);
-            if(postInfoTemp != null){
-                EvaluationPeriodPostDTO.PostInfoEvaluationPeriod postInfoEvaluationPeriod = new EvaluationPeriodPostDTO.PostInfoEvaluationPeriod();
-                postInfoEvaluationPeriod.setEvaluationPeriodPostId(epp.getId());
-                postInfoEvaluationPeriod.setId(postInfoTemp.getId());
-                postInfoEvaluationPeriod.setPostCode(postInfoTemp.getPostCode());
-                postInfoEvaluationPeriod.setPostTitle(postInfoTemp.getPostTitle());
-                postInfoEvaluationPeriod.setPostCodeParent(postInfoTemp.getPostCodeParent());
-                postInfoEvaluationPeriod.setPostTitleParent(postInfoTemp.getPostTitleParent());
-                tmp.add(postInfoEvaluationPeriod);
-            }
+    default List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> objectToInfoPostInfoDto(List<?> data) {
+        if (data != null) {
+            data.forEach(p ->
+                    {
+                        Object[] objects = (Object[]) p;
+                        EvaluationPeriodPostDTO.PostInfoEvaluationPeriod item = new EvaluationPeriodPostDTO.PostInfoEvaluationPeriod();
+                        item.setId(objects[5] == null ? null : Long.parseLong(objects[5].toString()));
+                        item.setEvaluationPeriodPostId(objects[0] == null ? null : Long.parseLong(objects[0].toString()));
+                        item.setPostCode(objects[1] == null ? null : objects[1].toString());
+                        item.setPostTitle(objects[2] == null ? null : objects[2].toString());
+                        item.setPostCodeParent(objects[3] == null ? null : objects[3].toString());
+                        item.setPostTitleParent(objects[4] == null ? null : objects[4].toString());
+                    }
+            );
         }
-        return tmp;
+        return new ArrayList<>();
+
     }
 
-    default List<EvaluationPeriodPost> listPostCodeToEntities(Long evaluationPeriodId, Set<String> postCode){
+    default List<EvaluationPeriodPost> listPostCodeToEntities(Long evaluationPeriodId, Set<String> postCode) {
         List<EvaluationPeriodPost> evaluationPeriodPosts = new ArrayList<>();
-        for(String postcode : postCode){
+        for (String postcode : postCode) {
             EvaluationPeriodPost temp = new EvaluationPeriodPost();
             temp.setEvaluationPeriodId(evaluationPeriodId);
             temp.setPostCode(postcode.trim());
