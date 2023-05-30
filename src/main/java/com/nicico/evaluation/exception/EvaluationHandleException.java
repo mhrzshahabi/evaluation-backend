@@ -60,7 +60,8 @@ public class EvaluationHandleException extends NICICOException implements Handle
         ProvinceNotFound(404),
         InvalidData(405),
         IntegrityConstraint(403),
-        GradeIsInAnotherGroup(403);
+        GradeIsInAnotherGroup(403),
+        NotInEvaluationPeriodDuration(403);
 
         private final Integer httpStatusCode;
 
