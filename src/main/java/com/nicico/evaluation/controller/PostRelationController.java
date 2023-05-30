@@ -94,7 +94,8 @@ public class PostRelationController {
                                                                                                      @RequestParam(value = "evaluationPeriodId") Long evaluationPeriodId,
                                                                                                      @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
 
-        List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
+        List<String> postCodes =new ArrayList<>(evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList()) ;
+
         List<String> usedPost = iEvaluationService.getUsedPostInEvaluation(evaluationPeriodId);
         if (!usedPost.isEmpty() && !postCodes.isEmpty())
             postCodes.removeAll(usedPost);
