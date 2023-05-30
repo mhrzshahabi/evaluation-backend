@@ -50,5 +50,5 @@ public interface PostRelationRepository extends JpaRepository<PostRelation, Long
                        GROUP BY tbl_evaluation.c_assess_post_code
                       )
                       """, nativeQuery = true)
-    List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId);
+    List<String> getUnUsedPostCodeByEvaluationPeriodId(Long id);
 }
