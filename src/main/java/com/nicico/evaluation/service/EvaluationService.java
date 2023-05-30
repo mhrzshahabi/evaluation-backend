@@ -39,7 +39,6 @@ public class EvaluationService implements IEvaluationService {
     private final ISpecialCaseService specialCaseService;
     private final IOrganizationTreeService organizationTreeService;
     private IEvaluationItemService evaluationItemService;
-    private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -79,6 +78,14 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info get(Long id) {
         Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(Evaluation);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION')")
+    public EvaluationDTO.Info getAllByPeriodIdAndAssessPostCode(Long periodId, String assessPostCode) {
+        Evaluation evaluation = repository.findByEvaluationPeriodIdAndAssessRealPostCode(periodId, assessPostCode);
+        return mapper.entityToDtoInfo(evaluation);
     }
 
     @Override

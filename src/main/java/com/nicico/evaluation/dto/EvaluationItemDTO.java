@@ -153,6 +153,7 @@ public abstract class EvaluationItemDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationItemUpdateRq")
     public static class Update extends EvaluationItemDTO {
+        private Long id;
         private Long averageScore;
 
     }

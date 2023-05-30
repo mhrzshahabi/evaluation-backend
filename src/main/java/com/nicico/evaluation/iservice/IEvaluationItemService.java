@@ -25,7 +25,9 @@ public interface IEvaluationItemService {
 
     List<EvaluationItemDTO.CreateItemInfo> getInfoByEvaluationIdForUpdate(Long id);
 
-    EvaluationItemDTO.Info update(Long id, EvaluationItemDTO.Update dto);
+    EvaluationItemDTO.Info update(EvaluationItemDTO.Update dto);
+
+    List<EvaluationItemDTO.Info> updateAll(List<EvaluationItemDTO.Update> requests);
 
     void delete(Long id);
 

@@ -89,9 +89,9 @@ public class EvaluationItemController {
      * @param request is  the model of input for update evaluationItem entity
      * @return EvaluationItemDTOInfo is the updated evaluationItem entity
      */
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<EvaluationItemDTO.Info> update(@PathVariable Long id, @Valid @RequestBody EvaluationItemDTO.Update request) {
-        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
+    @PutMapping
+    public ResponseEntity<List<EvaluationItemDTO.Info>> update(@Valid @RequestBody List<EvaluationItemDTO.Update> request) {
+        return new ResponseEntity<>(service.updateAll(request), HttpStatus.OK);
     }
 
     /**

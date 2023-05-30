@@ -17,6 +17,8 @@ public interface IEvaluationService {
 
     EvaluationDTO.Info get(Long id);
 
+    EvaluationDTO.Info getAllByPeriodIdAndAssessPostCode(Long periodId, String assessPostCode);
+
     Evaluation getById(Long id);
 
     EvaluationDTO.Info create(EvaluationDTO.Create dto);
