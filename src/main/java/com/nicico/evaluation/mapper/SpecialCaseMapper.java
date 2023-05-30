@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Mapper(componentModel = "spring")
 public interface SpecialCaseMapper {
@@ -37,6 +38,7 @@ public interface SpecialCaseMapper {
     @Named("convertDateToString")
    default String convertDateToString(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
         return DateUtil.convertMiToKh(dateFormat.format(date));
     }
 
