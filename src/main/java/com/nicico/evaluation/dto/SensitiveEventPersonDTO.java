@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Getter
@@ -15,6 +17,8 @@ public abstract class SensitiveEventPersonDTO {
     private String nationalCode;
     private Long sensitiveEventId;
     private Long meritComponentId;
+    @Min(value = 1, message = " درصد مشارکت باید عددی بین 1 تا 100 باشد")
+    @Max(value = 100, message = " درصد مشارکت باید عددی بین 1 تا 100 باشد")
     private Long participation;
     private String firstName;
     private String lastName;
