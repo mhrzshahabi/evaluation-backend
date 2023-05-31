@@ -14,10 +14,7 @@ public interface EvaluationPeriodPostRepository extends JpaRepository<Evaluation
 
     List<EvaluationPeriodPost> findAllByEvaluationPeriodId(Long id);
 
-    List<EvaluationPeriodPost> findAllByPostCode(String postCode);
-
     List<EvaluationPeriodPost> findAllByPostCodeIn(Set<String> postCode);
-
 
     Optional<EvaluationPeriodPost> findByEvaluationPeriodIdAndPostCode(Long evaluationPeriodPost, String postCode);
 

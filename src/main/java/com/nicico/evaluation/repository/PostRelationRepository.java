@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface PostRelationRepository extends JpaRepository<PostRelation, Long>, JpaSpecificationExecutor<PostRelation> {
 
-    List<PostRelation> findByPostCodeIn(List<String> postCode);
-
     @Query(value = """
             SELECT
                 tbl_evaluation_period_post.id AS evaluationPeriodPostId,
@@ -29,7 +27,6 @@ public interface PostRelationRepository extends JpaRepository<PostRelation, Long
                 tbl_evaluation_period_post.evaluation_period_id = :id
                            """, nativeQuery = true)
     List<?> getPostInfoEvaluationPeriodList(Long id);
-
 
     @Query(value = """
             SELECT\s

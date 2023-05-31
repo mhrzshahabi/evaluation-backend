@@ -60,7 +60,7 @@ public class PostRelationController {
 
         final PostRelationDTO.Response response = new PostRelationDTO.Response();
         final PostRelationDTO.SpecResponse specRs = new PostRelationDTO.SpecResponse();
-        List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
+        List<String> postCodes = evaluationPeriodPostService.getByEvaluationPeriodId(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO.Info::getPostCode).toList();
         if (postCodes.isEmpty()) {
             response.setData(new ArrayList<>())
                     .setStartRow(0)

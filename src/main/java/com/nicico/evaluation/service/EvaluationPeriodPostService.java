@@ -1,11 +1,10 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
-import com.nicico.evaluation.dto.PostRelationDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
-import com.nicico.evaluation.iservice.IPostRelationService;
 import com.nicico.evaluation.mapper.EvaluationPeriodPostMapper;
 import com.nicico.evaluation.model.EvaluationPeriod;
 import com.nicico.evaluation.model.EvaluationPeriodPost;
@@ -35,6 +34,13 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     private final ResourceBundleMessageSource messageSource;
     private final EvaluationService evaluationService;
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationPeriodPostDTO.Info> getByEvaluationPeriodId(Long evaluationPeriodId) {
+        List<EvaluationPeriodPost> list = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
+        return mapper.entityToDtoInfoList(list);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -132,7 +138,11 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     @Transactional(readOnly = true)
     public List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
         return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId);
+    }
 
+    @Override
+    public SearchDTO.SearchRs<EvaluationPeriodPostDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
 }
