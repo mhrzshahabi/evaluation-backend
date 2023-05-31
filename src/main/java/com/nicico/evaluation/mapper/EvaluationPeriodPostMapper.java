@@ -1,17 +1,12 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
-import com.nicico.evaluation.dto.PostRelationDTO;
 import com.nicico.evaluation.model.EvaluationPeriodPost;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-
 
 @Mapper(componentModel = "spring")
 public interface EvaluationPeriodPostMapper {
@@ -20,8 +15,8 @@ public interface EvaluationPeriodPostMapper {
 
     List<EvaluationPeriodPostDTO.Info> entityToDtoInfoList(List<EvaluationPeriodPost> entities);
 
-
     default List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> objectToInfoPostInfoDto(List<?> data) {
+        List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> result = new ArrayList<>();
         if (data != null) {
             data.forEach(p ->
                     {
@@ -33,11 +28,11 @@ public interface EvaluationPeriodPostMapper {
                         item.setPostTitle(objects[2] == null ? null : objects[2].toString());
                         item.setPostCodeParent(objects[3] == null ? null : objects[3].toString());
                         item.setPostTitleParent(objects[4] == null ? null : objects[4].toString());
+                        result.add(item);
                     }
             );
         }
-        return new ArrayList<>();
-
+        return result;
     }
 
     default List<EvaluationPeriodPost> listPostCodeToEntities(Long evaluationPeriodId, Set<String> postCode) {
