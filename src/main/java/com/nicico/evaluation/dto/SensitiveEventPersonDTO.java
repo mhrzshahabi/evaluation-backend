@@ -32,6 +32,15 @@ public abstract class SensitiveEventPersonDTO {
 
     @Getter
     @Setter
+    @ApiModel("SensitiveEventPersonPersonInfo")
+    public static class PersonInfo {
+        private String nationalCode;
+        private String firstName;
+        private String lastName;
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("SensitiveEventPersonCreateRq")
     public static class Create extends SensitiveEventPersonDTO {

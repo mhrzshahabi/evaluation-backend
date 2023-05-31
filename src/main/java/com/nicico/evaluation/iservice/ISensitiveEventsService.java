@@ -13,6 +13,8 @@ public interface ISensitiveEventsService {
 
     SensitiveEventsDTO.SpecResponse list(int count, int startIndex);
 
+    SearchDTO.SearchRs<SensitiveEventsDTO.Info> createBySearch(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+
     SearchDTO.SearchRs<SensitiveEventsDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     SensitiveEventsDTO.Info create(SensitiveEventsDTO.Create dto);
