@@ -1,7 +1,9 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.AttachmentDTO;
+import com.nicico.evaluation.dto.SensitiveEventPersonDTO;
 import com.nicico.evaluation.dto.SensitiveEventsDTO;
+import com.nicico.evaluation.model.SensitiveEventPerson;
 import com.nicico.evaluation.model.SensitiveEvents;
 import com.nicico.evaluation.service.AttachmentService;
 import com.nicico.evaluation.utility.EvaluationConstant;
@@ -23,6 +25,9 @@ public abstract class SensitiveEventsMapper {
     @Autowired
     AttachmentService attachmentService;
 
+    @Autowired
+    SensitiveEventPersonMapper sensitiveEventPersonMapper;
+
     @Mappings({
             @Mapping(target = "eventDate", source = "eventDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "toDate", source = "toDate", qualifiedByName = "convertDateToString")
@@ -32,7 +37,8 @@ public abstract class SensitiveEventsMapper {
     @Mappings({
             @Mapping(target = "eventDate", source = "eventDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "toDate", source = "toDate", qualifiedByName = "convertStringToDate"),
-            @Mapping(target = "attachment", source = "id", qualifiedByName = "getAttachment"),
+            @Mapping(target = "attachment", source = "id", qualifiedByName = "getAttachmentInfo"),
+            @Mapping(target = "sensitiveEventPersonList", source = "sensitiveEventPersonList", qualifiedByName = "getPersonDtoInfoList")
     })
     public abstract SensitiveEventsDTO.Info entityToDtoInfo(SensitiveEvents entity);
 
@@ -44,11 +50,15 @@ public abstract class SensitiveEventsMapper {
     })
     public abstract void update(@MappingTarget SensitiveEvents entity, SensitiveEventsDTO.Update dto);
 
-    @Named("getAttachment")
-    AttachmentDTO.AttachInfo getAttachment(Long id) {
+    @Named("getAttachmentInfo")
+    AttachmentDTO.AttachInfo getAttachmentInfo(Long id) {
         AttachmentDTO.AttachInfo attachInfoDto = new AttachmentDTO.AttachInfo();
         List<AttachmentDTO.Info> allByObjectIdAndObjectTypeAndGroupId = attachmentService.getAllByObjectIdAndObjectTypeAndGroupId(id, EvaluationConstant.SENSITIVE_EVENTS, fmsGroupId);
         return attachInfoDto.setFmsUrl(fmsUrl).setInfoList(allByObjectIdAndObjectTypeAndGroupId);
+    }
 
+    @Named("getPersonDtoInfoList")
+    List<SensitiveEventPersonDTO.PersonInfo> getPersonDtoInfoList(List<SensitiveEventPerson> sensitiveEventPersonList) {
+        return sensitiveEventPersonMapper.entityToDtoPersonInfoList(sensitiveEventPersonList);
     }
 }

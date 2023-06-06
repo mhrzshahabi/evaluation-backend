@@ -33,7 +33,7 @@ public abstract class SensitiveEventsDTO {
         private CatalogDTO.Info typeCatalog;
         private String nationalCode;
         private AttachmentDTO.AttachInfo attachment;
-
+        private List<SensitiveEventPersonDTO.PersonInfo> sensitiveEventPersonList;
     }
 
     @Getter

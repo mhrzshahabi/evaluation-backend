@@ -23,14 +23,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 @RequiredArgsConstructor
 @Api(value = " Evaluation Period")
@@ -115,12 +109,10 @@ public class EvaluationPeriodController {
     @DeleteMapping(value = "/delete-evaluation-period-post")
     public ResponseEntity<BaseResponse> deleteEvaluationPeriodPost(@RequestParam Long evaluationPeriodId, @RequestParam String postCode) {
         final Locale locale = LocaleContextHolder.getLocale();
-
         evaluationPeriodPostService.deleteByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode);
         BaseResponse response = new BaseResponse();
         response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
         return new ResponseEntity<>(response, HttpStatus.OK);
-
     }
 
     /**
