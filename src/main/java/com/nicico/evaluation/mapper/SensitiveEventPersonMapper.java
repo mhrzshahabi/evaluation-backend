@@ -40,6 +40,14 @@ public abstract class SensitiveEventPersonMapper {
 
     public abstract List<SensitiveEventPersonDTO.Info> entityToDtoInfoList(List<SensitiveEventPerson> entities);
 
+    @Mappings({
+            @Mapping(target = "firstName", source = "nationalCode", qualifiedByName = "getPersonFirstName"),
+            @Mapping(target = "lastName", source = "nationalCode", qualifiedByName = "getPersonLastName")
+    })
+    public abstract SensitiveEventPersonDTO.PersonInfo entityToDtoPersonInfo(SensitiveEventPerson entity);
+
+    public abstract List<SensitiveEventPersonDTO.PersonInfo> entityToDtoPersonInfoList(List<SensitiveEventPerson> entities);
+
     public abstract void update(@MappingTarget SensitiveEventPerson entity, SensitiveEventPersonDTO.Update dto);
 
     @Named("getPersonLastName")
@@ -58,6 +66,5 @@ public abstract class SensitiveEventPersonMapper {
         AttachmentDTO.AttachInfo attachInfoDto = new AttachmentDTO.AttachInfo();
         List<AttachmentDTO.Info> allByObjectIdAndObjectTypeAndGroupId = attachmentService.getAllByObjectIdAndObjectTypeAndGroupId(id, EvaluationConstant.SENSITIVE_EVENT_PERSON, fmsGroupId);
         return attachInfoDto.setFmsUrl(fmsUrl).setInfoList(allByObjectIdAndObjectTypeAndGroupId);
-
     }
 }

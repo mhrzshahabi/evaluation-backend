@@ -1,11 +1,7 @@
 package com.nicico.evaluation.mapper;
 
-import com.nicico.evaluation.dto.InstanceDTO;
-import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
-import com.nicico.evaluation.iservice.IMeritComponentTypeService;
-import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.model.MeritComponentType;
 import org.mapstruct.*;

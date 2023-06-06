@@ -105,7 +105,7 @@ public class SensitiveEventsService implements ISensitiveEventsService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS')")
-    public SearchDTO.SearchRs<SensitiveEventsDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+    public SearchDTO.SearchRs<SensitiveEventsDTO.Info> createBySearch(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
         final SearchDTO.CriteriaRq nationalCodeCriteriaRq = new SearchDTO.CriteriaRq()
                 .setOperator(EOperator.equals)
@@ -120,6 +120,13 @@ public class SensitiveEventsService implements ISensitiveEventsService {
                 .setCriteria(criteriaRqList);
         request.setCriteria(criteriaRq);
 
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS')")
+    public SearchDTO.SearchRs<SensitiveEventsDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 

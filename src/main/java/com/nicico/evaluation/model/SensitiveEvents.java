@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -71,5 +71,8 @@ public class SensitiveEvents extends Auditable {
 
     @Column(name = "c_national_code")
     private String nationalCode;
+
+    @OneToMany(mappedBy = "sensitiveEvent", fetch = FetchType.LAZY)
+    private List<SensitiveEventPerson> sensitiveEventPersonList;
 
 }
