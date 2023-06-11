@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.INITIAL_REGISTRATION;
+
 @RequiredArgsConstructor
 @Service
 public class EvaluationPeriodService implements IEvaluationPeriodService {
@@ -118,7 +120,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) {
         if (this.isValidDates(dto.getStartDate(), dto.getEndDate(), dto.getStartDateAssessment(), dto.getEndDateAssessment())) {
             try {
-                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() ->
+                        new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+                if (Objects.nonNull(evaluationPeriod) && !evaluationPeriod.getStatusCatalog().getCode().equals(INITIAL_REGISTRATION))
+                    throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable, "",
+                            messageSource.getMessage("exception.update.evaluation.period.Initial-registration", null, LocaleContextHolder.getLocale()));
+
                 evaluationPeriodMapper.update(evaluationPeriod, dto);
                 EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
                 return evaluationPeriodMapper.entityToDtoInfo(save);
