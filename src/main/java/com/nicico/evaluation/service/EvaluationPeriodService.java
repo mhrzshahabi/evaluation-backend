@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static com.nicico.evaluation.utility.EvaluationConstant.INITIAL_REGISTRATION;
+import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_INITIAL_REGISTRATION;
 
 @RequiredArgsConstructor
 @Service
@@ -122,7 +122,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
             try {
                 EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() ->
                         new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-                if (Objects.nonNull(evaluationPeriod) && !evaluationPeriod.getStatusCatalog().getCode().equals(INITIAL_REGISTRATION))
+                if (Objects.nonNull(evaluationPeriod) && !evaluationPeriod.getStatusCatalog().getCode().equals(PERIOD_INITIAL_REGISTRATION))
                     throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable, "",
                             messageSource.getMessage("exception.update.evaluation.period.Initial-registration", null, LocaleContextHolder.getLocale()));
 
