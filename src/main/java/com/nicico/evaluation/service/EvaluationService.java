@@ -199,7 +199,7 @@ public class EvaluationService implements IEvaluationService {
                     Evaluation evaluation = optionalEvaluation.get();
                     String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
                     Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
-                    if (evaluationDate != null && evaluationDate.before(new Date())) {
+                    if (evaluationDate != null && evaluationDate.after(new Date())) {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next" -> {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Initial-registration")) {
@@ -228,7 +228,9 @@ public class EvaluationService implements IEvaluationService {
                             }
                         }
                     } else {
-                        throw new Exception();
+                        response.setStatus(406);
+                        response.setMessage(messageSource.getMessage("exception.evaluation.date", null, locale));
+                        return response;
                     }
                 }
             }
