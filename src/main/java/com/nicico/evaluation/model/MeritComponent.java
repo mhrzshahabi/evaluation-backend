@@ -32,7 +32,6 @@ public class MeritComponent extends Auditable {
     @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
-    @OneToMany(mappedBy = "meritComponent", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "meritComponent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<MeritComponentType> meritComponentTypes;
-
 }
