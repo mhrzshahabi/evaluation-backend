@@ -6,6 +6,7 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -32,6 +33,7 @@ import java.util.Locale;
 public class EvaluationController {
 
     private final IEvaluationService service;
+    private final ICatalogService catalogService;
     private final ResourceBundleMessageSource messageSource;
 
     /**
@@ -146,7 +148,13 @@ public class EvaluationController {
                 .setFieldName("assessorNationalCode")
                 .setValue(SecurityUtil.getNationalCode());
 
+        final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.notEqual)
+                .setFieldName("statusCatalogId")
+                .setValue(catalogService.getByCode("Initial-registration").getId());
+
         criteriaRqList.add(nationalCodeCriteriaRq);
+        criteriaRqList.add(statusCriteriaRq);
         criteriaRqList.add(request.getCriteria());
 
         final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
