@@ -103,7 +103,8 @@ public class EvaluationController {
      */
     @PostMapping(value = "/change-status")
     public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO ChangeStatusDTO) {
-        return new ResponseEntity<>(service.changeStatus(ChangeStatusDTO), HttpStatus.OK);
+        BaseResponse response =service.changeStatus(ChangeStatusDTO);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
     /**
