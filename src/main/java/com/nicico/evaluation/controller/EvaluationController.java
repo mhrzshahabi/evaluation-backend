@@ -103,7 +103,7 @@ public class EvaluationController {
      */
     @PostMapping(value = "/change-status")
     public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO ChangeStatusDTO) {
-        BaseResponse response =service.changeStatus(ChangeStatusDTO);
+        BaseResponse response = service.changeStatus(ChangeStatusDTO);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
@@ -140,19 +140,22 @@ public class EvaluationController {
                                                                                    @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                                    @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        final SearchDTO.CriteriaRq nationalCodeCriteriaRq = new SearchDTO.CriteriaRq()
-                .setOperator(EOperator.equals)
-                .setFieldName("assessorNationalCode")
-                .setValue(SecurityUtil.getNationalCode());
+        boolean isAdmin = SecurityUtil.isAdmin();
+        if (!isAdmin) {
+            final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            final SearchDTO.CriteriaRq nationalCodeCriteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.equals)
+                    .setFieldName("assessorNationalCode")
+                    .setValue(SecurityUtil.getNationalCode());
 
-        criteriaRqList.add(nationalCodeCriteriaRq);
-        criteriaRqList.add(request.getCriteria());
+            criteriaRqList.add(nationalCodeCriteriaRq);
+            criteriaRqList.add(request.getCriteria());
 
-        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
-                .setOperator(EOperator.and)
-                .setCriteria(criteriaRqList);
-        request.setCriteria(criteriaRq);
+            final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.and)
+                    .setCriteria(criteriaRqList);
+            request.setCriteria(criteriaRq);
+        }
 
         SearchDTO.SearchRs<EvaluationDTO.Info> data = service.search(request);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
