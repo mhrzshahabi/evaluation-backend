@@ -48,7 +48,7 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId, String filterNameFa) {
+    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         List<OrganizationTree> organizationTrees;
         if (postParentId == 0) {
@@ -56,12 +56,7 @@ public class OrganizationTreeService implements IOrganizationTreeService {
         } else {
             organizationTrees = repository.findAllByPostParentIdAndOrgStructureId(postParentId, orgStructureId, pageable);
         }
-        List<OrganizationTreeDTO.InfoTree> infoTrees = mapper.entityToDtoInfoTreeList(organizationTrees);
-
-        if (Objects.nonNull(filterNameFa) && !filterNameFa.equals("{}"))
-            return infoTrees.stream().filter(info -> info.getNameFa().contains(filterNameFa)).toList();
-
-        return infoTrees;
+        return mapper.entityToDtoInfoTreeList(organizationTrees);
     }
 
     @Override

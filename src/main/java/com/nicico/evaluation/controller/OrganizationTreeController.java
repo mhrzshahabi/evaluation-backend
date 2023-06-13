@@ -35,12 +35,11 @@ public class OrganizationTreeController {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/list-tree")
+    @GetMapping(value = "/list-tree")
     public ResponseEntity<List<OrganizationTreeDTO.InfoTree>> listTree(@RequestParam int count, @RequestParam int startIndex,
                                                                        @RequestParam Long orgStructureId,
-                                                                       @RequestParam(defaultValue = "0") Long postParentId,
-                                                                       @RequestBody(required = false) String filterNameFa) {
-        return new ResponseEntity<>(service.listTree(count, startIndex, orgStructureId, postParentId, filterNameFa), HttpStatus.OK);
+                                                                       @RequestParam(defaultValue = "0") Long postParentId) {
+        return new ResponseEntity<>(service.listTree(count, startIndex, orgStructureId, postParentId), HttpStatus.OK);
     }
 
     @PostMapping(value = "/spec-list")
