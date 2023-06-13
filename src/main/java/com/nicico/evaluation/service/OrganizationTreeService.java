@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -47,7 +48,7 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId) {
+    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId, String filterNameFa) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         List<OrganizationTree> organizationTrees;
         if (postParentId == 0) {
@@ -55,7 +56,12 @@ public class OrganizationTreeService implements IOrganizationTreeService {
         } else {
             organizationTrees = repository.findAllByPostParentIdAndOrgStructureId(postParentId, orgStructureId, pageable);
         }
-        return mapper.entityToDtoInfoTreeList(organizationTrees);
+        List<OrganizationTreeDTO.InfoTree> infoTrees = mapper.entityToDtoInfoTreeList(organizationTrees);
+
+        if (Objects.nonNull(filterNameFa) && !filterNameFa.equals("{}"))
+            return infoTrees.stream().filter(info -> info.getNameFa().contains(filterNameFa)).toList();
+
+        return infoTrees;
     }
 
     @Override
@@ -97,13 +103,13 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     public OrganizationTreeDTO.Info getByPostCodeAndNationalCode(String postCode, String nationalCode) {
         OrganizationTree organizationTree = repository.findByPostCodeAndNationalCode(postCode, nationalCode)
                 .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return  mapper.entityToDtoInfo(organizationTree);
+        return mapper.entityToDtoInfo(organizationTree);
     }
 
     @Override
     public OrganizationTreeDTO.Info getByPostCode(String postCode) {
         OrganizationTree organizationTree = repository.findByPostCode(postCode)
                 .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return  mapper.entityToDtoInfo(organizationTree);
+        return mapper.entityToDtoInfo(organizationTree);
     }
 }
