@@ -2,7 +2,6 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.OrganizationTreeDTO;
-import com.nicico.evaluation.model.OrganizationTree;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public interface IOrganizationTreeService {
 
     OrganizationTreeDTO.SpecResponse list(int count, int startIndex);
 
-    List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId);
+    List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId, String filterNameFa);
 
     Long countChildNode(Long postId);
 
