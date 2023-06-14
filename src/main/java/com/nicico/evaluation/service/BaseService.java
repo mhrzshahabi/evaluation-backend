@@ -101,6 +101,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
 
                 searchRs = new SearchDTO.SearchRs<>();
                 searchRs.setList(new ArrayList<INFO>());
+                searchRs.setTotalCount(0L);
 
             } else {
                 List<Long> ids = new ArrayList<>();
