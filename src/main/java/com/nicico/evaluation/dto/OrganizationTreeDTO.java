@@ -87,6 +87,7 @@ public class OrganizationTreeDTO {
         private Long postParentId;
         private String nameFa;
         private Long childNode;
+        private String postPath;
     }
 
     @Getter
