@@ -93,6 +93,14 @@ public class OrganizationTreeDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("OrganizationTreeSearchTree")
+    public static class SearchTree {
+        private String nameFa;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("OrganizationTreeSpecResponse")
     public static class SpecResponse {
         private OrganizationTreeDTO.Response response;
