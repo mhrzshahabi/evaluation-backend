@@ -126,9 +126,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
 
                 searchRs = SearchUtil.search(dao, rq, converter);
             }
-            searchRs.setTotalCount(totalCount);
         }
-
         return searchRs;
     }
 

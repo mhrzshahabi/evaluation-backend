@@ -87,6 +87,15 @@ public class OrganizationTreeDTO {
         private Long postParentId;
         private String nameFa;
         private Long childNode;
+        private String postPath;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("OrganizationTreeSearchTree")
+    public static class SearchTree {
+        private String nameFa;
     }
 
     @Getter
