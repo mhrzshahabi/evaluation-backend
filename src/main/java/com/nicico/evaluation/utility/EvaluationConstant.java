@@ -12,4 +12,6 @@ public class EvaluationConstant {
     public static final String EVALUATION_STATUS = "EvaluationStatus";
     public static final String PERIOD_INITIAL_REGISTRATION = "period-initial-registration";
     public static final String FINALIZED = "Finalized";
+    public static final String AWAITING = "Awaiting-review";
+    public static final String INITIAL = "Initial-registration";
 }
