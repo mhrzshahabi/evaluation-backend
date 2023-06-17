@@ -45,9 +45,8 @@ public class OrganizationTreeController {
     @PostMapping(value = "/list-tree/search")
     public ResponseEntity<List<OrganizationTreeDTO.InfoTree>> searchListTree(@RequestParam int count, @RequestParam int startIndex,
                                                                              @RequestParam Long orgStructureId,
-                                                                             @RequestParam(defaultValue = "0") Long postParentId,
                                                                              @RequestBody(required = false) OrganizationTreeDTO.SearchTree dto) {
-        return new ResponseEntity<>(service.SearchListTree(count, startIndex, orgStructureId, postParentId, dto), HttpStatus.OK);
+        return new ResponseEntity<>(service.SearchListTree(count, startIndex, orgStructureId, dto), HttpStatus.OK);
     }
 
     @PostMapping(value = "/spec-list")

@@ -14,7 +14,7 @@ public interface IOrganizationTreeService {
 
     List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId);
 
-    List<OrganizationTreeDTO.InfoTree> SearchListTree(int count, int startIndex, Long orgStructureId, Long postParentId, OrganizationTreeDTO.SearchTree dto);
+    List<OrganizationTreeDTO.InfoTree> SearchListTree(int count, int startIndex, Long orgStructureId, OrganizationTreeDTO.SearchTree dto);
 
     Long countChildNode(Long postId);
 
