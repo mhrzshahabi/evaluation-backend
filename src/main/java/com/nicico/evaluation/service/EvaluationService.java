@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.*;
+
 @RequiredArgsConstructor
 @Service
 public class EvaluationService implements IEvaluationService {
@@ -202,23 +204,24 @@ public class EvaluationService implements IEvaluationService {
                     if (evaluationDate != null && evaluationDate.after(new Date())) {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next" -> {
-                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Initial-registration")) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
-                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+                                    //update this item in create evaluation item
+//                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
+//                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     createEvaluationItems(evaluation);
 
-                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Finalized");
+                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(FINALIZED);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                 }
                                 repository.save(evaluation);
                             }
                             case "previous" -> {
-                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Finalized")) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
+                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(AWAITING);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals("Awaiting-review")) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Initial-registration");
+                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
 
                                     deleteItems(evaluation);

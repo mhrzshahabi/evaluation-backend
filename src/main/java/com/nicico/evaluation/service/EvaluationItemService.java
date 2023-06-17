@@ -136,9 +136,20 @@ public class EvaluationItemService implements IEvaluationItemService {
     private void UpdateEvaluation(EvaluationItemDTO.Create dto) {
         Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
         evaluation.setAverageScore(dto.getAverageScore());
-        Long statusByCatalogType = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream()
-                .filter(status -> status.getCode().equals(FINALIZED)).findFirst().orElseThrow().getId();
-        evaluation.setStatusCatalogId(statusByCatalogType);
+
+        if (evaluation.getStatusCatalog() != null && evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+
+            Long statusByCatalogType = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream()
+                    .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
+            evaluation.setStatusCatalogId(statusByCatalogType);
+
+        } else {
+            Long statusByCatalogType = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream()
+                    .filter(status -> status.getCode().equals(FINALIZED)).findFirst().orElseThrow().getId();
+            evaluation.setStatusCatalogId(statusByCatalogType);
+
+        }
+
         evaluationService.update(dto.getEvaluationId(), evaluation);
     }
 
