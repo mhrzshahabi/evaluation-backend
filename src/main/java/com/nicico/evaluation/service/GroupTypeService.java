@@ -5,6 +5,7 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeService;
+import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.mapper.GroupTypeMapper;
 import com.nicico.evaluation.model.GroupType;
 import com.nicico.evaluation.repository.GroupTypeRepository;
@@ -24,6 +25,7 @@ public class GroupTypeService implements IGroupTypeService {
     private final GroupTypeMapper mapper;
     private final PageableMapper pageableMapper;
     private final GroupTypeRepository repository;
+    private final IKPITypeService kpiTypeService;
 
     @Override
     @Transactional(readOnly = true)
@@ -45,6 +47,15 @@ public class GroupTypeService implements IGroupTypeService {
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public List<GroupType> getTypeByEvaluationId(Long evaluationId, String levelDef) {
         return repository.getTypeByEvaluationId(evaluationId, levelDef);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public GroupTypeDTO.GroupTypeMaxMinWeight getAllByGroupId(Long groupId) {
+        int kpiSize = kpiTypeService.findAll().size();
+        List<GroupType> allByGroupIdAndKpiTypeId = repository.getAllByGroupId(groupId);
+        return null;
     }
 
     @Override
@@ -110,4 +121,10 @@ public class GroupTypeService implements IGroupTypeService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public List<GroupType> getAllByGroupAndType(Long groupId, Long typeId) {
+        return null;
+    }
 }

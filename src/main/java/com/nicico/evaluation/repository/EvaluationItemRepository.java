@@ -23,8 +23,8 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
             " join Evaluation eval on eval.id = evalItem.evaluationId " +
             " join GroupTypeMerit groupTypeMerit on groupTypeMerit.id  = evalItem.groupTypeMeritId " +
             " join MeritComponent merit on merit.id = groupTypeMerit.meritComponentId " +
-            " where eval.id = :evaluationId")
-    List<EvaluationItem> getAllGroupTypeMeritByEvalId(@Param("evaluationId") Long evaluationId);
+            " where eval.id = :evaluationId and groupTypeMerit.id in ( :groupTypeMeritIds)")
+    List<EvaluationItem> getAllGroupTypeMeritByEvalId(@Param("evaluationId") Long evaluationId, List<Long> groupTypeMeritIds);
 
     List<EvaluationItem> getAllByEvaluationId(@Param("evaluationId") Long evaluationId);
 }

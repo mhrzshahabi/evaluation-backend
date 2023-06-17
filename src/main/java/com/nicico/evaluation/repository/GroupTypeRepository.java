@@ -33,4 +33,6 @@ public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, Jpa
             " where evalItem.evaluationId = :evaluationId and catalog.code = :levelDef ")
     List<GroupType> getTypeByEvaluationId(@Param("evaluationId") Long evaluationId, @Param("levelDef") String levelDef);
 
+    List<GroupType> getAllByGroupId(@Param("groupId") Long groupId);
+
 }

@@ -47,6 +47,15 @@ public abstract class GroupTypeDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("GroupTypeMaxMinWeightRq")
+    public static class GroupTypeMaxMinWeight {
+        Long maxWeight;
+        Long minWeight;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("GroupTypeUpdateRq")
     public static class Update extends GroupTypeDTO {
 
