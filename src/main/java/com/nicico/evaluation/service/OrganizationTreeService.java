@@ -62,14 +62,12 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public List<OrganizationTreeDTO.InfoTree> SearchListTree(int count, int startIndex, Long orgStructureId, Long postParentId, OrganizationTreeDTO.SearchTree dto) {
+    public List<OrganizationTreeDTO.InfoTree> SearchListTree(int count, int startIndex, Long orgStructureId, OrganizationTreeDTO.SearchTree dto) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         List<OrganizationTree> organizationTrees;
-        if (postParentId == 0) {
-            organizationTrees = repository.findAllByPostParentIdAndOrgStructureId(null, orgStructureId, pageable);
-        } else {
-            organizationTrees = repository.findAllByPostParentIdAndOrgStructureId(postParentId, orgStructureId, pageable);
-        }
+
+        organizationTrees = repository.findAllByOrgStructureId(orgStructureId, pageable);
+
         List<OrganizationTreeDTO.InfoTree> infoTrees = mapper.entityToDtoInfoTreeList(organizationTrees);
 
         if (Objects.nonNull(dto.getNameFa()))
