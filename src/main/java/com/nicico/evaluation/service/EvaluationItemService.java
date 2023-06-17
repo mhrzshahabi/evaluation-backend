@@ -11,6 +11,7 @@ import com.nicico.evaluation.mapper.EvaluationItemMapper;
 import com.nicico.evaluation.model.Evaluation;
 import com.nicico.evaluation.model.EvaluationItem;
 import com.nicico.evaluation.model.GroupType;
+import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.EvaluationItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -89,8 +90,8 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
-    public List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId) {
-        List<EvaluationItem> allGroupTypeMeritByEvalId = repository.getAllGroupTypeMeritByEvalId(evaluationId);
+    public List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId , List<Long> groupTypeMeritIds) {
+        List<EvaluationItem> allGroupTypeMeritByEvalId = repository.getAllGroupTypeMeritByEvalId(evaluationId,groupTypeMeritIds);
         return mapper.entityToUpdateInfoDtoList(allGroupTypeMeritByEvalId);
     }
 
@@ -314,7 +315,8 @@ public class EvaluationItemService implements IEvaluationItemService {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
-            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = getAllGroupTypeMeritByEvalId(evaluationId);
+            List<Long> groupTypeMeritIds = gType.getGroupTypeMeritList().stream().map(GroupTypeMerit::getId).toList();
+            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = getAllGroupTypeMeritByEvalId(evaluationId , groupTypeMeritIds);
 
             meritTupleDtoList.forEach(meritTupleDTO -> {
                 if (Objects.nonNull(meritTupleDTO.getEvaluationItemInstance()) && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
