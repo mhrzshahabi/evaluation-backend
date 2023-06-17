@@ -3,6 +3,8 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ public interface IGroupTypeService {
 
     List<GroupType> getTypeByEvaluationId(Long evaluationId, String levelDef);
 
+    GroupTypeDTO.GroupTypeMaxMinWeight getAllByGroupId(Long groupId);
+
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
 
     GroupTypeDTO.Info create(GroupTypeDTO.Create dto);
@@ -24,4 +28,5 @@ public interface IGroupTypeService {
 
     SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
+    List<GroupType> getAllByGroupAndType(Long groupId, Long typeId);
 }
