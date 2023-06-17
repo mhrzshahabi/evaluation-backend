@@ -15,7 +15,7 @@ public interface IEvaluationItemService {
 
     List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId);
 
-    List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId);
+    List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId,List<Long> groupTypeMeritIds);
 
     EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto);
 

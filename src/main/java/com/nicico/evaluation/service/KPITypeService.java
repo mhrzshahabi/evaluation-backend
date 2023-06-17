@@ -39,6 +39,14 @@ public class KPITypeService implements IKPITypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+    public List<KPITypeDTO.Info> findAll() {
+        List<KPIType> kpiType = repository.findAll();
+        return mapper.entityToDtoInfoList(kpiType);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
     public KPITypeDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<KPIType> kpiTypes = repository.findAll(pageable);
