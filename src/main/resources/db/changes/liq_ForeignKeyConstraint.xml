@@ -248,4 +248,11 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_catalog" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1687074897">
+        <addForeignKeyConstraint baseColumnNames="status_catalog_id"
+                                 baseTableName="tbl_special_case"
+                                 constraintName="f_special_case_status_to_catalog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_catalog" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
