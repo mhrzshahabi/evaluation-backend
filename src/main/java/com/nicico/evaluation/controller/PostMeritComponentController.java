@@ -41,6 +41,15 @@ public class PostMeritComponentController {
     }
 
     /**
+     * @param groupPostCode is the groupPostCode
+     * @return total weight of components by groupPostCode
+     */
+    @GetMapping(value = "/total-weight/{groupPostCode}")
+    public ResponseEntity<Long> getTotalWeight(@PathVariable String groupPostCode) {
+        return new ResponseEntity<>(service.getTotalWeight(groupPostCode), HttpStatus.OK);
+    }
+
+    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @return PostMeritComponentDTO.SpecResponse that contain list of PostMeritComponentDTO and the number of total entity

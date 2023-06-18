@@ -34,6 +34,8 @@ public class PersonnelService implements IPersonnelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_PERSONNEL')")
     public PersonnelDTO.Info getByNationalCode(String nationalCode) {
         Personnel personnel = repository.findByNationalCode(nationalCode).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(personnel);    }
