@@ -10,6 +10,8 @@ import com.nicico.evaluation.mapper.GroupTypeMapper;
 import com.nicico.evaluation.model.GroupType;
 import com.nicico.evaluation.repository.GroupTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +29,7 @@ public class GroupTypeService implements IGroupTypeService {
     private final PageableMapper pageableMapper;
     private final GroupTypeRepository repository;
     private final IKPITypeService kpiTypeService;
+    private final MessageSource messageSource;
 
     @Override
     @Transactional(readOnly = true)
@@ -52,10 +56,16 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public GroupTypeDTO.GroupTypeMaxMinWeight getAllByGroupId(Long groupId) {
+    public GroupTypeDTO.GroupTypeMaxWeight getWeightInfoByGroupId(Long groupId) {
         int kpiSize = kpiTypeService.findAll().size();
         List<GroupType> allByGroupIdAndKpiTypeId = repository.getAllByGroupId(groupId);
-        return null;
+        long totalWeightCreated = allByGroupIdAndKpiTypeId.stream().mapToLong(GroupType::getWeight).sum();
+        long totalCountOfCreated = allByGroupIdAndKpiTypeId.size();
+        long remainCount = kpiSize - totalCountOfCreated;
+        GroupTypeDTO.GroupTypeMaxWeight data = new GroupTypeDTO.GroupTypeMaxWeight();
+        data.setMaxWeight(100 - remainCount + 1 - totalWeightCreated);
+        data.setRemainCount(remainCount);
+        return data;
     }
 
     @Override
@@ -84,6 +94,9 @@ public class GroupTypeService implements IGroupTypeService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
     public GroupTypeDTO.Info create(GroupTypeDTO.Create dto) {
         GroupType groupType = mapper.dtoCreateToEntity(dto);
+        GroupType allByGroupIdAndKpiTypeId = repository.getByGroupIdAndKpiTypeId(groupType.getGroupId(), groupType.getKpiTypeId());
+        if (Objects.nonNull(allByGroupIdAndKpiTypeId))
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.DuplicateRecord, null, messageSource.getMessage("exception.duplicate.information", null, LocaleContextHolder.getLocale()));
         try {
             GroupType save = repository.save(groupType);
             return mapper.entityToDtoInfo(save);
@@ -121,10 +134,4 @@ public class GroupTypeService implements IGroupTypeService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public List<GroupType> getAllByGroupAndType(Long groupId, Long typeId) {
-        return null;
-    }
 }
