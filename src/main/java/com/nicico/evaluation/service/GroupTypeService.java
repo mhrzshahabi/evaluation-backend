@@ -52,13 +52,13 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public GroupTypeDTO.GroupTypeMaxMinWeight getWeightInfoByGroupId(Long groupId) {
+    public GroupTypeDTO.GroupTypeMaxWeight getWeightInfoByGroupId(Long groupId) {
         int kpiSize = kpiTypeService.findAll().size();
         List<GroupType> allByGroupIdAndKpiTypeId = repository.getAllByGroupId(groupId);
         long totalWeightCreated = allByGroupIdAndKpiTypeId.stream().mapToLong(GroupType::getWeight).sum();
         long totalCountOfCreated = allByGroupIdAndKpiTypeId.size();
         long remainCount = kpiSize - totalCountOfCreated;
-        GroupTypeDTO.GroupTypeMaxMinWeight data = new GroupTypeDTO.GroupTypeMaxMinWeight();
+        GroupTypeDTO.GroupTypeMaxWeight data = new GroupTypeDTO.GroupTypeMaxWeight();
         data.setMaxWeight(100 - remainCount + 1 - totalWeightCreated);
         data.setRemainCount(remainCount);
         return data;

@@ -53,10 +53,10 @@ public class GroupTypeController {
 
     /**
      * @param groupId is the id of entity to every record
-     * @return GroupTypeDTO.GroupTypeMaxMinWeight is the data for remain weight of every groupType
+     * @return GroupTypeDTO.GroupTypeMaxWeight is the data for remain weight of every groupType
      */
-    @GetMapping(value = "/groupTypeMaxMinWeight")
-    public ResponseEntity<GroupTypeDTO.GroupTypeMaxMinWeight> getWeightInfoByGroupId(@RequestParam Long groupId) {
+    @GetMapping(value = "/groupTypeMaxWeight")
+    public ResponseEntity<GroupTypeDTO.GroupTypeMaxWeight> getWeightInfoByGroupId(@RequestParam Long groupId) {
         return new ResponseEntity<>(service.getWeightInfoByGroupId(groupId), HttpStatus.CREATED);
     }
 
