@@ -43,6 +43,14 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
+    public Long getTotalWeight(String groupPostCode) {
+        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCode(groupPostCode);
+        return byGroupPostCode.stream().map(PostMeritComponent::getWeight).reduce(0L, Long::sum);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
     public List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String groupPostCode) {
         List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCode(groupPostCode);
         return mapper.postMeritDtoToEvaluationItemInfoList(byGroupPostCode);
