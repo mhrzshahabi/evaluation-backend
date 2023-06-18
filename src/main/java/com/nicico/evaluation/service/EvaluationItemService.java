@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
@@ -90,8 +91,8 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
-    public List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId , List<Long> groupTypeMeritIds) {
-        List<EvaluationItem> allGroupTypeMeritByEvalId = repository.getAllGroupTypeMeritByEvalId(evaluationId,groupTypeMeritIds);
+    public List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId, List<Long> groupTypeMeritIds) {
+        List<EvaluationItem> allGroupTypeMeritByEvalId = repository.getAllGroupTypeMeritByEvalId(evaluationId, groupTypeMeritIds);
         return mapper.entityToUpdateInfoDtoList(allGroupTypeMeritByEvalId);
     }
 
@@ -102,7 +103,7 @@ public class EvaluationItemService implements IEvaluationItemService {
         EvaluationItem entity = mapper.dtoCreateToEntity(dto);
         try {
             EvaluationItem evaluationItem = repository.save(entity);
-            UpdateEvaluation(dto);
+            updateEvaluation(dto);
             createAllEvaluationInstance(dto, evaluationItem);
 
             return mapper.entityToDtoInfo(evaluationItem);
@@ -134,22 +135,23 @@ public class EvaluationItemService implements IEvaluationItemService {
         evaluationItemInstanceService.createAll(createInstanceList);
     }
 
-    private void UpdateEvaluation(EvaluationItemDTO.Create dto) {
+    private void updateEvaluation(EvaluationItemDTO.Create dto) {
         Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
         evaluation.setAverageScore(dto.getAverageScore());
 
+        Stream<CatalogDTO.Info> evaluationStatus = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream();
+        Long statusByCatalogType;
         if (evaluation.getStatusCatalog() != null && evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
 
-            Long statusByCatalogType = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream()
+            statusByCatalogType = evaluationStatus
                     .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
-            evaluation.setStatusCatalogId(statusByCatalogType);
 
         } else {
-            Long statusByCatalogType = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream()
+            statusByCatalogType = evaluationStatus
                     .filter(status -> status.getCode().equals(FINALIZED)).findFirst().orElseThrow().getId();
-            evaluation.setStatusCatalogId(statusByCatalogType);
 
         }
+        evaluation.setStatusCatalogId(statusByCatalogType);
 
         evaluationService.update(dto.getEvaluationId(), evaluation);
     }
@@ -316,7 +318,7 @@ public class EvaluationItemService implements IEvaluationItemService {
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
             List<Long> groupTypeMeritIds = gType.getGroupTypeMeritList().stream().map(GroupTypeMerit::getId).toList();
-            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = getAllGroupTypeMeritByEvalId(evaluationId , groupTypeMeritIds);
+            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = getAllGroupTypeMeritByEvalId(evaluationId, groupTypeMeritIds);
 
             meritTupleDtoList.forEach(meritTupleDTO -> {
                 if (Objects.nonNull(meritTupleDTO.getEvaluationItemInstance()) && !meritTupleDTO.getEvaluationItemInstance().isEmpty()) {
