@@ -26,6 +26,11 @@ public class PersonnelController {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/by-national-code/{nationalCode}")
+    public ResponseEntity<PersonnelDTO.Info> getByNationalCode(@PathVariable String nationalCode) {
+        return new ResponseEntity<>(service.getByNationalCode(nationalCode), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/list")
     public ResponseEntity<PersonnelDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
