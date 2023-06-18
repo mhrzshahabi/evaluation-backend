@@ -34,6 +34,7 @@ public abstract class GroupPostDTO {
         private String omoorTitle;
         private String ghesmatTitle;
         private String vahedTitle;
+        private Long totalWeight;
     }
 
     @Getter
