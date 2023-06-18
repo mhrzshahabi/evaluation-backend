@@ -34,6 +34,7 @@ public abstract class GroupTypeDTO {
         private Long id;
         private KPITypeDTO.Info kpiType;
         private GroupDTO.Info group;
+        private Long totalWeight;
     }
 
     @Getter

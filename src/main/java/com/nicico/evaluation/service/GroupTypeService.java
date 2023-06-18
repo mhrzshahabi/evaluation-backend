@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -94,7 +96,7 @@ public class GroupTypeService implements IGroupTypeService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
     public GroupTypeDTO.Info create(GroupTypeDTO.Create dto) {
         GroupType groupType = mapper.dtoCreateToEntity(dto);
-        GroupType allByGroupIdAndKpiTypeId = repository.getByGroupIdAndKpiTypeId(groupType.getGroupId(), groupType.getKpiTypeId());
+        GroupType allByGroupIdAndKpiTypeId = getAllByGroupIdAndKpiTypeId(groupType);
         if (Objects.nonNull(allByGroupIdAndKpiTypeId))
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.DuplicateRecord, null, messageSource.getMessage("exception.duplicate.information", null, LocaleContextHolder.getLocale()));
         try {
@@ -103,6 +105,13 @@ public class GroupTypeService implements IGroupTypeService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public GroupType getAllByGroupIdAndKpiTypeId(GroupType groupType) {
+        return repository.getByGroupIdAndKpiTypeId(groupType.getGroupId(), groupType.getKpiTypeId());
     }
 
     @Override
@@ -131,7 +140,10 @@ public class GroupTypeService implements IGroupTypeService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        SearchDTO.SearchRs<GroupTypeDTO.Info> infoSearchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        List<GroupTypeDTO.Info> info = infoSearchRs.getList().stream().toList();
+        Map<Long, List<GroupTypeDTO.Info>> listMap = info.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
+        return infoSearchRs;
     }
 
 }

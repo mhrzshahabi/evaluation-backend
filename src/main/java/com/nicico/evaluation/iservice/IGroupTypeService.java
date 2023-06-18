@@ -3,6 +3,8 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +21,8 @@ public interface IGroupTypeService {
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
 
     GroupTypeDTO.Info create(GroupTypeDTO.Create dto);
+    
+    GroupType getAllByGroupIdAndKpiTypeId(GroupType groupType);
 
     GroupTypeDTO.Info update(Long id, GroupTypeDTO.Update dto);
 
