@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -142,7 +143,18 @@ public class GroupTypeService implements IGroupTypeService {
     public SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         SearchDTO.SearchRs<GroupTypeDTO.Info> infoSearchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
         List<GroupTypeDTO.Info> info = infoSearchRs.getList().stream().toList();
-        Map<Long, List<GroupTypeDTO.Info>> listMap = info.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
+        int kpiSize = kpiTypeService.findAll().size();
+        Map<Long, List<GroupTypeDTO.Info>> groupTypeMap = info.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
+        List<GroupTypeDTO.Info> data = new ArrayList<>();
+        groupTypeMap.forEach((groupId, gType) -> {
+            long totalWeight = gType.stream().mapToLong(GroupTypeDTO::getWeight).sum();
+            gType.forEach(groupType -> {
+                groupType.setTotalWeight(totalWeight);
+                groupType.setHasAllKpiType(gType.size() == kpiSize ? Boolean.TRUE : Boolean.FALSE);
+                data.add(groupType);
+            });
+        });
+        infoSearchRs.setList(data);
         return infoSearchRs;
     }
 

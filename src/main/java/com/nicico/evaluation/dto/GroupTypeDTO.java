@@ -35,6 +35,7 @@ public abstract class GroupTypeDTO {
         private KPITypeDTO.Info kpiType;
         private GroupDTO.Info group;
         private Long totalWeight;
+        private Boolean hasAllKpiType;
     }
 
     @Getter
