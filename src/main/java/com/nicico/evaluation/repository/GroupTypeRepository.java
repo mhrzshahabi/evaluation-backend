@@ -35,4 +35,6 @@ public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, Jpa
 
     List<GroupType> getAllByGroupId(@Param("groupId") Long groupId);
 
+    GroupType getByGroupIdAndKpiTypeId(@Param("groupId") Long groupId, @Param("kpiTypeId") Long kpiTypeId);
+
 }
