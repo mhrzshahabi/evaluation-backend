@@ -57,5 +57,4 @@ public class PersonnelController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-
 }
