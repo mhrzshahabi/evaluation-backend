@@ -50,7 +50,7 @@ public abstract class GroupTypeDTO {
     @ApiModel("GroupTypeMaxMinWeightRq")
     public static class GroupTypeMaxMinWeight {
         Long maxWeight;
-        Long minWeight;
+        Long remainCount;
     }
 
     @Getter

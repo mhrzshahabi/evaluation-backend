@@ -16,7 +16,7 @@ public interface IGroupTypeService {
 
     List<GroupType> getTypeByEvaluationId(Long evaluationId, String levelDef);
 
-    GroupTypeDTO.GroupTypeMaxMinWeight getAllByGroupId(Long groupId);
+    GroupTypeDTO.GroupTypeMaxMinWeight getWeightInfoByGroupId(Long groupId);
 
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
 
@@ -27,6 +27,4 @@ public interface IGroupTypeService {
     void delete(Long id);
 
     SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
-
-    List<GroupType> getAllByGroupAndType(Long groupId, Long typeId);
 }

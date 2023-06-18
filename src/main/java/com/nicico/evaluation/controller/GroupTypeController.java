@@ -31,6 +31,7 @@ public class GroupTypeController {
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
     private final IGroupTypeService service;
+
     /**
      * @param id is the groupType id
      * @return GroupTypeDTO.Info is the single groupType entity
@@ -48,6 +49,15 @@ public class GroupTypeController {
     @GetMapping(value = "/list")
     public ResponseEntity<GroupTypeDTO.SpecResponse> list(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(service.list(count, startIndex), HttpStatus.OK);
+    }
+
+    /**
+     * @param groupId is the id of entity to every record
+     * @return GroupTypeDTO.GroupTypeMaxMinWeight is the data for remain weight of every groupType
+     */
+    @GetMapping(value = "/groupTypeMaxMinWeight")
+    public ResponseEntity<GroupTypeDTO.GroupTypeMaxMinWeight> getWeightInfoByGroupId(@RequestParam Long groupId) {
+        return new ResponseEntity<>(service.getWeightInfoByGroupId(groupId), HttpStatus.CREATED);
     }
 
     /**
