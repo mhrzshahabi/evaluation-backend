@@ -18,8 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -94,7 +97,7 @@ public class GroupTypeService implements IGroupTypeService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE')")
     public GroupTypeDTO.Info create(GroupTypeDTO.Create dto) {
         GroupType groupType = mapper.dtoCreateToEntity(dto);
-        GroupType allByGroupIdAndKpiTypeId = repository.getByGroupIdAndKpiTypeId(groupType.getGroupId(), groupType.getKpiTypeId());
+        GroupType allByGroupIdAndKpiTypeId = getAllByGroupIdAndKpiTypeId(groupType);
         if (Objects.nonNull(allByGroupIdAndKpiTypeId))
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.DuplicateRecord, null, messageSource.getMessage("exception.duplicate.information", null, LocaleContextHolder.getLocale()));
         try {
@@ -103,6 +106,13 @@ public class GroupTypeService implements IGroupTypeService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public GroupType getAllByGroupIdAndKpiTypeId(GroupType groupType) {
+        return repository.getByGroupIdAndKpiTypeId(groupType.getGroupId(), groupType.getKpiTypeId());
     }
 
     @Override
@@ -131,7 +141,21 @@ public class GroupTypeService implements IGroupTypeService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        SearchDTO.SearchRs<GroupTypeDTO.Info> infoSearchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        List<GroupTypeDTO.Info> info = infoSearchRs.getList().stream().toList();
+        int kpiSize = kpiTypeService.findAll().size();
+        Map<Long, List<GroupTypeDTO.Info>> groupTypeMap = info.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
+        List<GroupTypeDTO.Info> data = new ArrayList<>();
+        groupTypeMap.forEach((groupId, gType) -> {
+            long totalWeight = gType.stream().mapToLong(GroupTypeDTO::getWeight).sum();
+            gType.forEach(groupType -> {
+                groupType.setTotalWeight(totalWeight);
+                groupType.setHasAllKpiType(gType.size() == kpiSize ? Boolean.TRUE : Boolean.FALSE);
+                data.add(groupType);
+            });
+        });
+        infoSearchRs.setList(data);
+        return infoSearchRs;
     }
 
 }
