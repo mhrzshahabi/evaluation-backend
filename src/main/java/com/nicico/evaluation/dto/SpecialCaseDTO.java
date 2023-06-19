@@ -86,5 +86,16 @@ public class SpecialCaseDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ChangeStatusDTO")
+    public static class ChangeStatusDTO {
+        @NotNull
+        private List<Long> specialCaseIds;
+
+
+    }
 }
     
