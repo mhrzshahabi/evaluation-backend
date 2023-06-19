@@ -2,12 +2,10 @@
 package com.nicico.evaluation.model;
 
 import com.nicico.copper.common.domain.Auditable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "tbl_special_case")
@@ -48,6 +46,15 @@ public class SpecialCase extends Auditable {
 
     @Column(name = "c_end_date")
     private String endDate;
+
+    @Setter(AccessLevel.NONE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_special_case_status_to_catalog"))
+    private Catalog statusCatalog;
+
+    @NotNull
+    @Column(name = "status_catalog_id")
+    private Long statusCatalogId;
 
 }
     

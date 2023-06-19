@@ -31,6 +31,8 @@ public class SpecialCaseDTO {
     private Date startDate;
     @NotNull
     private Date endDate;
+    @NotNull
+    private Long statusCatalogId;
 
     @Getter
     @Setter
@@ -45,6 +47,7 @@ public class SpecialCaseDTO {
     @ApiModel("SpecialCaseInfo")
     public static class Info extends SpecialCaseDTO {
         private Long id;
+        private CatalogDTO.Info statusCatalog;
     }
 
     @Getter
