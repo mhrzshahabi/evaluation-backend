@@ -5,10 +5,6 @@ import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.utility.ExcelGenerator;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import java.util.List;
 
@@ -17,6 +13,8 @@ public interface IGroupTypeMeritService {
     GroupTypeMeritDTO.Info get(Long id);
 
     List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupType(Long groupTypeId);
+
+    Long getTotalComponentWeightByGroupType(Long groupTypeId);
 
     GroupTypeMeritDTO.SpecResponse list(int count, int startIndex);
 
