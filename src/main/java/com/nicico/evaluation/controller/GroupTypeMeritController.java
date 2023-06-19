@@ -43,6 +43,16 @@ public class GroupTypeMeritController {
     public ResponseEntity<GroupTypeMeritDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
+
+    /**
+     * @param groupTypeId is the groupType id
+     * @return total weight of components by groupTypeId
+     */
+    @GetMapping(value = "/total-weight/{groupTypeId}")
+    public ResponseEntity<Long> getTotalComponentWeightByGroupType(@PathVariable Long groupTypeId) {
+        return new ResponseEntity<>(service.getTotalComponentWeightByGroupType(groupTypeId), HttpStatus.OK);
+    }
+
     /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
