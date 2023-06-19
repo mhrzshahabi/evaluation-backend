@@ -1411,4 +1411,11 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet id="1687154043" author="semami">
+        <sql>
+            update tbl_special_case set status_catalog_id =
+            (select id from tbl_catalog where c_code = 'special-initial-registration')
+            where status_catalog_id is null
+        </sql>
+    </changeSet>
 </databaseChangeLog>

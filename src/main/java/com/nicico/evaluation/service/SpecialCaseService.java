@@ -7,8 +7,11 @@ import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ISpecialCaseService;
 import com.nicico.evaluation.mapper.SpecialCaseMapper;
+import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.SpecialCase;
+import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.SpecialCaseRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -20,6 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+
+import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +36,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     private final SpecialCaseMapper specialCaseMapper;
     private final PageableMapper pageableMapper;
     private final ResourceBundleMessageSource messageSource;
+    private final CatalogRepository catalogRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -75,12 +83,11 @@ public class SpecialCaseService implements ISpecialCaseService {
         return BaseService.optimizedSearch(specialCaseRepository, specialCaseMapper::entityToDtoInfo, request);
     }
 
-
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_SPECIAL_CASE')")
     public SpecialCaseDTO.Info create(SpecialCaseDTO.Create dto) {
-        if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
+        if (dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and assessorNationalCode",
@@ -99,7 +106,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     @PreAuthorize("hasAuthority('U_SPECIAL_CASE')")
     public SpecialCaseDTO.Info update(Long id, SpecialCaseDTO.Update dto) {
-        if(dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
+        if (dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and assessorNationalCode",
@@ -115,13 +122,44 @@ public class SpecialCaseService implements ISpecialCaseService {
         }
     }
 
-
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('D_SPECIAL_CASE')")
     public void delete(Long id) {
         SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseRepository.delete(specialcase);
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse changeStatus(SpecialCaseDTO.ChangeStatusDTO changeStatusDTO) {
+        BaseResponse response = new BaseResponse();
+        final Locale locale = LocaleContextHolder.getLocale();
+        try {
+            List<Long> ids = changeStatusDTO.getSpecialCaseIds();
+            for (Long id : ids) {
+                Optional<SpecialCase> optionalSpecialCase = specialCaseRepository.findById(id);
+                if (optionalSpecialCase.isPresent()) {
+                    SpecialCase specialCase = optionalSpecialCase.get();
+
+                    if (Objects.nonNull(specialCase.getStatusCatalog().getCode()) && specialCase.getStatusCatalog().getCode().equals(SPECIAL_INITIAL_REGISTRATION)) {
+                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(SPECIAL_ACTIVE);
+                        optionalCatalog.ifPresent(catalog -> specialCase.setStatusCatalogId(catalog.getId()));
+                    } else if (Objects.nonNull(specialCase.getStatusCatalog().getCode()) && specialCase.getStatusCatalog().getCode().equals(SPECIAL_ACTIVE)) {
+                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(SPECIAL_REVOKED);
+                        optionalCatalog.ifPresent(catalog -> specialCase.setStatusCatalogId(catalog.getId()));
+                    }
+                    specialCaseRepository.save(specialCase);
+                }
+            }
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            response.setStatus(200);
+            return response;
+        } catch (Exception e) {
+            response.setMessage(messageSource.getMessage("exception.un-managed", null, locale));
+            response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
+            return response;
+        }
     }
 }
     
