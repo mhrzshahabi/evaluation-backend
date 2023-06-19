@@ -56,5 +56,8 @@ public class SpecialCase extends Auditable {
     @Column(name = "status_catalog_id")
     private Long statusCatalogId;
 
+    @Column(name = "c_evaluation_group_post_code")
+    private String evaluationGroupPostCode;
+
 }
     

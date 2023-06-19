@@ -34,6 +34,8 @@ public class SpecialCaseDTO {
     @NotNull
     private Long statusCatalogId;
 
+    private String evaluationGroupPostCode;
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -85,6 +87,17 @@ public class SpecialCaseDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ChangeStatusDTO")
+    public static class ChangeStatusDTO {
+        @NotNull
+        private List<Long> specialCaseIds;
+
+
     }
 }
     

@@ -2,8 +2,8 @@ package com.nicico.evaluation.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ISpecialCaseService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -107,6 +107,16 @@ public class SpecialCaseController {
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param ChangeStatusDTO is id of evaluation for change status and is next or previous for change status
+     * @return Boolean is the result of function
+     */
+    @PostMapping(value = "/change-status")
+    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody SpecialCaseDTO.ChangeStatusDTO ChangeStatusDTO) {
+        BaseResponse response = service.changeStatus(ChangeStatusDTO);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
 }

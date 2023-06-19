@@ -2,10 +2,12 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 
 public interface ISpecialCaseService {
 
     SpecialCaseDTO.Info get(Long id);
+
     SpecialCaseDTO.Info getByAssessNationalCodeAndAssessPostCode(String nationalCode, String postCode);
 
     SpecialCaseDTO.SpecResponse list(int count, int startIndex);
@@ -17,5 +19,7 @@ public interface ISpecialCaseService {
     SpecialCaseDTO.Info update(Long id, SpecialCaseDTO.Update dto);
 
     void delete(Long id);
+
+    BaseResponse changeStatus(SpecialCaseDTO.ChangeStatusDTO changeStatusDTO);
 }
     
