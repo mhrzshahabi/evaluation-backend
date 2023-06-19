@@ -1411,11 +1411,6 @@
             ]]>
         </sql>
     </changeSet>
-    <changeSet id="1687153028" author="semami">
-        <addColumn tableName="tbl_special_case">
-            <column name="c_evaluation_group_post_code" type="VARCHAR2(255 CHAR)"/>
-        </addColumn>
-    </changeSet>
     <changeSet id="1687154043" author="semami">
         <sql>
             update tbl_special_case set status_catalog_id =

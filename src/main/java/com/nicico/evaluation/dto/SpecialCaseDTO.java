@@ -34,8 +34,6 @@ public class SpecialCaseDTO {
     @NotNull
     private Long statusCatalogId;
 
-    private String evaluationGroupPostCode;
-
     @Getter
     @Setter
     @Accessors(chain = true)
