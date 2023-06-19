@@ -110,7 +110,7 @@ public class SpecialCaseController {
     }
 
     /**
-     * @param ChangeStatusDTO is id of evaluation for change status and is next or previous for change status
+     * @param ChangeStatusDTO is id of SpecialCase for change status and is next  for change status
      * @return Boolean is the result of function
      */
     @PostMapping(value = "/change-status")
