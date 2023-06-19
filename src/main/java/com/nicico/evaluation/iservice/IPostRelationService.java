@@ -7,6 +7,8 @@ public interface IPostRelationService {
 
     PostRelationDTO.Info get(Long id);
 
+    PostRelationDTO.Info getByPostCode(String postCode);
+
     PostRelationDTO.SpecResponse list(int count, int startIndex);
 
     SearchDTO.SearchRs<PostRelationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
