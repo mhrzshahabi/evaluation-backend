@@ -85,7 +85,7 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+    public SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> search(SearchDTO.SearchRq request, Long orgStructureId) throws IllegalAccessException, NoSuchFieldException {
 
         Optional<SearchDTO.CriteriaRq> criteriaNameFa = request.getCriteria().getCriteria().stream()
                 .filter(q -> q.getFieldName().equals("nameFa")).findFirst();
@@ -124,7 +124,21 @@ public class OrganizationTreeService implements IOrganizationTreeService {
                     .setOperator(EOperator.or)
                     .setCriteria(criteriaRqList);
 
-            request.setCriteria(criteriaRqList1);
+            final List<SearchDTO.CriteriaRq> finalCriteria = new ArrayList<>();
+
+            final SearchDTO.CriteriaRq orgStructureIdCriteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.contains)
+                    .setFieldName("orgStructureId")
+                    .setValue(orgStructureId);
+
+            finalCriteria.add(orgStructureIdCriteriaRq);
+            finalCriteria.add(criteriaRqList1);
+
+            final SearchDTO.CriteriaRq finalCriteriaRqList1 = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.and)
+                    .setCriteria(finalCriteria);
+
+            request.setCriteria(finalCriteriaRqList1);
         }
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
