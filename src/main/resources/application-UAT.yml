@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_uat
+    username: uat_evaluation
+    password: uatevaluation
+  redis:
+    host: redis
+    password: nicico
+  security:
+    oauth2:
+      client:
+        registration:
+          oserver:
+            client-id: ${spring.application.name}
+            client-secret: password
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: user_info
+        provider:
+          oserver:
+            authorization-uri: http://uat.icico.net.ir/oauth/authorize
+            token-uri: http://uat.icico.net.ir/oauth/token
+            user-info-uri: http://uat.icico.net.ir/user/info
+            token-uri-swagger: http://uat.icico.net.ir/oauth/token
+            user-name-attribute: username
+nicico:
+  server:
+    url: http://uat.icico.net.ir/evaluation-backend
+  security:
+  #    sys-password: password
+  hrmClient: 'http://uat.icico.net.ir/hrm/api/v1'
+
+  upload:
+    dir: /var/nicico/${spring.application.name}/upload
+
+ui:
+  redirect:
+    #address: http://uat.icico.net.ir/evaluation-frontend/auth-redirect
+    address: http://uat.icico.net.ir/evaluation-frontend
+
+  landing:
+    address: http://uat.icico.net.ir/evaluation-backend
+    #address: http://172.16.6.196:4200
+
+
+    fmsGroupId: '6450ce9763a9bb68f5df2dd9'
+    fmsUrl: 'http://storage.icico.net.ir/fms/file'
