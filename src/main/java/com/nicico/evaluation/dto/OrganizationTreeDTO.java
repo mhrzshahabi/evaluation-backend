@@ -94,6 +94,7 @@ public class OrganizationTreeDTO {
         private String lastNameParent;
         private String firstNameParent;
         private String fullName;
+        private Long orgStructureId;
     }
 
     @Getter
