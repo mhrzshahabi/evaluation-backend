@@ -30,12 +30,27 @@ public class OrganizationTreeController {
         return new ResponseEntity<>(service.getDetail(id), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/spec-list")
+    @GetMapping(value = "/list-tree")
+    public ResponseEntity<List<OrganizationTreeDTO.InfoTree>> listTree(@RequestParam int count, @RequestParam int startIndex,
+                                                                       @RequestParam Long orgStructureId,
+                                                                       @RequestParam(defaultValue = "0") Long postParentId) {
+        return new ResponseEntity<>(service.listTree(count, startIndex, orgStructureId, postParentId), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/spec-list/{orgStructureId}")
     public ResponseEntity<OrganizationTreeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                    @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                   @RequestParam Long orgStructureId,
                                                                    @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+
+//        final SearchDTO.CriteriaRq orgStructureIdCriteriaRq = new SearchDTO.CriteriaRq()
+//                .setOperator(EOperator.equals)
+//                .setFieldName("orgStructureId")
+//                .setValue(orgStructureId);
+
+//        request.getCriteria().setCriteria(orgStructureIdCriteriaRq.getCriteria());
         SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> data = service.search(request);
         final OrganizationTreeDTO.Response response = new OrganizationTreeDTO.Response();
         final OrganizationTreeDTO.SpecResponse specRs = new OrganizationTreeDTO.SpecResponse();
