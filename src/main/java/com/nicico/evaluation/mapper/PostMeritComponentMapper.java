@@ -47,6 +47,7 @@ public abstract class PostMeritComponentMapper {
 
     @Named("getPostRelation")
     PostRelationDTO.Info getPostRelation(PostMeritComponent postMeritComponent) {
-        return postRelationService.getByPostCode(postMeritComponent.getGroupPostCode());
+        return null;
+        //return  postRelationService.getByPostCode(postMeritComponent.getGroupPostCode());
     }
 }
