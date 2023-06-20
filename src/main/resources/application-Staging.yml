@@ -24,6 +24,7 @@ spring:
             token-uri-swagger: http://staging.icico.net.ir/oauth/token
             user-name-attribute: username
 nicico:
+  hrmClient: 'http://staging.icico.net.ir/hrm/api/v1'
   upload:
     dir: /var/nicico/${spring.application.name}/
 ui:
