@@ -44,10 +44,10 @@ public class CriteriaUtil {
                 criteriaRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
 
                 if ("NotEqual".equals(criteria.getOperator())) {
-                    SearchDTO.CriteriaRq inNullRq = makeCriteria(criteria.getField(), null, EOperator.isNull, new ArrayList<>());
+                  //  SearchDTO.CriteriaRq inNullRq = makeCriteria(criteria.getField(), null, EOperator.isNull, new ArrayList<>());
                     SearchDTO.CriteriaRq notNullRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, EOperator.notEqual, new ArrayList<>());
                     final List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
-                    criteriaList.add(inNullRq);
+               //     criteriaList.add(inNullRq);
                     criteriaList.add(notNullRq);
                     criteriaRq = new SearchDTO.CriteriaRq().setOperator(EOperator.or).setCriteria(criteriaList);
                 }

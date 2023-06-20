@@ -8,7 +8,6 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.InstanceDTO;
 import com.nicico.evaluation.iservice.IBaseService;
 import com.nicico.evaluation.repository.BaseRepository;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -91,9 +90,9 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         if (rq.getStartIndex() == null) {
             searchRs = SearchUtil.search(dao, rq, converter);
         } else {
+            rq.setDistinct(true);
             Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
             List<E> list = all.getContent();
-
             long totalCount = all.getTotalElements();
 
 
@@ -161,7 +160,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         return infoList;
     }
 
-    public static <E, EXCEL, DAO extends JpaSpecificationExecutor<E>> byte[]  exportExcel(DAO dao, Function<E, EXCEL> converter, List<FilterDTO> criteria, String sheetName, String headerName) throws NoSuchFieldException, IllegalAccessException {
+    public static <E, EXCEL, DAO extends JpaSpecificationExecutor<E>> byte[] exportExcel(DAO dao, Function<E, EXCEL> converter, List<FilterDTO> criteria, String sheetName, String headerName) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, Integer.MAX_VALUE, 0);
         SearchDTO.SearchRs<EXCEL> searchRs = BaseService.optimizedSearch(dao, converter, request);
         ExcelGenerator<EXCEL> excelGenerator = new ExcelGenerator<>(searchRs.getList());
@@ -170,7 +169,6 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         excelGenerator.generateSheet(sheetName, headerName);
         return excelGenerator.getExcel().toByteArray();
     }
-
 
 
 }

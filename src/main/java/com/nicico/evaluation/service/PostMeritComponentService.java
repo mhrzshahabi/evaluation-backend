@@ -13,6 +13,8 @@ import com.nicico.evaluation.model.PostMeritComponent;
 import com.nicico.evaluation.repository.PostMeritComponentRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +33,7 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     private final PostMeritComponentMapper mapper;
     private final IGroupPostService groupPostService;
     private final PostMeritComponentRepository repository;
+    private final ResourceBundleMessageSource messageSource;
     private final IMeritComponentService meritComponentService;
 
     @Override
@@ -81,12 +85,18 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @Transactional
     @PreAuthorize("hasAuthority('C_POST_MERIT_COMPONENT')")
     public PostMeritComponentDTO.Info create(PostMeritComponentDTO.Create dto) {
-        PostMeritComponent postMeritComponent = mapper.dtoCreateToEntity(dto);
-        try {
-            PostMeritComponent save = repository.save(postMeritComponent);
-            return mapper.entityToDtoInfo(save);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        List<Long> meritComponentIds = repository.findAllByGroupPostCode(dto.getGroupPostCode()).stream().map(PostMeritComponent::getMeritComponentId).toList();
+        if (meritComponentIds.contains(dto.getMeritComponentId())) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.DuplicateRecord, null, messageSource.getMessage("exception.merit.component.already.added", null, locale));
+        } else {
+            PostMeritComponent postMeritComponent = mapper.dtoCreateToEntity(dto);
+            try {
+                PostMeritComponent save = repository.save(postMeritComponent);
+                return mapper.entityToDtoInfo(save);
+            } catch (Exception exception) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+            }
         }
     }
 
