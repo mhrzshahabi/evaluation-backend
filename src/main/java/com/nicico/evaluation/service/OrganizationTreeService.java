@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.OrganizationTreeDTO;
@@ -9,14 +10,14 @@ import com.nicico.evaluation.mapper.OrganizationTreeMapper;
 import com.nicico.evaluation.model.OrganizationTree;
 import com.nicico.evaluation.repository.OrganizationTreeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,7 +30,7 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public List<OrganizationTreeDTO.Info> get(Long orgStructureId) {
+    public List<OrganizationTreeDTO.InfoTree> get(Long orgStructureId) {
         List<OrganizationTree> organizationTrees = repository.findAllByOrgStructureId(orgStructureId);
         if (organizationTrees == null || organizationTrees.isEmpty())
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
@@ -48,7 +49,7 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId) {
+    public List<OrganizationTreeDTO.InfoTree> list(int count, int startIndex, Long orgStructureId, Long postParentId) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         List<OrganizationTree> organizationTrees;
         if (postParentId == 0) {
@@ -60,66 +61,62 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public List<OrganizationTreeDTO.InfoTree> SearchListTree(int count, int startIndex, Long orgStructureId, OrganizationTreeDTO.SearchTree dto) {
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        List<OrganizationTree> organizationTrees;
-
-        organizationTrees = repository.findAllByOrgStructureId(orgStructureId, pageable);
-
-        List<OrganizationTreeDTO.InfoTree> infoTrees = mapper.entityToDtoInfoTreeList(organizationTrees);
-
-        if (Objects.nonNull(dto.getNameFa()))
-            return infoTrees.stream().filter(info -> info.getNameFa().contains(dto.getNameFa())).toList();
-
-        return infoTrees;
-    }
-
-    @Override
     public Long countChildNode(Long postId) {
         if (postId > 0)
             return repository.countByPostParentId(postId);
         return 0L;
     }
 
+
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public OrganizationTreeDTO.SpecResponse list(int count, int startIndex) {
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        Page<OrganizationTree> organizationTrees = repository.findAll(pageable);
-        List<OrganizationTreeDTO.Info> personInfos = mapper.entityToDtoInfoList(organizationTrees.getContent());
+    public SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
 
-        OrganizationTreeDTO.Response response = new OrganizationTreeDTO.Response();
-        OrganizationTreeDTO.SpecResponse specResponse = new OrganizationTreeDTO.SpecResponse();
+        Optional<SearchDTO.CriteriaRq> criteriaNameFa = request.getCriteria().getCriteria().stream()
+                .filter(q -> q.getFieldName().equals("nameFa")).findFirst();
 
-        if (personInfos != null) {
-            response.setData(personInfos)
-                    .setStartRow(startIndex)
-                    .setEndRow(startIndex + count)
-                    .setTotalRows((int) organizationTrees.getTotalElements());
-            specResponse.setResponse(response);
+        if (criteriaNameFa.isPresent()) {
+
+            String value = criteriaNameFa.get().getValue().get(0).toString();
+
+            final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            final SearchDTO.CriteriaRq nationalCodeCriteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.contains)
+                    .setFieldName("nationalCode")
+                    .setValue(value);
+
+            final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.contains)
+                    .setFieldName("postCode")
+                    .setValue(value);
+
+            final SearchDTO.CriteriaRq fullNameCriteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.contains)
+                    .setFieldName("fullName")
+                    .setValue(value);
+
+            final SearchDTO.CriteriaRq postTitleCriteriaRq = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.contains)
+                    .setFieldName("postTitle")
+                    .setValue(value);
+
+            criteriaRqList.add(nationalCodeCriteriaRq);
+            criteriaRqList.add(postCodeCriteriaRq);
+            criteriaRqList.add(fullNameCriteriaRq);
+            criteriaRqList.add(postTitleCriteriaRq);
+
+            final SearchDTO.CriteriaRq criteriaRqList1 = new SearchDTO.CriteriaRq()
+                    .setOperator(EOperator.or)
+                    .setCriteria(criteriaRqList);
+
+            request.setCriteria(criteriaRqList1);
         }
-        return specResponse;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
-    public SearchDTO.SearchRs<OrganizationTreeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
     @Override
-    public OrganizationTreeDTO.Info getByPostCodeAndNationalCode(String postCode, String nationalCode) {
-        OrganizationTree organizationTree = repository.findByPostCodeAndNationalCode(postCode, nationalCode)
-                .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return mapper.entityToDtoInfo(organizationTree);
-    }
-
-    @Override
-    public OrganizationTreeDTO.Info getByPostCode(String postCode) {
+    public OrganizationTreeDTO.InfoTree getByPostCode(String postCode) {
         OrganizationTree organizationTree = repository.findByPostCode(postCode)
                 .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(organizationTree);

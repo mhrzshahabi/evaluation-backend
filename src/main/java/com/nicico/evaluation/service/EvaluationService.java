@@ -5,7 +5,10 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.*;
+import com.nicico.evaluation.iservice.IEvaluationItemService;
+import com.nicico.evaluation.iservice.IEvaluationService;
+import com.nicico.evaluation.iservice.IOrganizationTreeService;
+import com.nicico.evaluation.iservice.ISpecialCaseService;
 import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
@@ -117,7 +120,7 @@ public class EvaluationService implements IEvaluationService {
             Evaluation evaluation = new Evaluation();
             evaluation.setStatusCatalogId(catalogStatus.getId());
             evaluation.setEvaluationPeriodId(evaluationCreate.getEvaluationPeriodId());
-            OrganizationTreeDTO.Info orgTreeInfo = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
+            OrganizationTreeDTO.InfoTree orgTreeInfo = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
             List<Evaluation> evaluationList =
                     repository.findByEvaluationPeriodIdAndAssessPostCode(evaluationCreate.getEvaluationPeriodId(), evaluationCreate.getPostCode());
             if (evaluationList.size() > 0) {

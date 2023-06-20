@@ -4,10 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Getter
@@ -95,4 +92,7 @@ public class OrganizationTree {
     private String lastNameParent;
     @Column(name = "NATIONAL_CODE_PARENT")
     private String nationalCodeParent;
+
+    @Transient
+    private String nameFa;
 }
