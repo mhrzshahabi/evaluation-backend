@@ -37,7 +37,7 @@ public class OrganizationTreeController {
         return new ResponseEntity<>(service.listTree(count, startIndex, orgStructureId, postParentId), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/spec-list/{orgStructureId}")
+    @PostMapping(value = "/spec-list")
     public ResponseEntity<OrganizationTreeDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                    @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                    @RequestParam Long orgStructureId,
