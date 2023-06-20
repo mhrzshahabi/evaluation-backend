@@ -44,14 +44,7 @@ public class OrganizationTreeController {
                                                                    @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-
-//        final SearchDTO.CriteriaRq orgStructureIdCriteriaRq = new SearchDTO.CriteriaRq()
-//                .setOperator(EOperator.equals)
-//                .setFieldName("orgStructureId")
-//                .setValue(orgStructureId);
-
-//        request.getCriteria().setCriteria(orgStructureIdCriteriaRq.getCriteria());
-        SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> data = service.search(request);
+        SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> data = service.search(request , orgStructureId);
         final OrganizationTreeDTO.Response response = new OrganizationTreeDTO.Response();
         final OrganizationTreeDTO.SpecResponse specRs = new OrganizationTreeDTO.SpecResponse();
         response.setData(data.getList())

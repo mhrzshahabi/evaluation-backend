@@ -16,7 +16,7 @@ public interface IOrganizationTreeService {
 
     List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId);
 
-    SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+    SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> search(SearchDTO.SearchRq request , Long orgStructureId) throws IllegalAccessException, NoSuchFieldException;
 
     OrganizationTreeDTO.InfoTree getByPostCode(String postCode);
 
