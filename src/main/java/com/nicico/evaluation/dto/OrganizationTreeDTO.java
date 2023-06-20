@@ -88,6 +88,12 @@ public class OrganizationTreeDTO {
         private String nameFa;
         private Long childNode;
         private String postPath;
+        private String nationalCode;
+        private String postParentCode;
+        private String nationalCodeParent;
+        private String lastNameParent;
+        private String firstNameParent;
+        private String fullName;
     }
 
     @Getter
@@ -111,7 +117,7 @@ public class OrganizationTreeDTO {
     @Accessors(chain = true)
     @ApiModel("OrganizationTreeResponse")
     public static class Response {
-        private List<OrganizationTreeDTO.Info> data;
+        private List<OrganizationTreeDTO.InfoTree> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

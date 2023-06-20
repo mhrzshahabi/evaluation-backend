@@ -19,19 +19,18 @@ public abstract class OrganizationTreeMapper {
     @Autowired
     private IOrganizationTreeService organizationTreeService;
 
-    public abstract OrganizationTreeDTO.Info entityToDtoInfo(OrganizationTree entity);
-
     public abstract OrganizationTreeDTO.InfoDetail entityToDtoInfoDetail(OrganizationTree entity);
 
-    public abstract List<OrganizationTreeDTO.Info> entityToDtoInfoList(List<OrganizationTree> entities);
+    public abstract List<OrganizationTreeDTO.InfoTree> entityToDtoInfoList(List<OrganizationTree> entities);
+
+
+    public abstract List<OrganizationTreeDTO.InfoTree> entityToDtoInfoTreeList(List<OrganizationTree> entities);
 
     @Mappings({
             @Mapping(target = "nameFa", source = "entity", qualifiedByName = "getNameFaFromEntity"),
             @Mapping(target = "childNode", source = "postId", qualifiedByName = "getChildNodeFromPostId")
     })
-    public abstract OrganizationTreeDTO.InfoTree entityToDtoInfoTree(OrganizationTree entity);
-
-    public abstract List<OrganizationTreeDTO.InfoTree> entityToDtoInfoTreeList(List<OrganizationTree> entities);
+    public abstract OrganizationTreeDTO.InfoTree entityToDtoInfo(OrganizationTree entity);
 
     @Named("getNameFaFromEntity")
     String getNameFaFromEntity(OrganizationTree entity) {
