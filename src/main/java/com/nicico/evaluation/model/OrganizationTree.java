@@ -92,7 +92,4 @@ public class OrganizationTree {
     private String lastNameParent;
     @Column(name = "NATIONAL_CODE_PARENT")
     private String nationalCodeParent;
-
-    @Transient
-    private String nameFa;
 }
