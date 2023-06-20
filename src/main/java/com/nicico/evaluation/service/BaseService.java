@@ -92,7 +92,6 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         } else {
             rq.setDistinct(true);
             Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
-         //   all = new PageImpl<>(all.stream().distinct().toList());
             List<E> list = all.getContent();
             long totalCount = all.getTotalElements();
 
