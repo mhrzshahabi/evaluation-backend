@@ -28,10 +28,8 @@ public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, Jpa
             " join GroupGrade groupGrade on gr.id =  groupGrade.groupId " +
             " join Grade grade on groupGrade.gradeId= grade.id  " +
             " join GroupPost post on post.postGradeCode= grade.code  " +
-            " join PostMeritComponent postMerit on postMerit.groupPostCode= post.groupPostCode  " +
-            " join EvaluationItem evalItem on evalItem.postMeritComponentId= postMerit.id  " +
-            " where evalItem.evaluationId = :evaluationId and catalog.code = :levelDef ")
-    List<GroupType> getTypeByEvaluationId(@Param("evaluationId") Long evaluationId, @Param("levelDef") String levelDef);
+            " where  post.groupPostCode = :assessPostCode  and catalog.code = :levelDef ")
+    List<GroupType> getTypeByEvaluationId(@Param("assessPostCode") String assessPostCode, @Param("levelDef") String levelDef);
 
     List<GroupType> getAllByGroupId(@Param("groupId") Long groupId);
 

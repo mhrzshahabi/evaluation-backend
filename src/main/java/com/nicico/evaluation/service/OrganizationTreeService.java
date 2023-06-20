@@ -90,6 +90,13 @@ public class OrganizationTreeService implements IOrganizationTreeService {
         Optional<SearchDTO.CriteriaRq> criteriaNameFa = request.getCriteria().getCriteria().stream()
                 .filter(q -> q.getFieldName().equals("nameFa")).findFirst();
 
+        final List<SearchDTO.CriteriaRq> finalCriteria = new ArrayList<>();
+
+        final SearchDTO.CriteriaRq orgStructureIdCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("orgStructureId")
+                .setValue(orgStructureId);
+
         if (criteriaNameFa.isPresent()) {
 
             String value = criteriaNameFa.get().getValue().get(0).toString();
@@ -124,22 +131,16 @@ public class OrganizationTreeService implements IOrganizationTreeService {
                     .setOperator(EOperator.or)
                     .setCriteria(criteriaRqList);
 
-            final List<SearchDTO.CriteriaRq> finalCriteria = new ArrayList<>();
-
-            final SearchDTO.CriteriaRq orgStructureIdCriteriaRq = new SearchDTO.CriteriaRq()
-                    .setOperator(EOperator.contains)
-                    .setFieldName("orgStructureId")
-                    .setValue(orgStructureId);
-
-            finalCriteria.add(orgStructureIdCriteriaRq);
             finalCriteria.add(criteriaRqList1);
 
-            final SearchDTO.CriteriaRq finalCriteriaRqList1 = new SearchDTO.CriteriaRq()
-                    .setOperator(EOperator.and)
-                    .setCriteria(finalCriteria);
-
-            request.setCriteria(finalCriteriaRqList1);
         }
+        finalCriteria.add(orgStructureIdCriteriaRq);
+        final SearchDTO.CriteriaRq finalCriteriaRqList1 = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(finalCriteria);
+
+        request.setCriteria(finalCriteriaRqList1);
+
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 

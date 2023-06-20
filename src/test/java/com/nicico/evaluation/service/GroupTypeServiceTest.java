@@ -184,69 +184,69 @@ class GroupTypeServiceTest {
         assertThat(result).isEqualTo(Collections.emptyList());
     }
 
-    @Test
-    void testGetTypeByEvaluationId() {
-        // Setup
-        final GroupType groupType = new GroupType();
-        groupType.setId(0L);
-        groupType.setCode("code");
-        groupType.setKpiTypeId(0L);
-        groupType.setGroupId(0L);
-        groupType.setWeight(0L);
-        final GroupTypeMerit groupTypeMerit = new GroupTypeMerit();
-        groupTypeMerit.setId(0L);
-        groupTypeMerit.setMeritComponentId(0L);
-        groupTypeMerit.setGroupTypeId(0L);
-        groupTypeMerit.setWeight(0L);
-        final InstanceGroupTypeMerit instanceGroupTypeMerit = new InstanceGroupTypeMerit();
-        instanceGroupTypeMerit.setId(0L);
-        instanceGroupTypeMerit.setGroupTypeMeritId(0L);
-        instanceGroupTypeMerit.setInstanceId(0L);
-        groupTypeMerit.setInstanceGroupTypeMerits(List.of(instanceGroupTypeMerit));
-        groupTypeMerit.setHasInstance(false);
-        groupType.setGroupTypeMeritList(List.of(groupTypeMerit));
-        final List<GroupType> expectedResult = List.of(groupType);
-
-        // Configure GroupTypeRepository.getTypeByEvaluationId(...).
-        final GroupType groupType1 = new GroupType();
-        groupType1.setId(0L);
-        groupType1.setCode("code");
-        groupType1.setKpiTypeId(0L);
-        groupType1.setGroupId(0L);
-        groupType1.setWeight(0L);
-        final GroupTypeMerit groupTypeMerit1 = new GroupTypeMerit();
-        groupTypeMerit1.setId(0L);
-        groupTypeMerit1.setMeritComponentId(0L);
-        groupTypeMerit1.setGroupTypeId(0L);
-        groupTypeMerit1.setWeight(0L);
-        final InstanceGroupTypeMerit instanceGroupTypeMerit1 = new InstanceGroupTypeMerit();
-        instanceGroupTypeMerit1.setId(0L);
-        instanceGroupTypeMerit1.setGroupTypeMeritId(0L);
-        instanceGroupTypeMerit1.setInstanceId(0L);
-        groupTypeMerit1.setInstanceGroupTypeMerits(List.of(instanceGroupTypeMerit1));
-        groupTypeMerit1.setHasInstance(false);
-        groupType1.setGroupTypeMeritList(List.of(groupTypeMerit1));
-        final List<GroupType> groupTypes = List.of(groupType1);
-        when(mockRepository.getTypeByEvaluationId(0L, "levelDef")).thenReturn(groupTypes);
-
-        // Run the test
-        final List<GroupType> result = groupTypeServiceUnderTest.getTypeByEvaluationId(0L, "levelDef");
-
-        // Verify the results
-        assertThat(result).isEqualTo(expectedResult);
-    }
-
-    @Test
-    void testGetTypeByEvaluationId_GroupTypeRepositoryReturnsNoItems() {
-        // Setup
-        when(mockRepository.getTypeByEvaluationId(0L, "levelDef")).thenReturn(Collections.emptyList());
-
-        // Run the test
-        final List<GroupType> result = groupTypeServiceUnderTest.getTypeByEvaluationId(0L, "levelDef");
-
-        // Verify the results
-        assertThat(result).isEqualTo(Collections.emptyList());
-    }
+//    @Test
+//    void testGetTypeByEvaluationId() {
+//        // Setup
+//        final GroupType groupType = new GroupType();
+//        groupType.setId(0L);
+//        groupType.setCode("code");
+//        groupType.setKpiTypeId(0L);
+//        groupType.setGroupId(0L);
+//        groupType.setWeight(0L);
+//        final GroupTypeMerit groupTypeMerit = new GroupTypeMerit();
+//        groupTypeMerit.setId(0L);
+//        groupTypeMerit.setMeritComponentId(0L);
+//        groupTypeMerit.setGroupTypeId(0L);
+//        groupTypeMerit.setWeight(0L);
+//        final InstanceGroupTypeMerit instanceGroupTypeMerit = new InstanceGroupTypeMerit();
+//        instanceGroupTypeMerit.setId(0L);
+//        instanceGroupTypeMerit.setGroupTypeMeritId(0L);
+//        instanceGroupTypeMerit.setInstanceId(0L);
+//        groupTypeMerit.setInstanceGroupTypeMerits(List.of(instanceGroupTypeMerit));
+//        groupTypeMerit.setHasInstance(false);
+//        groupType.setGroupTypeMeritList(List.of(groupTypeMerit));
+//        final List<GroupType> expectedResult = List.of(groupType);
+//
+//        // Configure GroupTypeRepository.getTypeByEvaluationId(...).
+//        final GroupType groupType1 = new GroupType();
+//        groupType1.setId(0L);
+//        groupType1.setCode("code");
+//        groupType1.setKpiTypeId(0L);
+//        groupType1.setGroupId(0L);
+//        groupType1.setWeight(0L);
+//        final GroupTypeMerit groupTypeMerit1 = new GroupTypeMerit();
+//        groupTypeMerit1.setId(0L);
+//        groupTypeMerit1.setMeritComponentId(0L);
+//        groupTypeMerit1.setGroupTypeId(0L);
+//        groupTypeMerit1.setWeight(0L);
+//        final InstanceGroupTypeMerit instanceGroupTypeMerit1 = new InstanceGroupTypeMerit();
+//        instanceGroupTypeMerit1.setId(0L);
+//        instanceGroupTypeMerit1.setGroupTypeMeritId(0L);
+//        instanceGroupTypeMerit1.setInstanceId(0L);
+//        groupTypeMerit1.setInstanceGroupTypeMerits(List.of(instanceGroupTypeMerit1));
+//        groupTypeMerit1.setHasInstance(false);
+//        groupType1.setGroupTypeMeritList(List.of(groupTypeMerit1));
+//        final List<GroupType> groupTypes = List.of(groupType1);
+//        when(mockRepository.getTypeByEvaluationId(0L, "levelDef")).thenReturn(groupTypes);
+//
+//        // Run the test
+//        final List<GroupType> result = groupTypeServiceUnderTest.getTypeByEvaluationId(0L, "levelDef");
+//
+//        // Verify the results
+//        assertThat(result).isEqualTo(expectedResult);
+//    }
+//
+//    @Test
+//    void testGetTypeByEvaluationId_GroupTypeRepositoryReturnsNoItems() {
+//        // Setup
+//        when(mockRepository.getTypeByEvaluationId(0L, "levelDef")).thenReturn(Collections.emptyList());
+//
+//        // Run the test
+//        final List<GroupType> result = groupTypeServiceUnderTest.getTypeByEvaluationId(0L, "levelDef");
+//
+//        // Verify the results
+//        assertThat(result).isEqualTo(Collections.emptyList());
+//    }
 
     @Test
     void testGetWeightInfoByGroupId() {

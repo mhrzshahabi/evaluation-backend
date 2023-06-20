@@ -14,14 +14,14 @@ public interface IGroupTypeService {
 
     List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef);
 
-    List<GroupType> getTypeByEvaluationId(Long evaluationId, String levelDef);
+    List<GroupType> getTypeByEvaluationId(String assessPostCode, String levelDef);
 
     GroupTypeDTO.GroupTypeMaxWeight getWeightInfoByGroupId(Long groupId);
 
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
 
     GroupTypeDTO.Info create(GroupTypeDTO.Create dto);
-    
+
     GroupType getAllByGroupIdAndKpiTypeId(GroupType groupType);
 
     GroupTypeDTO.Info update(Long id, GroupTypeDTO.Update dto);
