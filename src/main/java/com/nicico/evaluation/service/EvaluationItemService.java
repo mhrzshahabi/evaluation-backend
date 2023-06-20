@@ -306,7 +306,7 @@ public class EvaluationItemService implements IEvaluationItemService {
             assessPostCode = assessPostCode.substring(0, assessPostCode.indexOf("/"));
         List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
         getGroupTypeMeritInfoForUpdate(id, assessPostCode, createItemInfoList);
-        getPostMeritInfoForUpdate(id, createItemInfoList);
+        getPostMeritInfoForUpdate(id, assessPostCode, createItemInfoList);
         calculateAndSetTotalWeight(createItemInfoList);
         return createItemInfoList;
     }
@@ -337,9 +337,9 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
-    private void getPostMeritInfoForUpdate(Long evaluationId, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+    private void getPostMeritInfoForUpdate(Long evaluationId, String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
 
-        List<GroupType> groupType = groupTypeService.getTypeByEvaluationId(evaluationId, LEVEL_DEF_POST);
+        List<GroupType> groupType = groupTypeService.getTypeByEvaluationId(assessPostCode, LEVEL_DEF_POST);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
