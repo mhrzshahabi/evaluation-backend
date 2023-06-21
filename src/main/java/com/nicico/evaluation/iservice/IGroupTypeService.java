@@ -14,8 +14,6 @@ public interface IGroupTypeService {
 
     List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef);
 
-    List<GroupType> getTypeByEvaluationId(String assessPostCode, String levelDef);
-
     GroupTypeDTO.GroupTypeMaxWeight getWeightInfoByGroupId(Long groupId);
 
     GroupTypeDTO.SpecResponse list(int count, int startIndex);
