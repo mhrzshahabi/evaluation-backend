@@ -339,7 +339,7 @@ public class EvaluationItemService implements IEvaluationItemService {
 
     private void getPostMeritInfoForUpdate(Long evaluationId, String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
 
-        List<GroupType> groupType = groupTypeService.getTypeByEvaluationId(assessPostCode, LEVEL_DEF_POST);
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
