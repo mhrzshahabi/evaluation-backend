@@ -27,6 +27,8 @@ public class PostRelation {
     private String postCode;
     @Column(name = "post_title")
     private String postTitle;
+    @Column(name = "post_group_code")
+    private String postGroupCode;
     @Column(name = "post_code_parent")
     private String postCodeParent;
     @Column(name = "post_title_parent")

@@ -20,6 +20,7 @@ public class PostRelationDTO {
         private Long id;
         private String postCode;
         private String postTitle;
+        private String postGroupCode;
         private String postCodeParent;
         private String postTitleParent;
         private String postCodeGrade;
