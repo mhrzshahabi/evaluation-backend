@@ -46,8 +46,7 @@ public abstract class PostMeritComponentMapper {
     public abstract EvaluationItemDTO.InstanceTupleDTO instanceToPostMeritInstance(PostMeritInstanceDTO.InstanceTupleDTO postMeritInstance);
 
     @Named("getPostRelation")
-    PostRelationDTO.Info getPostRelation(PostMeritComponent postMeritComponent) {
-        return null;
-        //return  postRelationService.getByPostCode(postMeritComponent.getGroupPostCode());
+    List<PostRelationDTO.Info> getPostRelation(PostMeritComponent postMeritComponent) {
+        return  postRelationService.getByPostGroupCode(postMeritComponent.getGroupPostCode());
     }
 }
