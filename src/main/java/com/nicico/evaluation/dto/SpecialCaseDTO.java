@@ -31,8 +31,6 @@ public class SpecialCaseDTO {
     private Date startDate;
     @NotNull
     private Date endDate;
-    @NotNull
-    private Long statusCatalogId;
 
     @Getter
     @Setter

@@ -123,9 +123,9 @@ public class EvaluationService implements IEvaluationService {
             OrganizationTreeDTO.InfoTree orgTreeInfo = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
             List<Evaluation> evaluationList =
                     repository.findByEvaluationPeriodIdAndAssessPostCode(evaluationCreate.getEvaluationPeriodId(), evaluationCreate.getPostCode());
-            if (evaluationList.size() > 0) {
+            if (!evaluationList.isEmpty())
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-            }
+
             SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(orgTreeInfo.getNationalCode(), evaluationCreate.getPostCode());
             if (scInfo != null) {
                 evaluation.setAssessorPostCode(scInfo.getAssessorPostCode());

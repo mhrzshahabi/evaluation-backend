@@ -35,10 +35,10 @@ public class PostRelationService implements IPostRelationService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_POpost meritST_RELATION')")
-    public PostRelationDTO.Info getByPostCode(String postCode) {
-        PostRelation allByPostCode = repository.getByPostCode(postCode);
-        return mapper.entityToDtoInfo(allByPostCode);
+    @PreAuthorize("hasAuthority('R_POST_RELATION')")
+    public List<PostRelationDTO.Info> getByPostGroupCode(String postCode) {
+        List<PostRelation> allByPostCode = repository.getByPostGroupCode(postCode);
+        return mapper.entityToDtoInfoList(allByPostCode);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.ISpecialCaseService;
 import com.nicico.evaluation.mapper.SpecialCaseMapper;
 import com.nicico.evaluation.model.Catalog;
@@ -37,6 +38,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     private final PageableMapper pageableMapper;
     private final ResourceBundleMessageSource messageSource;
     private final CatalogRepository catalogRepository;
+    private final ICatalogService catalogService;
 
     @Override
     @Transactional(readOnly = true)
@@ -95,6 +97,7 @@ public class SpecialCaseService implements ISpecialCaseService {
         }
         SpecialCase specialCase = specialCaseMapper.dtoCreateToEntity(dto);
         try {
+            specialCase.setStatusCatalogId(catalogService.getByCode(SPECIAL_INITIAL_REGISTRATION).getId());
             specialCase = specialCaseRepository.save(specialCase);
             return specialCaseMapper.entityToDtoInfo(specialCase);
         } catch (Exception exception) {
