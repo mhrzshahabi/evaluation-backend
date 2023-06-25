@@ -24,11 +24,12 @@ spring:
             token-uri-swagger: http://staging.icico.net.ir/oauth/token
             user-name-attribute: username
 nicico:
+  security:
+    sys-password: password
   hrmClient: 'http://staging.icico.net.ir/hrm/api/v1'
+  hrmBackend: 'http://staging.icico.net.ir/hrm-backend/api/v1'
   server:
     url: http://staging.icico.net.ir/evaluation-backend
-  security:
-  #    sys-password: password
 
   upload:
     dir: /var/nicico/${spring.application.name}/upload
