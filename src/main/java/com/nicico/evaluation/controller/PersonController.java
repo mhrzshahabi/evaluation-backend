@@ -3,7 +3,6 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.PersonDTO;
-import com.nicico.evaluation.feignClient.HrmFeignClient;
 import com.nicico.evaluation.iservice.IPersonService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,16 +20,10 @@ import java.util.List;
 public class PersonController {
 
     private final IPersonService service;
-    private final HrmFeignClient hrmFeignClient;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PersonDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/image-profile/{nationalCode}")
-    public ResponseEntity<String> getProfileImage(HttpServletRequest httpServletRequest, @PathVariable String nationalCode) {
-        return new ResponseEntity<>(hrmFeignClient.getPersonProfileByNationalCode(nationalCode, httpServletRequest.getHeader("Authorization")).getImageProfile(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/list")
