@@ -33,8 +33,9 @@ nicico:
   server:
     url: http://devapp01.icico.net.ir/evaluation-backend
   security:
-#    sys-password: password
+    sys-password: password
   hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
+  hrmBackend: 'http://devapp01.icico.net.ir/hrm-backend/api/v1'
 
   upload:
     dir: /var/nicico/${spring.application.name}/upload
