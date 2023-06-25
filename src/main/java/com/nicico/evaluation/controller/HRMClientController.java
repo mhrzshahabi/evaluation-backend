@@ -5,6 +5,7 @@ import com.nicico.evaluation.dto.HrmPersonDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -25,10 +26,15 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping(value = "/api/hrm")
 public class HRMClientController {
 
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     @Value("${nicico.hrmBackend}")
     private String hrmUrl;
+
+    @Autowired
+    public HRMClientController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Loggable
     @GetMapping(value = "/image-profile/{nationalCode}")
