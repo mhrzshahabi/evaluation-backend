@@ -5,10 +5,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IEvaluationItemService;
-import com.nicico.evaluation.iservice.IEvaluationService;
-import com.nicico.evaluation.iservice.IOrganizationTreeService;
-import com.nicico.evaluation.iservice.ISpecialCaseService;
+import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
@@ -44,6 +41,7 @@ public class EvaluationService implements IEvaluationService {
     private final ISpecialCaseService specialCaseService;
     private final IOrganizationTreeService organizationTreeService;
     private IEvaluationItemService evaluationItemService;
+    private IBatchService batchService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -126,8 +124,25 @@ public class EvaluationService implements IEvaluationService {
             if (!evaluationList.isEmpty())
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
 
-            SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(orgTreeInfo.getNationalCode(), evaluationCreate.getPostCode());
-            if (scInfo != null) {
+            // SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(orgTreeInfo.getNationalCode(), evaluationCreate.getPostCode());
+            SpecialCaseDTO.Info scInfo = new SpecialCaseDTO.Info();
+            List<SpecialCaseDTO.Info> byAssessNationalCode = specialCaseService.getByAssessNationalCodeAndStatusCode(orgTreeInfo.getNationalCode(), SPECIAL_ACTIVE);
+            List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
+            List<Object> specialCaseRevoked = new ArrayList<>();
+            if (!byAssessNationalCode.isEmpty()) {
+                byAssessNationalCode.forEach(specialCase -> {
+                    if (specialCase.getAssessPostCode().equals(evaluationCreate.getPostCode()))
+                        specialCaseInfos.add(specialCase);
+                    else
+                        specialCaseRevoked.add(specialCase);
+                });
+                scInfo = specialCaseInfos.get(0);
+            }
+            BatchDTO.Create batchDTO = new BatchDTO.Create();
+            batchDTO.setInputDetails(specialCaseRevoked);
+            batchService.create(batchDTO);
+
+            if (Objects.nonNull(scInfo)) {
                 evaluation.setAssessorPostCode(scInfo.getAssessorPostCode());
                 evaluation.setAssessorNationalCode(scInfo.getAssessorNationalCode());
                 evaluation.setAssessorFullName(scInfo.getAssessorFullName());

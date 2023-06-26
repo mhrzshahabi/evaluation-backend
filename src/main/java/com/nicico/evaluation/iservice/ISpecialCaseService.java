@@ -3,12 +3,18 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.utility.BaseResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface ISpecialCaseService {
 
     SpecialCaseDTO.Info get(Long id);
 
     SpecialCaseDTO.Info getByAssessNationalCodeAndAssessPostCode(String nationalCode, String postCode);
+
+    List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCode(String nationalCode, String statusCode);
 
     SpecialCaseDTO.SpecResponse list(int count, int startIndex);
 

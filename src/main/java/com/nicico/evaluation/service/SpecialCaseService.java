@@ -60,6 +60,14 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
+    public List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCode(String nationalCode, String statusCode) {
+        List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalog(nationalCode, statusCode);
+        return specialCaseMapper.entityToDtoInfoList(specialCases);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SpecialCaseDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<SpecialCase> specialCases = specialCaseRepository.findAll(pageable);

@@ -12,5 +12,7 @@ import java.util.Optional;
 @Repository
 public interface SpecialCaseRepository extends JpaRepository<SpecialCase, Long>, JpaSpecificationExecutor<SpecialCase> {
     Optional<SpecialCase> findByAssessNationalCodeAndAssessPostCode(String nationalCode, String postCode);
+
+    List<SpecialCase> findByAssessNationalCodeAndStatusCatalog(String nationalCode, String statusCode);
 }
     
