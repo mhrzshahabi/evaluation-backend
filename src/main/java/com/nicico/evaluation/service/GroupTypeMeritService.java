@@ -2,7 +2,10 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.*;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.dto.FilterDTO;
+import com.nicico.evaluation.dto.GroupTypeMeritDTO;
+import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
@@ -10,7 +13,11 @@ import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
 import com.nicico.evaluation.utility.ExcelGenerator;
+import com.nicico.evaluation.utility.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +35,8 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     private final PageableMapper pageableMapper;
     private final GroupTypeMeritRepository repository;
     private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
+    private final ExceptionUtil exceptionUtil;
+    private final ResourceBundleMessageSource messageSource;
 
     @Override
     @Transactional(readOnly = true)
@@ -94,29 +103,28 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     public GroupTypeMeritDTO.Info update(Long id, GroupTypeMeritDTO.Update dto) {
         GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(groupTypeMerit, dto);
-        try {
-            List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(id).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
-            if (!instanceGroupTypeIds.isEmpty())
-                instanceGroupTypeMeritService.deleteAll(instanceGroupTypeIds);
-            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), id);
-            GroupTypeMerit save = repository.save(groupTypeMerit);
-            return mapper.entityToDtoInfo(save);
-        } catch (
-                Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
-        }
+        List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(id).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
+        if (!instanceGroupTypeIds.isEmpty())
+            instanceGroupTypeMeritService.deleteAll(instanceGroupTypeIds);
+        createAllInstanceGroupTypeMerit(dto.getInstanceIds(), id);
+        GroupTypeMerit save = repository.save(groupTypeMerit);
+        return mapper.entityToDtoInfo(save);
 
     }
 
     private void createAllInstanceGroupTypeMerit(List<Long> instanceIds, Long id) {
-        List<InstanceGroupTypeMeritDTO.Create> instanceGroupTypeMeritDTOList = new ArrayList<>();
-        instanceIds.forEach(instanceId -> {
-            InstanceGroupTypeMeritDTO.Create instanceGroupTypeMeritDTO = new InstanceGroupTypeMeritDTO.Create();
-            instanceGroupTypeMeritDTO.setInstanceId(instanceId);
-            instanceGroupTypeMeritDTO.setGroupTypeMeritId(id);
-            instanceGroupTypeMeritDTOList.add(instanceGroupTypeMeritDTO);
-        });
-        instanceGroupTypeMeritService.createAll(instanceGroupTypeMeritDTOList);
+        try {
+            List<InstanceGroupTypeMeritDTO.Create> instanceGroupTypeMeritDTOList = new ArrayList<>();
+            instanceIds.forEach(instanceId -> {
+                InstanceGroupTypeMeritDTO.Create instanceGroupTypeMeritDTO = new InstanceGroupTypeMeritDTO.Create();
+                instanceGroupTypeMeritDTO.setInstanceId(instanceId);
+                instanceGroupTypeMeritDTO.setGroupTypeMeritId(id);
+                instanceGroupTypeMeritDTOList.add(instanceGroupTypeMeritDTO);
+            });
+            instanceGroupTypeMeritService.createAll(instanceGroupTypeMeritDTOList);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        }
     }
 
     @Override
@@ -124,8 +132,14 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @PreAuthorize("hasAuthority('D_GROUP_TYPE_MERIT')")
     public void delete(Long id) {
         GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        instanceGroupTypeMeritService.deleteByGroupTypeMerit(groupTypeMerit.getId());
-        repository.delete(groupTypeMerit);
+        try {
+            instanceGroupTypeMeritService.deleteByGroupTypeMerit(groupTypeMerit.getId());
+            repository.delete(groupTypeMerit);
+        } catch (DataIntegrityViolationException violationException) {
+            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null,
+                    messageSource.getMessage("exception.integrity.constraint", null, LocaleContextHolder.getLocale()) + msg);
+        }
     }
 
     @Override
