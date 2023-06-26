@@ -51,6 +51,12 @@ public class CriteriaUtil {
                     criteriaList.add(notNullRq);
                     criteriaRq = new SearchDTO.CriteriaRq().setOperator(EOperator.or).setCriteria(criteriaList);
                 }
+                if ("NotNull".equals(criteria.getOperator())) {
+                    SearchDTO.CriteriaRq notNullRq = makeCriteria(criteria.getField(), null, EOperator.notNull, new ArrayList<>());
+                    final List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+                    criteriaList.add(notNullRq);
+                    criteriaRq = new SearchDTO.CriteriaRq().setOperator(EOperator.or).setCriteria(criteriaList);
+                }
 
                 //todo
                 if ((Objects.nonNull(criteriaRq.getFieldName()) && !criteriaRq.getFieldName().equals("hasEvaluation")) || Objects.isNull(criteriaRq.getFieldName()))
