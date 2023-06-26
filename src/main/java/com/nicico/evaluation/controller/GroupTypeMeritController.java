@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Api(value = "Group Type Merit")
@@ -83,10 +82,9 @@ public class GroupTypeMeritController {
             return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
 
         } catch (DataIntegrityViolationException violationException) {
-            String msg = exceptionUtil.getRecordsByParentId(violationException, id);
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null,
-                    messageSource.getMessage("exception.integrity.constraint", null,
-                            LocaleContextHolder.getLocale()) + (Objects.nonNull(msg) ? msg : ""));
+                    messageSource.getMessage("exception.integrity.constraint.change", null,
+                            LocaleContextHolder.getLocale()));
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
         }

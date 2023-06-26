@@ -103,6 +103,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     public GroupTypeMeritDTO.Info update(Long id, GroupTypeMeritDTO.Update dto) {
         GroupTypeMerit groupTypeMerit = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(groupTypeMerit, dto);
+
         List<Long> instanceGroupTypeIds = instanceGroupTypeMeritService.getAllByGroupTypeMeritId(id).stream().map(InstanceGroupTypeMeritDTO.Info::getId).toList();
         if (!instanceGroupTypeIds.isEmpty())
             instanceGroupTypeMeritService.deleteAll(instanceGroupTypeIds);
