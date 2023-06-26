@@ -100,12 +100,12 @@ public class EvaluationController {
     }
 
     /**
-     * @param ChangeStatusDTO is id of evaluation for change status and is next or previous for change status
+     * @param changeStatusDto is id of evaluation for change status and is next or previous for change status
      * @return Boolean is the result of function
      */
     @PostMapping(value = "/change-status")
-    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO ChangeStatusDTO) {
-        BaseResponse response = service.changeStatus(ChangeStatusDTO);
+    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO changeStatusDto) {
+        BaseResponse response = service.changeStatus(changeStatusDto);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
