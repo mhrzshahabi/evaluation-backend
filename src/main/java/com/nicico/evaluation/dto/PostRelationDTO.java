@@ -27,6 +27,7 @@ public class PostRelationDTO {
         private String postTitleGrade;
         private String postCodeGradeParent;
         private String postTitleGradeParent;
+        private Long postMeritId;
     }
 
     @Getter
