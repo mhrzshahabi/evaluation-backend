@@ -24,18 +24,25 @@ spring:
             token-uri-swagger: http://staging.icico.net.ir/oauth/token
             user-name-attribute: username
 nicico:
+  server:
+    url: http://staging.icico.net.ir/evaluation-backend
   security:
     sys-password: password
   hrmClient: 'http://staging.icico.net.ir/hrm/api/v1'
   hrmBackend: 'http://staging.icico.net.ir/hrm-backend/api/v1'
+
   upload:
-    dir: /var/nicico/${spring.application.name}/
+    dir: /var/nicico/${spring.application.name}/upload
+
 ui:
   redirect:
-    address: http://staging.icico.net.ir/evaluation-frontend/auth-redirect
+    #address: http://staging.icico.net.ir/evaluation-frontend/auth-redirect
+    address: http://staging.icico.net.ir/evaluation-frontend
 
   landing:
-    address: http://staging.icico.net.ir/evaluation-frontend
+    address: http://staging.icico.net.ir/evaluation-backend
+    #address: http://172.16.6.196:4200
+
 
     fmsGroupId: '6450ce9763a9bb68f5df2dd9'
     fmsUrl: 'http://storage.icico.net.ir/fms/file'
