@@ -3,29 +3,21 @@ package com.nicico.evaluation.mapper;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
-import com.nicico.evaluation.dto.PostRelationDTO;
-import com.nicico.evaluation.iservice.IPostRelationService;
 import com.nicico.evaluation.model.PostMeritComponent;
 import com.nicico.evaluation.model.PostMeritInstance;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {MeritComponentMapper.class, PostMeritInstanceMapper.class})
 public abstract class PostMeritComponentMapper {
-    @Lazy
-    @Autowired
-    private IPostRelationService postRelationService;
 
     public abstract PostMeritComponent dtoCreateToEntity(PostMeritComponentDTO.Create dto);
 
     public abstract PostMeritComponent dtoBatchCreateToEntity(PostMeritComponentDTO.BatchCreate dto);
 
     @Mappings({
-            @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId"),
-            @Mapping(target = "postRelation", source = "entity", qualifiedByName = "getPostRelation"),
+            @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId")
     })
     public abstract PostMeritComponentDTO.Info entityToDtoInfo(PostMeritComponent entity);
 
@@ -45,8 +37,4 @@ public abstract class PostMeritComponentMapper {
 
     public abstract EvaluationItemDTO.InstanceTupleDTO instanceToPostMeritInstance(PostMeritInstanceDTO.InstanceTupleDTO postMeritInstance);
 
-    @Named("getPostRelation")
-    List<PostRelationDTO.Info> getPostRelation(PostMeritComponent postMeritComponent) {
-        return  postRelationService.getByPostGroupCode(postMeritComponent.getGroupPostCode());
-    }
 }

@@ -36,14 +36,6 @@ public class PostRelationService implements IPostRelationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_RELATION')")
-    public List<PostRelationDTO.Info> getByPostGroupCode(String postCode) {
-        List<PostRelation> allByPostCode = repository.getByPostGroupCode(postCode);
-        return mapper.entityToDtoInfoList(allByPostCode);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_POST_RELATION')")
     public PostRelationDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<PostRelation> postRelations = repository.findAll(pageable);
