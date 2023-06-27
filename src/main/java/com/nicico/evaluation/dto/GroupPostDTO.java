@@ -27,14 +27,30 @@ public abstract class GroupPostDTO {
         private Long id;
         private String groupPostCode;
         private String postTitle;
-        private String postCompanyName;
-        private String costCenterCode;
-        private String costCenterTitle;
+        private String postGradeTitle;
+        private Long totalWeight;
         private String mojtamaTitle;
         private String omoorTitle;
         private String ghesmatTitle;
         private String vahedTitle;
+        private String postCompanyName;
+        private String costCenterCode;
+        private String costCenterTitle;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("GroupPostExcel")
+    public static class Excel {
+        private String groupPostCode;
+        private String postTitle;
+        private String postGradeTitle;
         private Long totalWeight;
+        private String mojtamaTitle;
+        private String omoorTitle;
+        private String ghesmatTitle;
+        private String vahedTitle;
+        private String costCenterCode;
     }
 
     @Getter

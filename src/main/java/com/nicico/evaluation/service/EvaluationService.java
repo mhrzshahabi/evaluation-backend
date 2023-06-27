@@ -223,34 +223,24 @@ public class EvaluationService implements IEvaluationService {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next" -> {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                    //update this item in create evaluation item
-//                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode("Awaiting-review");
-//                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     createEvaluationItems(evaluation);
 
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(FINALIZED);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    repository.save(evaluation);
                                 }
-                                repository.save(evaluation);
                             }
                             case "previous" -> {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(AWAITING);
-                                    optionalCatalog.ifPresent(catalog -> {
-                                        evaluation.setStatusCatalogId(catalog.getId());
-                                        evaluation.setAverageScore(null);
-                                    });
                                     updateEvaluationItems(evaluation);
 
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-
                                     deleteItems(evaluation);
-
+                                    repository.save(evaluation);
                                 }
-                                repository.save(evaluation);
                             }
                         }
                     } else {
@@ -307,11 +297,10 @@ public class EvaluationService implements IEvaluationService {
         evaluationItemByEvalId.forEach(info -> {
             EvaluationItemDTO.Update evaluationItemDTO = new EvaluationItemDTO.Update();
             evaluationItemDTO.setId(info.getId());
-            evaluationItemDTO.setAverageScore(null);
-            evaluationItemDTO.setDescription(null);
-            evaluationItemDTO.setQuestionnaireAnswerCatalogCode(null);
-            evaluationItemDTO.setQuestionnaireAnswerCatalogValue(null);
-            evaluationItemDTO.setQuestionnaireAnswerCatalogId(null);
+            evaluationItemDTO.setStatus("previous");
+            evaluationItemDTO.setEvaluationId(info.getEvaluationId());
+            evaluationItemDTO.setGroupTypeMeritId(info.getGroupTypeMeritId());
+            evaluationItemDTO.setPostMeritComponentId(info.getPostMeritComponentId());
             requests.add(evaluationItemDTO);
         });
         evaluationItemService.updateAll(requests);
