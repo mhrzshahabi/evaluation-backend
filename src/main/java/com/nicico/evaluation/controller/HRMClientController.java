@@ -6,6 +6,7 @@ import com.nicico.evaluation.exception.EvaluationHandleException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -26,15 +27,12 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping(value = "/api/hrm")
 public class HRMClientController {
 
+    @Autowired
+    @Qualifier("hrmToken")
     private RestTemplate restTemplate;
 
     @Value("${nicico.hrmBackend}")
     private String hrmUrl;
-
-    @Autowired
-    public HRMClientController(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     @Loggable
     @GetMapping(value = "/image-profile/{nationalCode}")
@@ -45,7 +43,10 @@ public class HRMClientController {
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, null);
         try {
             HrmPersonDTO hrmPersonDTO = restTemplate.exchange(url, HttpMethod.GET, entity, HrmPersonDTO.class).getBody();
-            return new ResponseEntity<>(hrmPersonDTO.getImageProfile(), HttpStatus.OK);
+            if (hrmPersonDTO != null)
+                return new ResponseEntity<>(hrmPersonDTO.getImageProfile(), HttpStatus.OK);
+            else
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "شخص مورد نظر در سیستم منابع انسانی یافت نشد");
         } catch (Exception e) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.Unauthorized, "خطا در دسترسی به سیستم منابع انسانی");
         }

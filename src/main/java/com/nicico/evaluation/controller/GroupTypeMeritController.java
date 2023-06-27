@@ -78,7 +78,16 @@ public class GroupTypeMeritController {
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<GroupTypeMeritDTO.Info> update(@PathVariable Long id, @Valid @RequestBody GroupTypeMeritDTO.Update request) {
-        return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
+
+        } catch (DataIntegrityViolationException violationException) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.IntegrityConstraint, null,
+                    messageSource.getMessage("exception.integrity.constraint.change", null,
+                            LocaleContextHolder.getLocale()));
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
+        }
     }
 
     /**

@@ -316,5 +316,28 @@
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="semami" id="1687856234">
+        <createView viewName="view_post_relation" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM AS id,
+                    postrelation.*
+                FROM
+                    (
+                        SELECT DISTINCT
+                            relation.*,
+                            LISTAGG(postmerit.id, ', ') WITHIN GROUP(
+                                ORDER BY
+                                    postmerit.id
+                            ) OVER(
+                                PARTITION BY post_code
+                            ) post_merit_id
+                        FROM
+                            syn_hrm_post_relation      relation
+                            LEFT JOIN tbl_post_merit_component   postmerit ON postmerit.c_group_post_code = relation.post_group_code
+                    ) postrelation
+            ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>
