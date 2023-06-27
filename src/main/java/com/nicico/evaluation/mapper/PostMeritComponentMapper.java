@@ -3,21 +3,14 @@ package com.nicico.evaluation.mapper;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.dto.PostMeritInstanceDTO;
-import com.nicico.evaluation.dto.PostRelationDTO;
-import com.nicico.evaluation.iservice.IPostRelationService;
 import com.nicico.evaluation.model.PostMeritComponent;
 import com.nicico.evaluation.model.PostMeritInstance;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {MeritComponentMapper.class, PostMeritInstanceMapper.class})
 public abstract class PostMeritComponentMapper {
-    @Lazy
-    @Autowired
-    private IPostRelationService postRelationService;
 
     public abstract PostMeritComponent dtoCreateToEntity(PostMeritComponentDTO.Create dto);
 
