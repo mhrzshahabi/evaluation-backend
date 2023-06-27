@@ -30,6 +30,7 @@ nicico:
     sys-password: password
   hrmClient: 'http://staging.icico.net.ir/hrm/api/v1'
   hrmBackend: 'http://staging.icico.net.ir/hrm-backend/api/v1'
+  hrm-password: password
 
   upload:
     dir: /var/nicico/${spring.application.name}/upload

@@ -26,6 +26,8 @@ public abstract class GroupPostMapper {
 
       public abstract List<GroupPostDTO.Info> entityToDtoInfoList(List<GroupPost> entities);
 
+      public abstract GroupPostDTO.Excel entityToDtoExcel(GroupPost entity);
+
       @Named("getTotalComponentWeightByGroupPostCode")
       Long getTotalComponentWeightByGroupPostCode(String groupPostCode) {
             return postMeritComponentService.getTotalWeight(groupPostCode);

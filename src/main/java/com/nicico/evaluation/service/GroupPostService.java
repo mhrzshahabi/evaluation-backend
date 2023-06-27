@@ -2,12 +2,14 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupPostDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupPostService;
 import com.nicico.evaluation.mapper.GroupPostMapper;
 import com.nicico.evaluation.model.GroupPost;
 import com.nicico.evaluation.repository.GroupPostRepository;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +66,14 @@ public class GroupPostService implements IGroupPostService {
     public GroupPostDTO.Info getByCode(String code) {
         GroupPost groupPost = repository.findFirstByGroupPostCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "GroupPost", "گروه پستی یافت نشد"));
         return mapper.entityToDtoInfo(groupPost);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_POST')")
+    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست پست");
+        return new ExcelGenerator.ExcelDownload(body);
     }
 
 }

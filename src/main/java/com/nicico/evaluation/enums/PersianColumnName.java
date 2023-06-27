@@ -16,7 +16,16 @@ public enum PersianColumnName {
     HASINSTANCESTR("مصداق"),
     DESCRIPTION("شرح"),
     EXCEPTIONTITLE("عنوان خطا"),
-    STATUSCATALOG("وضعیت");
+    STATUSCATALOG("وضعیت"),
+    GROUPPOSTCODE("کد پست"),
+    POSTTITLE("عنوان پست"),
+    POSTGRADETITLE("رده پستی"),
+    TOTALWEIGHT("مچموع وزن مولفه ها"),
+    MOJTAMATITLE("مجتمع"),
+    OMOORTITLE("امور"),
+    GHESMATTITLE("قسمت"),
+    VAHEDTITLE("واحد"),
+    COSTCENTERCODE("کد مرکز هزینه");
 
 
     private String persianName;
