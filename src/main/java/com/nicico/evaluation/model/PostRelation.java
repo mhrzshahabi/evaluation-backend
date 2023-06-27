@@ -42,5 +42,5 @@ public class PostRelation {
     @Column(name = "post_title_grade_parent")
     private String postTitleGradeParent;
     @Column(name = "post_merit_id")
-    private Long postMeritId;
+    private String postMeritIds;
 }
