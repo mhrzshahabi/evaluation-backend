@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -136,23 +137,31 @@ public class EvaluationItemService implements IEvaluationItemService {
     }
 
     private void updateEvaluation(EvaluationItemDTO.Create dto) {
+
         Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
         evaluation.setAverageScore(dto.getAverageScore());
-
         Stream<CatalogDTO.Info> evaluationStatus = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream();
         Long statusByCatalogType;
-        if (evaluation.getStatusCatalog() != null && evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-
-            statusByCatalogType = evaluationStatus
-                    .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
-
-        } else {
-            statusByCatalogType = evaluationStatus
-                    .filter(status -> status.getCode().equals(FINALIZED)).findFirst().orElseThrow().getId();
-
+        switch (dto.getStatus().toLowerCase(Locale.ROOT)) {
+            case "next" -> {
+                if (evaluation.getStatusCatalog() != null && evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+                    statusByCatalogType = evaluationStatus
+                            .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
+                } else {
+                    statusByCatalogType = evaluationStatus
+                            .filter(status -> status.getCode().equals(FINALIZED)).findFirst().orElseThrow().getId();
+                }
+                evaluation.setStatusCatalogId(statusByCatalogType);
+            }
+            case "previous" -> {
+                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
+                    statusByCatalogType = evaluationStatus
+                            .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
+                    evaluation.setStatusCatalogId(statusByCatalogType);
+                    evaluation.setAverageScore(null);
+                }
+            }
         }
-        evaluation.setStatusCatalogId(statusByCatalogType);
-
         evaluationService.update(dto.getEvaluationId(), evaluation);
     }
 
@@ -173,8 +182,9 @@ public class EvaluationItemService implements IEvaluationItemService {
             mapper.update(evaluationItem, dto);
             EvaluationItem save = repository.save(evaluationItem);
             EvaluationItemDTO.Create evaluationDto = new EvaluationItemDTO.Create();
-            evaluationDto.setEvaluationId(dto.getEvaluationId());
-            evaluationDto.setAverageScore(dto.getAverageScore());
+            evaluationDto.setEvaluationId(evaluationItem.getEvaluationId());
+            evaluationDto.setAverageScore(evaluationDto.getAverageScore());
+            evaluationDto.setStatus(Objects.nonNull(dto.getStatus()) ? dto.getStatus() : "next");
             updateEvaluation(evaluationDto);
             return mapper.entityToDtoInfo(save);
         } catch (Exception exception) {
@@ -206,7 +216,8 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
-    public SearchDTO.SearchRs<EvaluationItemDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+    public SearchDTO.SearchRs<EvaluationItemDTO.Info> search(SearchDTO.SearchRq request) throws
+            IllegalAccessException, NoSuchFieldException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
@@ -272,7 +283,8 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
-    private void getGroupTypeMeritInfoForCreate(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+    private void getGroupTypeMeritInfoForCreate(String
+                                                        assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_GROUP);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
@@ -285,7 +297,8 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
-    private void getPostMeritInfoForCreate(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+    private void getPostMeritInfoForCreate(String
+                                                   assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
@@ -313,7 +326,8 @@ public class EvaluationItemService implements IEvaluationItemService {
         return createItemInfoList;
     }
 
-    private void getGroupTypeMeritInfoForUpdate(Long evaluationId, String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+    private void getGroupTypeMeritInfoForUpdate(Long evaluationId, String
+            assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_GROUP);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
@@ -339,7 +353,8 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
-    private void getPostMeritInfoForUpdate(Long evaluationId, String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+    private void getPostMeritInfoForUpdate(Long evaluationId, String
+            assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
 
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST);
         groupType.forEach(gType -> {
