@@ -282,12 +282,10 @@ public class EvaluationService implements IEvaluationService {
         evaluationItemByEvalId.forEach(info -> {
             EvaluationItemDTO.Update evaluationItemDTO = new EvaluationItemDTO.Update();
             evaluationItemDTO.setId(info.getId());
-            evaluationItemDTO.setAverageScore(null);
-            evaluationItemDTO.setDescription(null);
-            evaluationItemDTO.setQuestionnaireAnswerCatalogCode(null);
-            evaluationItemDTO.setQuestionnaireAnswerCatalogValue(null);
-            evaluationItemDTO.setQuestionnaireAnswerCatalogId(null);
             evaluationItemDTO.setStatus("previous");
+            evaluationItemDTO.setEvaluationId(info.getEvaluationId());
+            evaluationItemDTO.setGroupTypeMeritId(info.getGroupTypeMeritId());
+            evaluationItemDTO.setPostMeritComponentId(info.getPostMeritComponentId());
             requests.add(evaluationItemDTO);
         });
         evaluationItemService.updateAll(requests);

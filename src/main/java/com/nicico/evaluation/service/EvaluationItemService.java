@@ -178,11 +178,10 @@ public class EvaluationItemService implements IEvaluationItemService {
     public EvaluationItemDTO.Info update(EvaluationItemDTO.Update dto) {
         EvaluationItem evaluationItem = repository.findById(dto.getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
-
             mapper.update(evaluationItem, dto);
             EvaluationItem save = repository.save(evaluationItem);
             EvaluationItemDTO.Create evaluationDto = new EvaluationItemDTO.Create();
-            evaluationDto.setEvaluationId(evaluationItem.getEvaluationId());
+            evaluationDto.setEvaluationId(evaluationItem.getEvaluation().getId());
             evaluationDto.setAverageScore(evaluationDto.getAverageScore());
             evaluationDto.setStatus(Objects.nonNull(dto.getStatus()) ? dto.getStatus() : "next");
             updateEvaluation(evaluationDto);
