@@ -33,6 +33,8 @@ public abstract class EvaluationItemDTO {
         private List<Long> instanceIds;
         private List<PostMeritInstanceTuple> postMeritInstanceList;
         private List<InstanceGroupTypeMeritTuple> instanceGroupTypeMerits;
+        @NotNull
+        private String status = "next";
     }
 
     @Getter
@@ -155,7 +157,8 @@ public abstract class EvaluationItemDTO {
     public static class Update extends EvaluationItemDTO {
         private Long id;
         private Long averageScore;
-
+        @NotNull
+        private String status = "next";
     }
 
     @Getter
