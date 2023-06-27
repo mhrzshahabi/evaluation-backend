@@ -237,7 +237,12 @@ public class EvaluationService implements IEvaluationService {
                             case "previous" -> {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(AWAITING);
-                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    optionalCatalog.ifPresent(catalog -> {
+                                        evaluation.setStatusCatalogId(catalog.getId());
+                                        evaluation.setAverageScore(null);
+                                    });
+                                    updateEvaluationItems(evaluation);
+
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
@@ -294,6 +299,22 @@ public class EvaluationService implements IEvaluationService {
             });
         });
         evaluationItemService.createAll(requests);
+    }
+
+    private void updateEvaluationItems(Evaluation evaluation) {
+        List<EvaluationItemDTO.Update> requests = new ArrayList<>();
+        List<EvaluationItemDTO.Info> evaluationItemByEvalId = evaluationItemService.getByEvalId(evaluation.getId());
+        evaluationItemByEvalId.forEach(info -> {
+            EvaluationItemDTO.Update evaluationItemDTO = new EvaluationItemDTO.Update();
+            evaluationItemDTO.setId(info.getId());
+            evaluationItemDTO.setAverageScore(null);
+            evaluationItemDTO.setDescription(null);
+            evaluationItemDTO.setQuestionnaireAnswerCatalogCode(null);
+            evaluationItemDTO.setQuestionnaireAnswerCatalogValue(null);
+            evaluationItemDTO.setQuestionnaireAnswerCatalogId(null);
+            requests.add(evaluationItemDTO);
+        });
+        evaluationItemService.updateAll(requests);
     }
 
 }

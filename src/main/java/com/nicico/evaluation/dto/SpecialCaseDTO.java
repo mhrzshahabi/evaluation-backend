@@ -88,7 +88,7 @@ public class SpecialCaseDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ChangeStatusDTO")
+    @ApiModel("SpecialCaseChangeStatusDTO")
     public static class ChangeStatusDTO {
         @NotNull
         private List<Long> specialCaseIds;
