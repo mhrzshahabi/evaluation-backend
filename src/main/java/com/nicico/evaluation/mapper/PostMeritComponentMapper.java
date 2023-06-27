@@ -24,8 +24,7 @@ public abstract class PostMeritComponentMapper {
     public abstract PostMeritComponent dtoBatchCreateToEntity(PostMeritComponentDTO.BatchCreate dto);
 
     @Mappings({
-            @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId"),
-            @Mapping(target = "postRelation", source = "entity", qualifiedByName = "getPostRelation"),
+            @Mapping(target = "meritComponent.meritComponentTypes", source = "meritComponent.meritComponentTypes", qualifiedByName = "getKpiTypeByMeritComponentId")
     })
     public abstract PostMeritComponentDTO.Info entityToDtoInfo(PostMeritComponent entity);
 
@@ -45,8 +44,4 @@ public abstract class PostMeritComponentMapper {
 
     public abstract EvaluationItemDTO.InstanceTupleDTO instanceToPostMeritInstance(PostMeritInstanceDTO.InstanceTupleDTO postMeritInstance);
 
-    @Named("getPostRelation")
-    List<PostRelationDTO.Info> getPostRelation(PostMeritComponent postMeritComponent) {
-        return  postRelationService.getByPostGroupCode(postMeritComponent.getGroupPostCode());
-    }
 }
