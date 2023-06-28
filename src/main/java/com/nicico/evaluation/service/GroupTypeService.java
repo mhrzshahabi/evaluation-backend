@@ -60,7 +60,9 @@ public class GroupTypeService implements IGroupTypeService {
         long totalCountOfCreated = allByGroupIdAndKpiTypeId.size();
         long remainCount = kpiSize - totalCountOfCreated;
         GroupTypeDTO.GroupTypeMaxWeight data = new GroupTypeDTO.GroupTypeMaxWeight();
-        data.setMaxWeight(100 - remainCount + 1 - totalWeightCreated);
+        if (totalWeightCreated != 100)
+            data.setMaxWeight(100 - remainCount + 1 - totalWeightCreated);
+        else data.setMaxWeight(0L);
         data.setRemainCount(remainCount);
         return data;
     }

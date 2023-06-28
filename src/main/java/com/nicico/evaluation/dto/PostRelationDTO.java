@@ -28,6 +28,11 @@ public class PostRelationDTO {
         private String postCodeGradeParent;
         private String postTitleGradeParent;
         private String postMeritIds;
+        private String mojtameTitle;
+        private String moavenatTitle;
+        private String omorTitle;
+        private String ghesmatTitle;
+        private String vahedTitle;
     }
 
     @Getter
