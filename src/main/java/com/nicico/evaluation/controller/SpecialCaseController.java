@@ -110,12 +110,12 @@ public class SpecialCaseController {
     }
 
     /**
-     * @param changeStatusDTO is id of SpecialCase for change status and is next  for change status
+     * @param changeAllStatusDTO is id of SpecialCase for change status and is next  for change status
      * @return Boolean is the result of function
      */
     @PostMapping(value = "/change-status")
-    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody SpecialCaseDTO.ChangeStatusDTO changeStatusDTO) {
-        BaseResponse response = service.changeStatus(changeStatusDTO);
+    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody SpecialCaseDTO.ChangeAllStatusDTO changeAllStatusDTO) {
+        BaseResponse response = service.changeAllStatus(changeAllStatusDTO);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 

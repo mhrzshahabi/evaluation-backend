@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -111,10 +112,12 @@ public class BatchService implements IBatchService {
             batch.setStatusCatalogId(catalogService.getByCode("In-progress").getId());
             Batch save = repository.save(batch);
 
-            AttachmentDTO.Create attachmentCreate = mapper.dtoCreateToAttachmentDtoCreate(dto);
-            attachmentCreate.setObjectType(EvaluationConstant.BATCH);
-            attachmentCreate.setObjectId(save.getId());
-            attachmentService.create(attachmentCreate);
+            if (Objects.nonNull(dto.getFmsKey())) {
+                AttachmentDTO.Create attachmentCreate = mapper.dtoCreateToAttachmentDtoCreate(dto);
+                attachmentCreate.setObjectType(EvaluationConstant.BATCH);
+                attachmentCreate.setObjectId(save.getId());
+                attachmentService.create(attachmentCreate);
+            }
 
             BatchDetailDTO.CreateList detailCreate = new BatchDetailDTO.CreateList();
             CatalogDTO.Info catalogDTO = catalogService.get(dto.getTitleCatalogId());
