@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.BatchDetailDTO;
-import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.KPITypeDTO;
-import com.nicico.evaluation.dto.PostMeritInstanceDTO;
+import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.BatchDetailMapper;
@@ -31,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.*;
+
 @RequiredArgsConstructor
 @Service
 public class BatchDetailService implements IBatchDetailService {
@@ -43,6 +42,7 @@ public class BatchDetailService implements IBatchDetailService {
     private final IKPITypeService kpiTypeService;
     private final BatchDetailRepository repository;
     private final IPostMeritInstanceService postMeritInstanceService;
+    private final ISpecialCaseService specialCaseService;
 
     @Autowired
     public void setBatchService(@Lazy IBatchService batchService) {
@@ -167,7 +167,7 @@ public class BatchDetailService implements IBatchDetailService {
         Long failCatalogId = catalogService.getByCode("Failed").getId();
         List<BatchDetail> batchDetailList = repository.findAllByBatchId(dto.getBatchId());
         switch (dto.getServiceType()) {
-            case "BatchCreate-KPIType-Excel" -> batchDetailList.forEach(detail -> {
+            case BATCHCREATE_KPITYPE_EXCEL -> batchDetailList.forEach(detail -> {
                 try {
                     KPITypeDTO.Create batchCreate = objectMapper.readValue(detail.getInputDTO(), KPITypeDTO.Create.class);
                     BaseResponse response = kpiTypeService.batchCreate(batchCreate);
@@ -180,7 +180,7 @@ public class BatchDetailService implements IBatchDetailService {
                     updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
                 }
             });
-            case "BatchCreate-PostMeritInstance-Excel" -> batchDetailList.forEach(detail -> {
+            case BATCHCREATE_POSTMERITINSTANCE_EXCEL -> batchDetailList.forEach(detail -> {
                 try {
                     PostMeritInstanceDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), PostMeritInstanceDTO.BatchCreate.class);
                     BaseResponse response = postMeritInstanceService.batchCreate(batchCreate);
@@ -193,9 +193,22 @@ public class BatchDetailService implements IBatchDetailService {
                     updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
                 }
             });
+            case BATCHCREATE_CHANGESTATUS_SPECIALCASE -> batchDetailList.forEach(detail -> {
+                try {
+                    SpecialCaseDTO.ChangeStatusDTO batchCreate = objectMapper.readValue(detail.getInputDTO(), SpecialCaseDTO.ChangeStatusDTO.class);
+                    BaseResponse response = specialCaseService.changeStatus(batchCreate);
+
+                    String description = " کدپست : " + batchCreate.getAssessPostCode() + " نام ارزیاب شونده: " + batchCreate.getAssessFullName();
+                    if (response.getStatus() == 200)
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
+                    else
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
+                } catch (JsonProcessingException e) {
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
+                }
+            });
         }
         Long completedCatalogId = catalogService.getByCode("Completed").getId();
         batchService.updateStatus(dto.getBatchId(), completedCatalogId);
     }
-
 }

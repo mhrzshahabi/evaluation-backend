@@ -88,11 +88,32 @@ public class SpecialCaseDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("SpecialCaseChangeAllStatusDTO")
+    public static class ChangeAllStatusDTO {
+        @NotNull
+        private List<Long> specialCaseIds;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("SpecialCaseChangeStatusDTO")
     public static class ChangeStatusDTO {
         @NotNull
-        private List<Long> specialCaseIds;
+        private Long id;
+        private String assessFullName;
+        private String assessPostCode;
 
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("SpecialCaseBatchCreateRq")
+    public static class BatchCreate {
+
+        @NotNull
+        private List<Long> specialCaseIds;
 
     }
 }

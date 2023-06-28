@@ -5,10 +5,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IEvaluationItemService;
-import com.nicico.evaluation.iservice.IEvaluationService;
-import com.nicico.evaluation.iservice.IOrganizationTreeService;
-import com.nicico.evaluation.iservice.ISpecialCaseService;
+import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
@@ -44,6 +41,7 @@ public class EvaluationService implements IEvaluationService {
     private final ISpecialCaseService specialCaseService;
     private final IOrganizationTreeService organizationTreeService;
     private IEvaluationItemService evaluationItemService;
+    private final IBatchService batchService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -113,6 +111,7 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION')")
     public List<EvaluationDTO.Info> createList(List<EvaluationDTO.CreateList> dto) {
+
         List<EvaluationDTO.Info> evaluationInfo = new ArrayList<>();
         List<Catalog> methodTypes = catalogRepository.findAllByCodeIn(List.of("Special-case", "Organizational-chart"));
         Catalog catalogStatus = catalogRepository.findByCode("Initial-registration").orElse(null);
@@ -126,33 +125,73 @@ public class EvaluationService implements IEvaluationService {
             if (!evaluationList.isEmpty())
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
 
-            SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(orgTreeInfo.getNationalCode(), evaluationCreate.getPostCode());
-            if (scInfo != null) {
-                evaluation.setAssessorPostCode(scInfo.getAssessorPostCode());
-                evaluation.setAssessorNationalCode(scInfo.getAssessorNationalCode());
-                evaluation.setAssessorFullName(scInfo.getAssessorFullName());
-                evaluation.setAssessFullName(scInfo.getAssessFullName());
-                evaluation.setAssessNationalCode(scInfo.getAssessNationalCode());
-                evaluation.setAssessPostCode(evaluationCreate.getPostCode());
-                evaluation.setAssessRealPostCode(scInfo.getAssessRealPostCode());
-                evaluation.setSpecialCaseId(scInfo.getId());
-                Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Special-case")).findFirst().orElseThrow().getId();
-                evaluation.setMethodCatalogId(methodCatalogId);
-            } else {
-                evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode());
-                evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent());
-                evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent() + " " + orgTreeInfo.getLastNameParent());
-                evaluation.setAssessFullName(orgTreeInfo.getFullName());
-                evaluation.setAssessNationalCode(orgTreeInfo.getNationalCode());
-                evaluation.setAssessPostCode(evaluationCreate.getPostCode());
-                evaluation.setAssessRealPostCode(evaluationCreate.getPostCode());
-                Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Organizational-chart")).findFirst().orElseThrow().getId();
-                evaluation.setMethodCatalogId(methodCatalogId);
-            }
+            validateSpecialCase(methodTypes, evaluationCreate, evaluation, orgTreeInfo);
             evaluation = repository.save(evaluation);
             evaluationInfo.add(mapper.entityToDtoInfo(evaluation));
         }
         return evaluationInfo;
+    }
+
+    private void validateSpecialCase(List<Catalog> methodTypes, EvaluationDTO.CreateList evaluationCreate, Evaluation evaluation, OrganizationTreeDTO.InfoTree orgTreeInfo) {
+        List<SpecialCaseDTO.Info> byAssessNationalCode = specialCaseService.
+                getByAssessNationalCodeAndStatusCode(orgTreeInfo.getNationalCode(), SPECIAL_ACTIVE);
+        List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
+        List<Object> specialCaseRevoked = new ArrayList<>();
+        SpecialCaseDTO.Info scInfo = getSpecialCaseInfo(evaluationCreate, byAssessNationalCode, specialCaseInfos, specialCaseRevoked);
+        revokedSpecialCase(specialCaseRevoked);
+        setSpecialCaseInfo(methodTypes, evaluationCreate, evaluation, orgTreeInfo, scInfo);
+    }
+
+    private void setSpecialCaseInfo(List<Catalog> methodTypes, EvaluationDTO.CreateList evaluationCreate, Evaluation evaluation, OrganizationTreeDTO.InfoTree orgTreeInfo, SpecialCaseDTO.Info scInfo) {
+        if (scInfo != null) {
+            evaluation.setAssessorPostCode(scInfo.getAssessorPostCode());
+            evaluation.setAssessorNationalCode(scInfo.getAssessorNationalCode());
+            evaluation.setAssessorFullName(scInfo.getAssessorFullName());
+            evaluation.setAssessFullName(scInfo.getAssessFullName());
+            evaluation.setAssessNationalCode(scInfo.getAssessNationalCode());
+            evaluation.setAssessPostCode(evaluationCreate.getPostCode());
+            evaluation.setAssessRealPostCode(scInfo.getAssessRealPostCode());
+            evaluation.setSpecialCaseId(scInfo.getId());
+            Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Special-case")).findFirst().orElseThrow().getId();
+            evaluation.setMethodCatalogId(methodCatalogId);
+        } else {
+            evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode());
+            evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent());
+            evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent() + " " + orgTreeInfo.getLastNameParent());
+            evaluation.setAssessFullName(orgTreeInfo.getFullName());
+            evaluation.setAssessNationalCode(orgTreeInfo.getNationalCode());
+            evaluation.setAssessPostCode(evaluationCreate.getPostCode());
+            evaluation.setAssessRealPostCode(evaluationCreate.getPostCode());
+            Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Organizational-chart")).findFirst().orElseThrow().getId();
+            evaluation.setMethodCatalogId(methodCatalogId);
+        }
+    }
+
+    private void revokedSpecialCase(List<Object> specialCaseRevoked) {
+        if (!specialCaseRevoked.isEmpty()) {
+            BatchDTO.Create batchDTO = new BatchDTO.Create();
+            batchDTO.setInputDetails(specialCaseRevoked);
+            Catalog titleCatalog = catalogRepository.findByCode(BATCHCREATE_CHANGESTATUS_SPECIALCASE).orElse(null);
+            batchDTO.setTitleCatalogId(Objects.nonNull(titleCatalog) ? titleCatalog.getId() : null);
+
+            batchService.create(batchDTO);
+        }
+    }
+
+    private SpecialCaseDTO.Info getSpecialCaseInfo(EvaluationDTO.CreateList evaluationCreate, List<SpecialCaseDTO.Info>
+            byAssessNationalCode, List<SpecialCaseDTO.Info> specialCaseInfos, List<Object> specialCaseRevoked) {
+
+        if (!byAssessNationalCode.isEmpty()) {
+            byAssessNationalCode.forEach(specialCase -> {
+                if (specialCase.getAssessPostCode().equals(evaluationCreate.getPostCode()))
+                    specialCaseInfos.add(specialCase);
+                else
+                    specialCaseRevoked.add(specialCase);
+            });
+            if (!specialCaseInfos.isEmpty())
+                return specialCaseInfos.get(0);
+        }
+        return null;
     }
 
     @Override
