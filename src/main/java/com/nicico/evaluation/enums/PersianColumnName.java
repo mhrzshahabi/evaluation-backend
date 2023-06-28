@@ -20,7 +20,7 @@ public enum PersianColumnName {
     GROUPPOSTCODE("کد پست"),
     POSTTITLE("عنوان پست"),
     POSTGRADETITLE("رده پستی"),
-    TOTALWEIGHT("مچموع وزن مولفه ها"),
+    TOTALWEIGHT("مجموع وزن مولفه ها"),
     MOJTAMATITLE("مجتمع"),
     OMOORTITLE("امور"),
     GHESMATTITLE("قسمت"),
