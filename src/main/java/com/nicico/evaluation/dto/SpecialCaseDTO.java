@@ -102,7 +102,7 @@ public class SpecialCaseDTO {
         @NotNull
         private Long id;
         private String assessFullName;
-        private String assessRealPostCode;
+        private String assessPostCode;
 
     }
 
