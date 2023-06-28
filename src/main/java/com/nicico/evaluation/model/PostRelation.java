@@ -43,4 +43,14 @@ public class PostRelation {
     private String postTitleGradeParent;
     @Column(name = "post_merit_id")
     private String postMeritIds;
+    @Column(name = "MOJTAME_TITLE_SZMN")
+    private String mojtameTitle;
+    @Column(name = "MOAVENAT_TITLE_SZMN")
+    private String moavenatTitle;
+    @Column(name = "OMOR_TITLE_SZMN")
+    private String omorTitle;
+    @Column(name = "GHESMAT_TITLE_SZMN")
+    private String ghesmatTitle;
+    @Column(name = "VAHED_TITLE_SZMN")
+    private String vahedTitle;
 }
