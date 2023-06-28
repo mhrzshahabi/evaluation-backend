@@ -61,7 +61,8 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCode(String nationalCode, String statusCode) {
-        List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalog(nationalCode, statusCode);
+        List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalogId(nationalCode,
+                catalogService.getByCode(statusCode).getId());
         return specialCaseMapper.entityToDtoInfoList(specialCases);
     }
 

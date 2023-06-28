@@ -125,24 +125,29 @@ public class EvaluationService implements IEvaluationService {
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
 
             // SpecialCaseDTO.Info scInfo = specialCaseService.getByAssessNationalCodeAndAssessPostCode(orgTreeInfo.getNationalCode(), evaluationCreate.getPostCode());
-            SpecialCaseDTO.Info scInfo = new SpecialCaseDTO.Info();
-            List<SpecialCaseDTO.Info> byAssessNationalCode = specialCaseService.getByAssessNationalCodeAndStatusCode(orgTreeInfo.getNationalCode(), SPECIAL_ACTIVE);
+            SpecialCaseDTO.Info scInfo = null;
+            List<SpecialCaseDTO.Info> byAssessNationalCode = specialCaseService.
+                    getByAssessNationalCodeAndStatusCode(orgTreeInfo.getNationalCode(), SPECIAL_ACTIVE);
             List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
             List<Object> specialCaseRevoked = new ArrayList<>();
             if (!byAssessNationalCode.isEmpty()) {
                 byAssessNationalCode.forEach(specialCase -> {
-                    if (specialCase.getAssessPostCode().equals(evaluationCreate.getPostCode()))
+                    String assessRealPostCode = Objects.nonNull(specialCase.getAssessRealPostCode()) ?
+                            specialCase.getAssessRealPostCode() : specialCase.getAssessPostCode();
+                    if (assessRealPostCode.equals(evaluationCreate.getPostCode()))
                         specialCaseInfos.add(specialCase);
                     else
                         specialCaseRevoked.add(specialCase);
                 });
-                scInfo = specialCaseInfos.get(0);
+                if (!specialCaseInfos.isEmpty())
+                    scInfo = specialCaseInfos.get(0);
             }
-            BatchDTO.Create batchDTO = new BatchDTO.Create();
-            batchDTO.setInputDetails(specialCaseRevoked);
-            batchService.create(batchDTO);
-
-            if (Objects.nonNull(scInfo)) {
+            if (!specialCaseRevoked.isEmpty()) {
+                BatchDTO.Create batchDTO = new BatchDTO.Create();
+                batchDTO.setInputDetails(specialCaseRevoked);
+                batchService.create(batchDTO);
+            }
+            if (scInfo != null) {
                 evaluation.setAssessorPostCode(scInfo.getAssessorPostCode());
                 evaluation.setAssessorNationalCode(scInfo.getAssessorNationalCode());
                 evaluation.setAssessorFullName(scInfo.getAssessorFullName());
