@@ -17,4 +17,7 @@ public class EvaluationConstant {
     public static final String SPECIAL_REVOKED = "special-revoked";
     public static final String SPECIAL_ACTIVE = "special-active";
     public static final String SPECIAL_INITIAL_REGISTRATION = "special-initial-registration";
+    public static final String BATCHCREATE_CHANGESTATUS_SPECIALCASE = "BatchCreate-ChangeStatus-SpecialCase";
+    public static final String BATCHCREATE_POSTMERITINSTANCE_EXCEL = "BatchCreate-PostMeritInstance-Excel";
+    public static final String BATCHCREATE_KPITYPE_EXCEL = "BatchCreate-KPIType-Excel";
 }

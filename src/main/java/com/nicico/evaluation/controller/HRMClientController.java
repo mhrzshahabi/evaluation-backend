@@ -36,7 +36,7 @@ public class HRMClientController {
 
     @Loggable
     @GetMapping(value = "/image-profile/{nationalCode}")
-    public ResponseEntity<String> getProfileImage(@PathVariable String nationalCode) {
+    public ResponseEntity<HrmPersonDTO> getProfileImage(@PathVariable String nationalCode) {
 
         String url = hrmUrl + "/persons/profile/" + nationalCode;
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -44,7 +44,7 @@ public class HRMClientController {
         try {
             HrmPersonDTO hrmPersonDTO = restTemplate.exchange(url, HttpMethod.GET, entity, HrmPersonDTO.class).getBody();
             if (hrmPersonDTO != null)
-                return new ResponseEntity<>(hrmPersonDTO.getImageProfile(), HttpStatus.OK);
+                return new ResponseEntity<>(hrmPersonDTO, HttpStatus.OK);
             else
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "شخص مورد نظر در سیستم منابع انسانی یافت نشد");
         } catch (Exception e) {

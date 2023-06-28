@@ -51,10 +51,10 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
-    public SpecialCaseDTO.Info getByAssessNationalCodeAndAssessPostCode(String nationalCode, String postCode) {
-        SpecialCase specialcase = specialCaseRepository.findByAssessNationalCodeAndAssessPostCode(nationalCode, postCode)
-                .orElse(null);
-        return specialCaseMapper.entityToDtoInfo(specialcase);
+    public List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCode(String nationalCode, String statusCode) {
+        List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalogId(nationalCode,
+                catalogService.getByCode(statusCode).getId());
+        return specialCaseMapper.entityToDtoInfoList(specialCases);
     }
 
     @Override
@@ -135,26 +135,48 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     @Override
     @Transactional
+    public BaseResponse changeAllStatus(SpecialCaseDTO.ChangeAllStatusDTO changeAllStatusDTO) {
+        BaseResponse response = new BaseResponse();
+        final Locale locale = LocaleContextHolder.getLocale();
+        try {
+            List<Long> ids = changeAllStatusDTO.getSpecialCaseIds();
+            ids.forEach(id -> {
+                SpecialCaseDTO.ChangeStatusDTO changeStatusDTO = new SpecialCaseDTO.ChangeStatusDTO();
+                changeStatusDTO.setId(id);
+                changeStatus(changeStatusDTO);
+            });
+            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+            response.setStatus(200);
+            return response;
+        } catch (Exception e) {
+            response.setMessage(messageSource.getMessage("exception.un-managed", null, locale));
+            response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
+            return response;
+        }
+    }
+
+    @Override
+    @Transactional
     public BaseResponse changeStatus(SpecialCaseDTO.ChangeStatusDTO changeStatusDTO) {
         BaseResponse response = new BaseResponse();
         final Locale locale = LocaleContextHolder.getLocale();
         try {
-            List<Long> ids = changeStatusDTO.getSpecialCaseIds();
-            for (Long id : ids) {
-                Optional<SpecialCase> optionalSpecialCase = specialCaseRepository.findById(id);
-                if (optionalSpecialCase.isPresent()) {
-                    SpecialCase specialCase = optionalSpecialCase.get();
+            Long id = changeStatusDTO.getId();
 
-                    if (Objects.nonNull(specialCase.getStatusCatalog().getCode()) && specialCase.getStatusCatalog().getCode().equals(SPECIAL_INITIAL_REGISTRATION)) {
-                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(SPECIAL_ACTIVE);
-                        optionalCatalog.ifPresent(catalog -> specialCase.setStatusCatalogId(catalog.getId()));
-                    } else if (Objects.nonNull(specialCase.getStatusCatalog().getCode()) && specialCase.getStatusCatalog().getCode().equals(SPECIAL_ACTIVE)) {
-                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(SPECIAL_REVOKED);
-                        optionalCatalog.ifPresent(catalog -> specialCase.setStatusCatalogId(catalog.getId()));
-                    }
-                    specialCaseRepository.save(specialCase);
+            Optional<SpecialCase> optionalSpecialCase = specialCaseRepository.findById(id);
+            if (optionalSpecialCase.isPresent()) {
+                SpecialCase specialCase = optionalSpecialCase.get();
+
+                if (Objects.nonNull(specialCase.getStatusCatalog().getCode()) && specialCase.getStatusCatalog().getCode().equals(SPECIAL_INITIAL_REGISTRATION)) {
+                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(SPECIAL_ACTIVE);
+                    optionalCatalog.ifPresent(catalog -> specialCase.setStatusCatalogId(catalog.getId()));
+                } else if (Objects.nonNull(specialCase.getStatusCatalog().getCode()) && specialCase.getStatusCatalog().getCode().equals(SPECIAL_ACTIVE)) {
+                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(SPECIAL_REVOKED);
+                    optionalCatalog.ifPresent(catalog -> specialCase.setStatusCatalogId(catalog.getId()));
                 }
+                specialCaseRepository.save(specialCase);
             }
+
             response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
             response.setStatus(200);
             return response;
