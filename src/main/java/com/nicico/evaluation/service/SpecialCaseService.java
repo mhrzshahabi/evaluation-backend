@@ -32,8 +32,8 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 @Service
 public class SpecialCaseService implements ISpecialCaseService {
 
-    private final SpecialCaseRepository specialCaseRepository;
-    private final SpecialCaseMapper specialCaseMapper;
+    private final SpecialCaseRepository repository;
+    private final SpecialCaseMapper mapper;
     private final PageableMapper pageableMapper;
     private final ResourceBundleMessageSource messageSource;
     private final CatalogRepository catalogRepository;
@@ -43,26 +43,26 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SpecialCaseDTO.Info get(Long id) {
-        SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return specialCaseMapper.entityToDtoInfo(specialcase);
+        SpecialCase specialcase = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(specialcase);
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCode(String nationalCode, String statusCode) {
-        List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalogId(nationalCode,
+        List<SpecialCase> specialCases = repository.findByAssessNationalCodeAndStatusCatalogId(nationalCode,
                 catalogService.getByCode(statusCode).getId());
-        return specialCaseMapper.entityToDtoInfoList(specialCases);
+        return mapper.entityToDtoInfoList(specialCases);
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCodeNotIn(String nationalCode, String statusCode, List<Long> id) {
-        List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalogIdAndIdNotIn(nationalCode,
+        List<SpecialCase> specialCases = repository.findByAssessNationalCodeAndStatusCatalogIdAndIdNotIn(nationalCode,
                 catalogService.getByCode(statusCode).getId(), id);
-        return specialCaseMapper.entityToDtoInfoList(specialCases);
+        return mapper.entityToDtoInfoList(specialCases);
     }
 
     @Override
@@ -70,8 +70,8 @@ public class SpecialCaseService implements ISpecialCaseService {
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SpecialCaseDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        Page<SpecialCase> specialCases = specialCaseRepository.findAll(pageable);
-        List<SpecialCaseDTO.Info> specialCaseInfos = specialCaseMapper.entityToDtoInfoList(specialCases.getContent());
+        Page<SpecialCase> specialCases = repository.findAll(pageable);
+        List<SpecialCaseDTO.Info> specialCaseInfos = mapper.entityToDtoInfoList(specialCases.getContent());
 
         SpecialCaseDTO.Response response = new SpecialCaseDTO.Response();
         SpecialCaseDTO.SpecResponse specResponse = new SpecialCaseDTO.SpecResponse();
@@ -90,31 +90,20 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
     public SearchDTO.SearchRs<SpecialCaseDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(specialCaseRepository, specialCaseMapper::entityToDtoInfo, request);
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_SPECIAL_CASE')")
     public SpecialCaseDTO.Info create(SpecialCaseDTO.Create dto) {
-        if (dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
-            final Locale locale = LocaleContextHolder.getLocale();
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
-                    "assessNationalCode and assessorNationalCode",
-                    messageSource.getMessage("exception.nationalCode.duplicate", null, locale));
-        }
-        List<SpecialCaseDTO.Info> byAssessNationalCodeAndStatusCode = getByAssessNationalCodeAndStatusCode(dto.getAssessNationalCode(), SPECIAL_ACTIVE);
+        validate(dto.getAssessorNationalCode(), dto.getAssessNationalCode(), 0L);
 
-        if (!byAssessNationalCodeAndStatusCode.isEmpty())
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
-                    "assessNationalCode and active status is exist",
-                    messageSource.getMessage("exception.nationalCode.active.status.duplicate", null, LocaleContextHolder.getLocale()));
-
-        SpecialCase specialCase = specialCaseMapper.dtoCreateToEntity(dto);
+        SpecialCase specialCase = mapper.dtoCreateToEntity(dto);
         try {
             specialCase.setStatusCatalogId(catalogService.getByCode(SPECIAL_INITIAL_REGISTRATION).getId());
-            specialCase = specialCaseRepository.save(specialCase);
-            return specialCaseMapper.entityToDtoInfo(specialCase);
+            specialCase = repository.save(specialCase);
+            return mapper.entityToDtoInfo(specialCase);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
@@ -124,36 +113,39 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     @PreAuthorize("hasAuthority('U_SPECIAL_CASE')")
     public SpecialCaseDTO.Info update(Long id, SpecialCaseDTO.Update dto) {
-        if (dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
+        validate(dto.getAssessorNationalCode(), dto.getAssessNationalCode(), id);
+
+        SpecialCase specialcase = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        mapper.update(specialcase, dto);
+        try {
+            SpecialCase save = repository.save(specialcase);
+            return mapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+        }
+    }
+
+    private void validate(String assessorNationalCode, String assessNationalCode, long id) {
+        if (assessorNationalCode.equals(assessNationalCode)) {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and assessorNationalCode",
                     messageSource.getMessage("exception.nationalCode.duplicate", null, locale));
         }
-        List<SpecialCaseDTO.Info> byAssessNationalCodeAndStatusCode = getByAssessNationalCodeAndStatusCodeNotIn
-                (dto.getAssessNationalCode(), SPECIAL_ACTIVE, Collections.singletonList(id));
+        List<SpecialCaseDTO.Info> byAssessNationalCodeAndStatusCode = getByAssessNationalCodeAndStatusCodeNotIn(assessNationalCode, SPECIAL_ACTIVE, Collections.singletonList(id));
 
         if (!byAssessNationalCodeAndStatusCode.isEmpty())
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and active status is exist",
                     messageSource.getMessage("exception.nationalCode.active.status.duplicate", null, LocaleContextHolder.getLocale()));
-
-        SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        specialCaseMapper.update(specialcase, dto);
-        try {
-            SpecialCase save = specialCaseRepository.save(specialcase);
-            return specialCaseMapper.entityToDtoInfo(save);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
-        }
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('D_SPECIAL_CASE')")
     public void delete(Long id) {
-        SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        specialCaseRepository.delete(specialcase);
+        SpecialCase specialcase = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        repository.delete(specialcase);
     }
 
     @Override
@@ -182,7 +174,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     public void revokedExpireSpecialCase() {
         Long revokedStatusId = catalogService.getByCode(SPECIAL_REVOKED).getId();
-        List<Long> expireIds = specialCaseRepository.findAllExpireSpecialCase(DateUtil.todayDate(), revokedStatusId).stream().map(SpecialCase::getId).toList();
+        List<Long> expireIds = repository.findAllExpireSpecialCase(DateUtil.todayDate(), revokedStatusId).stream().map(SpecialCase::getId).toList();
         if (!expireIds.isEmpty()) {
             SpecialCaseDTO.ChangeAllStatusDTO changeAllStatusDTO = new SpecialCaseDTO.ChangeAllStatusDTO();
             changeAllStatusDTO.setSpecialCaseIds(expireIds);
@@ -198,7 +190,7 @@ public class SpecialCaseService implements ISpecialCaseService {
         try {
             Long id = changeStatusDTO.getId();
 
-            Optional<SpecialCase> optionalSpecialCase = specialCaseRepository.findById(id);
+            Optional<SpecialCase> optionalSpecialCase = repository.findById(id);
             if (optionalSpecialCase.isPresent()) {
                 SpecialCase specialCase = optionalSpecialCase.get();
 
@@ -209,7 +201,7 @@ public class SpecialCaseService implements ISpecialCaseService {
                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(SPECIAL_REVOKED);
                     optionalCatalog.ifPresent(catalog -> specialCase.setStatusCatalogId(catalog.getId()));
                 }
-                specialCaseRepository.save(specialCase);
+                repository.save(specialCase);
             }
 
             response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
