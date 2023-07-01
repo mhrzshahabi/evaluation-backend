@@ -22,10 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
@@ -54,6 +51,15 @@ public class SpecialCaseService implements ISpecialCaseService {
     public List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCode(String nationalCode, String statusCode) {
         List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalogId(nationalCode,
                 catalogService.getByCode(statusCode).getId());
+        return specialCaseMapper.entityToDtoInfoList(specialCases);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_SPECIAL_CASE')")
+    public List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCodeNotIn(String nationalCode, String statusCode, List<Long> id) {
+        List<SpecialCase> specialCases = specialCaseRepository.findByAssessNationalCodeAndStatusCatalogIdAndIdNotIn(nationalCode,
+                catalogService.getByCode(statusCode).getId(), id);
         return specialCaseMapper.entityToDtoInfoList(specialCases);
     }
 
@@ -95,6 +101,13 @@ public class SpecialCaseService implements ISpecialCaseService {
                     "assessNationalCode and assessorNationalCode",
                     messageSource.getMessage("exception.nationalCode.duplicate", null, locale));
         }
+        List<SpecialCaseDTO.Info> byAssessNationalCodeAndStatusCode = getByAssessNationalCodeAndStatusCode(dto.getAssessNationalCode(), SPECIAL_ACTIVE);
+
+        if (!byAssessNationalCodeAndStatusCode.isEmpty())
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
+                    "assessNationalCode and active status is exist",
+                    messageSource.getMessage("exception.nationalCode.active.status.duplicate", null, LocaleContextHolder.getLocale()));
+
         SpecialCase specialCase = specialCaseMapper.dtoCreateToEntity(dto);
         try {
             specialCase.setStatusCatalogId(catalogService.getByCode(SPECIAL_INITIAL_REGISTRATION).getId());
@@ -115,6 +128,14 @@ public class SpecialCaseService implements ISpecialCaseService {
                     "assessNationalCode and assessorNationalCode",
                     messageSource.getMessage("exception.nationalCode.duplicate", null, locale));
         }
+        List<SpecialCaseDTO.Info> byAssessNationalCodeAndStatusCode = getByAssessNationalCodeAndStatusCodeNotIn
+                (dto.getAssessNationalCode(), SPECIAL_ACTIVE, Collections.singletonList(id));
+
+        if (!byAssessNationalCodeAndStatusCode.isEmpty())
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
+                    "assessNationalCode and active status is exist",
+                    messageSource.getMessage("exception.nationalCode.active.status.duplicate", null, LocaleContextHolder.getLocale()));
+
         SpecialCase specialcase = specialCaseRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         specialCaseMapper.update(specialcase, dto);
         try {
