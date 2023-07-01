@@ -115,9 +115,10 @@ public class EvaluationService implements IEvaluationService {
         List<EvaluationDTO.Info> evaluationInfo = new ArrayList<>();
         List<Catalog> methodTypes = catalogRepository.findAllByCodeIn(List.of("Special-case", "Organizational-chart"));
         Catalog catalogStatus = catalogRepository.findByCode("Initial-registration").orElse(null);
-        List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
+
         List<Object> specialCaseRevoked = new ArrayList<>();
         for (EvaluationDTO.CreateList evaluationCreate : dto) {
+            List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
             Evaluation evaluation = new Evaluation();
             evaluation.setStatusCatalogId(catalogStatus.getId());
             evaluation.setEvaluationPeriodId(evaluationCreate.getEvaluationPeriodId());
