@@ -115,6 +115,8 @@ public class EvaluationService implements IEvaluationService {
         List<EvaluationDTO.Info> evaluationInfo = new ArrayList<>();
         List<Catalog> methodTypes = catalogRepository.findAllByCodeIn(List.of("Special-case", "Organizational-chart"));
         Catalog catalogStatus = catalogRepository.findByCode("Initial-registration").orElse(null);
+        List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
+        List<Object> specialCaseRevoked = new ArrayList<>();
         for (EvaluationDTO.CreateList evaluationCreate : dto) {
             Evaluation evaluation = new Evaluation();
             evaluation.setStatusCatalogId(catalogStatus.getId());
@@ -125,20 +127,22 @@ public class EvaluationService implements IEvaluationService {
             if (!evaluationList.isEmpty())
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
 
-            validateSpecialCase(methodTypes, evaluationCreate, evaluation, orgTreeInfo);
+            validateSpecialCase(methodTypes, specialCaseInfos, specialCaseRevoked, evaluationCreate, evaluation, orgTreeInfo);
+
             evaluation = repository.save(evaluation);
             evaluationInfo.add(mapper.entityToDtoInfo(evaluation));
         }
+        revokedSpecialCase(specialCaseRevoked);
         return evaluationInfo;
     }
 
-    private void validateSpecialCase(List<Catalog> methodTypes, EvaluationDTO.CreateList evaluationCreate, Evaluation evaluation, OrganizationTreeDTO.InfoTree orgTreeInfo) {
+    private void validateSpecialCase(List<Catalog> methodTypes, List<SpecialCaseDTO.Info> specialCaseInfos, List<Object>
+            specialCaseRevoked, EvaluationDTO.CreateList evaluationCreate, Evaluation evaluation, OrganizationTreeDTO.InfoTree orgTreeInfo) {
+
         List<SpecialCaseDTO.Info> byAssessNationalCode = specialCaseService.
                 getByAssessNationalCodeAndStatusCode(orgTreeInfo.getNationalCode(), SPECIAL_ACTIVE);
-        List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
-        List<Object> specialCaseRevoked = new ArrayList<>();
+
         SpecialCaseDTO.Info scInfo = getSpecialCaseInfo(evaluationCreate, byAssessNationalCode, specialCaseInfos, specialCaseRevoked);
-        revokedSpecialCase(specialCaseRevoked);
         setSpecialCaseInfo(methodTypes, evaluationCreate, evaluation, orgTreeInfo, scInfo);
     }
 
@@ -183,7 +187,7 @@ public class EvaluationService implements IEvaluationService {
 
         if (!byAssessNationalCode.isEmpty()) {
             byAssessNationalCode.forEach(specialCase -> {
-                if (specialCase.getAssessPostCode().equals(evaluationCreate.getPostCode()))
+                if (specialCase.getAssessRealPostCode().equals(evaluationCreate.getPostCode()))
                     specialCaseInfos.add(specialCase);
                 else
                     specialCaseRevoked.add(specialCase);
