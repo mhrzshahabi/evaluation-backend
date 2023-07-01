@@ -262,7 +262,10 @@ public class EvaluationService implements IEvaluationService {
                             }
                             case "previous" -> {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
-                                    updateEvaluationItems(evaluation);
+                                    //   updateEvaluationItems(evaluation);
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(AWAITING);
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    repository.save(evaluation);
 
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
