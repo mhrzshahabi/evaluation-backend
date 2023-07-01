@@ -49,7 +49,7 @@ public class GroupType extends Auditable {
     @Column(name = "group_id")
     private Long groupId;
 
-    @Min(0)
+    @Min(1)
     @Max(100)
     @NotNull
     @Column(name = "n_weight")
