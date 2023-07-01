@@ -42,7 +42,7 @@ public class PostMeritComponent extends Auditable {
     @OneToMany(mappedBy = "postMeritComponent", fetch = FetchType.LAZY)
     private List<PostMeritInstance> postMeritInstanceList;
 
-    @Min(0)
+    @Min(1)
     @Max(100)
     @NotNull
     @Column(name = "n_weight")
