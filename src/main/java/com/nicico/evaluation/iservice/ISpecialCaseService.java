@@ -12,6 +12,8 @@ public interface ISpecialCaseService {
 
     List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCode(String nationalCode, String statusCode);
 
+    List<SpecialCaseDTO.Info> getByAssessNationalCodeAndStatusCodeNotIn(String nationalCode, String statusCode, List<Long> id);
+
     SpecialCaseDTO.SpecResponse list(int count, int startIndex);
 
     SearchDTO.SearchRs<SpecialCaseDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
