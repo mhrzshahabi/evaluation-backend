@@ -19,7 +19,7 @@ public abstract class PostMeritComponentDTO {
     private String groupPostCode;
     @NotNull
     private Long meritComponentId;
-    @Min(value = 0, message = " وزن باید عددی بین صفر تا 100 باشد")
+    @Min(value = 1, message = " وزن باید عددی بین یک تا 100 باشد")
     @Max(value = 100, message = " وزن باید عددی بین صفر تا 100 باشد")
     @NotNull
     private Long weight;
