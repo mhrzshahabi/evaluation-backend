@@ -34,6 +34,7 @@ public abstract class PostMeritInstanceDTO {
     public static class InstanceTupleDTO {
 
         private Long id;
+        private String code;
         private String title;
     }
 
