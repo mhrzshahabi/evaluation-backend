@@ -2,6 +2,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -18,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -173,6 +175,18 @@ public class SpecialCaseService implements ISpecialCaseService {
             response.setMessage(messageSource.getMessage("exception.un-managed", null, locale));
             response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
             return response;
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void revokedExpireSpecialCase() {
+        Long revokedStatusId = catalogService.getByCode(SPECIAL_REVOKED).getId();
+        List<Long> expireIds = specialCaseRepository.findAllExpireSpecialCase(DateUtil.todayDate(), revokedStatusId).stream().map(SpecialCase::getId).toList();
+        if (!expireIds.isEmpty()) {
+            SpecialCaseDTO.ChangeAllStatusDTO changeAllStatusDTO = new SpecialCaseDTO.ChangeAllStatusDTO();
+            changeAllStatusDTO.setSpecialCaseIds(expireIds);
+            changeAllStatus(changeAllStatusDTO);
         }
     }
 
