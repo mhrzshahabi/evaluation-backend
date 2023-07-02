@@ -100,6 +100,7 @@ public class KPITypeController {
                                                           @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                           @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        request.setSortBy("-code");
         SearchDTO.SearchRs<KPITypeDTO.Info> data = service.search(request);
         final KPITypeDTO.Response response = new KPITypeDTO.Response();
         final KPITypeDTO.SpecResponse specRs = new KPITypeDTO.SpecResponse();

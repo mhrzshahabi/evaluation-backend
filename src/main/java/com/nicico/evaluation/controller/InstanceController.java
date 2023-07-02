@@ -118,6 +118,7 @@ public class InstanceController {
                                                            @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                            @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        request.setSortBy("-code");
         SearchDTO.SearchRs<InstanceDTO.Info> data = service.search(request);
         final InstanceDTO.Response response = new InstanceDTO.Response();
         final InstanceDTO.SpecResponse specRs = new InstanceDTO.SpecResponse();
