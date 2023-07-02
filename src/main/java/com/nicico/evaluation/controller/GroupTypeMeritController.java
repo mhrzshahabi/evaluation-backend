@@ -134,7 +134,7 @@ public class GroupTypeMeritController {
 
     /**
      * @param criteria is the key value pair for criteria
-     * @return byte[] is the excel of group-type-meritInfo list that match the criteria
+     * @return byte[] is the Excel of group-type-meritInfo list that match the criteria
      */
     @PostMapping(value = "/export-excel")
     public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
