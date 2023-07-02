@@ -97,8 +97,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     @PreAuthorize("hasAuthority('C_SPECIAL_CASE')")
     public SpecialCaseDTO.Info create(SpecialCaseDTO.Create dto) {
-        validate(dto.getAssessorNationalCode(), dto.getAssessNationalCode(), 0L);
-
+        validate(dto, 0L);
         SpecialCase specialCase = mapper.dtoCreateToEntity(dto);
         try {
             specialCase.setStatusCatalogId(catalogService.getByCode(SPECIAL_INITIAL_REGISTRATION).getId());
@@ -113,8 +112,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     @Transactional
     @PreAuthorize("hasAuthority('U_SPECIAL_CASE')")
     public SpecialCaseDTO.Info update(Long id, SpecialCaseDTO.Update dto) {
-        validate(dto.getAssessorNationalCode(), dto.getAssessNationalCode(), id);
-
+        validate(dto, id);
         SpecialCase specialcase = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(specialcase, dto);
         try {
@@ -125,19 +123,26 @@ public class SpecialCaseService implements ISpecialCaseService {
         }
     }
 
-    private void validate(String assessorNationalCode, String assessNationalCode, long id) {
-        if (assessorNationalCode.equals(assessNationalCode)) {
+    private void validate(SpecialCaseDTO dto, long id) {
+
+        if (dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and assessorNationalCode",
                     messageSource.getMessage("exception.nationalCode.duplicate", null, locale));
         }
-        List<SpecialCaseDTO.Info> byAssessNationalCodeAndStatusCode = getByAssessNationalCodeAndStatusCodeNotIn(assessNationalCode, SPECIAL_ACTIVE, Collections.singletonList(id));
+        List<SpecialCaseDTO.Info> byAssessNationalCodeAndStatusCode = getByAssessNationalCodeAndStatusCodeNotIn(dto.getAssessNationalCode(), SPECIAL_ACTIVE, Collections.singletonList(id));
 
         if (!byAssessNationalCodeAndStatusCode.isEmpty())
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and active status is exist",
                     messageSource.getMessage("exception.nationalCode.active.status.duplicate", null, LocaleContextHolder.getLocale()));
+
+        if (dto.getStartDate().after(dto.getEndDate())) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
+                    "stareDate",
+                    messageSource.getMessage("exception.start.date.after.end.date", null, LocaleContextHolder.getLocale()));
+        }
     }
 
     @Override
