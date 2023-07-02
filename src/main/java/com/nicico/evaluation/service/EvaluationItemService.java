@@ -182,7 +182,7 @@ public class EvaluationItemService implements IEvaluationItemService {
             EvaluationItem save = repository.save(evaluationItem);
             EvaluationItemDTO.Create evaluationDto = new EvaluationItemDTO.Create();
             evaluationDto.setEvaluationId(evaluationItem.getEvaluation().getId());
-            evaluationDto.setAverageScore(evaluationDto.getAverageScore());
+            evaluationDto.setAverageScore(dto.getAverageScore());
             evaluationDto.setStatus(Objects.nonNull(dto.getStatus()) ? dto.getStatus() : "next");
             updateEvaluation(evaluationDto);
             return mapper.entityToDtoInfo(save);
