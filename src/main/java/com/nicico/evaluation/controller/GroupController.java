@@ -105,6 +105,7 @@ public class GroupController {
                                                         @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                         @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        request.setSortBy("-code");
         SearchDTO.SearchRs<GroupDTO.Info> data = service.search(request);
         final GroupDTO.Response response = new GroupDTO.Response();
         final GroupDTO.SpecResponse specRs = new GroupDTO.SpecResponse();
