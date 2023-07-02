@@ -102,6 +102,7 @@ public class MeritComponentController {
                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        request.setSortBy("-code");
         SearchDTO.SearchRs<MeritComponentDTO.Info> data = service.search(request);
         final MeritComponentDTO.Response response = new MeritComponentDTO.Response();
         final MeritComponentDTO.SpecResponse specRs = new MeritComponentDTO.SpecResponse();
