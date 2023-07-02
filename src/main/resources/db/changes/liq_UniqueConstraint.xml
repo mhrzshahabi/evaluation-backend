@@ -33,5 +33,13 @@
                              constraintName="uc_tbl_instance_code"
                              tableName="tbl_instance"/>
     </changeSet>
+    <changeSet author="semami" id="1688280121">
+        <dropUniqueConstraint constraintName="uc_tbl_merit_component_title_code"
+                              tableName="tbl_merit_component"
+                              uniqueColumns="c_title, c_code"/>
+        <addUniqueConstraint columnNames="c_code"
+                             constraintName="uc_tbl_merit_component_code"
+                             tableName="tbl_merit_component"/>
+    </changeSet>
 
 </databaseChangeLog>
