@@ -88,6 +88,16 @@ public class PostMeritInstanceService implements IPostMeritInstanceService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('R_POST_MERIT_INSTANCE')")
+    public List<PostMeritInstanceDTO.Info> findAllByPostMeritComponentId(Long postMeritId) {
+
+        Set<PostMeritInstance> allByPostMeritComponentId = repository.findAllByPostMeritComponentId(postMeritId);
+        List<PostMeritInstance> postMeritInstances = allByPostMeritComponentId.stream().toList();
+        return mapper.entityToDtoInfoList(postMeritInstances);
+    }
+
+    @Override
+    @Transactional
     @PreAuthorize("hasAuthority('C_POST_MERIT_INSTANCE')")
     public Set<PostMeritInstanceDTO.Info> create(PostMeritInstanceDTO.CreateAll dto) {
         Set<PostMeritInstanceDTO.Create> createDtoList = new HashSet<>();

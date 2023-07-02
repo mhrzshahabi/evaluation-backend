@@ -1,22 +1,28 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.InstanceDTO;
+import com.nicico.evaluation.dto.PostMeritInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IInstanceService;
+import com.nicico.evaluation.iservice.IPostMeritInstanceService;
 import com.nicico.evaluation.mapper.InstanceMapper;
 import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.repository.InstanceRepository;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,6 +32,12 @@ public class InstanceService implements IInstanceService {
     private final InstanceMapper mapper;
     private final InstanceRepository repository;
     private final PageableMapper pageableMapper;
+    private IPostMeritInstanceService postMeritInstanceService;
+
+    @Autowired
+    public void setPostMeritInstanceService(@Lazy IPostMeritInstanceService postMeritInstanceService) {
+        this.postMeritInstanceService = postMeritInstanceService;
+    }
 
     @Override
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
@@ -97,9 +109,36 @@ public class InstanceService implements IInstanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_INSTANCE')")
+    public SearchDTO.SearchRs<InstanceDTO.Info> searchByPostMeritId(SearchDTO.SearchRq request, Long postMeritId) throws IllegalAccessException, NoSuchFieldException {
+
+        List<Long> instanceIds = postMeritInstanceService.findAllByPostMeritComponentId(postMeritId).stream()
+                .map(PostMeritInstanceDTO.Info::getInstance).map(PostMeritInstanceDTO.InstanceTupleDTO::getId).toList();
+
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq idCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.notInSet)
+                .setFieldName("id")
+                .setValue(instanceIds);
+
+        criteriaRqList.add(idCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+
+    @Override
     public InstanceDTO.Info getByCode(String code) {
         Instance instance = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "Instance", "مصداق یافت نشد"));
         return mapper.entityToDtoInfo(instance);
     }
+
 
 }
