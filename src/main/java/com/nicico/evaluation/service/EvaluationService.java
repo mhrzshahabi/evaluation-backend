@@ -271,6 +271,7 @@ public class EvaluationService implements IEvaluationService {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     deleteItems(evaluation);
+                                    evaluation.setAverageScore(null);
                                     repository.save(evaluation);
                                 }
                             }
