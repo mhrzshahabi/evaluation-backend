@@ -18,6 +18,8 @@ public interface IPostMeritInstanceService {
 
     PostMeritInstanceDTO.Info create(PostMeritInstanceDTO.Create dto);
 
+    List<PostMeritInstanceDTO.Info> findAllByPostMeritComponentId(Long postMeritId);
+
     Set<PostMeritInstanceDTO.Info> create(PostMeritInstanceDTO.CreateAll dto);
 
     BaseResponse batchCreate(PostMeritInstanceDTO.BatchCreate dto);
