@@ -44,6 +44,7 @@ public class BatchDetailService implements IBatchDetailService {
     private final IPostMeritInstanceService postMeritInstanceService;
     private final ISpecialCaseService specialCaseService;
     private final IInstanceService instanceService;
+    private final IMeritComponentService meritComponentService;
 
     @Autowired
     public void setBatchService(@Lazy IBatchService batchService) {
@@ -214,6 +215,20 @@ public class BatchDetailService implements IBatchDetailService {
                     BaseResponse response = instanceService.batchCreate(batchCreate);
 
                     String description = "کد مصداق : " + batchCreate.getCode() + " عنوان مصداق: " + batchCreate.getTitle();
+                    if (response.getStatus() == 200)
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
+                    else
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
+                } catch (JsonProcessingException e) {
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
+                }
+            });
+            case BATCH_CREATE_MERIT_COMPONENT_EXCEL -> batchDetailList.forEach(detail -> {
+                try {
+                    MeritComponentDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), MeritComponentDTO.BatchCreate.class);
+                    BaseResponse response = meritComponentService.batchCreate(batchCreate);
+
+                    String description = "کد مولفه شایستگی : " + batchCreate.getCode() + " عنوان مولفه شایستگی: " + batchCreate.getTitle();
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
                     else
