@@ -42,9 +42,7 @@ public class InstanceGroupTypeMeritDTO {
     public static class BatchCreate {
 
         @NotNull
-        private String groupCode;
-        @NotNull
-        private String kpiTypeCode;
+        private String groupTypeCode;
         @NotNull
         private String meritComponentCode;
         @NotNull

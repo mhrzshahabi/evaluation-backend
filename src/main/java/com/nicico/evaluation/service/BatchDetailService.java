@@ -8,6 +8,7 @@ import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.BatchDetailMapper;
+import com.nicico.evaluation.mapper.InstanceGroupTypeMeritMapperImpl;
 import com.nicico.evaluation.model.BatchDetail;
 import com.nicico.evaluation.repository.BatchDetailRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -45,6 +46,7 @@ public class BatchDetailService implements IBatchDetailService {
     private final ISpecialCaseService specialCaseService;
     private final IInstanceService instanceService;
     private final IMeritComponentService meritComponentService;
+    private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
 
     @Autowired
     public void setBatchService(@Lazy IBatchService batchService) {
@@ -229,6 +231,21 @@ public class BatchDetailService implements IBatchDetailService {
                     BaseResponse response = meritComponentService.batchCreate(batchCreate);
 
                     String description = "کد مولفه شایستگی : " + batchCreate.getCode() + " عنوان مولفه شایستگی: " + batchCreate.getTitle();
+                    if (response.getStatus() == 200)
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
+                    else
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
+                } catch (JsonProcessingException e) {
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
+                }
+            });
+            case BATCH_CREATE_INSTANCE_GROUP_TYPE_MERIT_EXCEL -> batchDetailList.forEach(detail -> {
+                try {
+                    InstanceGroupTypeMeritDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), InstanceGroupTypeMeritDTO.BatchCreate.class);
+                    BaseResponse response = instanceGroupTypeMeritService.batchCreate(batchCreate);
+
+                    String description = "کد مولفه شایستگی : " + batchCreate.getMeritComponentCode() + " کد گروه - نوع: "
+                            + batchCreate.getGroupTypeCode() + " کد مصداق: " + batchCreate.getInstanceCode();
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
                     else
