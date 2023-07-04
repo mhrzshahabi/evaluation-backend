@@ -12,12 +12,14 @@ import com.nicico.evaluation.iservice.IPostMeritInstanceService;
 import com.nicico.evaluation.mapper.InstanceMapper;
 import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.repository.InstanceRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +83,19 @@ public class InstanceService implements IInstanceService {
         Instance instance = mapper.dtoCreateToEntity(dto);
         instance = repository.save(instance);
         return mapper.entityToDtoInfo(instance);
+    }
+
+    @Override
+    public BaseResponse batchCreate(InstanceDTO.Create dto) {
+        BaseResponse response = new BaseResponse();
+        try {
+            create(dto);
+            response.setStatus(HttpStatus.OK.value());
+        } catch (Exception exception) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
+        }
+        return response;
     }
 
     @Override

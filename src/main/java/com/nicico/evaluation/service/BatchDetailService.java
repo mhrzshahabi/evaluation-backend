@@ -43,6 +43,8 @@ public class BatchDetailService implements IBatchDetailService {
     private final BatchDetailRepository repository;
     private final IPostMeritInstanceService postMeritInstanceService;
     private final ISpecialCaseService specialCaseService;
+    private final IInstanceService instanceService;
+    private final IMeritComponentService meritComponentService;
 
     @Autowired
     public void setBatchService(@Lazy IBatchService batchService) {
@@ -167,7 +169,7 @@ public class BatchDetailService implements IBatchDetailService {
         Long failCatalogId = catalogService.getByCode("Failed").getId();
         List<BatchDetail> batchDetailList = repository.findAllByBatchId(dto.getBatchId());
         switch (dto.getServiceType()) {
-            case BATCHCREATE_KPITYPE_EXCEL -> batchDetailList.forEach(detail -> {
+            case BATCH_CREATE_KPITYPE_EXCEL -> batchDetailList.forEach(detail -> {
                 try {
                     KPITypeDTO.Create batchCreate = objectMapper.readValue(detail.getInputDTO(), KPITypeDTO.Create.class);
                     BaseResponse response = kpiTypeService.batchCreate(batchCreate);
@@ -180,7 +182,7 @@ public class BatchDetailService implements IBatchDetailService {
                     updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
                 }
             });
-            case BATCHCREATE_POSTMERITINSTANCE_EXCEL -> batchDetailList.forEach(detail -> {
+            case BATCH_CREATE_POST_MERIT_INSTANCE_EXCEL -> batchDetailList.forEach(detail -> {
                 try {
                     PostMeritInstanceDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), PostMeritInstanceDTO.BatchCreate.class);
                     BaseResponse response = postMeritInstanceService.batchCreate(batchCreate);
@@ -193,12 +195,40 @@ public class BatchDetailService implements IBatchDetailService {
                     updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
                 }
             });
-            case BATCHCREATE_CHANGESTATUS_SPECIALCASE -> batchDetailList.forEach(detail -> {
+            case BATCH_CREATE_CHANGE_STATUS_SPECIAL_CASE -> batchDetailList.forEach(detail -> {
                 try {
                     SpecialCaseDTO.ChangeStatusDTO batchCreate = objectMapper.readValue(detail.getInputDTO(), SpecialCaseDTO.ChangeStatusDTO.class);
                     BaseResponse response = specialCaseService.changeStatus(batchCreate);
 
                     String description = " کدپست : " + batchCreate.getAssessPostCode() + " نام ارزیاب شونده: " + batchCreate.getAssessFullName();
+                    if (response.getStatus() == 200)
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
+                    else
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
+                } catch (JsonProcessingException e) {
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
+                }
+            });
+            case BATCH_CREATE_INSTANCE_EXCEL -> batchDetailList.forEach(detail -> {
+                try {
+                    InstanceDTO.Create batchCreate = objectMapper.readValue(detail.getInputDTO(), InstanceDTO.Create.class);
+                    BaseResponse response = instanceService.batchCreate(batchCreate);
+
+                    String description = "کد مصداق : " + batchCreate.getCode() + " عنوان مصداق: " + batchCreate.getTitle();
+                    if (response.getStatus() == 200)
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
+                    else
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
+                } catch (JsonProcessingException e) {
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
+                }
+            });
+            case BATCH_CREATE_MERIT_COMPONENT_EXCEL -> batchDetailList.forEach(detail -> {
+                try {
+                    MeritComponentDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), MeritComponentDTO.BatchCreate.class);
+                    BaseResponse response = meritComponentService.batchCreate(batchCreate);
+
+                    String description = "کد مولفه شایستگی : " + batchCreate.getCode() + " عنوان مولفه شایستگی: " + batchCreate.getTitle();
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
                     else
