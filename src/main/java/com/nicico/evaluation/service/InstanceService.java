@@ -91,6 +91,7 @@ public class InstanceService implements IInstanceService {
         BaseResponse response = new BaseResponse();
         try {
             create(dto);
+            response.setStatus(HttpStatus.OK.value());
         } catch (Exception exception) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setMessage(exception.getMessage());
