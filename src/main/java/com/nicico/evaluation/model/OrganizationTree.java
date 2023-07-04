@@ -92,4 +92,8 @@ public class OrganizationTree {
     private String lastNameParent;
     @Column(name = "NATIONAL_CODE_PARENT")
     private String nationalCodeParent;
+    @Column(name = "POSTGRADE_CODE")
+    private String postGradeCode;
+    @Column(name = "POSTGRADE_TITLE")
+    private String postGradeTitle;
 }

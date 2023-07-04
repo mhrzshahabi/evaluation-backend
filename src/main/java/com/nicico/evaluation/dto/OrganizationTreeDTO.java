@@ -56,6 +56,8 @@ public class OrganizationTreeDTO {
         private String firstNameParent;
         private String lastNameParent;
         private String nationalCodeParent;
+        private String postGradeCode;
+        private String postGradeTitle;
     }
 
     @Getter
@@ -75,6 +77,7 @@ public class OrganizationTreeDTO {
         private Date endDatePost;
         private String postParentTitle;
         private String postParentCode;
+        private String postGradeTitle;
     }
 
     @Getter
@@ -95,6 +98,7 @@ public class OrganizationTreeDTO {
         private String firstNameParent;
         private String fullName;
         private Long orgStructureId;
+        private String postGradeTitle;
     }
 
     @Getter
