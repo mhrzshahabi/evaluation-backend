@@ -3,6 +3,7 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public interface IMeritComponentService {
     MeritComponentDTO.SpecResponse list(int count, int startIndex);
 
     MeritComponentDTO.Info create(MeritComponentDTO.Create dto);
+
+    BaseResponse batchCreate(MeritComponentDTO.BatchCreate dto);
 
     MeritComponentDTO.Info update(Long id, MeritComponentDTO.Update dto);
 

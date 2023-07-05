@@ -12,12 +12,16 @@ import com.nicico.evaluation.iservice.IPostMeritInstanceService;
 import com.nicico.evaluation.mapper.InstanceMapper;
 import com.nicico.evaluation.model.Instance;
 import com.nicico.evaluation.repository.InstanceRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +37,7 @@ public class InstanceService implements IInstanceService {
     private final InstanceRepository repository;
     private final PageableMapper pageableMapper;
     private IPostMeritInstanceService postMeritInstanceService;
+    private final ResourceBundleMessageSource messageSource;
 
     @Autowired
     public void setPostMeritInstanceService(@Lazy IPostMeritInstanceService postMeritInstanceService) {
@@ -81,6 +86,19 @@ public class InstanceService implements IInstanceService {
         Instance instance = mapper.dtoCreateToEntity(dto);
         instance = repository.save(instance);
         return mapper.entityToDtoInfo(instance);
+    }
+
+    @Override
+    public BaseResponse batchCreate(InstanceDTO.Create dto) {
+        BaseResponse response = new BaseResponse();
+        try {
+            create(dto);
+            response.setStatus(HttpStatus.OK.value());
+        } catch (Exception exception) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
+        }
+        return response;
     }
 
     @Override
@@ -136,7 +154,9 @@ public class InstanceService implements IInstanceService {
 
     @Override
     public InstanceDTO.Info getByCode(String code) {
-        Instance instance = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "Instance", "مصداق یافت نشد"));
+        Instance instance = repository.findFirstByCode(code).orElseThrow(() ->
+                new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "Instance",
+                        messageSource.getMessage("exception.not.exist.instance", new Object[]{code}, LocaleContextHolder.getLocale())));
         return mapper.entityToDtoInfo(instance);
     }
 

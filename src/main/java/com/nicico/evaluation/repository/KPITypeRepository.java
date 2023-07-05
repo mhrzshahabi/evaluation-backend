@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface KPITypeRepository extends JpaRepository<KPIType, Long>, JpaSpecificationExecutor<KPIType> {}
+public interface KPITypeRepository extends JpaRepository<KPIType, Long>, JpaSpecificationExecutor<KPIType> {
+    KPIType findAllByCode(String code);
+}

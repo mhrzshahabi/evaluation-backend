@@ -73,7 +73,7 @@ public abstract class MeritComponentDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("KpiTypeTupleDTORq")
-    public static class KpiTypeTupleDTO   {
+    public static class KpiTypeTupleDTO {
 
         private String code;
         private String title;
@@ -108,6 +108,15 @@ public abstract class MeritComponentDTO {
         private String title;
         private String kpiTypeTitle;
         private String status;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("MeritComponentBatchCreate")
+    public static class BatchCreate {
+        private String code;
+        private String title;
+        private String kpiTypeCode;
     }
 
 }

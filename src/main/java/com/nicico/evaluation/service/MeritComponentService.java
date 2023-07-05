@@ -3,24 +3,32 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.FilterDTO;
+import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IMeritComponentTypeService;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.repository.MeritComponentRepository;
+import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +38,9 @@ public class MeritComponentService implements IMeritComponentService {
     private final PageableMapper pageableMapper;
     private final MeritComponentRepository repository;
     private final IMeritComponentTypeService meritComponentTypeService;
+    private final IKPITypeService typeService;
+    private final ResourceBundleMessageSource messageSource;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -72,6 +83,29 @@ public class MeritComponentService implements IMeritComponentService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    @Override
+    public BaseResponse batchCreate(MeritComponentDTO.BatchCreate dto) {
+        BaseResponse response = new BaseResponse();
+        try {
+            KPITypeDTO.Info kpiType = typeService.getByCode(dto.getKpiTypeCode());
+            if (Objects.nonNull(kpiType)) {
+                MeritComponentDTO.Create createDto = new MeritComponentDTO.Create();
+                createDto.setKpiTypeId(Collections.singletonList(kpiType.getId()));
+                createDto.setCode(dto.getCode());
+                createDto.setTitle(dto.getTitle());
+                create(createDto);
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.setMessage(messageSource.getMessage("exception.not.exist.kpi-type", new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
+            }
+        } catch (Exception exception) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
+        }
+        return response;
     }
 
     @Override
@@ -121,7 +155,10 @@ public class MeritComponentService implements IMeritComponentService {
 
     @Override
     public MeritComponentDTO.Info getByCode(String code) {
-        MeritComponent meritComponent = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        MeritComponent meritComponent = repository.findFirstByCode(code).orElseThrow(() ->
+                new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "meritComponent",
+                        messageSource.getMessage("exception.not.exist.merit-component", new Object[]{code}, LocaleContextHolder.getLocale())));
+        ;
         return mapper.entityToDtoInfo(meritComponent);
     }
 

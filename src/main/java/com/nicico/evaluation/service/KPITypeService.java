@@ -1,7 +1,7 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IKPITypeService;
@@ -39,6 +39,14 @@ public class KPITypeService implements IKPITypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_KPI_TYPE')")
+    public KPITypeDTO.Info getByCode(String code) {
+        KPIType kpiType = repository.findAllByCode(code);
+        return mapper.entityToDtoInfo(kpiType);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_KPI_TYPE')")
     public List<KPITypeDTO.Info> findAll() {
         List<KPIType> kpiType = repository.findAll();
         return mapper.entityToDtoInfoList(kpiType);
@@ -69,7 +77,7 @@ public class KPITypeService implements IKPITypeService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_KPI_TYPE')")
     public SearchDTO.SearchRs<KPITypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository,  mapper::entityToDtoInfo, request);
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
 
     }
 

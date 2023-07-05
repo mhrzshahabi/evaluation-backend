@@ -176,7 +176,7 @@ public class EvaluationService implements IEvaluationService {
         if (!specialCaseRevoked.isEmpty()) {
             BatchDTO.Create batchDTO = new BatchDTO.Create();
             batchDTO.setInputDetails(specialCaseRevoked);
-            Catalog titleCatalog = catalogRepository.findByCode(BATCHCREATE_CHANGESTATUS_SPECIALCASE).orElse(null);
+            Catalog titleCatalog = catalogRepository.findByCode(BATCH_CREATE_CHANGE_STATUS_SPECIAL_CASE).orElse(null);
             batchDTO.setTitleCatalogId(Objects.nonNull(titleCatalog) ? titleCatalog.getId() : null);
 
             batchService.create(batchDTO);
