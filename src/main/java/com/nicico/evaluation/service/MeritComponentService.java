@@ -155,7 +155,10 @@ public class MeritComponentService implements IMeritComponentService {
 
     @Override
     public MeritComponentDTO.Info getByCode(String code) {
-        MeritComponent meritComponent = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        MeritComponent meritComponent = repository.findFirstByCode(code).orElseThrow(() ->
+                new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "meritComponent",
+                        messageSource.getMessage("exception.not.exist.merit-component", new Object[]{code}, LocaleContextHolder.getLocale())));
+        ;
         return mapper.entityToDtoInfo(meritComponent);
     }
 

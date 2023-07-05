@@ -43,6 +43,12 @@ public class GroupTypeService implements IGroupTypeService {
     }
 
     @Override
+    public GroupTypeDTO.Info getByCode(String code) {
+        GroupType groupType = repository.getByCode(code);
+        return mapper.entityToDtoInfo(groupType);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef) {

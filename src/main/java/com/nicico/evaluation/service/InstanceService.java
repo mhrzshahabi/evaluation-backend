@@ -17,6 +17,8 @@ import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,7 @@ public class InstanceService implements IInstanceService {
     private final InstanceRepository repository;
     private final PageableMapper pageableMapper;
     private IPostMeritInstanceService postMeritInstanceService;
+    private final ResourceBundleMessageSource messageSource;
 
     @Autowired
     public void setPostMeritInstanceService(@Lazy IPostMeritInstanceService postMeritInstanceService) {
@@ -151,7 +154,9 @@ public class InstanceService implements IInstanceService {
 
     @Override
     public InstanceDTO.Info getByCode(String code) {
-        Instance instance = repository.findFirstByCode(code).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "Instance", "مصداق یافت نشد"));
+        Instance instance = repository.findFirstByCode(code).orElseThrow(() ->
+                new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "Instance",
+                        messageSource.getMessage("exception.not.exist.instance", new Object[]{code}, LocaleContextHolder.getLocale())));
         return mapper.entityToDtoInfo(instance);
     }
 
