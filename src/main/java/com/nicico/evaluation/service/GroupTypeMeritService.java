@@ -154,7 +154,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست مولفه شایستگی گروه-نوع'");
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست مولفه شایستگی گروه-نوع");
         return new ExcelGenerator.ExcelDownload(body);
     }
 
