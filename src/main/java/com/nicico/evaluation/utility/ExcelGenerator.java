@@ -188,7 +188,7 @@ public class ExcelGenerator<T> {
         row.setHeight((short) 1500);
         createCell(row, 0, null, xssfHeaderCellStyle);
         Drawing drawing = sheet.createDrawingPatriarch();
-        insertImageToCell(workbook, "xlsx", dataFields.length, 1, drawing, "/image/header-logo.png");
+        insertImageToCell(workbook, "xlsx", 0, 0, dataFields.length, 1, drawing, "/image/header-logo.png");
     }
 
     private void writeSubFullHeader(String subFullHeader) {
@@ -259,7 +259,7 @@ public class ExcelGenerator<T> {
         }
     }
 
-    public void insertImageToCell(Workbook workbook, String fileType, int colNum, int rowNum, Drawing drawing,
+    public void insertImageToCell(Workbook workbook, String fileType, int colNum1, int rowNum1, int colNum2, int rowNum2, Drawing drawing,
                                   String imageName) throws IOException {
 
         InputStream is = this.getClass().getResourceAsStream(imageName);
@@ -273,12 +273,11 @@ public class ExcelGenerator<T> {
         } else {
             anchor = new XSSFClientAnchor();
         }
-        anchor.setCol1(0);
-        anchor.setRow1(0);
-        anchor.setCol2(colNum);
-        anchor.setRow2(rowNum);
+        anchor.setCol1(colNum1);
+        anchor.setRow1(rowNum1);
+        anchor.setCol2(colNum2);
+        anchor.setRow2(rowNum2);
         drawing.createPicture(anchor, inputImagePictureID);
-
     }
 
     public ByteArrayOutputStream getExcel() {
