@@ -5,7 +5,6 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.SensitiveEventPersonDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ISensitiveEventPersonService;
-import com.nicico.evaluation.iservice.ISensitiveEventsService;
 import com.nicico.evaluation.mapper.SensitiveEventPersonMapper;
 import com.nicico.evaluation.model.SensitiveEventPerson;
 import com.nicico.evaluation.repository.SensitiveEventPersonRepository;
@@ -29,7 +28,6 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
     private final SensitiveEventPersonMapper mapper;
     private final ResourceBundleMessageSource messageSource;
     private final SensitiveEventPersonRepository repository;
-    private final ISensitiveEventsService sensitiveEventsService;
 
     @Override
     @Transactional(readOnly = true)
