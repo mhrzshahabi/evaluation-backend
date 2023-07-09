@@ -15,21 +15,21 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class GroupPostMapper {
 
-      @Lazy
-      @Autowired
-      private IPostMeritComponentService postMeritComponentService;
+    @Lazy
+    @Autowired
+    private IPostMeritComponentService postMeritComponentService;
 
-      @Mappings({
-              @Mapping(target = "totalWeight", source = "groupPostCode", qualifiedByName = "getTotalComponentWeightByGroupPostCode")
-      })
-      public abstract GroupPostDTO.Info entityToDtoInfo(GroupPost entity);
+    @Mappings({
+            @Mapping(target = "totalWeight", source = "groupPostCode", qualifiedByName = "getTotalComponentWeightByGroupPostCode")
+    })
+    public abstract GroupPostDTO.Info entityToDtoInfo(GroupPost entity);
 
-      public abstract List<GroupPostDTO.Info> entityToDtoInfoList(List<GroupPost> entities);
+    public abstract List<GroupPostDTO.Info> entityToDtoInfoList(List<GroupPost> entities);
 
-      public abstract GroupPostDTO.Excel entityToDtoExcel(GroupPost entity);
+    public abstract GroupPostDTO.Excel entityToDtoExcel(GroupPost entity);
 
-      @Named("getTotalComponentWeightByGroupPostCode")
-      Long getTotalComponentWeightByGroupPostCode(String groupPostCode) {
-            return postMeritComponentService.getTotalWeight(groupPostCode);
-      }
+    @Named("getTotalComponentWeightByGroupPostCode")
+    Long getTotalComponentWeightByGroupPostCode(String groupPostCode) {
+        return postMeritComponentService.getTotalWeight(groupPostCode);
+    }
 }
