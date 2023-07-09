@@ -130,7 +130,7 @@ public class GroupTypeController {
     @PostMapping(value = "/spec-list/group-by")
     public ResponseEntity<GroupTypeDTO.SpecResponseByGroupBy> searchByGroupBy(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                               @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                                              @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
+                                                                              @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> data = service.searchByGroupBy(request);
         final GroupTypeDTO.ResponseByGroupBy response = new GroupTypeDTO.ResponseByGroupBy();

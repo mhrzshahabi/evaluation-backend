@@ -29,5 +29,5 @@ public interface IGroupTypeService {
 
     SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException, JsonProcessingException;
+    SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 }

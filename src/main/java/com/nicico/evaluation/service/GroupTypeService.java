@@ -21,11 +21,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.nicico.evaluation.utility.CriteriaUtil.makeCriteria;
 
@@ -168,12 +166,12 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException, JsonProcessingException {
+    public SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
 
         if (Objects.nonNull(request.getCriteria()) && Objects.nonNull(request.getCriteria().getCriteria())) {
-            SearchDTO.CriteriaRq criteriaRqs = request.getCriteria().getCriteria().stream().filter(q -> q.getFieldName().equals("groupName")).findFirst().get();
-            if (Objects.nonNull(criteriaRqs)) {
-                SearchDTO.CriteriaRq criteriaRq = makeCriteria("group.title", criteriaRqs.getValue(), EOperator.contains, new ArrayList<>());
+            Optional<SearchDTO.CriteriaRq> criteriaRqs = request.getCriteria().getCriteria().stream().filter(q -> q.getFieldName().equals("groupName")).findFirst();
+            if (criteriaRqs.isPresent()) {
+                SearchDTO.CriteriaRq criteriaRq = makeCriteria("group.title", criteriaRqs.get().getValue(), EOperator.contains, new ArrayList<>());
                 request.setCriteria(criteriaRq);
             }
         }
