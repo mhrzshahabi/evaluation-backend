@@ -76,13 +76,10 @@ public class MeritComponentService implements IMeritComponentService {
     @PreAuthorize("hasAuthority('C_MERIT_COMPONENT')")
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
-        try {
-            MeritComponent meritComponentAdd = repository.save(meritComponent);
-            createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
-            return mapper.entityToDtoInfo(meritComponentAdd);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-        }
+        MeritComponent meritComponentAdd = repository.save(meritComponent);
+        createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
+        return mapper.entityToDtoInfo(meritComponentAdd);
+
     }
 
     @Override
@@ -103,7 +100,10 @@ public class MeritComponentService implements IMeritComponentService {
             }
         } catch (Exception exception) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.setMessage(exception.getMessage());
+            if (exception.getMessage().contains("UC_TBL_MERIT_COMPONENT_CODE"))
+                response.setMessage(messageSource.getMessage("exception.duplicated.merit-component", new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
+            else
+                response.setMessage(exception.getMessage());
         }
         return response;
     }
