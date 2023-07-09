@@ -1,6 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
@@ -12,7 +11,6 @@ import com.nicico.evaluation.mapper.GroupTypeMapper;
 import com.nicico.evaluation.model.GroupType;
 import com.nicico.evaluation.repository.GroupTypeRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -23,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.nicico.evaluation.utility.CriteriaUtil.makeCriteria;
 
@@ -186,12 +183,10 @@ public class GroupTypeService implements IGroupTypeService {
             GroupTypeDTO.GroupByInfo groupByInfo = new GroupTypeDTO.GroupByInfo();
             groupByInfo.setGroupName(gType.get(0).getGroup().getTitle());
             List<GroupTypeDTO.Info> data = new ArrayList<>();
-            List<GroupTypeDTO.Info> detailsInfo = new ArrayList<>();
             long totalWeight = gType.stream().mapToLong(GroupTypeDTO::getWeight).sum();
             gType.forEach(groupType -> {
                 groupType.setTotalWeight(totalWeight);
                 groupType.setHasAllKpiType(gType.size() == kpiSize ? Boolean.TRUE : Boolean.FALSE);
-                detailsInfo.add(groupType);
                 data.add(groupType);
             });
             groupByInfo.setTotalWeight(totalWeight);
