@@ -1,5 +1,6 @@
 package com.nicico.evaluation.iservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupType;
@@ -27,4 +28,6 @@ public interface IGroupTypeService {
     void delete(Long id);
 
     SearchDTO.SearchRs<GroupTypeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+
+    SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException, JsonProcessingException;
 }

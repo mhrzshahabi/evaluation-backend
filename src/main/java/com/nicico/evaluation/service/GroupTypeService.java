@@ -1,5 +1,7 @@
 package com.nicico.evaluation.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupTypeDTO;
@@ -10,6 +12,7 @@ import com.nicico.evaluation.mapper.GroupTypeMapper;
 import com.nicico.evaluation.model.GroupType;
 import com.nicico.evaluation.repository.GroupTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -23,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.nicico.evaluation.utility.CriteriaUtil.makeCriteria;
 
 @RequiredArgsConstructor
 @Service
@@ -160,4 +165,43 @@ public class GroupTypeService implements IGroupTypeService {
         return infoSearchRs;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException, JsonProcessingException {
+
+        if (Objects.nonNull(request.getCriteria()) && Objects.nonNull(request.getCriteria().getCriteria())) {
+            SearchDTO.CriteriaRq criteriaRqs = request.getCriteria().getCriteria().stream().filter(q -> q.getFieldName().equals("groupName")).findFirst().get();
+            if (Objects.nonNull(criteriaRqs)) {
+                SearchDTO.CriteriaRq criteriaRq = makeCriteria("group.title", criteriaRqs.getValue(), EOperator.contains, new ArrayList<>());
+                request.setCriteria(criteriaRq);
+            }
+        }
+        SearchDTO.SearchRs<GroupTypeDTO.Info> infoSearchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        List<GroupTypeDTO.Info> info = infoSearchRs.getList().stream().toList();
+        int kpiSize = kpiTypeService.findAll().size();
+        Map<Long, List<GroupTypeDTO.Info>> groupTypeMap = info.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
+        SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchRs = new SearchDTO.SearchRs<>();
+        List<GroupTypeDTO.GroupByInfo> groupByInfoList = new ArrayList<>();
+        groupTypeMap.forEach((groupId, gType) -> {
+
+            GroupTypeDTO.GroupByInfo groupByInfo = new GroupTypeDTO.GroupByInfo();
+            groupByInfo.setGroupName(gType.get(0).getGroup().getTitle());
+            List<GroupTypeDTO.Info> data = new ArrayList<>();
+            List<GroupTypeDTO.Info> detailsInfo = new ArrayList<>();
+            long totalWeight = gType.stream().mapToLong(GroupTypeDTO::getWeight).sum();
+            gType.forEach(groupType -> {
+                groupType.setTotalWeight(totalWeight);
+                groupType.setHasAllKpiType(gType.size() == kpiSize ? Boolean.TRUE : Boolean.FALSE);
+                detailsInfo.add(groupType);
+                data.add(groupType);
+            });
+            groupByInfo.setTotalWeight(totalWeight);
+            groupByInfo.setDetailInfos(data);
+            groupByInfoList.add(groupByInfo);
+        });
+        searchRs.setList(groupByInfoList);
+        searchRs.setTotalCount((long) groupByInfoList.size());
+        return searchRs;
+    }
 }
