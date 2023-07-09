@@ -96,6 +96,10 @@ public class InstanceService implements IInstanceService {
             response.setStatus(HttpStatus.OK.value());
         } catch (Exception exception) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
+            if (exception.getMessage().contains("UC_TBL_INSTANCE_CODE"))
+                response.setMessage(messageSource.getMessage("exception.duplicated.instance", new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
+            else
+                response.setMessage(exception.getMessage());
             response.setMessage(exception.getMessage());
         }
         return response;

@@ -9,6 +9,8 @@ import com.nicico.evaluation.mapper.SensitiveEventPersonMapper;
 import com.nicico.evaluation.model.SensitiveEventPerson;
 import com.nicico.evaluation.repository.SensitiveEventPersonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,13 +18,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
 public class SensitiveEventPersonService implements ISensitiveEventPersonService {
 
-    private final SensitiveEventPersonMapper mapper;
     private final PageableMapper pageableMapper;
+    private final SensitiveEventPersonMapper mapper;
+    private final ResourceBundleMessageSource messageSource;
     private final SensitiveEventPersonRepository repository;
 
     @Override
@@ -58,12 +62,18 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
     @Transactional
     @PreAuthorize("hasAuthority('C_SENSITIVE_EVENTS_PERSON')")
     public SensitiveEventPersonDTO.Info create(SensitiveEventPersonDTO.Create dto) {
-        SensitiveEventPerson sensitiveEventPerson = mapper.dtoCreateToEntity(dto);
-        try {
-            SensitiveEventPerson save = repository.save(sensitiveEventPerson);
-            return mapper.entityToDtoInfo(save);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        Long sumParticipation = repository.findAllBySensitiveEventId(dto.getSensitiveEventId()).stream().map(SensitiveEventPerson::getParticipation).reduce(0L, Long::sum);
+        if (Long.sum(sumParticipation, dto.getParticipation()) > 100) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null, messageSource.getMessage("exception.sensitive.event.participation.limit", null, locale));
+        } else {
+            SensitiveEventPerson sensitiveEventPerson = mapper.dtoCreateToEntity(dto);
+            try {
+                SensitiveEventPerson save = repository.save(sensitiveEventPerson);
+                return mapper.entityToDtoInfo(save);
+            } catch (Exception exception) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+            }
         }
     }
 
@@ -72,12 +82,18 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
     @PreAuthorize("hasAuthority('U_SENSITIVE_EVENTS_PERSON')")
     public SensitiveEventPersonDTO.Info update(Long id, SensitiveEventPersonDTO.Update dto) {
         SensitiveEventPerson sensitiveEventPerson = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        mapper.update(sensitiveEventPerson, dto);
-        try {
-            SensitiveEventPerson save = repository.save(sensitiveEventPerson);
-            return mapper.entityToDtoInfo(save);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+        Long sumParticipation = repository.findAllBySensitiveEventId(dto.getSensitiveEventId()).stream().map(SensitiveEventPerson::getParticipation).reduce(0L, Long::sum) - sensitiveEventPerson.getParticipation();
+        if (Long.sum(sumParticipation, dto.getParticipation()) > 100) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null, messageSource.getMessage("exception.sensitive.event.participation.limit", null, locale));
+        } else {
+            mapper.update(sensitiveEventPerson, dto);
+            try {
+                SensitiveEventPerson save = repository.save(sensitiveEventPerson);
+                return mapper.entityToDtoInfo(save);
+            } catch (Exception exception) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+            }
         }
     }
 
