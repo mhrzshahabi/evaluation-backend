@@ -96,12 +96,13 @@ public class MeritComponentService implements IMeritComponentService {
                 response.setStatus(HttpStatus.OK.value());
             } else {
                 response.setStatus(HttpStatus.FORBIDDEN.value());
-                response.setMessage(messageSource.getMessage("exception.not.exist.kpi-type", new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
+                response.setMessage(messageSource.getMessage("exception.not.exist.kpi-type", new Object[]{dto.getKpiTypeCode()}, LocaleContextHolder.getLocale()));
             }
         } catch (Exception exception) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             if (exception.getMessage().contains("UC_TBL_MERIT_COMPONENT_CODE"))
-                response.setMessage(messageSource.getMessage("exception.duplicated.merit-component", new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
+                response.setMessage(messageSource.getMessage("exception.duplicated.merit-component",
+                 new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
             else
                 response.setMessage(exception.getMessage());
         }

@@ -59,17 +59,17 @@ public class EvaluationService implements IEvaluationService {
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        Page<Evaluation> Evaluations = repository.findAll(pageable);
-        List<EvaluationDTO.Info> EvaluationInfos = mapper.entityToDtoInfoList(Evaluations.getContent());
+        Page<Evaluation> evaluations = repository.findAll(pageable);
+        List<EvaluationDTO.Info> evaluationInfos = mapper.entityToDtoInfoList(evaluations.getContent());
 
         EvaluationDTO.Response response = new EvaluationDTO.Response();
         EvaluationDTO.SpecResponse specResponse = new EvaluationDTO.SpecResponse();
 
-        if (EvaluationInfos != null) {
-            response.setData(EvaluationInfos)
+        if (evaluationInfos != null) {
+            response.setData(evaluationInfos)
                     .setStartRow(startIndex)
                     .setEndRow(startIndex + count)
-                    .setTotalRows((int) Evaluations.getTotalElements());
+                    .setTotalRows((int) evaluations.getTotalElements());
             specResponse.setResponse(response);
         }
         return specResponse;
@@ -79,8 +79,8 @@ public class EvaluationService implements IEvaluationService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.Info get(Long id) {
-        Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return mapper.entityToDtoInfo(Evaluation);
+        Evaluation evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(evaluation);
     }
 
     @Override
@@ -102,9 +102,9 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION')")
     public EvaluationDTO.Info create(EvaluationDTO.Create dto) {
-        Evaluation Evaluation = mapper.dtoCreateToEntity(dto);
-        Evaluation = repository.save(Evaluation);
-        return mapper.entityToDtoInfo(Evaluation);
+        Evaluation evaluation = mapper.dtoCreateToEntity(dto);
+        evaluation = repository.save(evaluation);
+        return mapper.entityToDtoInfo(evaluation);
     }
 
     @Override
@@ -120,13 +120,15 @@ public class EvaluationService implements IEvaluationService {
         for (EvaluationDTO.CreateList evaluationCreate : dto) {
             List<SpecialCaseDTO.Info> specialCaseInfos = new ArrayList<>();
             Evaluation evaluation = new Evaluation();
-            evaluation.setStatusCatalogId(catalogStatus.getId());
+            evaluation.setStatusCatalogId(Objects.requireNonNull(catalogStatus).getId());
             evaluation.setEvaluationPeriodId(evaluationCreate.getEvaluationPeriodId());
             OrganizationTreeDTO.InfoTree orgTreeInfo = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
             List<Evaluation> evaluationList =
                     repository.findByEvaluationPeriodIdAndAssessPostCode(evaluationCreate.getEvaluationPeriodId(), evaluationCreate.getPostCode());
             if (!evaluationList.isEmpty())
-                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null,
+                        messageSource.getMessage("exception.duplicated.evaluation", new Object[]{evaluationCreate.getPostCode()},
+                        LocaleContextHolder.getLocale()));
 
             validateSpecialCase(methodTypes, specialCaseInfos, specialCaseRevoked, evaluationCreate, evaluation, orgTreeInfo);
 
@@ -188,7 +190,7 @@ public class EvaluationService implements IEvaluationService {
 
         if (!byAssessNationalCode.isEmpty()) {
             byAssessNationalCode.forEach(specialCase -> {
-                if (specialCase.getAssessRealPostCode().equals(evaluationCreate.getPostCode()))
+                if (specialCase.getAssessPostCode().equals(evaluationCreate.getPostCode()))
                     specialCaseInfos.add(specialCase);
                 else
                     specialCaseRevoked.add(specialCase);
@@ -203,20 +205,9 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION')")
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update dto) {
-        Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        mapper.update(Evaluation, dto);
-        Evaluation save = repository.save(Evaluation);
-        return mapper.entityToDtoInfo(save);
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("hasAuthority('U_EVALUATION')")
-    public EvaluationDTO.Info update(Long id, Evaluation evaluation) {
-        Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        EvaluationDTO.Update evaluationDTO = mapper.entityToUpdateDto(evaluation);
-        mapper.update(Evaluation, evaluationDTO);
-        Evaluation save = repository.save(Evaluation);
+        Evaluation evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        mapper.update(evaluation, dto);
+        Evaluation save = repository.save(evaluation);
         return mapper.entityToDtoInfo(save);
     }
 
@@ -224,8 +215,8 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     @PreAuthorize("hasAuthority('D_EVALUATION')")
     public void delete(Long id) {
-        Evaluation Evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        repository.delete(Evaluation);
+        Evaluation evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        repository.delete(evaluation);
     }
 
     @Override
@@ -250,7 +241,7 @@ public class EvaluationService implements IEvaluationService {
                     Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
                     if (evaluationDate != null && evaluationDate.after(new Date())) {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
-                            case "next" -> {
+                            case "next":
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
                                     createEvaluationItems(evaluation);
 
@@ -259,10 +250,9 @@ public class EvaluationService implements IEvaluationService {
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     repository.save(evaluation);
                                 }
-                            }
-                            case "previous" -> {
+                                break;
+                            case "previous":
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
-                                    //   updateEvaluationItems(evaluation);
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(AWAITING);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     repository.save(evaluation);
@@ -274,7 +264,9 @@ public class EvaluationService implements IEvaluationService {
                                     evaluation.setAverageScore(null);
                                     repository.save(evaluation);
                                 }
-                            }
+                                break;
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + changeStatusDTO.getStatus().toLowerCase(Locale.ROOT));
                         }
                     } else {
                         response.setStatus(406);
@@ -298,11 +290,6 @@ public class EvaluationService implements IEvaluationService {
         evaluationItemService.deleteAll(itemIds);
     }
 
-    @Override
-    public List<String> getUsedPostInEvaluation(Long evaluationPeriodId) {
-        return repository.getUsedPostInEvaluation(evaluationPeriodId);
-    }
-
     private void createEvaluationItems(Evaluation evaluation) {
         List<EvaluationItemDTO.Create> requests = new ArrayList<>();
         List<EvaluationItemDTO.CreateItemInfo> infoByAssessPostCodeForCreate =
@@ -324,19 +311,5 @@ public class EvaluationService implements IEvaluationService {
         evaluationItemService.createAll(requests);
     }
 
-    private void updateEvaluationItems(Evaluation evaluation) {
-        List<EvaluationItemDTO.Update> requests = new ArrayList<>();
-        List<EvaluationItemDTO.Info> evaluationItemByEvalId = evaluationItemService.getByEvalId(evaluation.getId());
-        evaluationItemByEvalId.forEach(info -> {
-            EvaluationItemDTO.Update evaluationItemDTO = new EvaluationItemDTO.Update();
-            evaluationItemDTO.setId(info.getId());
-            evaluationItemDTO.setStatus("previous");
-            evaluationItemDTO.setEvaluationId(info.getEvaluationId());
-            evaluationItemDTO.setGroupTypeMeritId(info.getGroupTypeMeritId());
-            evaluationItemDTO.setPostMeritComponentId(info.getPostMeritComponentId());
-            requests.add(evaluationItemDTO);
-        });
-        evaluationItemService.updateAll(requests);
-    }
 
 }

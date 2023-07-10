@@ -27,13 +27,9 @@ public interface IEvaluationService {
 
     EvaluationDTO.Info update(Long id, EvaluationDTO.Update dto);
 
-    EvaluationDTO.Info update(Long id, Evaluation entity);
-
     void delete(Long id);
 
     SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
-
-    List<String> getUsedPostInEvaluation(Long evaluationPeriodId);
 }
