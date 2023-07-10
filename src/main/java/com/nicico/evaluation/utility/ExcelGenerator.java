@@ -235,7 +235,6 @@ public class ExcelGenerator<T> {
             cell.setCellValue((String) valueOfCell);
         }
         cell.setCellStyle(style);
-        sheet.autoSizeColumn(columnCount, true);
     }
 
     public void generateSheet(String sheetName, String subFullHeader) {
