@@ -26,6 +26,9 @@ public abstract class GroupPostMapper {
 
     public abstract List<GroupPostDTO.Info> entityToDtoInfoList(List<GroupPost> entities);
 
+    @Mappings({
+            @Mapping(target = "totalWeight", source = "groupPostCode", qualifiedByName = "getTotalComponentWeightByGroupPostCode")
+    })
     public abstract GroupPostDTO.Excel entityToDtoExcel(GroupPost entity);
 
     @Named("getTotalComponentWeightByGroupPostCode")

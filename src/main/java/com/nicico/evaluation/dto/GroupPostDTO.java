@@ -51,6 +51,7 @@ public abstract class GroupPostDTO {
         private String ghesmatTitle;
         private String vahedTitle;
         private String costCenterCode;
+        private String postCompanyName;
     }
 
     @Getter

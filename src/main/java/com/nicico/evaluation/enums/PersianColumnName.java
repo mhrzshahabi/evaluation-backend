@@ -25,8 +25,8 @@ public enum PersianColumnName {
     OMOORTITLE("امور"),
     GHESMATTITLE("قسمت"),
     VAHEDTITLE("واحد"),
-    COSTCENTERCODE("کد مرکز هزینه");
-
+    COSTCENTERCODE("کد مرکز هزینه"),
+    POSTCOMPANYNAME("شرکت");
 
     private String persianName;
 
