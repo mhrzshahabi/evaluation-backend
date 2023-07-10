@@ -88,13 +88,13 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @PreAuthorize("hasAuthority('C_GROUP_TYPE_MERIT')")
     public GroupTypeMeritDTO.Info create(GroupTypeMeritDTO.Create dto) {
         GroupTypeMerit groupTypeMerit = mapper.dtoCreateToEntity(dto);
-        try {
-            GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
-            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), groupTypeMeritAdd.getId());
-            return mapper.entityToDtoInfo(groupTypeMeritAdd);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-        }
+        Long totalComponentWeightByGroupType = this.getTotalComponentWeightByGroupType(dto.getGroupTypeId());
+        if (totalComponentWeightByGroupType + dto.getWeight() > 100)
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null
+                    , messageSource.getMessage("exception.group-type.weight.limit", null, LocaleContextHolder.getLocale()));
+        GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
+        createAllInstanceGroupTypeMerit(dto.getInstanceIds(), groupTypeMeritAdd.getId());
+        return mapper.entityToDtoInfo(groupTypeMeritAdd);
     }
 
     @Override

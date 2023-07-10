@@ -3,11 +3,13 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
+import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.EvaluationItemInstanceDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationItemMapper;
+import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Evaluation;
 import com.nicico.evaluation.model.EvaluationItem;
 import com.nicico.evaluation.model.GroupType;
@@ -34,6 +36,7 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 public class EvaluationItemService implements IEvaluationItemService {
 
     private final EvaluationItemMapper mapper;
+    private final EvaluationMapper evaluationMapper;
     private final EvaluationItemRepository repository;
     private final PageableMapper pageableMapper;
     private final IEvaluationService evaluationService;
@@ -42,7 +45,6 @@ public class EvaluationItemService implements IEvaluationItemService {
     private final IPostMeritComponentService postMeritComponentService;
     private final ICatalogService catalogService;
     private final IEvaluationItemInstanceService evaluationItemInstanceService;
-
 
     @Override
     @Transactional(readOnly = true)
@@ -143,7 +145,7 @@ public class EvaluationItemService implements IEvaluationItemService {
         Stream<CatalogDTO.Info> evaluationStatus = catalogService.catalogByCatalogTypeCode(EVALUATION_STATUS).stream();
         Long statusByCatalogType;
         switch (dto.getStatus().toLowerCase(Locale.ROOT)) {
-            case "next" -> {
+            case "next":
                 if (evaluation.getStatusCatalog() != null && evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
                     statusByCatalogType = evaluationStatus
                             .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
@@ -152,17 +154,20 @@ public class EvaluationItemService implements IEvaluationItemService {
                             .filter(status -> status.getCode().equals(FINALIZED)).findFirst().orElseThrow().getId();
                 }
                 evaluation.setStatusCatalogId(statusByCatalogType);
-            }
-            case "previous" -> {
+                break;
+            case "previous":
                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
                     statusByCatalogType = evaluationStatus
                             .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
                     evaluation.setStatusCatalogId(statusByCatalogType);
                     evaluation.setAverageScore(null);
                 }
-            }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + dto.getStatus().toLowerCase(Locale.ROOT));
         }
-        evaluationService.update(dto.getEvaluationId(), evaluation);
+        EvaluationDTO.Update evaluationDTO = evaluationMapper.entityToUpdateDto(evaluation);
+        evaluationService.update(dto.getEvaluationId(), evaluationDTO);
     }
 
     @Override
@@ -282,8 +287,7 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
-    private void getGroupTypeMeritInfoForCreate(String
-                                                        assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+    private void getGroupTypeMeritInfoForCreate(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_GROUP);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
@@ -296,8 +300,7 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
-    private void getPostMeritInfoForCreate(String
-                                                   assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+    private void getPostMeritInfoForCreate(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
@@ -379,7 +382,6 @@ public class EvaluationItemService implements IEvaluationItemService {
 
         });
     }
-
 
     @Override
     @PreAuthorize("hasAuthority('D_EVALUATION_ITEM')")

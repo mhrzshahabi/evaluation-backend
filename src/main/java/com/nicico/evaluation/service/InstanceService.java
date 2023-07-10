@@ -100,7 +100,6 @@ public class InstanceService implements IInstanceService {
                 response.setMessage(messageSource.getMessage("exception.duplicated.instance", new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
             else
                 response.setMessage(exception.getMessage());
-            response.setMessage(exception.getMessage());
         }
         return response;
     }

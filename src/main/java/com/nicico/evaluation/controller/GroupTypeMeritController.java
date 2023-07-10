@@ -69,7 +69,11 @@ public class GroupTypeMeritController {
      */
     @PostMapping
     public ResponseEntity<GroupTypeMeritDTO.Info> create(@Valid @RequestBody GroupTypeMeritDTO.Create request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable);
+        }
     }
 
     /**
