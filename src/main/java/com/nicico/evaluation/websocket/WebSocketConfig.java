@@ -16,7 +16,7 @@ public class WebSocketConfig implements WebSocketConfigurer  {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(greetingHandler(),"/krd-ws/{id}").setAllowedOrigins("*");
+        registry.addHandler(greetingHandler(),"/anonymous/evaluation-ws/{id}").setAllowedOrigins("*");
 
     }
     @Bean

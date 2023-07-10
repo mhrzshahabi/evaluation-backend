@@ -67,6 +67,6 @@ public class GreetingHandler extends TextWebSocketHandler {
     private int getSessionId(WebSocketSession session){
 
         return   Integer.parseInt(new AntPathMatcher()
-                .extractPathWithinPattern( "/{id}/**", session.getUri().getPath() ));
+                .extractPathWithinPattern( "/anonymous/evaluation-ws/{id}/**", session.getUri().getPath() ));
     }
 }
