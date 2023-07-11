@@ -1,20 +1,35 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.GroupDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupType;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface GroupTypeMapper {
+public abstract class GroupTypeMapper {
 
-    GroupType dtoCreateToEntity(GroupTypeDTO.Create dto);
+    @Lazy
+    @Autowired
+    private GroupMapper groupMapper;
 
-    GroupTypeDTO.Info entityToDtoInfo(GroupType entity);
+    public abstract GroupType dtoCreateToEntity(GroupTypeDTO.Create dto);
 
-    List<GroupTypeDTO.Info> entityToDtoInfoList(List<GroupType> entities);
+    @Mapping(target = "group", source = "entity", qualifiedByName = "setGroupGrade")
+    public abstract GroupTypeDTO.Info entityToDtoInfo(GroupType entity);
 
-    void update(@MappingTarget GroupType entity, GroupTypeDTO.Update dto);
+    public abstract List<GroupTypeDTO.Info> entityToDtoInfoList(List<GroupType> entities);
+
+    public abstract void update(@MappingTarget GroupType entity, GroupTypeDTO.Update dto);
+
+    @Named("setGroupGrade")
+    GroupDTO.Info setGroupGrade(GroupType entity) {
+        return groupMapper.entityToDtoInfo(entity.getGroup());
+    }
 }
