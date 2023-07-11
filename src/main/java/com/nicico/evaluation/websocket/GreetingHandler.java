@@ -1,18 +1,23 @@
 package com.nicico.evaluation.websocket;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.nicico.evaluation.dto.WebSocketDTO;
+import com.nicico.evaluation.iservice.IBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.List;
 
 public class GreetingHandler extends TextWebSocketHandler {
 
     @Autowired
-    SessionsManager sessionsManager;
+    private SessionsManager sessionsManager;
+
+    @Autowired
+    private IBatchService batchService;
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
@@ -31,25 +36,20 @@ public class GreetingHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
-        //the messages will be broadcasted to all users.
-        System.out.println("id=" + session.getId());
-        System.out.println("uri=" + session.getUri());
-        System.out.println("uri=" + session.getRemoteAddress());
-        int id = getSessionId(session);
-
+        String id = sessionsManager.getSessionId(session);
+        List<WebSocketDTO> webSocketDTOList = batchService.getForNotificationPanel();
         System.out.println("connected");
-        session.sendMessage(new TextMessage("You are now connected to the server. This is the first message from server....."));
+        session.sendMessage(new TextMessage(new Gson().toJson(webSocketDTOList, new TypeToken<List<WebSocketDTO>>() {
+        }.getType())));
         sessionsManager.add(id, session);
+//        sessionsManager.getSessions();
+//        session.close();
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         System.out.println("Connection Closed！" + status);
-        sessionsManager.remove(getSessionId(session));
-    }
-
-    private int getSessionId(WebSocketSession session) {
-        return Integer.parseInt(new AntPathMatcher()
-                .extractPathWithinPattern("/anonymous/evaluation-ws/{id}/**", session.getUri().getPath()));
+        sessionsManager.remove(sessionsManager.getSessionId(session));
+//        sessionsManager.getSessions();
     }
 }

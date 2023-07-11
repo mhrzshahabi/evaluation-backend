@@ -2,6 +2,7 @@ package com.nicico.evaluation.websocket;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.*;
@@ -10,18 +11,26 @@ import java.util.*;
 @Data
 public class SessionsManager {
 
-    private Map<Integer, WebSocketSession> sessions;
+    private Map<String, WebSocketSession> sessions;
 
     public SessionsManager() {
-        sessions = Collections.synchronizedMap(new HashMap<Integer, WebSocketSession>());
+        sessions = Collections.synchronizedMap(new HashMap<>());
     }
 
-    public void add(int id, WebSocketSession webSocketSession) {
+    public void add(String id, WebSocketSession webSocketSession) {
         sessions.put(id, webSocketSession);
     }
 
-    public void remove(int id) {
+    public void remove(String id) {
         sessions.remove(id);
     }
 
+    public Map<String, WebSocketSession> getSessions() {
+        return sessions;
+    }
+
+    public String getSessionId(WebSocketSession session) {
+        return new AntPathMatcher()
+                .extractPathWithinPattern("/anonymous/evaluation-ws/{id}/**", session.getUri().getPath());
+    }
 }

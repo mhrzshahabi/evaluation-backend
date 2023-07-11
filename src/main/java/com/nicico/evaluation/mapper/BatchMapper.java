@@ -2,6 +2,7 @@ package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.AttachmentDTO;
 import com.nicico.evaluation.dto.BatchDTO;
+import com.nicico.evaluation.dto.WebSocketDTO;
 import com.nicico.evaluation.model.Batch;
 import org.mapstruct.*;
 
@@ -23,5 +24,18 @@ public interface BatchMapper {
     void update(@MappingTarget Batch entity, BatchDTO.Update dto);
 
     AttachmentDTO.Create dtoCreateToAttachmentDtoCreate(BatchDTO.Create dto);
+
+    @Mapping(target = "progressPercent", source = "entity", qualifiedByName = "getProgressPercent")
+    WebSocketDTO entityToWebSocketDto(Batch entity);
+
+    List<WebSocketDTO> entityToWebSocketDtoList(List<Batch> entities);
+
+    @Named("getProgressPercent")
+    default Integer getProgressPercent(Batch entity) {
+        if ((entity.getSuccessfulNumber() + entity.getFailedNumber()) == 0)
+            return 0;
+        else
+            return ((entity.getSuccessfulNumber() + entity.getFailedNumber()) / entity.getTotal()) * 100;
+    }
 
 }

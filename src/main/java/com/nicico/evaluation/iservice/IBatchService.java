@@ -3,7 +3,10 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.BatchDTO;
 import com.nicico.evaluation.dto.BatchDetailDTO;
+import com.nicico.evaluation.dto.WebSocketDTO;
 import com.nicico.evaluation.utility.BaseResponse;
+
+import java.util.List;
 
 public interface IBatchService {
 
@@ -18,5 +21,7 @@ public interface IBatchService {
     BaseResponse create(BatchDTO.Create dto);
 
     void updateStatus(Long id, Long statusCatalogId);
+
+    List<WebSocketDTO> getForNotificationPanel();
 
 }

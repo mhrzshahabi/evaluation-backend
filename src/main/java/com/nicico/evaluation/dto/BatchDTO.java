@@ -23,7 +23,7 @@ public abstract class BatchDTO {
         private Integer total;
         private Integer successfulNumber;
         private Integer failedNumber;
-        private Float progress;
+        private Float successPercent;
     }
 
     @Getter

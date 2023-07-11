@@ -51,14 +51,14 @@ public class Batch extends Auditable {
     private Integer failedNumber;
 
     @Transient
-    private Float progress;
+    private Float successPercent;
 
     @PostLoad
     public void updateStatistics() {
         total = batchDetailList.size();
         successfulNumber = batchDetailList.stream().filter(item -> item.getStatusCatalog().getCode().equals("Successful")).toList().size();
         failedNumber = batchDetailList.stream().filter(item -> item.getStatusCatalog().getCode().equals("Failed")).toList().size();
-        progress = (successfulNumber != 0 ? successfulNumber.floatValue() / total.floatValue() : 0) * 100;
+        successPercent = (successfulNumber != 0 ? successfulNumber.floatValue() / total.floatValue() : 0) * 100;
     }
 
 }
