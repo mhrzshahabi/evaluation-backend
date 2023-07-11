@@ -3,10 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.AttachmentDTO;
-import com.nicico.evaluation.dto.BatchDTO;
-import com.nicico.evaluation.dto.BatchDetailDTO;
-import com.nicico.evaluation.dto.CatalogDTO;
+import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IAttachmentService;
 import com.nicico.evaluation.iservice.IBatchDetailService;
@@ -27,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -139,6 +133,16 @@ public class BatchService implements IBatchService {
             batch.setStatusCatalogId(statusCatalogId);
             repository.save(batch);
         }
+    }
+
+    @Override
+    public List<WebSocketDTO> getForNotificationPanel() {
+        List<Batch> inProgressBatchList = repository.findAllByStatusCatalogCode("In-progress");
+//        List<Batch> completedBatchList = repository.findAllByStatusCatalogCode("Completed").stream().toList();
+//        completedBatchList.sort(Comparator.comparing(Batch::getId));
+//        completedBatchList.subList(0, 3);
+//        inProgressBatchList.addAll(completedBatchList);
+        return mapper.entityToWebSocketDtoList(inProgressBatchList);
     }
 
 }
