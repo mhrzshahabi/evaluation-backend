@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.nicico.evaluation.dto.WebSocketDTO;
 import com.nicico.evaluation.iservice.IBatchService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -20,36 +21,48 @@ public class GreetingHandler extends TextWebSocketHandler {
     private IBatchService batchService;
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+    public void afterConnectionEstablished(WebSocketSession session) {
 
-        System.out.println("uri=" + session.getUri());
-        System.out.println("uri=" + session.getRemoteAddress());
-        System.out.println("here=" + message.getPayload());
-
-        for (WebSocketSession socketSession : sessionsManager.getSessions().values()) {
-            if (!socketSession.equals(session)) {
-                socketSession.sendMessage(new TextMessage(message.getPayload() + "-" + System.currentTimeMillis()));
-            }
-        }
-    }
-
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
-        String id = sessionsManager.getSessionId(session);
-        List<WebSocketDTO> webSocketDTOList = batchService.getForNotificationPanel();
         System.out.println("connected");
-        session.sendMessage(new TextMessage(new Gson().toJson(webSocketDTOList, new TypeToken<List<WebSocketDTO>>() {
-        }.getType())));
+        String id = sessionsManager.getSessionId(session);
         sessionsManager.add(id, session);
-//        sessionsManager.getSessions();
-//        session.close();
+        Thread thread = new Thread() {
+            @SneakyThrows
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(10000);
+                        List<WebSocketDTO> webSocketDTOList = batchService.getForNotificationPanel();
+                        session.sendMessage(new TextMessage(new Gson().toJson(webSocketDTOList, new TypeToken<List<WebSocketDTO>>() {
+                        }.getType())));
+                    } catch (InterruptedException | IOException ie) {
+                        session.sendMessage(new TextMessage("مشکلی پیش آمده است"));
+                    }
+                }
+            }
+        };
+        thread.start();
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         System.out.println("Connection Closed！" + status);
         sessionsManager.remove(sessionsManager.getSessionId(session));
-//        sessionsManager.getSessions();
     }
+
+    //    @Override
+//    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+//
+//        System.out.println("uri=" + session.getUri());
+//        System.out.println("uri=" + session.getRemoteAddress());
+//        System.out.println("here=" + message.getPayload());
+//
+//        for (WebSocketSession socketSession : sessionsManager.getSessions().values()) {
+//            if (!socketSession.equals(session)) {
+//                socketSession.sendMessage(new TextMessage(message.getPayload() + "-" + System.currentTimeMillis()));
+//            }
+//        }
+//    }
+
 }
