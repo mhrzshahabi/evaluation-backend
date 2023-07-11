@@ -1570,4 +1570,12 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet id="1689070145" author="semami">
+        <dropColumn tableName="tbl_evaluation" columnName="c_assess_real_post_code"/>
+    </changeSet>
+    <changeSet id="1689071963" author="semami">
+        <dropNotNullConstraint columnName="c_assessor_national_code" tableName="tbl_special_case"/>
+        <dropNotNullConstraint columnName="c_assessor_post_code" tableName="tbl_special_case"/>
+    </changeSet>
+
 </databaseChangeLog>

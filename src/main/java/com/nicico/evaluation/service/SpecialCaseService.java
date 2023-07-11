@@ -143,6 +143,11 @@ public class SpecialCaseService implements ISpecialCaseService {
                     "stareDate",
                     messageSource.getMessage("exception.start.date.after.end.date", null, LocaleContextHolder.getLocale()));
         }
+        if (Objects.isNull(dto.getAssessorPostCode()) && Objects.isNull(dto.getAssessRealPostCode())) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
+                    null,
+                    messageSource.getMessage("exception.special-case.cant.null.assessor.and.assess-real-post", null, LocaleContextHolder.getLocale()));
+        }
     }
 
     @Override

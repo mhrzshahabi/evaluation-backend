@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, JpaSpecificationExecutor<Evaluation> {
-    List<Evaluation> findByEvaluationPeriodIdAndAssessPostCode(Long id, String assessPostCode);
+
+    Evaluation findByEvaluationPeriodIdAndAssessPostCode(Long id, String assessPostCode);
 
     List<Evaluation> findAllByIdIn(List<Long> id);
 
@@ -24,5 +25,4 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                           """, nativeQuery = true)
     List<String> getUsedPostInEvaluation(Long id);
 
-    Evaluation findByEvaluationPeriodIdAndAssessRealPostCode(Long evalPeriodId, String assessPostCode);
 }
