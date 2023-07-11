@@ -1,6 +1,5 @@
 package com.nicico.evaluation.iservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupType;

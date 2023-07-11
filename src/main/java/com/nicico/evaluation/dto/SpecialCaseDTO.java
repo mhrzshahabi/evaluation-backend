@@ -23,9 +23,7 @@ public class SpecialCaseDTO {
     private String assessPostCode;
     private String assessRealPostCode;
     private String assessorFullName;
-    @NotNull
     private String assessorNationalCode;
-    @NotNull
     private String assessorPostCode;
     @NotNull
     private Date startDate;
