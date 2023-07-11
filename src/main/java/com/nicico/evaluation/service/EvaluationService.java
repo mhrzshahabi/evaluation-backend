@@ -87,7 +87,7 @@ public class EvaluationService implements IEvaluationService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.Info getAllByPeriodIdAndAssessPostCode(Long periodId, String assessPostCode) {
-        Evaluation evaluation = repository.findByEvaluationPeriodIdAndAssessRealPostCode(periodId, assessPostCode);
+        Evaluation evaluation = repository.findByEvaluationPeriodIdAndAssessPostCode(periodId, assessPostCode);
         return mapper.entityToDtoInfo(evaluation);
     }
 
@@ -123,12 +123,12 @@ public class EvaluationService implements IEvaluationService {
             evaluation.setStatusCatalogId(Objects.requireNonNull(catalogStatus).getId());
             evaluation.setEvaluationPeriodId(evaluationCreate.getEvaluationPeriodId());
             OrganizationTreeDTO.InfoTree orgTreeInfo = organizationTreeService.getByPostCode(evaluationCreate.getPostCode());
-            List<Evaluation> evaluationList =
+            Evaluation evaluationExist =
                     repository.findByEvaluationPeriodIdAndAssessPostCode(evaluationCreate.getEvaluationPeriodId(), evaluationCreate.getPostCode());
-            if (!evaluationList.isEmpty())
+            if (Objects.nonNull(evaluationExist))
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null,
                         messageSource.getMessage("exception.duplicated.evaluation", new Object[]{evaluationCreate.getPostCode()},
-                        LocaleContextHolder.getLocale()));
+                                LocaleContextHolder.getLocale()));
 
             validateSpecialCase(methodTypes, specialCaseInfos, specialCaseRevoked, evaluationCreate, evaluation, orgTreeInfo);
 
@@ -150,14 +150,13 @@ public class EvaluationService implements IEvaluationService {
     }
 
     private void setSpecialCaseInfo(List<Catalog> methodTypes, EvaluationDTO.CreateList evaluationCreate, Evaluation evaluation, OrganizationTreeDTO.InfoTree orgTreeInfo, SpecialCaseDTO.Info scInfo) {
-        if (scInfo != null) {
-            evaluation.setAssessorPostCode(scInfo.getAssessorPostCode());
-            evaluation.setAssessorNationalCode(scInfo.getAssessorNationalCode());
-            evaluation.setAssessorFullName(scInfo.getAssessorFullName());
+        if (Objects.nonNull(scInfo)) {
+            evaluation.setAssessorPostCode(Objects.nonNull(scInfo.getAssessorPostCode()) ? scInfo.getAssessorPostCode() : orgTreeInfo.getPostParentCode());
+            evaluation.setAssessorNationalCode(Objects.nonNull(scInfo.getAssessorNationalCode()) ? scInfo.getAssessorNationalCode() : orgTreeInfo.getNationalCodeParent());
+            evaluation.setAssessorFullName(Objects.nonNull(scInfo.getAssessorFullName()) ? scInfo.getAssessorFullName() : orgTreeInfo.getFirstNameParent() + " " + orgTreeInfo.getLastNameParent());
             evaluation.setAssessFullName(scInfo.getAssessFullName());
             evaluation.setAssessNationalCode(scInfo.getAssessNationalCode());
-            evaluation.setAssessPostCode(evaluationCreate.getPostCode());
-            evaluation.setAssessRealPostCode(scInfo.getAssessRealPostCode());
+            evaluation.setAssessPostCode(Objects.nonNull(scInfo.getAssessRealPostCode()) ? scInfo.getAssessRealPostCode() : evaluationCreate.getPostCode());
             evaluation.setSpecialCaseId(scInfo.getId());
             Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Special-case")).findFirst().orElseThrow().getId();
             evaluation.setMethodCatalogId(methodCatalogId);
@@ -168,7 +167,6 @@ public class EvaluationService implements IEvaluationService {
             evaluation.setAssessFullName(orgTreeInfo.getFullName());
             evaluation.setAssessNationalCode(orgTreeInfo.getNationalCode());
             evaluation.setAssessPostCode(evaluationCreate.getPostCode());
-            evaluation.setAssessRealPostCode(evaluationCreate.getPostCode());
             Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Organizational-chart")).findFirst().orElseThrow().getId();
             evaluation.setMethodCatalogId(methodCatalogId);
         }
