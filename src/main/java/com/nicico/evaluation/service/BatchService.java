@@ -136,13 +136,10 @@ public class BatchService implements IBatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<WebSocketDTO> getForNotificationPanel() {
-        List<Batch> inProgressBatchList = repository.findAllByStatusCatalogCode("In-progress");
-//        List<Batch> completedBatchList = repository.findAllByStatusCatalogCode("Completed").stream().toList();
-//        completedBatchList.sort(Comparator.comparing(Batch::getId));
-//        completedBatchList.subList(0, 3);
-//        inProgressBatchList.addAll(completedBatchList);
-        return mapper.entityToWebSocketDtoList(inProgressBatchList);
+        List<Batch> batchList = repository.getNeededDataForWebSocket(catalogService.getByCode("In-progress").getId(), catalogService.getByCode("Completed").getId());
+        return mapper.entityToWebSocketDtoList(batchList);
     }
 
 }
