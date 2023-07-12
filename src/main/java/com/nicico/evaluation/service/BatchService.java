@@ -136,6 +136,7 @@ public class BatchService implements IBatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<WebSocketDTO> getForNotificationPanel() {
         List<Batch> inProgressBatchList = repository.findAllByStatusCatalogCode("In-progress");
 //        List<Batch> completedBatchList = repository.findAllByStatusCatalogCode("Completed").stream().toList();

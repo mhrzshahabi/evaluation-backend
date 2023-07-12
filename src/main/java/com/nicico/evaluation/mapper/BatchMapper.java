@@ -25,7 +25,11 @@ public interface BatchMapper {
 
     AttachmentDTO.Create dtoCreateToAttachmentDtoCreate(BatchDTO.Create dto);
 
-    @Mapping(target = "progressPercent", source = "entity", qualifiedByName = "getProgressPercent")
+
+    @Mappings({
+            @Mapping(target = "title", source = "titleCatalog.title"),
+            @Mapping(target = "progressPercent", source = "entity", qualifiedByName = "getProgressPercent")
+    })
     WebSocketDTO entityToWebSocketDto(Batch entity);
 
     List<WebSocketDTO> entityToWebSocketDtoList(List<Batch> entities);

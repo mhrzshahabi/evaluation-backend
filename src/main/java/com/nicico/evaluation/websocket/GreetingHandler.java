@@ -30,12 +30,12 @@ public class GreetingHandler extends TextWebSocketHandler {
             @SneakyThrows
             @Override
             public void run() {
-                while (true) {
+                while (session.isOpen()) {
                     try {
-                        Thread.sleep(10000);
                         List<WebSocketDTO> webSocketDTOList = batchService.getForNotificationPanel();
                         session.sendMessage(new TextMessage(new Gson().toJson(webSocketDTOList, new TypeToken<List<WebSocketDTO>>() {
                         }.getType())));
+                        Thread.sleep(5000);
                     } catch (InterruptedException | IOException ie) {
                         session.sendMessage(new TextMessage("مشکلی پیش آمده است"));
                     }
