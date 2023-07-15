@@ -40,15 +40,6 @@ public abstract class GroupTypeDTO {
 
     @Getter
     @Setter
-    @ApiModel("GroupTypeInfoByGroupBy")
-    public static class GroupByInfo {
-        private String groupName;
-        private Long totalWeight;
-        private List<Info> detailInfos;
-    }
-
-    @Getter
-    @Setter
     @Accessors(chain = true)
     @ApiModel("GroupTypeCreateRq")
     public static class Create extends GroupTypeDTO {
@@ -89,13 +80,6 @@ public abstract class GroupTypeDTO {
         private Response response;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("GroupTypeSpecResponseByGoupBy")
-    public static class SpecResponseByGroupBy {
-        private ResponseByGroupBy responseByGroupBy;
-    }
 
     @Getter
     @Setter
@@ -109,16 +93,5 @@ public abstract class GroupTypeDTO {
         private Integer totalRows;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("GroupTypeResponseByGroupBy")
-    public static class ResponseByGroupBy {
-        private List<GroupByInfo> data;
-        private Integer status;
-        private Integer startRow;
-        private Integer endRow;
-        private Integer totalRows;
-    }
 
 }
