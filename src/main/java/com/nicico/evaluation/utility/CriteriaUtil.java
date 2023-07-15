@@ -21,7 +21,7 @@ public class CriteriaUtil {
         Set<SearchDTO.CriteriaRq> criteriaRqList = new HashSet<>();
         Integer startRow = (startIndex != null) ? Integer.parseInt(startIndex.toString()) : 0;
         searchRq.setStartIndex(startRow);
-        searchRq.setCount(count != null ? count : 30);
+        searchRq.setCount(count);
         searchRq.setSortBy("-id");
 //        searchRq.setDistinct(true);
 

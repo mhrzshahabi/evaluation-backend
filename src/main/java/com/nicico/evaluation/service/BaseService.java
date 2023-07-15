@@ -85,16 +85,22 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
 
     public static <E, INFO, DAO extends JpaSpecificationExecutor<E>> SearchDTO.SearchRs<INFO> optimizedSearch(DAO dao, Function<E, INFO> converter, SearchDTO.SearchRq rq) throws NoSuchFieldException, IllegalAccessException {
 
-        SearchDTO.SearchRs<INFO> searchRs = null;
+        SearchDTO.SearchRs<INFO> searchRs;
+        long totalCount;
+        List<E> list;
 
         if (rq.getStartIndex() == null) {
             searchRs = SearchUtil.search(dao, rq, converter);
         } else {
             rq.setDistinct(true);
-            Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
-            List<E> list = all.getContent();
-            long totalCount = all.getTotalElements();
-
+            if (rq.getCount() == null) {
+                list = dao.findAll(NICICOSpecification.of(rq));
+                totalCount = list.size();
+            } else {
+                Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
+                list = all.getContent();
+                totalCount = all.getTotalElements();
+            }
 
             if (totalCount == 0) {
 
