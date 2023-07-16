@@ -20,19 +20,13 @@ public class PostRelationDTO {
         private Long id;
         private String postCode;
         private String postTitle;
-        private String postGroupCode;
         private String postCodeParent;
         private String postTitleParent;
-        private String postCodeGrade;
-        private String postTitleGrade;
-        private String postCodeGradeParent;
-        private String postTitleGradeParent;
         private String postMeritIds;
         private String mojtameTitle;
         private String moavenatTitle;
         private String omorTitle;
         private String ghesmatTitle;
-        private String vahedTitle;
     }
 
     @Getter
