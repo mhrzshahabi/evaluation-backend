@@ -3,6 +3,7 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.GroupTypeByGroupByDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeService;
@@ -163,7 +164,7 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+    public SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
 
         if (Objects.nonNull(request.getCriteria()) && Objects.nonNull(request.getCriteria().getCriteria())) {
             Optional<SearchDTO.CriteriaRq> criteriaRqs = request.getCriteria().getCriteria().stream().filter(q -> q.getFieldName().equals("groupName")).findFirst();
@@ -176,11 +177,11 @@ public class GroupTypeService implements IGroupTypeService {
         List<GroupTypeDTO.Info> info = infoSearchRs.getList().stream().toList();
         int kpiSize = kpiTypeService.findAll().size();
         Map<Long, List<GroupTypeDTO.Info>> groupTypeMap = info.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
-        SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchRs = new SearchDTO.SearchRs<>();
-        List<GroupTypeDTO.GroupByInfo> groupByInfoList = new ArrayList<>();
+        SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        List<GroupTypeByGroupByDTO.Info> groupByInfoList = new ArrayList<>();
         groupTypeMap.forEach((groupId, gType) -> {
 
-            GroupTypeDTO.GroupByInfo groupByInfo = new GroupTypeDTO.GroupByInfo();
+           GroupTypeByGroupByDTO.Info groupByInfo = new GroupTypeByGroupByDTO.Info();
             groupByInfo.setGroupName(gType.get(0).getGroup().getTitle());
             List<GroupTypeDTO.Info> data = new ArrayList<>();
             long totalWeight = gType.stream().mapToLong(GroupTypeDTO::getWeight).sum();
