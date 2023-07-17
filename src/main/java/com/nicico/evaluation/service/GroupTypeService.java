@@ -180,14 +180,17 @@ public class GroupTypeService implements IGroupTypeService {
         SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         List<GroupTypeByGroupByDTO.Info> groupByInfoList = new ArrayList<>();
         groupTypeMap.forEach((groupId, gType) -> {
+            List<GroupType> existGType = repository.getAllByGroupId(groupId);
+            List<GroupTypeDTO.Info> gTypeList = mapper.entityToDtoInfoList(existGType);
+            groupTypeMap.put(groupId, gTypeList);
 
-           GroupTypeByGroupByDTO.Info groupByInfo = new GroupTypeByGroupByDTO.Info();
+            GroupTypeByGroupByDTO.Info groupByInfo = new GroupTypeByGroupByDTO.Info();
             groupByInfo.setGroupName(gType.get(0).getGroup().getTitle());
             List<GroupTypeDTO.Info> data = new ArrayList<>();
-            long totalWeight = gType.stream().mapToLong(GroupTypeDTO::getWeight).sum();
-            gType.forEach(groupType -> {
+            long totalWeight = existGType.stream().mapToLong(GroupType::getWeight).sum();
+            gTypeList.forEach(groupType -> {
                 groupType.setTotalWeight(totalWeight);
-                groupType.setHasAllKpiType(gType.size() == kpiSize ? Boolean.TRUE : Boolean.FALSE);
+                groupType.setHasAllKpiType(existGType.size() == kpiSize ? Boolean.TRUE : Boolean.FALSE);
                 data.add(groupType);
             });
             groupByInfo.setTotalWeight(totalWeight);
