@@ -15,6 +15,7 @@ import com.nicico.evaluation.repository.GroupTypeMeritRepository;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -90,11 +92,18 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
         GroupTypeMerit groupTypeMerit = mapper.dtoCreateToEntity(dto);
         Long totalComponentWeightByGroupType = this.getTotalComponentWeightByGroupType(dto.getGroupTypeId());
         if (totalComponentWeightByGroupType + dto.getWeight() > 100)
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null
-                    , messageSource.getMessage("exception.group-type.weight.limit", null, LocaleContextHolder.getLocale()));
-        GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
-        createAllInstanceGroupTypeMerit(dto.getInstanceIds(), groupTypeMeritAdd.getId());
-        return mapper.entityToDtoInfo(groupTypeMeritAdd);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null,
+                    messageSource.getMessage("exception.group-type.weight.limit", null, LocaleContextHolder.getLocale()));
+        try {
+            GroupTypeMerit groupTypeMeritAdd = repository.save(groupTypeMerit);
+            createAllInstanceGroupTypeMerit(dto.getInstanceIds(), groupTypeMeritAdd.getId());
+            return mapper.entityToDtoInfo(groupTypeMeritAdd);
+        } catch (DataIntegrityViolationException | ConstraintViolationException e) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.DuplicateRecord, null, messageSource.getMessage("exception.group.type.merit.duplicate", null, locale));
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        }
     }
 
     @Override

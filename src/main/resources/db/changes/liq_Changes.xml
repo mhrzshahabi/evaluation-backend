@@ -1577,5 +1577,10 @@
         <dropNotNullConstraint columnName="c_assessor_national_code" tableName="tbl_special_case"/>
         <dropNotNullConstraint columnName="c_assessor_post_code" tableName="tbl_special_case"/>
     </changeSet>
-
+    <changeSet author="semami" id="1690274592">
+        <addColumn tableName="tbl_evaluation_period">
+            <column name="c_validation_start_date" type="VARCHAR2(100 CHAR)"/>
+            <column name="c_validation_end_date" type="VARCHAR2(100 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
