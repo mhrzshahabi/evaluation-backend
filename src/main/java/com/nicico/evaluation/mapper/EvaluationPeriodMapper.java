@@ -13,6 +13,8 @@ import java.util.List;
 public interface EvaluationPeriodMapper {
 
     @Mappings({
+            @Mapping(target = "validationStartDate", source = "validationStartDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "validationEndDate", source = "validationEndDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "startDateAssessment", source = "startDateAssessment", qualifiedByName = "convertDateToString"),
@@ -21,6 +23,8 @@ public interface EvaluationPeriodMapper {
     EvaluationPeriod dtoCreateToEntity(EvaluationPeriodDTO.Create dto);
 
     @Mappings({
+            @Mapping(target = "validationStartDate", source = "validationStartDate", qualifiedByName = "convertStringToDate"),
+            @Mapping(target = "validationEndDate", source = "validationEndDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "startDateAssessment", source = "startDateAssessment", qualifiedByName = "convertStringToDate"),
@@ -31,6 +35,8 @@ public interface EvaluationPeriodMapper {
     List<EvaluationPeriodDTO.Info> entityToDtoInfoList(List<EvaluationPeriod> entities);
 
     @Mappings({
+            @Mapping(target = "validationStartDate", source = "validationStartDate", qualifiedByName = "convertStringToDate"),
+            @Mapping(target = "validationEndDate", source = "validationEndDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "startDateAssessment", source = "startDateAssessment", qualifiedByName = "convertStringToDate"),
@@ -39,6 +45,8 @@ public interface EvaluationPeriodMapper {
     EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod entityToDtoInfoWithPostInfoEvaluationPeriod(EvaluationPeriod entity);
 
     @Mappings({
+            @Mapping(target = "validationStartDate", source = "validationStartDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "validationEndDate", source = "validationEndDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "startDateAssessment", source = "startDateAssessment", qualifiedByName = "convertDateToString"),

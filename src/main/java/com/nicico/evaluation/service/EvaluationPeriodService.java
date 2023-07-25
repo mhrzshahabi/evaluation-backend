@@ -24,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.*;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_INITIAL_REGISTRATION;
@@ -99,41 +100,37 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
-        if (this.isValidDates(dto.getStartDate(), dto.getEndDate(), dto.getStartDateAssessment(), dto.getEndDateAssessment())) {
-            try {
-                EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
-                evaluationPeriod.setStatusCatalogId(catalogService.getByCode("period-initial-registration").getId());
-                EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
-                if (dto.getPostCode() != null && !dto.getPostCode().isEmpty())
-                    evaluationPeriodPostService.createAll(save, dto.getPostCode());
-                return evaluationPeriodMapper.entityToDtoInfo(save);
-            } catch (Exception exception) {
-                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-            }
-        } else
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null, messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
+        validationDates(dto);
+        try {
+            EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
+            evaluationPeriod.setStatusCatalogId(catalogService.getByCode("period-initial-registration").getId());
+            EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
+            if (dto.getPostCode() != null && !dto.getPostCode().isEmpty())
+                evaluationPeriodPostService.createAll(save, dto.getPostCode());
+            return evaluationPeriodMapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        }
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) {
-        if (this.isValidDates(dto.getStartDate(), dto.getEndDate(), dto.getStartDateAssessment(), dto.getEndDateAssessment())) {
-            try {
-                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() ->
-                        new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-                if (Objects.nonNull(evaluationPeriod) && !evaluationPeriod.getStatusCatalog().getCode().equals(PERIOD_INITIAL_REGISTRATION))
-                    throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable, "",
-                            messageSource.getMessage("exception.update.evaluation.period.Initial-registration", null, LocaleContextHolder.getLocale()));
+        validationDates(dto);
+        try {
+            EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() ->
+                    new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+            if (Objects.nonNull(evaluationPeriod) && !evaluationPeriod.getStatusCatalog().getCode().equals(PERIOD_INITIAL_REGISTRATION))
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotDeletable, "",
+                        messageSource.getMessage("exception.update.evaluation.period.Initial-registration", null, LocaleContextHolder.getLocale()));
 
-                evaluationPeriodMapper.update(evaluationPeriod, dto);
-                EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
-                return evaluationPeriodMapper.entityToDtoInfo(save);
-            } catch (Exception exception) {
-                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
-            }
-        } else
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null, messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
+            evaluationPeriodMapper.update(evaluationPeriod, dto);
+            EvaluationPeriod save = evaluationPeriodRepository.save(evaluationPeriod);
+            return evaluationPeriodMapper.entityToDtoInfo(save);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+        }
     }
 
     @Override
@@ -193,12 +190,21 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
 
-    private boolean isValidDates(Date startDate, Date endDate, Date startDateAssessment, Date endDateAssessment) {
-        return startDateAssessment.compareTo(startDate) >= 0 &&
-                startDateAssessment.compareTo(endDate) < 0 &&
-                startDateAssessment.compareTo(endDateAssessment) <= 0 &&
-                endDateAssessment.compareTo(startDate) > 0 &&
-                endDateAssessment.compareTo(endDate) <= 0 &&
-                endDateAssessment.compareTo(startDateAssessment) >= 0;
+    private void validationDates(EvaluationPeriodDTO dto) {
+        if (dto.getStartDateAssessment().before(dto.getStartDate()) ||
+                dto.getStartDateAssessment().after(dto.getEndDate()) ||
+                dto.getStartDateAssessment().after(dto.getEndDateAssessment()) ||
+                dto.getEndDateAssessment().before(dto.getStartDate()) ||
+                dto.getEndDateAssessment().after(dto.getEndDate())
+        )
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
+                    messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
+
+        if (dto.getValidationStartDate().after(dto.getValidationEndDate())
+                || !Objects.equals(new Date(dto.getValidationStartDate().getTime()).toLocalDate().plusDays(15),
+                new Date(dto.getStartDateAssessment().getTime()).toLocalDate())) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
+                    messageSource.getMessage("exception.validation-date.not.is.invalid", null, LocaleContextHolder.getLocale()));
+        }
     }
 }
