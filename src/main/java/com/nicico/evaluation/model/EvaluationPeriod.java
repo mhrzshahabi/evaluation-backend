@@ -47,4 +47,9 @@ public class EvaluationPeriod extends Auditable {
     @Column(name = "status_catalog_id", nullable = false)
     private Long statusCatalogId;
 
+    @Column(name = "c_validation_start_date")
+    private String validationStartDate;
+
+    @Column(name = "c_validation_end_date")
+    private String validationEndDate;
 }
