@@ -41,5 +41,9 @@
                              constraintName="uc_tbl_merit_component_code"
                              tableName="tbl_merit_component"/>
     </changeSet>
-
+    <changeSet author="MShahabi" id="1681813275">
+        <addUniqueConstraint columnNames="group_type_id, merit_component_id"
+                             constraintName="uc_tbl_group_type_merit_group_type_merit"
+                             tableName="tbl_group_type_merit"/>
+    </changeSet>
 </databaseChangeLog>
