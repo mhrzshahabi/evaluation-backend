@@ -1,8 +1,8 @@
 package com.nicico.evaluation.dto;
 
-import com.nicico.evaluation.model.Catalog;
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Min;
@@ -28,6 +28,8 @@ public class EvaluationPeriodDTO {
     private Date endDateAssessment;
     private String description;
 
+    private Date validationStartDate;
+    private Date validationEndDate;
 
     @Getter
     @Setter
@@ -35,7 +37,7 @@ public class EvaluationPeriodDTO {
     @ApiModel("EvaluationPeriodInfoRq")
     public static class Info extends EvaluationPeriodDTO {
         private Long id;
-        private CatalogDTO.Info   statusCatalog;
+        private CatalogDTO.Info statusCatalog;
     }
 
     @Getter
