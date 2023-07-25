@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
-@Table(name = "tbl_group_type_merit")
+@Table(name = "tbl_group_type_merit", uniqueConstraints = {@UniqueConstraint(columnNames = {"group_type_id", "merit_component_id"})})
 public class GroupTypeMerit extends Auditable {
 
     @Id
