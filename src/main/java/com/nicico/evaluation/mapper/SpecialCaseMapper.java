@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 
 @Mapper(componentModel = "spring")
@@ -19,24 +20,25 @@ public interface SpecialCaseMapper {
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
     })
-     SpecialCase dtoCreateToEntity(SpecialCaseDTO.Create dto);
+    SpecialCase dtoCreateToEntity(SpecialCaseDTO.Create dto);
 
     @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertStringToDate"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertStringToDate")
     })
-     SpecialCaseDTO.Info entityToDtoInfo(SpecialCase entity);
+    SpecialCaseDTO.Info entityToDtoInfo(SpecialCase entity);
 
-     List<SpecialCaseDTO.Info> entityToDtoInfoList(List<SpecialCase> entities);
+    List<SpecialCaseDTO.Info> entityToDtoInfoList(List<SpecialCase> entities);
 
     @Mappings({
             @Mapping(target = "startDate", source = "startDate", qualifiedByName = "convertDateToString"),
             @Mapping(target = "endDate", source = "endDate", qualifiedByName = "convertDateToString")
     })
-     void update(@MappingTarget SpecialCase entity, SpecialCaseDTO.Update dto);
+    void update(@MappingTarget SpecialCase entity, SpecialCaseDTO.Update dto);
 
     @Named("convertDateToString")
-   default String convertDateToString(Date date) {
+    default String convertDateToString(Date date) {
+        if (Objects.isNull(date)) return null;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
         return DateUtil.convertMiToKh(dateFormat.format(date));
@@ -44,6 +46,7 @@ public interface SpecialCaseMapper {
 
     @Named("convertStringToDate")
     default Date convertStringToDate(String date) throws ParseException {
+        if (Objects.isNull(date)) return null;
         String miDate = DateUtil.convertKhToMi1(date);
         return new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
     }
