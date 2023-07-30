@@ -1570,17 +1570,28 @@
             ]]>
         </sql>
     </changeSet>
+
     <changeSet id="1689070145" author="semami">
         <dropColumn tableName="tbl_evaluation" columnName="c_assess_real_post_code"/>
     </changeSet>
+
     <changeSet id="1689071963" author="semami">
         <dropNotNullConstraint columnName="c_assessor_national_code" tableName="tbl_special_case"/>
         <dropNotNullConstraint columnName="c_assessor_post_code" tableName="tbl_special_case"/>
     </changeSet>
+
     <changeSet author="semami" id="1690274592">
         <addColumn tableName="tbl_evaluation_period">
             <column name="c_validation_start_date" type="VARCHAR2(100 CHAR)"/>
             <column name="c_validation_end_date" type="VARCHAR2(100 CHAR)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1681729399">
+        <addColumn tableName="tbl_merit_component">
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="c_description" type="VARCHAR2(2000 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

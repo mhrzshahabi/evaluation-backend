@@ -34,4 +34,16 @@ public class MeritComponent extends Auditable {
 
     @OneToMany(mappedBy = "meritComponent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<MeritComponentType> meritComponentTypes;
+
+    @Setter(AccessLevel.NONE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "f_merit_component_status_to_catalog"))
+    private Catalog statusCatalog;
+
+    @Column(name = "status_catalog_id")
+    private Long statusCatalogId;
+
+    @Column(name = "c_description")
+    private String description;
+
 }
