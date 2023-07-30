@@ -6,6 +6,8 @@ import com.nicico.evaluation.dto.WebSocketDTO;
 import com.nicico.evaluation.model.Batch;
 import org.mapstruct.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -28,7 +30,8 @@ public interface BatchMapper {
 
     @Mappings({
             @Mapping(target = "title", source = "titleCatalog.title"),
-            @Mapping(target = "progressPercent", source = "entity", qualifiedByName = "getProgressPercent")
+            @Mapping(target = "progressPercent", source = "entity", qualifiedByName = "getProgressPercent"),
+            @Mapping(target = "lastModifiedDate", source = "lastModifiedDate", qualifiedByName = "changeToLocalTime")
     })
     WebSocketDTO entityToWebSocketDto(Batch entity);
 
@@ -42,4 +45,12 @@ public interface BatchMapper {
             return ((entity.getSuccessfulNumber() + entity.getFailedNumber()) / entity.getTotal()) * 100;
     }
 
+    @Named("changeToLocalTime")
+    default Date changeToLocalTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, 3);
+        calendar.add(Calendar.MINUTE, 30);
+        return calendar.getTime();
+    }
 }
