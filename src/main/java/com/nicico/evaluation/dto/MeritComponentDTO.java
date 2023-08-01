@@ -20,6 +20,8 @@ public abstract class MeritComponentDTO {
     @NotNull
     @Size(max = 255, message = "عنوان نمی تواند بیشتر از 255 کاراکتر باشد")
     private String title;
+    private String description;
+    private Long statusCatalogId;
 
     @Getter
     @Setter
@@ -33,6 +35,8 @@ public abstract class MeritComponentDTO {
         //بعدا امکان داره لیست بشه
 //        private List<KPITypeDTO.Info> kpiType;
         private MeritComponentTypeDTO.Info meritComponentTypes;
+        private CatalogDTO.Info statusCatalog;
+
     }
 
     @Getter
@@ -58,6 +62,17 @@ public abstract class MeritComponentDTO {
     public static class Update extends MeritComponentDTO {
 
         private List<Long> kpiTypeId;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ChangeStatusRq")
+    public static class ChangeStatus {
+
+        private String statusCode;
+        private String description;
+
     }
 
     @Getter
