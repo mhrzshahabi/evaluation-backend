@@ -1,32 +1,51 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
-import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.iservice.IPostService;
 import com.nicico.evaluation.model.Evaluation;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import com.nicico.evaluation.model.Post;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = SpecialCaseMapper.class)
-public interface EvaluationMapper {
+public abstract class EvaluationMapper {
 
-    EvaluationDTO.Excel entityToDtoExcel(Evaluation entity);
+    @Lazy
+    @Autowired
+    private IPostService postService;
 
-    List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
+    public abstract EvaluationDTO.Excel entityToDtoExcel(Evaluation entity);
 
-    Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
+    public abstract List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
 
-    List<Evaluation> dtoCreateToEntityList(List<EvaluationDTO.Create> dto);
+    public abstract Evaluation dtoCreateToEntity(EvaluationDTO.Create dto);
 
-    EvaluationDTO.Update entityToUpdateDto(Evaluation entity);
+    public abstract List<Evaluation> dtoCreateToEntityList(List<EvaluationDTO.Create> dto);
 
-    EvaluationDTO.Info entityToDtoInfo(Evaluation entity);
+    public abstract EvaluationDTO.Update entityToUpdateDto(Evaluation entity);
 
-    List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
+    @Mappings({
+            @Mapping(target = "id", source = "entity.id"),
+            @Mapping(target = "assessorPostTitle", source = "entity.assessorPostCode", qualifiedByName = "getAssessorPostTitle"),
+            @Mapping(target = "assessPostTitle", source = "assessPost.postTitle"),
+            @Mapping(target = "postGradeTitle", source = "assessPost.postGradeTitle"),
+            @Mapping(target = "mojtamaTitle", source = "assessPost.mojtamaTitle"),
+            @Mapping(target = "moavenatTitle", source = "assessPost.moavenatTitle"),
+            @Mapping(target = "omoorTitle", source = "assessPost.omoorTitle"),
+            @Mapping(target = "ghesmatTitle", source = "assessPost.ghesmatTitle")
+    })
+    public abstract EvaluationDTO.Info entityToDtoInfo(Evaluation entity, Post assessPost);
 
-    void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
+    public abstract List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
 
+    public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
+
+    @Named("getAssessorPostTitle")
+    String getAssessorPostTitle(String assessorPostCode) {
+        return postService.getByPostCode(assessorPostCode).getPostTitle();
+    }
 
 }

@@ -16,6 +16,8 @@ spring:
         dialect: org.hibernate.dialect.Oracle12cDialect
         hbm2ddl:
           schema_filter_provider: com.nicico.copper.common.hibernate.CustomSchemaFilterProvider
+        envers:
+          audit_table_prefix: AUD_
     show-sql: true
     open-in-view: false
   liquibase:
