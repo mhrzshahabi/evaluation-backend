@@ -1570,17 +1570,223 @@
             ]]>
         </sql>
     </changeSet>
+
     <changeSet id="1689070145" author="semami">
         <dropColumn tableName="tbl_evaluation" columnName="c_assess_real_post_code"/>
     </changeSet>
+
     <changeSet id="1689071963" author="semami">
         <dropNotNullConstraint columnName="c_assessor_national_code" tableName="tbl_special_case"/>
         <dropNotNullConstraint columnName="c_assessor_post_code" tableName="tbl_special_case"/>
     </changeSet>
+
     <changeSet author="semami" id="1690274592">
         <addColumn tableName="tbl_evaluation_period">
             <column name="c_validation_start_date" type="VARCHAR2(100 CHAR)"/>
             <column name="c_validation_end_date" type="VARCHAR2(100 CHAR)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1681729399">
+        <addColumn tableName="tbl_merit_component">
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="c_description" type="VARCHAR2(2000 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="semami" id="1690713383">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'MShahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'وضعیت مولفه شایستگی',
+                    'MeritComponentStatus',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در انتظار بررسی ایجاد',
+                    'Awaiting-Create-Merit',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در انتظار بررسی ویرایش',
+                    'Awaiting-Edit-Merit',
+                    '');
+            END;
+            BEGIN
+            SELECT id
+            INTO l_catalog_type_id
+            FROM tbl_catalog_type
+            WHERE c_code = 'MeritComponentStatus';
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'در انتظار بررسی ابطال',
+                    'Awaiting-Revoke-Merit',
+                    '');
+              END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'بررسی مجدد متقاضی',
+                    'Re-Examination-Merit',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'فعال',
+                    'Active-Merit',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ابطال شده',
+                    'Revoked-Merit',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'رد درخواست',
+                    'Reject-Merit',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

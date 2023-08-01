@@ -200,9 +200,9 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
                     messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
 
-        if (dto.getValidationStartDate().after(dto.getValidationEndDate())
+        if (Objects.nonNull(dto.getValidationStartDate()) && Objects.nonNull(dto.getValidationEndDate()) && (dto.getValidationStartDate().after(dto.getValidationEndDate())
                 || !Objects.equals(new Date(dto.getValidationStartDate().getTime()).toLocalDate().plusDays(15),
-                new Date(dto.getStartDateAssessment().getTime()).toLocalDate())) {
+                new Date(dto.getStartDateAssessment().getTime()).toLocalDate()))) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
                     messageSource.getMessage("exception.validation-date.not.is.invalid", null, LocaleContextHolder.getLocale()));
         }

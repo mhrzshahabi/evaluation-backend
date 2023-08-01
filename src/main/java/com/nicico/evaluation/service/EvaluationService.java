@@ -9,6 +9,7 @@ import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.Evaluation;
+import com.nicico.evaluation.model.Post;
 import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -34,14 +35,15 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 public class EvaluationService implements IEvaluationService {
 
     private final EvaluationMapper mapper;
-    private final EvaluationRepository repository;
-    private final PageableMapper pageableMapper;
-    private final CatalogRepository catalogRepository;
-    private final ResourceBundleMessageSource messageSource;
-    private final ISpecialCaseService specialCaseService;
-    private final IOrganizationTreeService organizationTreeService;
-    private IEvaluationItemService evaluationItemService;
+    private final IPostService postService;
     private final IBatchService batchService;
+    private final PageableMapper pageableMapper;
+    private final EvaluationRepository repository;
+    private final CatalogRepository catalogRepository;
+    private IEvaluationItemService evaluationItemService;
+    private final ISpecialCaseService specialCaseService;
+    private final ResourceBundleMessageSource messageSource;
+    private final IOrganizationTreeService organizationTreeService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -80,7 +82,8 @@ public class EvaluationService implements IEvaluationService {
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.Info get(Long id) {
         Evaluation evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return mapper.entityToDtoInfo(evaluation);
+        Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+        return mapper.entityToDtoInfo(evaluation, assessPost);
     }
 
     @Override
@@ -88,7 +91,8 @@ public class EvaluationService implements IEvaluationService {
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.Info getAllByPeriodIdAndAssessPostCode(Long periodId, String assessPostCode) {
         Evaluation evaluation = repository.findByEvaluationPeriodIdAndAssessPostCode(periodId, assessPostCode);
-        return mapper.entityToDtoInfo(evaluation);
+        Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+        return mapper.entityToDtoInfo(evaluation, assessPost);
     }
 
     @Override
@@ -104,7 +108,8 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info create(EvaluationDTO.Create dto) {
         Evaluation evaluation = mapper.dtoCreateToEntity(dto);
         evaluation = repository.save(evaluation);
-        return mapper.entityToDtoInfo(evaluation);
+        Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+        return mapper.entityToDtoInfo(evaluation, assessPost);
     }
 
     @Override
@@ -133,7 +138,8 @@ public class EvaluationService implements IEvaluationService {
             validateSpecialCase(methodTypes, specialCaseInfos, specialCaseRevoked, evaluationCreate, evaluation, orgTreeInfo);
 
             evaluation = repository.save(evaluation);
-            evaluationInfo.add(mapper.entityToDtoInfo(evaluation));
+            Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+            evaluationInfo.add(mapper.entityToDtoInfo(evaluation, assessPost));
         }
         revokedSpecialCase(specialCaseRevoked);
         return evaluationInfo;
@@ -206,7 +212,8 @@ public class EvaluationService implements IEvaluationService {
         Evaluation evaluation = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         mapper.update(evaluation, dto);
         Evaluation save = repository.save(evaluation);
-        return mapper.entityToDtoInfo(save);
+        Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+        return mapper.entityToDtoInfo(save, assessPost);
     }
 
     @Override
@@ -221,7 +228,7 @@ public class EvaluationService implements IEvaluationService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        return BaseService.optimizedSearch(repository, entity -> mapper.entityToDtoInfo(entity, postService.getByPostCode(entity.getAssessPostCode())), request);
     }
 
     @Override

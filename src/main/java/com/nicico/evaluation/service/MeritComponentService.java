@@ -11,7 +11,9 @@ import com.nicico.evaluation.iservice.IKPITypeService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IMeritComponentTypeService;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
+import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.MeritComponent;
+import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.MeritComponentRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
@@ -25,10 +27,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
+import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
 @RequiredArgsConstructor
 @Service
@@ -40,7 +41,7 @@ public class MeritComponentService implements IMeritComponentService {
     private final IMeritComponentTypeService meritComponentTypeService;
     private final IKPITypeService typeService;
     private final ResourceBundleMessageSource messageSource;
-
+    private final CatalogRepository catalogRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -102,7 +103,7 @@ public class MeritComponentService implements IMeritComponentService {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             if (exception.getMessage().contains("UC_TBL_MERIT_COMPONENT_CODE"))
                 response.setMessage(messageSource.getMessage("exception.duplicated.merit-component",
-                 new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
+                        new Object[]{dto.getCode()}, LocaleContextHolder.getLocale()));
             else
                 response.setMessage(exception.getMessage());
         }
@@ -159,7 +160,6 @@ public class MeritComponentService implements IMeritComponentService {
         MeritComponent meritComponent = repository.findFirstByCode(code).orElseThrow(() ->
                 new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "meritComponent",
                         messageSource.getMessage("exception.not.exist.merit-component", new Object[]{code}, LocaleContextHolder.getLocale())));
-        ;
         return mapper.entityToDtoInfo(meritComponent);
     }
 
@@ -169,6 +169,48 @@ public class MeritComponentService implements IMeritComponentService {
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست مولفه شایستگی");
         return new ExcelGenerator.ExcelDownload(body);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('U_MERIT_COMPONENT')")
+    public MeritComponentDTO.Info changeStatus(Long id, MeritComponentDTO.ChangeStatus request) {
+        MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        try {
+            Boolean canChangeStatus = Boolean.FALSE;
+            if (Objects.nonNull(meritComponent.getStatusCatalog())) {
+                switch (meritComponent.getStatusCatalog().getCode()) {
+                    case AWAITING_CREATE_MERIT, AWAITING_EDIT_MERIT -> {
+                        if (request.getStatusCode().equals(RE_EXAMINATION_MERIT) || request.getStatusCode().equals(ACTIVE_MERIT)
+                                || request.getStatusCode().equals(REJECT_MERIT))
+                            canChangeStatus = Boolean.TRUE;
+                    }
+                    case AWAITING_REVOKE_MERIT -> {
+                        if (request.getStatusCode().equals(RE_EXAMINATION_MERIT) || request.getStatusCode().equals(REVOKED_MERIT)
+                                || request.getStatusCode().equals(REJECT_MERIT))
+                            canChangeStatus = Boolean.TRUE;
+                    }
+                    case RE_EXAMINATION_MERIT -> {
+                        if (request.getStatusCode().equals(AWAITING_CREATE_MERIT) || request.getStatusCode().equals(AWAITING_EDIT_MERIT)
+                                || request.getStatusCode().equals(AWAITING_REVOKE_MERIT) || request.getStatusCode().equals(REJECT_MERIT))
+                            canChangeStatus = Boolean.TRUE;
+                    }
+                    default -> throw new IllegalStateException("Unexpected value: " + meritComponent.getStatusCatalog().getCode());
+                }
+            } else canChangeStatus = Boolean.TRUE;
+
+            if (canChangeStatus.equals(Boolean.TRUE)) {
+                Optional<Catalog> statusByCode = catalogRepository.findByCode(request.getStatusCode());
+                statusByCode.ifPresent(catalog -> {
+                    meritComponent.setStatusCatalogId(catalog.getId());
+                    meritComponent.setDescription(request.getDescription());
+                    repository.save(meritComponent);
+                });
+            }
+            return mapper.entityToDtoInfo(meritComponent);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+        }
     }
 
 }

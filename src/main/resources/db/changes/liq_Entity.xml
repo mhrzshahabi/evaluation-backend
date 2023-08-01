@@ -639,4 +639,37 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1681796257">
+        <createTable tableName="REVINFO">
+            <column name="REV" autoIncrement="true" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="REVINFOPK"/>
+            </column>
+            <column name="REVTSTMP" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1681798496">
+        <createTable tableName="aud_tbl_merit_component">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="aud_tbl_merit_componentPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="aud_tbl_merit_componentPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="status_catalog_id" type="NUMBER(10, 0)"/>
+            <column name="c_description" type="VARCHAR2(2000 CHAR)"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
