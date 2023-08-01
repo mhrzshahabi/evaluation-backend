@@ -34,6 +34,7 @@ public class MeritComponentController {
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
     private final IMeritComponentService service;
+
     /**
      * @param id is the instance id
      * @return MeritComponentDTO.Info is the single meritComponent entity
@@ -73,6 +74,15 @@ public class MeritComponentController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<MeritComponentDTO.Info> update(@PathVariable Long id, @Valid @RequestBody MeritComponentDTO.Update request) {
         return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
+    }
+
+    /**
+     * @param request is  the model of input for change status MeritComponent entity
+     * @return MeritComponentDTO.Info is the updated MeritComponentDTO entity
+     */
+    @PutMapping(value = "/change-status/{id}")
+    public ResponseEntity<MeritComponentDTO.Info> changeStatus(@PathVariable Long id, @Valid @RequestBody MeritComponentDTO.ChangeStatus request) {
+        return new ResponseEntity<>(service.changeStatus(id, request), HttpStatus.OK);
     }
 
     /**
