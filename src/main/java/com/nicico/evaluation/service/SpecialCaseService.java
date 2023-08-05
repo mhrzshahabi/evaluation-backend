@@ -125,7 +125,7 @@ public class SpecialCaseService implements ISpecialCaseService {
 
     private void validate(SpecialCaseDTO dto, long id) {
 
-        if (dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
+        if (Objects.nonNull(dto.getAssessorNationalCode()) && dto.getAssessorNationalCode().equals(dto.getAssessNationalCode())) {
             final Locale locale = LocaleContextHolder.getLocale();
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave,
                     "assessNationalCode and assessorNationalCode",
