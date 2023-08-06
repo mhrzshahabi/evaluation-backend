@@ -190,7 +190,6 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
 
     private void validationDates(EvaluationPeriodDTO dto) {
-
         if (changeToSpecialTime(dto.getStartDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
                 changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDate())) ||
                 changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDateAssessment())) ||
