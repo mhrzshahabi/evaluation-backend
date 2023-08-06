@@ -25,6 +25,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_INITIAL_REGISTRATION;
@@ -100,7 +103,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
+    public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) throws ParseException {
         validationDates(dto);
         try {
             EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
@@ -117,7 +120,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) {
+    public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) throws ParseException {
         validationDates(dto);
         try {
             EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() ->
@@ -191,7 +194,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
 
-    private void validationDates(EvaluationPeriodDTO dto) {
+    private void validationDates(EvaluationPeriodDTO dto) throws ParseException {
 
         log.info("getStartDateAssessment " + changeToSpecialTime(dto.getStartDateAssessment()) + " / ");
         log.info("getStartDate " + changeToSpecialTime(dto.getStartDate()) + " / ");
@@ -221,10 +224,16 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         }
     }
 
-    private Date changeToSpecialTime(Date date) {
-        log.info("date " + date + " / ");
+    private Date changeToSpecialTime(Date date) throws ParseException {
+//        log.info("date " + date + " / ");
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
+        Date dated = new SimpleDateFormat("yyyy-MM-dd").parse(dateFormat.format(date));
+
+        log.info("dated " + dated + " / ");
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTime(dated);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);

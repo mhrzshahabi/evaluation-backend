@@ -6,6 +6,7 @@ import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 
@@ -17,9 +18,9 @@ public interface IEvaluationPeriodService {
 
     SearchDTO.SearchRs<EvaluationPeriodDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto);
+    EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) throws ParseException;
 
-    EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto);
+    EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) throws ParseException;
 
     List<EvaluationPeriodPostDTO.Info> createEvaluationPeriodPost(Long id, Set<String> postCode);
 
