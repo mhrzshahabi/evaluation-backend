@@ -195,9 +195,14 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                 changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDateAssessment())) ||
                 changeToSpecialTime(dto.getEndDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
                 changeToSpecialTime(dto.getEndDateAssessment()).after(changeToSpecialTime(dto.getEndDate()))
-        )
+        ) {
+            System.out.println("getStartDateAssessment " + changeToSpecialTime(dto.getStartDateAssessment()) + " / ");
+            System.out.println("getStartDate " + changeToSpecialTime(dto.getStartDate()) + " / ");
+            System.out.println("getEndDateAssessment " + changeToSpecialTime(dto.getEndDateAssessment()) + " / ");
+            System.out.println("getEndDate " + changeToSpecialTime(dto.getEndDate()) + " / ");
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
                     messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
+        }
 
         if (Objects.nonNull(dto.getValidationStartDate()) && Objects.nonNull(dto.getValidationEndDate())) {
             Calendar validationStartDateChanged = Calendar.getInstance();
