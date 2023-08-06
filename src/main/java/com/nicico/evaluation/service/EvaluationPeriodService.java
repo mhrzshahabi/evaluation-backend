@@ -192,17 +192,18 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
 
     private void validationDates(EvaluationPeriodDTO dto) {
+
+        log.info("getStartDateAssessment " + changeToSpecialTime(dto.getStartDateAssessment()) + " / ");
+        log.info("getStartDate " + changeToSpecialTime(dto.getStartDate()) + " / ");
+        log.info("getEndDateAssessment " + changeToSpecialTime(dto.getEndDateAssessment()) + " / ");
+        log.info("getEndDate " + changeToSpecialTime(dto.getEndDate()) + " / ");
+
         if (changeToSpecialTime(dto.getStartDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
                 changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDate())) ||
                 changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDateAssessment())) ||
                 changeToSpecialTime(dto.getEndDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
                 changeToSpecialTime(dto.getEndDateAssessment()).after(changeToSpecialTime(dto.getEndDate()))
         ) {
-
-            log.info("getStartDateAssessment " + changeToSpecialTime(dto.getStartDateAssessment()) + " / ");
-            log.info("getStartDate " + changeToSpecialTime(dto.getStartDate()) + " / ");
-            log.info("getEndDateAssessment " + changeToSpecialTime(dto.getEndDateAssessment()) + " / ");
-            log.info("getEndDate " + changeToSpecialTime(dto.getEndDate()) + " / ");
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
                     messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
         }
