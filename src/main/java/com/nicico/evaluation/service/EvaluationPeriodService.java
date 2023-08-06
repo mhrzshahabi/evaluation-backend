@@ -24,7 +24,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.*;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_INITIAL_REGISTRATION;
@@ -191,20 +190,34 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
 
     private void validationDates(EvaluationPeriodDTO dto) {
-        if (dto.getStartDateAssessment().before(dto.getStartDate()) ||
-                dto.getStartDateAssessment().after(dto.getEndDate()) ||
-                dto.getStartDateAssessment().after(dto.getEndDateAssessment()) ||
-                dto.getEndDateAssessment().before(dto.getStartDate()) ||
-                dto.getEndDateAssessment().after(dto.getEndDate())
+        if (changeToSpecialTime(dto.getStartDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
+                changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDate())) ||
+                changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDateAssessment())) ||
+                changeToSpecialTime(dto.getEndDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
+                changeToSpecialTime(dto.getEndDateAssessment()).after(changeToSpecialTime(dto.getEndDate()))
         )
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
                     messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
 
-        if (Objects.nonNull(dto.getValidationStartDate()) && Objects.nonNull(dto.getValidationEndDate()) && (dto.getValidationStartDate().after(dto.getValidationEndDate())
-                || !Objects.equals(new Date(dto.getValidationStartDate().getTime()).toLocalDate().plusDays(15),
-                new Date(dto.getStartDateAssessment().getTime()).toLocalDate()))) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
-                    messageSource.getMessage("exception.validation-date.not.is.invalid", null, LocaleContextHolder.getLocale()));
+        if (Objects.nonNull(dto.getValidationStartDate()) && Objects.nonNull(dto.getValidationEndDate())) {
+            Calendar validationStartDateChanged = Calendar.getInstance();
+            validationStartDateChanged.setTime(dto.getValidationStartDate());
+            validationStartDateChanged.add(Calendar.DAY_OF_MONTH, 15);
+
+            if (dto.getValidationStartDate().after(dto.getValidationEndDate()) ||
+                    !Objects.equals(changeToSpecialTime(validationStartDateChanged.getTime()), changeToSpecialTime(dto.getStartDateAssessment()))) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
+                        messageSource.getMessage("exception.validation-date.not.is.invalid", null, LocaleContextHolder.getLocale()));
+            }
         }
+    }
+
+    private Date changeToSpecialTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTime();
     }
 }
