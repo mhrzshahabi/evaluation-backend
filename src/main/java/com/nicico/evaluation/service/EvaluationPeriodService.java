@@ -222,11 +222,13 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
     private Date changeToSpecialTime(Date date) {
+        log.info("date " + date + " / ");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
+        log.info("calendar.getTime " + calendar.getTime() + " / ");
         return calendar.getTime();
     }
 }
