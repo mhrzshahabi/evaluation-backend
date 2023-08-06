@@ -16,6 +16,7 @@ import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_INITIAL_RE
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     private final PageableMapper pageableMapper;
@@ -196,10 +198,11 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                 changeToSpecialTime(dto.getEndDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
                 changeToSpecialTime(dto.getEndDateAssessment()).after(changeToSpecialTime(dto.getEndDate()))
         ) {
-            System.out.println("getStartDateAssessment " + changeToSpecialTime(dto.getStartDateAssessment()) + " / ");
-            System.out.println("getStartDate " + changeToSpecialTime(dto.getStartDate()) + " / ");
-            System.out.println("getEndDateAssessment " + changeToSpecialTime(dto.getEndDateAssessment()) + " / ");
-            System.out.println("getEndDate " + changeToSpecialTime(dto.getEndDate()) + " / ");
+
+            log.info("getStartDateAssessment " + changeToSpecialTime(dto.getStartDateAssessment()) + " / ");
+            log.info("getStartDate " + changeToSpecialTime(dto.getStartDate()) + " / ");
+            log.info("getEndDateAssessment " + changeToSpecialTime(dto.getEndDateAssessment()) + " / ");
+            log.info("getEndDate " + changeToSpecialTime(dto.getEndDate()) + " / ");
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
                     messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
         }
