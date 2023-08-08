@@ -49,5 +49,14 @@ public interface PostRelationRepository extends JpaRepository<PostRelation, Long
                       """, nativeQuery = true)
     List<String> getUnUsedPostCodeByEvaluationPeriodId(Long id);
 
+    @Query(value = """
+            SELECT
+                *
+            FROM
+                view_post_relation
+            WHERE
+                view_post_relation.post_code IN (:postCodes)
+                      """, nativeQuery = true)
+    List<PostRelation> findAllByPostCodeIn(List<String> postCodes);
 
 }

@@ -3,6 +3,8 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.model.EvaluationPeriod;
+import com.nicico.evaluation.model.EvaluationPeriodPost;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Set;
@@ -14,7 +16,7 @@ public interface IEvaluationPeriodPostService {
 
     void deleteByEvaluationPeriodId(Long evaluationPeriodId);
 
-    List<EvaluationPeriodPostDTO.Info> getByEvaluationPeriodId(Long evaluationPeriodId);
+    Page<EvaluationPeriodPost> findPageByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId);
 
     void deleteByEvaluationPeriodIdAndPostCode(Long evaluationPeriodId, String postCode);
 

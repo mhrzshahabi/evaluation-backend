@@ -1,6 +1,8 @@
 package com.nicico.evaluation.repository;
 
 import com.nicico.evaluation.model.EvaluationPeriodPost;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -12,11 +14,9 @@ import java.util.Set;
 @Repository
 public interface EvaluationPeriodPostRepository extends JpaRepository<EvaluationPeriodPost, Long>, JpaSpecificationExecutor<EvaluationPeriodPost> {
 
-    List<EvaluationPeriodPost> findAllByEvaluationPeriodId(Long id);
+    Page<EvaluationPeriodPost> findByEvaluationPeriodId(Long evaluationPeriodId, Pageable pageable);
 
     List<EvaluationPeriodPost> findAllByEvaluationPeriodIdIn(Set<Long> evaluationPeriodIds);
-
-    List<EvaluationPeriodPost> findAllByPostCodeIn(Set<String> postCode);
 
     Optional<EvaluationPeriodPost> findByEvaluationPeriodIdAndPostCode(Long evaluationPeriodPost, String postCode);
 

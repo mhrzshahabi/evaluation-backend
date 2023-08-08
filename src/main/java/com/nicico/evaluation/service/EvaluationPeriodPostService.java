@@ -1,6 +1,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.Range;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class EvaluationPeriodPostService implements IEvaluationPeriodPostService {
 
+    private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
     private final EvaluationPeriodPostMapper mapper;
     private final EvaluationService evaluationService;
@@ -37,9 +41,9 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationPeriodPostDTO.Info> getByEvaluationPeriodId(Long evaluationPeriodId) {
-        List<EvaluationPeriodPost> list = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
-        return mapper.entityToDtoInfoList(list);
+    public Page<EvaluationPeriodPost> findPageByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId) {
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return repository.findByEvaluationPeriodId(evaluationPeriodId, pageable);
     }
 
     @Override
@@ -120,34 +124,6 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
         postCodes.removeAll(postCodeList);
         return postCodes;
     }
-
-//    private Set<String> check1(EvaluationPeriod newEvaluationPeriod, Set<String> postCode) {
-//        Boolean canAdded = Boolean.FALSE;
-//        Set<String> newPostCodes = new HashSet<>();
-//        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByPostCodeIn(postCode);
-//        for (String pc : postCode) {
-//            if (evaluationPeriodPosts.stream().anyMatch(x -> x.getEvaluationPeriodId().equals(newEvaluationPeriod.getId()) && x.getPostCode().equals(pc)))
-//                continue;
-//            List<EvaluationPeriodPost> evaluationPeriodPostsFilter = evaluationPeriodPosts.stream().filter(x -> x.getPostCode().equals(pc)).collect(Collectors.toList());
-//            canAdded = Boolean.TRUE;
-//            for (EvaluationPeriodPost epp : evaluationPeriodPostsFilter) {
-//                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(epp.getEvaluationPeriodId())
-//                        .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-//                if (newEvaluationPeriod.getStartDate().equals(evaluationPeriod.getStartDate()) &&
-//                        newEvaluationPeriod.getEndDate().equals(evaluationPeriod.getEndDate()) &&
-//                        newEvaluationPeriod.getStartDateAssessment().equals(evaluationPeriod.getStartDateAssessment()) &&
-//                        newEvaluationPeriod.getEndDateAssessment().equals(evaluationPeriod.getEndDateAssessment())
-//                ) {
-//                    canAdded = Boolean.FALSE;
-//                    break;
-//                }
-//            }
-//            if (canAdded)
-//                newPostCodes.add(pc);
-//        }
-//        return newPostCodes;
-//    }
-
 
     @Override
     @Transactional(readOnly = true)
