@@ -91,8 +91,11 @@ public class EvaluationService implements IEvaluationService {
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.Info getAllByPeriodIdAndAssessPostCode(Long periodId, String assessPostCode) {
         Evaluation evaluation = repository.findByEvaluationPeriodIdAndAssessPostCode(periodId, assessPostCode);
-        Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
-        return mapper.entityToDtoInfo(evaluation, assessPost);
+        if (Objects.nonNull(evaluation)) {
+            Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+            return mapper.entityToDtoInfo(evaluation, assessPost);
+        } else
+            return null;
     }
 
     @Override
