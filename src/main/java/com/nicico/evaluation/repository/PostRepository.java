@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
 
-    Optional<Post> findByPostCode(String postCode);
+    Optional<Post> findFirstByPostCode(String postCode);
 }

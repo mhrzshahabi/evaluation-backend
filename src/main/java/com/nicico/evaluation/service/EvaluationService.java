@@ -136,10 +136,14 @@ public class EvaluationService implements IEvaluationService {
                                 LocaleContextHolder.getLocale()));
 
             validateSpecialCase(methodTypes, specialCaseInfos, specialCaseRevoked, evaluationCreate, evaluation, orgTreeInfo);
-
-            evaluation = repository.save(evaluation);
-            Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
-            evaluationInfo.add(mapper.entityToDtoInfo(evaluation, assessPost));
+            try {
+                evaluation = repository.save(evaluation);
+                Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+                evaluationInfo.add(mapper.entityToDtoInfo(evaluation, assessPost));
+            } catch (Exception exception) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null,
+                        messageSource.getMessage("exception.bad.data", null, LocaleContextHolder.getLocale()));
+            }
         }
         revokedSpecialCase(specialCaseRevoked);
         return evaluationInfo;

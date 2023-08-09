@@ -1,7 +1,6 @@
 package com.nicico.evaluation.repository;
 
 import com.nicico.evaluation.model.OrganizationTree;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,7 +16,7 @@ public interface OrganizationTreeRepository extends JpaRepository<OrganizationTr
 
     List<OrganizationTree> findAllByPostParentIdAndOrgStructureId(Long postParentId, Long orgStructureId, Pageable pageable);
 
-    Optional<OrganizationTree> findByPostCode(String postCode);
+    Optional<OrganizationTree> findFirstByPostCode(String postCode);
 
     Long countByPostParentId(Long postId);
 }
