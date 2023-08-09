@@ -29,25 +29,54 @@ public interface PostRelationRepository extends JpaRepository<PostRelation, Long
     List<?> getPostInfoEvaluationPeriodList(Long id);
 
     @Query(value = """
-            SELECT\s
-                      view_post_relation.post_code
-                  FROM
-                           view_post_relation
-                      INNER JOIN tbl_evaluation_period_post ON view_post_relation.post_code = tbl_evaluation_period_post.
-                      c_post_code
-                  WHERE
-                      tbl_evaluation_period_post.evaluation_period_id = :id
-                      and
-                      view_post_relation.post_code not in (
-                         SELECT
-                       tbl_evaluation.c_assess_post_code
-                   FROM
-                       tbl_evaluation
-                       WHERE evaluation_period_id = :id
-                       GROUP BY tbl_evaluation.c_assess_post_code
-                      )
+            SELECT
+                view_post_relation.post_code
+            FROM
+                view_post_relation
+                INNER JOIN tbl_evaluation_period_post ON view_post_relation.post_code = tbl_evaluation_period_post.c_post_code
+            WHERE
+                tbl_evaluation_period_post.evaluation_period_id =:evaluationPeriodId
+                AND view_post_relation.post_code NOT IN (
+                    SELECT
+                        tbl_evaluation.c_assess_post_code
+                    FROM
+                        tbl_evaluation
+                    WHERE
+                        evaluation_period_id =:evaluationPeriodId
+                    GROUP BY
+                        tbl_evaluation.c_assess_post_code
+                )
+            GROUP BY
+                view_post_relation.post_code
+            OFFSET :pageNumber ROWS FETCH NEXT :pageSize ROWS ONLY
                       """, nativeQuery = true)
-    List<String> getUnUsedPostCodeByEvaluationPeriodId(Long id);
+    List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId, int pageNumber, int pageSize);
+
+    @Query(value = """
+            SELECT
+                count(*) FROM
+                (
+            SELECT\s
+                view_post_relation.post_code
+            FROM
+                view_post_relation
+                INNER JOIN tbl_evaluation_period_post ON view_post_relation.post_code = tbl_evaluation_period_post.c_post_code
+            WHERE
+                tbl_evaluation_period_post.evaluation_period_id =:evaluationPeriodId
+                AND view_post_relation.post_code NOT IN (
+                    SELECT
+                        tbl_evaluation.c_assess_post_code
+                    FROM
+                        tbl_evaluation
+                    WHERE
+                        evaluation_period_id =:evaluationPeriodId
+                    GROUP BY
+                        tbl_evaluation.c_assess_post_code
+                )       GROUP BY
+                view_post_relation.post_code
+                )
+                      """, nativeQuery = true)
+    Integer getUnUsedPostCodeByEvaluationPeriodIdCount(Long evaluationPeriodId);
 
     @Query(value = """
             SELECT

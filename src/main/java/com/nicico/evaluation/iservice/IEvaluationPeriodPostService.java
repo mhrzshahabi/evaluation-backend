@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Set;
 
-
 public interface IEvaluationPeriodPostService {
 
     void delete(Long id);
@@ -24,7 +23,9 @@ public interface IEvaluationPeriodPostService {
 
     List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId);
 
-    List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId);
+    List<String> getUnUsedPostCodeByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId);
+
+    Integer getUnUsedPostCodeByEvaluationPeriodIdCount(Long evaluationPeriodId);
 
     SearchDTO.SearchRs<EvaluationPeriodPostDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 }

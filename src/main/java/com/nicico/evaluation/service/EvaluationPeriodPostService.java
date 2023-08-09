@@ -127,8 +127,15 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
-        return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId);
+    public List<String> getUnUsedPostCodeByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId) {
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId, pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getUnUsedPostCodeByEvaluationPeriodIdCount(Long evaluationPeriodId) {
+        return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodIdCount(evaluationPeriodId);
     }
 
     @Override

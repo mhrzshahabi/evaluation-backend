@@ -1,6 +1,5 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.PostRelationDTO;
@@ -86,33 +85,18 @@ public class PostRelationController {
 
         final PostRelationDTO.Response response = new PostRelationDTO.Response();
         final PostRelationDTO.SpecResponse specRs = new PostRelationDTO.SpecResponse();
-        List<String> postCodes = evaluationPeriodPostService.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId);
+        List<String> postCodes = evaluationPeriodPostService.getUnUsedPostCodeByEvaluationPeriodId(startIndex, count, evaluationPeriodId);
         if (postCodes.isEmpty()) {
             response.setData(new ArrayList<>())
                     .setStartRow(0)
                     .setEndRow(0)
                     .setTotalRows(0);
         } else {
-            SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-            final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-            final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
-                    .setOperator(EOperator.inSet)
-                    .setFieldName("postCode")
-                    .setValue(postCodes);
-
-            criteriaRqList.add(postCodeCriteriaRq);
-            criteriaRqList.add(request.getCriteria());
-
-            final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
-                    .setOperator(EOperator.and)
-                    .setCriteria(criteriaRqList);
-            request.setCriteria(criteriaRq);
-
-            SearchDTO.SearchRs<PostRelationDTO.Info> data = service.search(request);
+            SearchDTO.SearchRs<PostRelationDTO.Info> data = service.searchForEvaluationPeriod(postCodes);
             response.setData(data.getList())
                     .setStartRow(startIndex)
                     .setEndRow(startIndex + data.getList().size())
-                    .setTotalRows(data.getTotalCount().intValue());
+                    .setTotalRows(evaluationPeriodPostService.getUnUsedPostCodeByEvaluationPeriodIdCount(evaluationPeriodId));
             specRs.setResponse(response);
         }
         specRs.setResponse(response);
