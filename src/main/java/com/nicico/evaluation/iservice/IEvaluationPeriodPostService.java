@@ -3,10 +3,11 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.model.EvaluationPeriod;
+import com.nicico.evaluation.model.EvaluationPeriodPost;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Set;
-
 
 public interface IEvaluationPeriodPostService {
 
@@ -14,7 +15,7 @@ public interface IEvaluationPeriodPostService {
 
     void deleteByEvaluationPeriodId(Long evaluationPeriodId);
 
-    List<EvaluationPeriodPostDTO.Info> getByEvaluationPeriodId(Long evaluationPeriodId);
+    Page<EvaluationPeriodPost> findPageByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId);
 
     void deleteByEvaluationPeriodIdAndPostCode(Long evaluationPeriodId, String postCode);
 
@@ -22,7 +23,9 @@ public interface IEvaluationPeriodPostService {
 
     List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId);
 
-    List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId);
+    List<String> getUnUsedPostCodeByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId);
+
+    Integer getUnUsedPostCodeByEvaluationPeriodIdCount(Long evaluationPeriodId);
 
     SearchDTO.SearchRs<EvaluationPeriodPostDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 }

@@ -1,9 +1,11 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.mapper.EvaluationPeriodPostMapper;
 import com.nicico.evaluation.model.EvaluationPeriod;
@@ -12,34 +14,36 @@ import com.nicico.evaluation.repository.EvaluationPeriodPostRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
 import com.nicico.evaluation.repository.PostRelationRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.Range;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class EvaluationPeriodPostService implements IEvaluationPeriodPostService {
 
-    private final EvaluationPeriodRepository evaluationPeriodRepository;
+    private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
     private final EvaluationPeriodPostMapper mapper;
-    private final PostRelationRepository postRelationRepository;
+    private final EvaluationService evaluationService;
     private final EvaluationPeriodPostRepository repository;
     private final ResourceBundleMessageSource messageSource;
-    private final EvaluationService evaluationService;
+    private final PostRelationRepository postRelationRepository;
+    private final EvaluationPeriodRepository evaluationPeriodRepository;
 
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationPeriodPostDTO.Info> getByEvaluationPeriodId(Long evaluationPeriodId) {
-        List<EvaluationPeriodPost> list = repository.findAllByEvaluationPeriodId(evaluationPeriodId);
-        return mapper.entityToDtoInfoList(list);
+    public Page<EvaluationPeriodPost> findPageByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId) {
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return repository.findByEvaluationPeriodId(evaluationPeriodId, pageable);
     }
 
     @Override
@@ -53,10 +57,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     @Transactional
     public List<EvaluationPeriodPostDTO.Info> createAll(EvaluationPeriod newEvaluationPeriod, Set<String> postCode) {
         try {
-//            postCode = removeDuplicatePostCode(evaluationPeriod.getId(), postCode);
-//            if (postCode.isEmpty())
-//                throw new Exception();
-            postCode = check1(newEvaluationPeriod, postCode);
+            postCode = checkPostCodesForAdd(newEvaluationPeriod, postCode);
             if (postCode.isEmpty())
                 throw new Exception("equal");
             List<EvaluationPeriodPost> evaluationPeriodPosts = mapper.listPostCodeToEntities(newEvaluationPeriod.getId(), postCode);
@@ -106,38 +107,35 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
         }
     }
 
-    private Set<String> check1(EvaluationPeriod newEvaluationPeriod, Set<String> postCode) {
-        Boolean canAdded = Boolean.FALSE;
-        Set<String> newPostCodes = new HashSet<>();
-        List<EvaluationPeriodPost> evaluationPeriodPosts = repository.findAllByPostCodeIn(postCode);
-        for (String pc : postCode) {
-            if (evaluationPeriodPosts.stream().anyMatch(x -> x.getEvaluationPeriodId().equals(newEvaluationPeriod.getId()) && x.getPostCode().equals(pc)))
-                continue;
-            List<EvaluationPeriodPost> evaluationPeriodPostsFilter = evaluationPeriodPosts.stream().filter(x -> x.getPostCode().equals(pc)).collect(Collectors.toList());
-            canAdded = Boolean.TRUE;
-            for (EvaluationPeriodPost epp : evaluationPeriodPostsFilter) {
-                EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(epp.getEvaluationPeriodId())
-                        .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-                if (newEvaluationPeriod.getStartDate().equals(evaluationPeriod.getStartDate()) &&
-                        newEvaluationPeriod.getEndDate().equals(evaluationPeriod.getEndDate()) &&
-                        newEvaluationPeriod.getStartDateAssessment().equals(evaluationPeriod.getStartDateAssessment()) &&
-                        newEvaluationPeriod.getEndDateAssessment().equals(evaluationPeriod.getEndDateAssessment())
-                ) {
-                    canAdded = Boolean.FALSE;
-                    break;
-                }
-            }
-            if (canAdded)
-                newPostCodes.add(pc);
-        }
-        return newPostCodes;
-    }
+    private Set<String> checkPostCodesForAdd(EvaluationPeriod evaluationPeriod, Set<String> postCodes) {
 
+        List<EvaluationPeriod> overlappedEvaluationPeriodList = new ArrayList<>();
+        Long evalPeriodAwaitingId =  catalogService.getByCode("period-awaiting-review").getId();
+        Range<String> range1 = Range.between(evaluationPeriod.getStartDate(), evaluationPeriod.getEndDate());
+        List<EvaluationPeriod> evaluationPeriodList = evaluationPeriodRepository.findAllByStatusCatalogId(evalPeriodAwaitingId);
+        evaluationPeriodList.forEach(item -> {
+            Range<String> range2 = Range.between(item.getStartDate(), item.getEndDate());
+            if (range1.isOverlappedBy(range2))
+                overlappedEvaluationPeriodList.add(item);
+        });
+
+        Set<String> postCodeList = repository.findAllByEvaluationPeriodIdIn(overlappedEvaluationPeriodList.stream().map(EvaluationPeriod::getId).collect(Collectors.toSet()))
+                .stream().map(EvaluationPeriodPost::getPostCode).collect(Collectors.toSet());
+        postCodes.removeAll(postCodeList);
+        return postCodes;
+    }
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> getUnUsedPostCodeByEvaluationPeriodId(Long evaluationPeriodId) {
-        return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId);
+    public List<String> getUnUsedPostCodeByEvaluationPeriodId(int startIndex, int count, Long evaluationPeriodId) {
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodId(evaluationPeriodId, pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getUnUsedPostCodeByEvaluationPeriodIdCount(Long evaluationPeriodId) {
+        return postRelationRepository.getUnUsedPostCodeByEvaluationPeriodIdCount(evaluationPeriodId);
     }
 
     @Override

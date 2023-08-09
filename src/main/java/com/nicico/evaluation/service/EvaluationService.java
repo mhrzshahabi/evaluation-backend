@@ -91,8 +91,11 @@ public class EvaluationService implements IEvaluationService {
     @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.Info getAllByPeriodIdAndAssessPostCode(Long periodId, String assessPostCode) {
         Evaluation evaluation = repository.findByEvaluationPeriodIdAndAssessPostCode(periodId, assessPostCode);
-        Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
-        return mapper.entityToDtoInfo(evaluation, assessPost);
+        if (Objects.nonNull(evaluation)) {
+            Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+            return mapper.entityToDtoInfo(evaluation, assessPost);
+        } else
+            return null;
     }
 
     @Override
@@ -136,10 +139,14 @@ public class EvaluationService implements IEvaluationService {
                                 LocaleContextHolder.getLocale()));
 
             validateSpecialCase(methodTypes, specialCaseInfos, specialCaseRevoked, evaluationCreate, evaluation, orgTreeInfo);
-
-            evaluation = repository.save(evaluation);
-            Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
-            evaluationInfo.add(mapper.entityToDtoInfo(evaluation, assessPost));
+            try {
+                evaluation = repository.save(evaluation);
+                Post assessPost = postService.getByPostCode(evaluation.getAssessPostCode());
+                evaluationInfo.add(mapper.entityToDtoInfo(evaluation, assessPost));
+            } catch (Exception exception) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, null,
+                        messageSource.getMessage("exception.bad.data", null, LocaleContextHolder.getLocale()));
+            }
         }
         revokedSpecialCase(specialCaseRevoked);
         return evaluationInfo;

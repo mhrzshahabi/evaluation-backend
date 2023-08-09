@@ -61,4 +61,14 @@ public class PostRelationService implements IPostRelationService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<PostRelationDTO.Info> searchForEvaluationPeriod(List<String> postCodes) {
+        SearchDTO.SearchRs<PostRelationDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        List<PostRelation> postRelations = repository.findAllByPostCodeIn(postCodes);
+        List<PostRelationDTO.Info> infos = mapper.entityToDtoInfoList(postRelations);
+        searchRs.setList(infos);
+        return searchRs;
+    }
+
 }

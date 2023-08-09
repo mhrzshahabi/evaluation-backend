@@ -146,7 +146,7 @@ public class OrganizationTreeService implements IOrganizationTreeService {
 
     @Override
     public OrganizationTreeDTO.InfoTree getByPostCode(String postCode) {
-        OrganizationTree organizationTree = repository.findByPostCode(postCode)
+        OrganizationTree organizationTree = repository.findFirstByPostCode(postCode)
                 .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(organizationTree);
     }

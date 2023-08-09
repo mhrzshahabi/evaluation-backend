@@ -16,6 +16,7 @@ import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
@@ -24,12 +25,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_INITIAL_REGISTRATION;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     private final PageableMapper pageableMapper;
@@ -98,7 +103,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) {
+    public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) throws ParseException {
         validationDates(dto);
         try {
             EvaluationPeriod evaluationPeriod = evaluationPeriodMapper.dtoCreateToEntity(dto);
@@ -115,7 +120,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('U_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) {
+    public EvaluationPeriodDTO.Info update(Long id, EvaluationPeriodDTO.Update dto) throws ParseException {
         validationDates(dto);
         try {
             EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() ->
@@ -189,15 +194,22 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
 
-    private void validationDates(EvaluationPeriodDTO dto) {
+    private void validationDates(EvaluationPeriodDTO dto) throws ParseException {
+
+        log.info("getStartDateAssessment " + changeToSpecialTime(dto.getStartDateAssessment()) + " / ");
+        log.info("getStartDate " + changeToSpecialTime(dto.getStartDate()) + " / ");
+        log.info("getEndDateAssessment " + changeToSpecialTime(dto.getEndDateAssessment()) + " / ");
+        log.info("getEndDate " + changeToSpecialTime(dto.getEndDate()) + " / ");
+
         if (changeToSpecialTime(dto.getStartDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
                 changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDate())) ||
                 changeToSpecialTime(dto.getStartDateAssessment()).after(changeToSpecialTime(dto.getEndDateAssessment())) ||
                 changeToSpecialTime(dto.getEndDateAssessment()).before(changeToSpecialTime(dto.getStartDate())) ||
                 changeToSpecialTime(dto.getEndDateAssessment()).after(changeToSpecialTime(dto.getEndDate()))
-        )
+        ) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotInEvaluationPeriodDuration, null,
                     messageSource.getMessage("message.not.in.evaluation.period.duration", null, LocaleContextHolder.getLocale()));
+        }
 
         if (Objects.nonNull(dto.getValidationStartDate()) && Objects.nonNull(dto.getValidationEndDate())) {
             Calendar validationStartDateChanged = Calendar.getInstance();
@@ -212,12 +224,20 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         }
     }
 
-    private Date changeToSpecialTime(Date date) {
+    private Date changeToSpecialTime(Date date) throws ParseException {
+//        log.info("date " + date + " / ");
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
+        Date dated = new SimpleDateFormat("yyyy-MM-dd").parse(dateFormat.format(date));
+
+        log.info("dated " + dated + " / ");
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTime(dated);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
+        log.info("calendar.getTime " + calendar.getTime() + " / ");
         return calendar.getTime();
     }
 }

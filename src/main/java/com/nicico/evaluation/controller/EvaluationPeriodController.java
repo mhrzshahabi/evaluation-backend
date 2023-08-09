@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,7 +61,7 @@ public class EvaluationPeriodController {
      * @return EvaluationPeriodDTO.Info is the saved EvaluationPeriod entity
      */
     @PostMapping
-    public ResponseEntity<EvaluationPeriodDTO.Info> create(@Valid @RequestBody EvaluationPeriodDTO.Create request) {
+    public ResponseEntity<EvaluationPeriodDTO.Info> create(@Valid @RequestBody EvaluationPeriodDTO.Create request) throws ParseException {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
@@ -78,7 +79,7 @@ public class EvaluationPeriodController {
      * @return EvaluationPeriodDTO.Info is the updated EvaluationPeriod entity
      */
     @PutMapping(value = "/{id}")
-    public ResponseEntity<EvaluationPeriodDTO.Info> update(@PathVariable Long id, @Valid @RequestBody EvaluationPeriodDTO.Update request) {
+    public ResponseEntity<EvaluationPeriodDTO.Info> update(@PathVariable Long id, @Valid @RequestBody EvaluationPeriodDTO.Update request) throws ParseException {
         return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
     }
 

@@ -35,8 +35,7 @@ public class PostService implements IPostService {
 
     @Override
     public Post getByPostCode(String postCode) {
-        Post post = repository.findByPostCode(postCode).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        return post;
+        return repository.findFirstByPostCode(postCode).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
     }
 
     @Override
