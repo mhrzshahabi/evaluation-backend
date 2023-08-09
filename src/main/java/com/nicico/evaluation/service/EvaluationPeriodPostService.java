@@ -99,7 +99,7 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
                     "message.cant.remove.used.post",
                     new Object[]{evaluation.getEvaluationPeriod().getTitle()}, LocaleContextHolder.getLocale()));
         try {
-            repository.findByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode)
+            repository.findFirstByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode)
                     .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
             repository.deleteByEvaluationPeriodIdAndPostCode(evaluationPeriodId, postCode);
         } catch (Exception exception) {
