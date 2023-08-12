@@ -381,4 +381,58 @@
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1681727637">
+        <createView viewName="view_person" replaceIfExists="true">
+            <![CDATA[
+                    SELECT
+                        ROWNUM AS id,
+                        person.*
+                    FROM
+                        (
+                            SELECT
+                                person_id,
+                                personel_id,
+                                first_name,
+                                last_name,
+                                national_code,
+                                father_name,
+                                mother_name,
+                                to_char(
+                                    birth_date, 'yyyy/mm/dd', 'nls_calendar=persian'
+                                ) AS birth_date,
+                                gender_id,
+                                gender_name,
+                                mobile_number,
+                                email,
+                                birth_certificate_number,
+                                birth_certificate_series,
+                                birth_certificate_serial,
+                                area_city_id,
+                                area_city_name,
+                                birth_area_city_id,
+                                birth_area_city_name,
+                                nationality_id,
+                                nationality_name,
+                                religion_id,
+                                religion_name,
+                                tahol_status_id,
+                                tahol_status_name,
+                                military_id,
+                                military_name,
+                                blood_typen_id,
+                                blood_typen_name,
+                                to_char(
+                                    death_date, 'yyyy/mm/dd', 'nls_calendar=persian'
+                                ) AS death_date,
+                                death_cause_id,
+                                death_description,
+                                post_code,
+                                post_title
+                            FROM
+                                syn_hrm_person
+                        ) person
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

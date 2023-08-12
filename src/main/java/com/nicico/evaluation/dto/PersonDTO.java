@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -27,7 +26,7 @@ public abstract class PersonDTO {
         private String nationalCode;
         private String fatherName;
         private String motherName;
-        private Date birthDate;
+        private String birthDate;
         private Long genderId;
         private String genderName;
         private String mobileNumber;
@@ -49,7 +48,7 @@ public abstract class PersonDTO {
         private String militaryName;
         private Long bloodTypenId;
         private String bloodTypenName;
-        private Date deathDate;
+        private String deathDate;
         private Long deathCauseId;
         private String deathDescription;
         private String postCode;
