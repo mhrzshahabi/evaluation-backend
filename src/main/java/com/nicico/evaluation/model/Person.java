@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -43,7 +42,7 @@ public class Person {
     private String motherName;
 
     @Column(name = "BIRTH_DATE")
-    private Date birthDate;
+    private String birthDate;
 
     @Column(name = "GENDER_ID")
     private Long genderId;
@@ -109,7 +108,7 @@ public class Person {
     private String bloodTypenName;
 
     @Column(name = "DEATH_DATE")
-    private Date deathDate;
+    private String deathDate;
 
     @Column(name = "DEATH_CAUSE_ID")
     private Long deathCauseId;
