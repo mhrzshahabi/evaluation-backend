@@ -4,6 +4,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.utility.BaseResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,7 +17,9 @@ public interface IPostMeritComponentService {
 
     Long getTotalWeight(String groupPostCode);
 
-    List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String groupPostCode);
+    List<EvaluationItemDTO.MeritTupleDTO> getByGroupPostCode(String groupPostCode);
+
+    List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String postCode);
 
     PostMeritComponentDTO.SpecResponse list(int count, int startIndex);
 
