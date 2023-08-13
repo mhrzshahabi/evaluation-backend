@@ -10,10 +10,12 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
+import com.nicico.evaluation.service.ExecuterService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
@@ -33,6 +36,7 @@ import java.util.Locale;
 @RequestMapping(value = "/api/evaluation-period")
 public class EvaluationPeriodController {
 
+    private final ExecuterService executerService;
     private final IEvaluationPeriodService service;
     private final ResourceBundleMessageSource messageSource;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
@@ -171,4 +175,16 @@ public class EvaluationPeriodController {
         return new ResponseEntity<>(service.changeStatus(ChangeStatusDTO), HttpStatus.OK);
     }
 
+    /**
+     * @param evaluationPeriodId is the key value
+     * @return byte[] is the excel of InstanceInfo entity that match the criteria
+     */
+    @SneakyThrows
+    @GetMapping(value = "/export-error-list-excel/{evaluationPeriodId}")
+    public ResponseEntity<byte[]> exportExcel(HttpServletResponse response, @PathVariable Long evaluationPeriodId) {
+//        executerService.runAsync(() -> {
+        return service.downloadExcel(response, evaluationPeriodId);
+//            return true;
+//        });
+    }
 }

@@ -1788,5 +1788,10 @@
             ]]>
         </sql>
     </changeSet>
-
+    <changeSet id="1691915830" author="semami">
+        <sql>
+            update tbl_merit_component set STATUS_CATALOG_ID = (select id from tbl_catalog where c_code= 'Active-Merit')
+            where STATUS_CATALOG_ID is null;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

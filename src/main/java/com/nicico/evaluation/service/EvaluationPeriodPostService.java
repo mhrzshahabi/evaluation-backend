@@ -19,10 +19,14 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -51,6 +55,14 @@ public class EvaluationPeriodPostService implements IEvaluationPeriodPostService
     public List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId) {
         List<?> list = postRelationRepository.getPostInfoEvaluationPeriodList(evaluationPeriodId);
         return mapper.objectToInfoPostInfoDto(list);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
+    public List<EvaluationPeriodPostDTO.Info> getAllByPeriodIdNotIn(Long evaluationPeriodId) {
+        List<EvaluationPeriodPost> allByPeriodId = repository.findAllByPeriodIdNotInPostMerit(evaluationPeriodId);
+        return mapper.entityToDtoInfoList(allByPeriodId);
     }
 
     @Override

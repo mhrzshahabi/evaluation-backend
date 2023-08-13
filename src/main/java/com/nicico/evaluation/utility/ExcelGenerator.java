@@ -234,6 +234,7 @@ public class ExcelGenerator<T> {
         } else if (valueOfCell instanceof String) {
             cell.setCellValue((String) valueOfCell);
         }
+        sheet.autoSizeColumn(columnCount);
         cell.setCellStyle(style);
     }
 
