@@ -19,6 +19,8 @@ public interface IEvaluationPeriodPostService {
 
     void deleteByEvaluationPeriodIdAndPostCode(Long evaluationPeriodId, String postCode);
 
+    List<EvaluationPeriodPostDTO.Info> getAllByPeriodIdNotIn(Long evaluationPeriodId);
+
     List<EvaluationPeriodPostDTO.Info> createAll(EvaluationPeriod evaluationPeriod, Set<String> postCode);
 
     List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> getAllByEvaluationPeriodId(Long evaluationPeriodId);

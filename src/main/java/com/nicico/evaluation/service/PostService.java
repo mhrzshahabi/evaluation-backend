@@ -65,4 +65,26 @@ public class PostService implements IPostService {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
     }
 
+    @Override
+    @PreAuthorize("hasAuthority('R_POST')")
+    public List<PostDTO.Info> getPostGradeHasNotGroupByPeriodId(Long periodId) {
+        List<Post> allByPostCode = repository.findPostGradeHasNotGroupByPostCode(periodId);
+        return mapper.entityToDtoInfoList(allByPostCode);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('R_POST')")
+    public List<PostDTO.Info> getGroupHasNotGroupTypeByPeriodId(Long periodId) {
+        List<Post> allByPostCode = repository.findGroupHasNotGroupTypeByPostCode(periodId);
+        return mapper.entityToDtoInfoList(allByPostCode);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('R_POST')")
+    public List<PostDTO.Info> getAllByGroupByPeriodId(Long periodId) {
+        List<Post> allByPostCode = repository.findAllByPostCodeIn(periodId);
+        return mapper.entityToDtoInfoList(allByPostCode);
+    }
+
+
 }

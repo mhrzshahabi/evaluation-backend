@@ -29,6 +29,7 @@ public abstract class GroupPostDTO {
         private String postTitle;
         private String postGradeTitle;
         private Long totalWeight;
+        private Long postGradeId;
         private String mojtamaTitle;
         private String omoorTitle;
         private String ghesmatTitle;

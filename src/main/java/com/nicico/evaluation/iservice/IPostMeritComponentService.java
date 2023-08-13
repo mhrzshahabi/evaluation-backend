@@ -11,6 +11,8 @@ public interface IPostMeritComponentService {
 
     PostMeritComponentDTO.Info get(Long id);
 
+    List<PostMeritComponentDTO.Info> getAllByPeriodIdIn(Long evaluationPeriodId);
+
     Long getTotalWeight(String groupPostCode);
 
     List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String groupPostCode);
