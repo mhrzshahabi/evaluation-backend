@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface InstanceGroupTypeMeritRepository extends JpaRepository<InstanceGroupTypeMerit, Long>, JpaSpecificationExecutor<InstanceGroupTypeMerit> {
+
     List<InstanceGroupTypeMerit> getAllByGroupTypeMeritId(Long id);
     
     void deleteByGroupTypeMeritId(Long groupTypeMerit);

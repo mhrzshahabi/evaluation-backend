@@ -11,8 +11,6 @@ public interface IMeritComponentTypeService {
 
     List<MeritComponentTypeDTO.Info> findAllByMeritComponentId(Long meritComponentId);
 
-    MeritComponentTypeDTO.Info findFirstByMeritComponentId(Long meritComponentId);
-
     MeritComponentTypeDTO.SpecResponse list(int count, int startIndex);
 
     MeritComponentTypeDTO.Info create(MeritComponentTypeDTO.Create dto);

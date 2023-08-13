@@ -2,7 +2,9 @@ package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
+import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.model.MeritComponent;
+import com.nicico.evaluation.model.MeritComponentAudit;
 import com.nicico.evaluation.model.MeritComponentType;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class MeritComponentMapper {
+
+    @Lazy
+    @Autowired
+    private IMeritComponentService meritComponentService;
 
     @Lazy
     @Autowired
@@ -28,23 +34,36 @@ public abstract class MeritComponentMapper {
 
     public abstract void update(@MappingTarget MeritComponent entity, MeritComponentDTO.Update dto);
 
-    @Named("getKpiTypeByMeritComponentId")
-    MeritComponentTypeDTO.Info getKpiTypeByMeritComponentId(List<MeritComponentType> meritComponentTypeList) {
-        if (meritComponentTypeList!=null && !meritComponentTypeList.isEmpty()){
-            //todo ui change object to list
-            return  meritComponentTypeMapper.entityToDtoInfo(meritComponentTypeList.get(0));
-        } else return null;
-    }
-
     @Mappings({
             @Mapping(target = "kpiTypeTitle", source = "meritComponentTypes", qualifiedByName = "getKpiTypeTitleByMeritComponentId"),
             @Mapping(target = "status", source = "id", qualifiedByName = "getStatus"),
     })
     public abstract MeritComponentDTO.Excel entityToDtoExcel(MeritComponent entity);
+
+    @Mappings({
+            @Mapping(target = "meritComponentTypes", source = "id", qualifiedByName = "getKpiTypeInfoByMeritComponentId")
+    })
+    public abstract MeritComponentDTO.Info meritComponentAuditToDtoInfo(MeritComponentAudit meritComponentAudit);
+
+    public abstract List<MeritComponentDTO.Info> meritComponentAuditToDtoInfoList(List<MeritComponentAudit> meritComponentAudits);
+
+    @Named("getKpiTypeByMeritComponentId")
+    MeritComponentTypeDTO.Info getKpiTypeByMeritComponentId(List<MeritComponentType> meritComponentTypeList) {
+        if (meritComponentTypeList!=null && !meritComponentTypeList.isEmpty()){
+            return  meritComponentTypeMapper.entityToDtoInfo(meritComponentTypeList.get(0));
+        } else return null;
+    }
+
+    @Named("getKpiTypeInfoByMeritComponentId")
+    MeritComponentTypeDTO.Info getKpiTypeInfoByMeritComponentId(Long meritComponentId) {
+        return meritComponentService.get(meritComponentId).getMeritComponentTypes();
+    }
+
     @Named("getStatus")
     String getStatus(Long id){
         return  "استفاده نشده";
     }
+
     @Named("getKpiTypeTitleByMeritComponentId")
     String getKpiTypeTitleByMeritComponentId(List<MeritComponentType> meritComponentTypeList) {
         if (meritComponentTypeList!=null && !meritComponentTypeList.isEmpty()){
