@@ -1,7 +1,9 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.model.MeritComponent;
 import com.nicico.evaluation.model.MeritComponentAudit;
@@ -14,6 +16,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class MeritComponentMapper {
+
+    @Lazy
+    @Autowired
+    private ICatalogService catalogService;
 
     @Lazy
     @Autowired
@@ -41,7 +47,8 @@ public abstract class MeritComponentMapper {
     public abstract MeritComponentDTO.Excel entityToDtoExcel(MeritComponent entity);
 
     @Mappings({
-            @Mapping(target = "meritComponentTypes", source = "id", qualifiedByName = "getKpiTypeInfoByMeritComponentId")
+            @Mapping(target = "meritComponentTypes", source = "id", qualifiedByName = "getKpiTypeInfoByMeritComponentId"),
+            @Mapping(target = "statusCatalog", source = "statusCatalogId", qualifiedByName = "getStatusCatalogInfoByStatusCatalogId")
     })
     public abstract MeritComponentDTO.Info meritComponentAuditToDtoInfo(MeritComponentAudit meritComponentAudit);
 
@@ -57,6 +64,11 @@ public abstract class MeritComponentMapper {
     @Named("getKpiTypeInfoByMeritComponentId")
     MeritComponentTypeDTO.Info getKpiTypeInfoByMeritComponentId(Long meritComponentId) {
         return meritComponentService.get(meritComponentId).getMeritComponentTypes();
+    }
+
+    @Named("getStatusCatalogInfoByStatusCatalogId")
+    CatalogDTO.Info getStatusCatalogInfoByStatusCatalogId(Long statusCatalogId) {
+        return catalogService.get(statusCatalogId);
     }
 
     @Named("getStatus")

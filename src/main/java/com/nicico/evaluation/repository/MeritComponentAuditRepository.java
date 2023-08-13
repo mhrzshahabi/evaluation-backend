@@ -17,7 +17,7 @@ public interface MeritComponentAuditRepository extends JpaRepository<MeritCompon
                     FROM
                         tbl_merit_component_aud
                     WHERE
-                        id = (
+                        rev = (
                             SELECT
                                 MAX(rev)
                             FROM
