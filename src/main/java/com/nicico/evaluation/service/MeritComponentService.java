@@ -8,11 +8,13 @@ import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IKPITypeService;
+import com.nicico.evaluation.iservice.IMeritComponentAuditService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IMeritComponentTypeService;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.MeritComponent;
+import com.nicico.evaluation.model.MeritComponentAudit;
 import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.MeritComponentRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -35,13 +37,14 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 @Service
 public class MeritComponentService implements IMeritComponentService {
 
+    private final IKPITypeService typeService;
     private final MeritComponentMapper mapper;
     private final PageableMapper pageableMapper;
-    private final MeritComponentRepository repository;
-    private final IMeritComponentTypeService meritComponentTypeService;
-    private final IKPITypeService typeService;
-    private final ResourceBundleMessageSource messageSource;
     private final CatalogRepository catalogRepository;
+    private final MeritComponentRepository repository;
+    private final ResourceBundleMessageSource messageSource;
+    private final IMeritComponentTypeService meritComponentTypeService;
+    private final IMeritComponentAuditService meritComponentAuditService;
 
     @Override
     @Transactional(readOnly = true)
@@ -49,6 +52,14 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info get(Long id) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(meritComponent);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
+    public MeritComponentDTO.Info findLastActiveByMeritComponentId(Long id) {
+        MeritComponentAudit meritComponentAudit = meritComponentAuditService.findLastActiveByMeritComponentId(id);
+        return mapper.meritComponentAuditToDtoInfo(meritComponentAudit);
     }
 
     @Override

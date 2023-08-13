@@ -12,6 +12,8 @@ public interface IMeritComponentService {
 
     MeritComponentDTO.Info get(Long id);
 
+    MeritComponentDTO.Info findLastActiveByMeritComponentId(Long id);
+
     MeritComponentDTO.SpecResponse list(int count, int startIndex);
 
     MeritComponentDTO.Info create(MeritComponentDTO.Create dto);

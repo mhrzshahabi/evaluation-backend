@@ -50,6 +50,12 @@ public class GroupTypeService implements IGroupTypeService {
     }
 
     @Override
+    public List<GroupTypeDTO.Info> getAllByPeriodId(Long periodId) {
+        List<GroupType> groupType = repository.findAllByPeriodId(periodId);
+        return mapper.entityToDtoInfoList(groupType);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef) {

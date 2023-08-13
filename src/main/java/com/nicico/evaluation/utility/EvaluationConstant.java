@@ -7,6 +7,8 @@ public class EvaluationConstant {
     public static final String QUESTIONNAIRE_ANSWERS = "QuestionnaireAnswers";
     public static final String EVALUATION_STATUS = "EvaluationStatus";
     public static final String PERIOD_INITIAL_REGISTRATION = "period-initial-registration";
+    public static final String PERIOD_AWAITING_REVIEW = "period-awaiting-review";
+    public static final String PERIOD_FINALIZED = "period-finalized";
     public static final String FINALIZED = "Finalized";
     public static final String AWAITING = "Awaiting-review";
     public static final String INITIAL = "Initial-registration";
@@ -34,5 +36,9 @@ public class EvaluationConstant {
     public static final String AWAITING_EDIT_MERIT = "Awaiting-Edit-Merit";
     public static final String AWAITING_REVOKE_MERIT = "Awaiting-Revoke-Merit";
     public static final String RE_EXAMINATION_MERIT = "Re-Examination-Merit";
+
+    public static final String KPI_TYPE_TITLE_OPERATIONAL = "عملکردی";
+    public static final String KPI_TYPE_TITLE_DEVELOPMENT = "توسعه ای";
+    public static final String KPI_TYPE_TITLE_BEHAVIORAL = "رفتاری";
 
 }

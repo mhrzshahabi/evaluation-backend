@@ -14,6 +14,8 @@ public interface IGroupTypeMeritService {
 
     List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupType(Long groupTypeId);
 
+    List<GroupTypeMeritDTO.Info> getByGroupType(Long groupTypeId);
+
     Long getTotalComponentWeightByGroupType(Long groupTypeId);
 
     GroupTypeMeritDTO.SpecResponse list(int count, int startIndex);

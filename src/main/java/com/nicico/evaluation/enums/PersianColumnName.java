@@ -26,6 +26,11 @@ public enum PersianColumnName {
     GHESMATTITLE("قسمت"),
     VAHEDTITLE("واحد"),
     COSTCENTERCODE("کد مرکز هزینه"),
+    GROUPTITLE("گروه"),
+    TOTALWEIGHTGROUP("مجموع وزن گروه"),
+    TOTALWEIGHTDEVELOPMENT(" مجموع وزن مولفه های توسعه ای"),
+    TOTALWEIGHTOPERATIONAL("مجموع وزن مولفه های عملکردی"),
+    TOTALWEIGHTBEHAVIORAL("مجموع وزن مولفه های رفتاری"),
     POSTCOMPANYNAME("شرکت");
 
     private String persianName;

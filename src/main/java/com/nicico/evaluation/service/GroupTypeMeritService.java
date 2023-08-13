@@ -59,6 +59,14 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
+    public List<GroupTypeMeritDTO.Info> getByGroupType(Long groupTypeId) {
+        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeId(groupTypeId);
+        return mapper.entityToDtoInfoList(groupTypeMerit);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public Long getTotalComponentWeightByGroupType(Long groupTypeId) {
         List<GroupTypeMerit> groupTypeMeritList = repository.getAllByGroupTypeId(groupTypeId);
         return groupTypeMeritList.stream().map(GroupTypeMerit::getWeight).reduce(0L, Long::sum);

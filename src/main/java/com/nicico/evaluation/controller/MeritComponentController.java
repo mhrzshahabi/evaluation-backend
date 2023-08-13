@@ -31,17 +31,26 @@ import java.util.Locale;
 @RequestMapping(value = "/api/merit-Component")
 public class MeritComponentController {
 
-    private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
     private final IMeritComponentService service;
+    private final ResourceBundleMessageSource messageSource;
 
     /**
-     * @param id is the instance id
+     * @param id is the merit component id
      * @return MeritComponentDTO.Info is the single meritComponent entity
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<MeritComponentDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+    }
+
+    /**
+     * @param id is the merit component id
+     * @return MeritComponentDTO.Info is the single meritComponent entity
+     */
+    @GetMapping(value = "/last-active/{id}")
+    public ResponseEntity<MeritComponentDTO.Info> findLastActiveByMeritComponentId(@PathVariable Long id) {
+        return new ResponseEntity<>(service.findLastActiveByMeritComponentId(id), HttpStatus.OK);
     }
 
     /**

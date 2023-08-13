@@ -42,6 +42,8 @@ public class EvaluationPeriodPostDTO {
         private String postTitle;
         private String postCodeParent;
         private String postTitleParent;
+        private Long evaluationPeriodId;
+
     }
 
     @Getter
@@ -66,5 +68,21 @@ public class EvaluationPeriodPostDTO {
     @ApiModel("EvaluationPeriodPostDeleteRq")
     public static class Delete extends EvaluationPeriodPostDTO {
         private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationPeriodPostDeleteRq")
+    public static class InvalidPostExcel {
+        private String groupPostCode;
+        private String postTitle;
+        private String postGradeTitle;
+        private String groupTypeTitle;
+        private String description;
+        private String totalWeightGroup;
+        private Long totalWeightDevelopment;
+        private Long totalWeightOperational;
+        private Long totalWeightBehavioral;
     }
 }

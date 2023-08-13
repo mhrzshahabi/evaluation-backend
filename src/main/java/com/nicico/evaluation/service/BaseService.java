@@ -176,5 +176,12 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         return excelGenerator.getExcel().toByteArray();
     }
 
+    public static <E, EXCEL, DAO extends JpaSpecificationExecutor<E>> byte[] exportExcelByList(List<E> data, String sheetName, String headerName) {
+
+        ExcelGenerator<E> excelGenerator = new ExcelGenerator<E>(data);
+        excelGenerator.generateSheet(sheetName, headerName);
+        return excelGenerator.getExcel().toByteArray();
+    }
+
 
 }
