@@ -650,12 +650,12 @@
     </changeSet>
 
     <changeSet author="MShahabi" id="1681798496">
-        <createTable tableName="aud_tbl_merit_component">
+        <createTable tableName="tbl_merit_component_aud">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="aud_tbl_merit_componentPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_merit_component_audpk"/>
             </column>
             <column name="REV" type="NUMBER(10, 0)">
-                <constraints primaryKey="true" primaryKeyName="aud_tbl_merit_componentPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_merit_component_audpk"/>
             </column>
             <column name="REVTYPE" type="NUMBER(3, 0)"/>
 
