@@ -306,7 +306,7 @@ public class EvaluationItemService implements IEvaluationItemService {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
-            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS = postMeritComponentService.getByPostCode(assessPostCode);
+            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS = postMeritComponentService.getByGroupPostCode(assessPostCode);
             createItemInfo.setMeritTuple(meritTupleDTOS);
             createItemInfoList.add(createItemInfo);
 

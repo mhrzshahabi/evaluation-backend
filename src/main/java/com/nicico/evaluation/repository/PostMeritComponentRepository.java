@@ -15,9 +15,17 @@ public interface PostMeritComponentRepository extends JpaRepository<PostMeritCom
             select * from tbl_post_merit_component postMerit 
             join tbl_merit_component merit on merit.id = postMerit.MERIT_COMPONENT_ID
             join view_group_post groupPost on groupPost.GROUP_POST_CODE = postMerit.C_GROUP_POST_CODE
-            where postMerit.C_GROUP_POST_CODE = :groupPostCode and catalog.C_CODE = 'Active-Merit'
+            where postMerit.C_GROUP_POST_CODE = :groupPostCode 
             """, nativeQuery = true)
     List<PostMeritComponent> findAllByGroupPostCode(String groupPostCode);
+
+     @Query(value = """
+            select * from tbl_post_merit_component postMerit
+             JOIN tbl_merit_component   merit ON merit.id = postMerit.merit_component_id
+             JOIN view_post             post ON post.post_group_code = postMerit.c_group_post_code
+             WHERE post.POST_CODE  = :postCode 
+            """, nativeQuery = true)
+    List<PostMeritComponent> findAllByPostCode(String postCode);
 
     @Query(value = """
                     SELECT
