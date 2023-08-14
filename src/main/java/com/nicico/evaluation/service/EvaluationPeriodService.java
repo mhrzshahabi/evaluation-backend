@@ -24,10 +24,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -272,7 +272,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public ResponseEntity<byte[]> downloadExcel(HttpServletResponse response, Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<byte[]> downloadExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException {
+
         List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostList = createInvalidPostList(evaluationPeriodId);
         byte[] body = BaseService.exportExcelByList(invalidPostList, null, "گزارش لیست پست ها");
         ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
