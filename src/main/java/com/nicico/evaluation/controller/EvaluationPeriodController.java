@@ -177,13 +177,13 @@ public class EvaluationPeriodController {
 
     /**
      * @param evaluationPeriodId is the key value
-     * @return byte[] is the excel of InstanceInfo entity that match the criteria
+     * @return byte[] is the excel of error list of posts that are invalid
      */
     @SneakyThrows
     @GetMapping(value = "/export-error-list-excel/{evaluationPeriodId}")
-    public ResponseEntity<byte[]> exportExcel(HttpServletResponse response, @PathVariable Long evaluationPeriodId) {
+    public ResponseEntity<byte[]> exportExcel(@PathVariable Long evaluationPeriodId) {
 //        executerService.runAsync(() -> {
-        return service.downloadExcel(response, evaluationPeriodId);
+        return service.downloadExcel(evaluationPeriodId);
 //            return true;
 //        });
     }
