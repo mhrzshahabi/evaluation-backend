@@ -59,8 +59,8 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
-    public List<GroupTypeMeritDTO.Info> getByGroupType(Long groupTypeId) {
-        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeId(groupTypeId);
+    public List<GroupTypeMeritDTO.Info> getAllByGroupTypeIdAndMeritStatusId(Long groupTypeId, Long statusCatalogId) {
+        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeIdAndMeritStatusId(groupTypeId,statusCatalogId);
         return mapper.entityToDtoInfoList(groupTypeMerit);
     }
 

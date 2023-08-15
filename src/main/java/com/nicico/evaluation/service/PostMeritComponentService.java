@@ -68,11 +68,10 @@ public class PostMeritComponentService implements IPostMeritComponentService {
         return mapper.postMeritDtoToEvaluationItemInfoList(byGroupPostCode);
     }
 
-    @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
-    public List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String postCode) {
-        List<PostMeritComponent> byPostCode = repository.findAllByPostCode(postCode);
+    public List<EvaluationItemDTO.MeritTupleDTO> getByPostCodeAndMeritStatus(String postCode, Long statusCatalogId) {
+        List<PostMeritComponent> byPostCode = repository.findAllByPostCode(postCode,statusCatalogId);
         return mapper.postMeritDtoToEvaluationItemInfoList(byPostCode);
     }
 

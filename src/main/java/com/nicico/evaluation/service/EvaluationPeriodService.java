@@ -238,20 +238,21 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                 result.set(false);
                 return;
             }
+            Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
             groupTypes.forEach(groupType -> {
                 if (!groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_OPERATIONAL)) {
-                    List<EvaluationItemDTO.MeritTupleDTO> allByGroupType = groupTypeMeritService.getAllByGroupType(groupType.getId());
+                    List<GroupTypeMeritDTO.Info> allByGroupType = groupTypeMeritService.getAllByGroupTypeIdAndMeritStatusId(groupType.getId(), statusCatalogId);
                     if (allByGroupType.isEmpty()) {
                         result.set(false);
                         return;
                     }
-                    double totalWeightGroupTypeMerit = allByGroupType.stream().mapToDouble(EvaluationItemDTO.MeritTupleDTO::getWeight).sum();
+                    double totalWeightGroupTypeMerit = allByGroupType.stream().mapToDouble(GroupTypeMeritDTO::getWeight).sum();
                     if (totalWeightGroupTypeMerit != 100) {
                         result.set(false);
                     }
                 } else {
                     postCodes.forEach(postCode -> {
-                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCode(postCode);
+                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
                         if (byPostCode.isEmpty()) {
                             result.set(false);
                             return;
@@ -299,6 +300,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         int typeSize = kpiTypeService.findAll().size();
         List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).
                 stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
+
+        Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
         allGroupTypeMap.forEach((groupId, groupTypes) -> {
             /*check all kpiType define for these group*/
             validateAllGroupType(invalidPostExcelList, typeSize, groupTypes, groupTypes.size(), "exception.not.define.all.group-type.for.these.group");
@@ -308,14 +311,14 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
             groupTypes.forEach(groupType -> {
                 if (!groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_OPERATIONAL)) {
-                    List<GroupTypeMeritDTO.Info> allGroupTypeMeritByGroupType = groupTypeMeritService.getByGroupType(groupType.getId());
+                    List<GroupTypeMeritDTO.Info> allGroupTypeMeritByGroupType = groupTypeMeritService.getAllByGroupTypeIdAndMeritStatusId(groupType.getId(), statusCatalogId);
                     /*check define meritComponents for all groupTypes that are Behavioral or Development*/
                     validateGroupTypeMeritIsDefine(invalidPostExcelList, groupTypes, allGroupTypeMeritByGroupType);
                     /*check total groupTypeMerit's weight for all groupTypes that are Behavioral or Development*/
                     validateGroupTypeMeritWeight(invalidPostExcelList, groupTypes, groupType, allGroupTypeMeritByGroupType);
                 } else {
                     postCodes.forEach(postCode -> {
-                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCode(postCode);
+                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
                         if (byPostCode.isEmpty())
                             validatePostMeritIsDefine(invalidPostExcelList, postCode);
 
