@@ -104,6 +104,8 @@ public class MeritComponentService implements IMeritComponentService {
                 createDto.setKpiTypeId(Collections.singletonList(kpiType.getId()));
                 createDto.setCode(dto.getCode());
                 createDto.setTitle(dto.getTitle());
+                Long statusId = catalogRepository.findByCode(ACTIVE_MERIT).orElseThrow().getId();
+                createDto.setStatusCatalogId(statusId);
                 create(createDto);
                 response.setStatus(HttpStatus.OK.value());
             } else {
