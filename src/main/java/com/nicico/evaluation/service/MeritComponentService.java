@@ -210,6 +210,7 @@ public class MeritComponentService implements IMeritComponentService {
                 Optional<Catalog> statusByCode = catalogRepository.findByCode(request.getStatusCode());
                 statusByCode.ifPresent(catalog -> {
                     meritComponent.setStatusCatalogId(catalog.getId());
+                    meritComponent.setTitle(request.getTitle());
                     meritComponent.setDescription(request.getDescription());
                     repository.save(meritComponent);
                 });
@@ -219,8 +220,11 @@ public class MeritComponentService implements IMeritComponentService {
                     && !meritComponent.getStatusCatalog().getCode().equals(REVOKED_MERIT)) {
 
                 MeritComponentDTO.Info lastActiveByMeritComponent = findLastActiveByMeritComponentId(meritComponent.getId());
-                if (Objects.nonNull(lastActiveByMeritComponent))
+                if (Objects.nonNull(lastActiveByMeritComponent)) {
                     meritComponent.setStatusCatalogId(lastActiveByMeritComponent.getId());
+                    meritComponent.setTitle(lastActiveByMeritComponent.getTitle());
+                    meritComponent.setDescription(request.getDescription());
+                }
                 repository.save(meritComponent);
             }
             return mapper.entityToDtoInfo(meritComponent);
