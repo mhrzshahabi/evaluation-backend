@@ -72,6 +72,7 @@ public abstract class MeritComponentDTO {
 
         private String statusCode;
         private String description;
+        private String title;
 
     }
 
