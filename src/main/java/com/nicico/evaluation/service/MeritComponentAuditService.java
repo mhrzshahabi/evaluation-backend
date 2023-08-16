@@ -5,14 +5,18 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.MeritComponentAuditDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
+import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.dto.SearchRequestDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IMeritComponentAuditService;
+import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.mapper.MeritComponentAuditMapper;
 import com.nicico.evaluation.model.MeritComponentAudit;
 import com.nicico.evaluation.repository.MeritComponentAuditRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +37,12 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
     private final MeritComponentAuditMapper mapper;
     private final MeritComponentAuditRepository repository;
     private final ResourceBundleMessageSource messageSource;
+    private IMeritComponentService meritComponentService;
+
+    @Autowired
+    public void setMeritComponentService(@Lazy IMeritComponentService meritComponentService) {
+        this.meritComponentService = meritComponentService;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -67,6 +77,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                     meritComponentInfo.setCode(merit[7] == null ? null : merit[7].toString());
                     meritComponentInfo.setStatusCatalogId(merit[8] == null ? null : Long.parseLong(merit[8].toString()));
                     meritComponentInfo.setDescription(merit[9] == null ? null : merit[9].toString());
+                    meritComponentInfo.setMeritComponentTypes(getKpiTypeInfoByMeritComponentId(meritComponentInfo.getId()));
                     data.add(meritComponentInfo);
                 }
             }
@@ -108,7 +119,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                             case "title" -> query.append(" and ").append("c_title").append(" like '%").append(search.getValue().toString()).append("%'");
                             case "code" -> query.append(" and ").append("c_code").append(" like '%").append(search.getValue().toString()).append("%'");
                             case "statusCatalogId" -> query.append(" and ").append("status_catalog_id").append(" like '%").append(search.getValue().toString()).append("%'");
-                            default -> query.append(" and ").append(search.getFieldName()).append(" like '%").append(search.getValue().toString()).append("%'");
+                            case "kpiType.id" -> query.append(" and ").append("kpi_type_id").append(" = ").append(search.getValue().toString());
+                            default -> {}
                         }
                     }
             );
@@ -134,7 +146,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    mcaud.c_title,
                                    mcaud.c_code,
                                    mcaud.status_catalog_id,
-                                   mcaud.c_description
+                                   mcaud.c_description,
+                                   kpitype.id AS kpi_type_id
                                FROM
                                    (
                                        SELECT
@@ -159,6 +172,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                            tbl_merit_component_aud.status_catalog_id = %s
                                    ) mcaud
                                    LEFT JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
+                                   LEFT JOIN tbl_merit_component_type mct ON mct.merit_component_id = mcaud.id
+                                   LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
                                WHERE
                                    price_rank = 1
                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
@@ -191,7 +206,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    mcaud.c_title,
                                    mcaud.c_code,
                                    mcaud.status_catalog_id,
-                                   mcaud.c_description
+                                   mcaud.c_description,
+                                   kpitype.id AS kpi_type_id
                                FROM
                                    (
                                        SELECT
@@ -216,6 +232,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                            tbl_merit_component_aud.status_catalog_id = %s
                                    ) mcaud
                                    LEFT JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
+                                   LEFT JOIN tbl_merit_component_type mct ON mct.merit_component_id = mcaud.id
+                                   LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
                                WHERE
                                    price_rank = 1
                             )
@@ -226,5 +244,9 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                 activeStatus,
                 searchQuery
         );
+    }
+
+    private MeritComponentTypeDTO.Info getKpiTypeInfoByMeritComponentId(Long meritComponentId) {
+        return meritComponentService.get(meritComponentId).getMeritComponentTypes();
     }
 }

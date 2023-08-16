@@ -42,7 +42,7 @@ public class MeritComponentAuditController {
         criteriaRqList.forEach(item -> {
             SearchRequestDTO.SearchDataDTO searchDataDTO = new SearchRequestDTO.SearchDataDTO();
             searchDataDTO.setFieldName(item.getFieldName());
-            searchDataDTO.setValue(item.getValue().get(0));
+            searchDataDTO.setValue(item.getValue() != null ? item.getValue().get(0) : null);
             searchDataDTOList.add(searchDataDTO);
         });
         searchRequestDTO.setSearchDataDTOList(searchDataDTOList);

@@ -7,6 +7,7 @@ import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,6 +34,9 @@ public class MeritComponentAudit implements Serializable {
 
     @Column(name = "c_code")
     private String code;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<MeritComponentType> meritComponentTypes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false)
