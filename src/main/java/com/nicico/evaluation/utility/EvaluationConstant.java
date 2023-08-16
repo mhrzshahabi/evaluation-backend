@@ -25,7 +25,7 @@ public class EvaluationConstant {
     public static final String BATCH_CREATE_CHANGE_STATUS_SPECIAL_CASE = "BatchCreate-ChangeStatus-SpecialCase";
     public static final String BATCH_CREATE_POST_MERIT_INSTANCE_EXCEL = "BatchCreate-PostMeritInstance-Excel";
     public static final String BATCH_CREATE_INSTANCE_EXCEL = "BatchCreate-Instance-Excel";
-    public static final String BATCH_CREATE_KPITYPE_EXCEL = "BatchCreate-KPIType-Excel";
+    public static final String BATCH_CREATE_KPI_TYPE_EXCEL = "BatchCreate-KPIType-Excel";
     public static final String BATCH_CREATE_MERIT_COMPONENT_EXCEL = "BatchCreate-Merit-Component-Excel";
     public static final String BATCH_CREATE_INSTANCE_GROUP_TYPE_MERIT_EXCEL = "BatchCreate-Instance-Group-Type-Merit-Excel";
 

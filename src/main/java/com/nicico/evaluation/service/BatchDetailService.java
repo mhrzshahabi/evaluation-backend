@@ -8,7 +8,6 @@ import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.BatchDetailMapper;
-import com.nicico.evaluation.mapper.InstanceGroupTypeMeritMapperImpl;
 import com.nicico.evaluation.model.BatchDetail;
 import com.nicico.evaluation.repository.BatchDetailRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -171,7 +170,7 @@ public class BatchDetailService implements IBatchDetailService {
         Long failCatalogId = catalogService.getByCode("Failed").getId();
         List<BatchDetail> batchDetailList = repository.findAllByBatchId(dto.getBatchId());
         switch (dto.getServiceType()) {
-            case BATCH_CREATE_KPITYPE_EXCEL -> batchDetailList.forEach(detail -> {
+            case BATCH_CREATE_KPI_TYPE_EXCEL -> batchDetailList.forEach(detail -> {
                 try {
                     KPITypeDTO.Create batchCreate = objectMapper.readValue(detail.getInputDTO(), KPITypeDTO.Create.class);
                     BaseResponse response = kpiTypeService.batchCreate(batchCreate);
