@@ -42,7 +42,6 @@ public abstract class MeritComponentMapper {
 
     @Mappings({
             @Mapping(target = "kpiTypeTitle", source = "meritComponentTypes", qualifiedByName = "getKpiTypeTitleByMeritComponentId"),
-            @Mapping(target = "status", source = "id", qualifiedByName = "getStatus"),
     })
     public abstract MeritComponentDTO.Excel entityToDtoExcel(MeritComponent entity);
 
@@ -69,11 +68,6 @@ public abstract class MeritComponentMapper {
     @Named("getStatusCatalogInfoByStatusCatalogId")
     CatalogDTO.Info getStatusCatalogInfoByStatusCatalogId(Long statusCatalogId) {
         return catalogService.get(statusCatalogId);
-    }
-
-    @Named("getStatus")
-    String getStatus(Long id){
-        return  "استفاده نشده";
     }
 
     @Named("getKpiTypeTitleByMeritComponentId")
