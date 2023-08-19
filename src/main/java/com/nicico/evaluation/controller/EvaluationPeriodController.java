@@ -168,11 +168,20 @@ public class EvaluationPeriodController {
 
     /**
      * @param ChangeStatusDTO is id of evaluation for change status and is next or previous for change status
-     * @return Boolean is the result of function
+     * @return BaseResponse is the result of function
      */
     @PostMapping(value = "/change-status")
     public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO ChangeStatusDTO) {
         return new ResponseEntity<>(service.changeStatus(ChangeStatusDTO), HttpStatus.OK);
+    }
+
+    /**
+     * @param evaluationPeriodId is id of evaluation period for change status and is next or previous for change status
+     * @return Boolean is the result of function
+     */
+    @PostMapping(value = "/validate-posts-of-period/{evaluationPeriodId}")
+    public Boolean validatePostsOfPeriod(@PathVariable Long evaluationPeriodId) {
+        return service.validatePosts(evaluationPeriodId);
     }
 
     /**
