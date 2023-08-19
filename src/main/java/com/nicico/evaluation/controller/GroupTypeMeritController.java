@@ -121,7 +121,7 @@ public class GroupTypeMeritController {
                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupTypeMeritDTO.Info> data = service.search(request);
+        SearchDTO.SearchRs<GroupTypeMeritDTO.LastActiveMeritInfo> data = service.search(request);
         final GroupTypeMeritDTO.Response response = new GroupTypeMeritDTO.Response();
         final GroupTypeMeritDTO.SpecResponse specRs = new GroupTypeMeritDTO.SpecResponse();
         response.setData(data.getList())
