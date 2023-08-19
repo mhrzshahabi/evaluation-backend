@@ -24,6 +24,8 @@ public abstract class EvaluationItemDTO {
     private String questionnaireAnswerCatalogCode;
     private String description;
 
+    private Long rev;
+
     @Getter
     @Setter
     @Accessors(chain = true)

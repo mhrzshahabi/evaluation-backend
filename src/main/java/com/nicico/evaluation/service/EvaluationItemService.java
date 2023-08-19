@@ -146,7 +146,11 @@ public class EvaluationItemService implements IEvaluationItemService {
         Long statusByCatalogType;
         switch (dto.getStatus().toLowerCase(Locale.ROOT)) {
             case "next":
-                if (evaluation.getStatusCatalog() != null && evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+                if (Objects.nonNull(evaluation.getStatusCatalog()) && Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+                    statusByCatalogType = evaluationStatus
+                            .filter(status -> status.getCode().equals(VALIDATED)).findFirst().orElseThrow().getId();
+                }
+                else if (Objects.nonNull(evaluation.getStatusCatalog()) && Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
                     statusByCatalogType = evaluationStatus
                             .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
                 } else {

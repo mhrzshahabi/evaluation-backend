@@ -21,6 +21,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,10 +45,17 @@ public class EvaluationService implements IEvaluationService {
     private final ISpecialCaseService specialCaseService;
     private final ResourceBundleMessageSource messageSource;
     private final IOrganizationTreeService organizationTreeService;
+    private final IMeritComponentService meritComponentService;
+    private IEvaluationPeriodService evaluationPeriodService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
         this.evaluationItemService = evaluationItemService;
+    }
+
+    @Autowired
+    public void setEvaluationPeriodService(@Lazy IEvaluationPeriodService evaluationPeriodService) {
+        this.evaluationPeriodService = evaluationPeriodService;
     }
 
     @Override
@@ -255,9 +263,25 @@ public class EvaluationService implements IEvaluationService {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next":
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                    createEvaluationItems(evaluation);
-
-                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                    Boolean validatePosts = evaluationPeriodService.validatePosts(evaluation.getEvaluationPeriodId());
+                                    if (validatePosts.equals(Boolean.FALSE)) {
+                                        response.setMessage(messageSource.getMessage("exception.period.has.invalid.posts", null, locale));
+                                        response.setStatus(406);
+                                        return response;
+                                    }
+                                } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
+                                    EvaluationPeriodDTO.Info evaluationPeriodDTO = evaluationPeriodService.get(evaluation.getId());
+                                    //بررسی اینکه زمان اعتبار سنجی رسیده است یا نه؟
+                                    if ((evaluationPeriodDTO.getValidationStartDate().before(new Date()) || evaluationPeriodDTO.getValidationStartDate().equals(new Date()))
+                                            && (evaluationPeriodDTO.getValidationEndDate().after(new Date()) || evaluationPeriodDTO.getValidationEndDate().equals(new Date()))) {
+                                        createEvaluationItems(evaluation);
+                                    } else {
+                                        response.setMessage(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range",
+                                         new Object[]{evaluationPeriodDTO.getValidationStartDate(), evaluationPeriodDTO.getValidationEndDate()}, locale));
+                                        response.setStatus(406);
+                                        return response;
+                                    }
+                                } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(FINALIZED);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     repository.save(evaluation);
@@ -277,8 +301,6 @@ public class EvaluationService implements IEvaluationService {
                                     repository.save(evaluation);
                                 }
                                 break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + changeStatusDTO.getStatus().toLowerCase(Locale.ROOT));
                         }
                     } else {
                         response.setStatus(406);
@@ -296,7 +318,10 @@ public class EvaluationService implements IEvaluationService {
             return response;
         }
     }
-
+//    @Scheduled(cron = "0 0 0 * * *")
+//    private void automateChangeStatus(){
+//       evaluationPeriodService
+//    }
     private void deleteItems(Evaluation evaluation) {
         List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
         evaluationItemService.deleteAll(itemIds);
@@ -313,6 +338,8 @@ public class EvaluationService implements IEvaluationService {
                 evaluationItemDTO.setEvaluationId(evaluation.getId());
                 List<Long> instances = item.getInstances().stream().map(EvaluationItemDTO.InstanceTupleDTO::getId).toList();
                 evaluationItemDTO.setInstanceIds(instances);
+                Long lastActiveMeritId = meritComponentService.findLastActiveByMeritComponentId(item.getMeritComponent().getId()).getId();
+                evaluationItemDTO.setRev(lastActiveMeritId);
                 evaluationItemDTO.setGroupTypeMeritId(item.getGroupTypeMeritId());
                 evaluationItemDTO.setPostMeritComponentId(item.getPostMeritId());
                 evaluationItemDTO.setInstanceGroupTypeMerits(item.getInstanceGroupTypeMerits());

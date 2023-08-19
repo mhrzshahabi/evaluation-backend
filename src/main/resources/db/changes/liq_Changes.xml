@@ -1865,4 +1865,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1692173134" author="semami">
+        <addColumn tableName="tbl_evaluation_item">
+            <column name="rev" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1692183553" author="semami">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_description" type="VARCHAR2(3000 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
