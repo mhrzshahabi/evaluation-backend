@@ -37,6 +37,9 @@ public class Evaluation extends Auditable {
     @Column(name = "c_assessor_full_name")
     private String assessorFullName;
 
+    @Column(name = "c_description")
+    private String description;
+
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "method_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_method_catalog_to_catalog"))

@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
@@ -47,7 +46,7 @@ public class EvaluationPeriodController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod> get(@PathVariable Long id) {
-        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.getWithPostInfo(id), HttpStatus.OK);
     }
 
     /**

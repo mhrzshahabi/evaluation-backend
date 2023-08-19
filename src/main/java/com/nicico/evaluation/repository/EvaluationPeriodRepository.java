@@ -11,4 +11,6 @@ import java.util.List;
 public interface EvaluationPeriodRepository extends JpaRepository<EvaluationPeriod, Long>, JpaSpecificationExecutor<EvaluationPeriod> {
 
     List<EvaluationPeriod> findAllByStatusCatalogId(Long statusCatalogId);
+
+//    List<EvaluationPeriod> findAllByStartDateAssessment();
 }
