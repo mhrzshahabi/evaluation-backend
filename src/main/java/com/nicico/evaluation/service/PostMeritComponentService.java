@@ -5,6 +5,7 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IGroupPostService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IPostMeritComponentService;
@@ -30,6 +31,7 @@ import java.util.Locale;
 public class PostMeritComponentService implements IPostMeritComponentService {
 
     private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
     private final PostMeritComponentMapper mapper;
     private final IGroupPostService groupPostService;
     private final PostMeritComponentRepository repository;
@@ -56,7 +58,8 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
     public Long getTotalWeight(String groupPostCode) {
-        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCode(groupPostCode);
+        Long revokedMeritId = catalogService.getByCode("Revoked-Merit").getId();
+        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCodeAndStatusCatalogId(groupPostCode, revokedMeritId);
         return byGroupPostCode.stream().map(PostMeritComponent::getWeight).reduce(0L, Long::sum);
     }
 

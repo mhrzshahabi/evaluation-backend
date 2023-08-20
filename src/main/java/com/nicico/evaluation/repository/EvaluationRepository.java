@@ -49,5 +49,5 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                         ELSE evaluation.C_DESCRIPTION
                        END
             """, nativeQuery = true)
-    void updateEvaluationStatusId(@Param("startAssessmentDate") String startAssessmentDate,@Param("message") String message);
+    void updateEvaluationStatusId(@Param("startAssessmentDate") String startAssessmentDate, @Param("message") String message);
 }

@@ -349,5 +349,4 @@ public class EvaluationService implements IEvaluationService {
         evaluationItemService.createAll(requests);
     }
 
-
 }
