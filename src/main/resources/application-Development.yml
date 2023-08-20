@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_dev
-    username: dev_evaluation
-    password: devevaluation
-#    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_stg
-#    username: stg_evaluation
-#    password: stgevaluation
+#    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_dev
+#    username: dev_evaluation
+#    password: devevaluation
+    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_stg
+    username: stg_evaluation
+    password: stgevaluation
   redis:
     host: devapp01.icico.net.ir
     password: nicico
