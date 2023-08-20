@@ -191,9 +191,6 @@ public class EvaluationPeriodController {
     @SneakyThrows
     @GetMapping(value = "/export-error-list-excel/{evaluationPeriodId}")
     public ResponseEntity<byte[]> exportExcel(@PathVariable Long evaluationPeriodId) {
-//        executerService.runAsync(() -> {
         return service.downloadExcel(evaluationPeriodId);
-//            return true;
-//        });
     }
 }
