@@ -263,24 +263,12 @@ public class EvaluationService implements IEvaluationService {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next":
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                    Boolean validatePosts = evaluationPeriodService.validatePosts(evaluation.getEvaluationPeriodId());
-                                    if (validatePosts.equals(Boolean.FALSE)) {
-                                        response.setMessage(messageSource.getMessage("exception.period.has.invalid.posts", null, locale));
-                                        response.setStatus(406);
-                                        return response;
-                                    }
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(VALIDATED);
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    Evaluation evaluationSave = repository.save(evaluation);
+                                    createEvaluationItems(evaluationSave);
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
-                                    EvaluationPeriodDTO.Info evaluationPeriodDTO = evaluationPeriodService.get(evaluation.getId());
-                                    //بررسی اینکه زمان اعتبار سنجی رسیده است یا نه؟
-                                    if ((evaluationPeriodDTO.getValidationStartDate().before(new Date()) || evaluationPeriodDTO.getValidationStartDate().equals(new Date()))
-                                            && (evaluationPeriodDTO.getValidationEndDate().after(new Date()) || evaluationPeriodDTO.getValidationEndDate().equals(new Date()))) {
-                                        createEvaluationItems(evaluation);
-                                    } else {
-                                        response.setMessage(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range",
-                                                new Object[]{evaluationPeriodDTO.getValidationStartDate(), evaluationPeriodDTO.getValidationEndDate()}, locale));
-                                        response.setStatus(406);
-                                        return response;
-                                    }
+                                    // توسط جاب شبانه انجام میشود
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(FINALIZED);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
@@ -294,6 +282,11 @@ public class EvaluationService implements IEvaluationService {
                                     repository.save(evaluation);
 
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(VALIDATED);
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    evaluation.setAverageScore(null);
+                                    repository.save(evaluation);
+                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     deleteItems(evaluation);
