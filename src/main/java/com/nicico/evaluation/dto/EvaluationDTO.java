@@ -31,6 +31,8 @@ public class EvaluationDTO {
     @NotNull
     private Long evaluationPeriodId;
 
+    private String description;
+
     @Getter
     @Setter
     @ApiModel("EvaluationExcel")
@@ -46,6 +48,7 @@ public class EvaluationDTO {
     @ApiModel("EvaluationCreateRq")
     public static class Create extends EvaluationDTO {
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)

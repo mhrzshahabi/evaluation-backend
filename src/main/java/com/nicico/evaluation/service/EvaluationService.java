@@ -21,6 +21,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,10 +45,17 @@ public class EvaluationService implements IEvaluationService {
     private final ISpecialCaseService specialCaseService;
     private final ResourceBundleMessageSource messageSource;
     private final IOrganizationTreeService organizationTreeService;
+    private final IMeritComponentService meritComponentService;
+    private IEvaluationPeriodService evaluationPeriodService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
         this.evaluationItemService = evaluationItemService;
+    }
+
+    @Autowired
+    public void setEvaluationPeriodService(@Lazy IEvaluationPeriodService evaluationPeriodService) {
+        this.evaluationPeriodService = evaluationPeriodService;
     }
 
     @Override
@@ -255,9 +263,13 @@ public class EvaluationService implements IEvaluationService {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next":
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                    createEvaluationItems(evaluation);
-
-                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(VALIDATED);
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    Evaluation evaluationSave = repository.save(evaluation);
+                                    createEvaluationItems(evaluationSave);
+                                } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
+                                    // توسط جاب شبانه انجام میشود
+                                } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(FINALIZED);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     repository.save(evaluation);
@@ -270,6 +282,11 @@ public class EvaluationService implements IEvaluationService {
                                     repository.save(evaluation);
 
                                 } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(VALIDATED);
+                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                    evaluation.setAverageScore(null);
+                                    repository.save(evaluation);
+                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
                                     Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
                                     optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
                                     deleteItems(evaluation);
@@ -277,8 +294,6 @@ public class EvaluationService implements IEvaluationService {
                                     repository.save(evaluation);
                                 }
                                 break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + changeStatusDTO.getStatus().toLowerCase(Locale.ROOT));
                         }
                     } else {
                         response.setStatus(406);
@@ -297,6 +312,15 @@ public class EvaluationService implements IEvaluationService {
         }
     }
 
+    @Scheduled(cron = "0 30 0 * * *")
+    @Transactional
+    public void automateChangeStatus() {
+        String message = messageSource.getMessage(
+                "exception.evaluation.is.finished.because.competency.elements.and.system.rules.were.not.set.properly",
+                null, LocaleContextHolder.getLocale());
+        repository.updateEvaluationStatusId(DateUtil.todayDate(), message);
+    }
+
     private void deleteItems(Evaluation evaluation) {
         List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
         evaluationItemService.deleteAll(itemIds);
@@ -313,6 +337,8 @@ public class EvaluationService implements IEvaluationService {
                 evaluationItemDTO.setEvaluationId(evaluation.getId());
                 List<Long> instances = item.getInstances().stream().map(EvaluationItemDTO.InstanceTupleDTO::getId).toList();
                 evaluationItemDTO.setInstanceIds(instances);
+                Long lastActiveMeritId = meritComponentService.findLastActiveByMeritComponentId(item.getMeritComponent().getId()).getId();
+                evaluationItemDTO.setRev(lastActiveMeritId);
                 evaluationItemDTO.setGroupTypeMeritId(item.getGroupTypeMeritId());
                 evaluationItemDTO.setPostMeritComponentId(item.getPostMeritId());
                 evaluationItemDTO.setInstanceGroupTypeMerits(item.getInstanceGroupTypeMerits());

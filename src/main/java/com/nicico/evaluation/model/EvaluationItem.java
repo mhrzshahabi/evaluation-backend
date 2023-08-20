@@ -21,7 +21,7 @@ public class EvaluationItem extends Auditable {
     private Long id;
 
     @Setter(AccessLevel.NONE)
-    @ManyToOne(fetch = FetchType.LAZY )
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "evaluation_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_item_to_evaluation"))
     private Evaluation evaluation;
 
@@ -62,7 +62,9 @@ public class EvaluationItem extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE )
+    @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<EvaluationItemInstance> evaluationItemInstance;
 
+    @Column(name = "rev")
+    private Long rev;
 }
