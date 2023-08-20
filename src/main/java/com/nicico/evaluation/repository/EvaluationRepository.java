@@ -3,7 +3,9 @@ package com.nicico.evaluation.repository;
 import com.nicico.evaluation.model.Evaluation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,8 +14,6 @@ import java.util.List;
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, JpaSpecificationExecutor<Evaluation> {
 
     Evaluation findByEvaluationPeriodIdAndAssessPostCode(Long id, String assessPostCode);
-
-    List<Evaluation> findAllByIdIn(List<Long> id);
 
     @Query(value = """
             SELECT
@@ -25,4 +25,29 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                           """, nativeQuery = true)
     List<String> getUsedPostInEvaluation(Long id);
 
+    @Modifying
+    @Query(value = """
+            MERGE INTO TBL_EVALUATION evaluation
+            USING (
+              SELECT id, C_START_DATE_ASSESSMENT
+              FROM tbl_evaluation_period 
+              WHERE C_START_DATE_ASSESSMENT  = :startAssessmentDate
+            ) evaluationPeriod
+            ON (evaluationPeriod.id = evaluation.evaluation_period_id)
+            WHEN MATCHED THEN
+            UPDATE SET
+              STATUS_CATALOG_ID = CASE
+                         WHEN (SELECT c_code FROM tbl_catalog  WHERE id = evaluation.STATUS_CATALOG_ID) = 'Validated'
+                            THEN (SELECT id FROM tbl_catalog WHERE c_code = 'Awaiting-review')
+                         WHEN (SELECT c_code FROM tbl_catalog  WHERE id = evaluation.STATUS_CATALOG_ID) = 'Initial-registration'  
+                            THEN (SELECT id FROM tbl_catalog WHERE c_code = 'Finalized')
+                         ELSE evaluation.STATUS_CATALOG_ID
+                       END,
+              C_DESCRIPTION = CASE
+                         WHEN (SELECT c_code FROM tbl_catalog  WHERE id = evaluation.STATUS_CATALOG_ID) = 'Initial-registration'
+                           THEN :message
+                        ELSE evaluation.C_DESCRIPTION
+                       END
+            """, nativeQuery = true)
+    void updateEvaluationStatusId(@Param("startAssessmentDate") String startAssessmentDate, @Param("message") String message);
 }

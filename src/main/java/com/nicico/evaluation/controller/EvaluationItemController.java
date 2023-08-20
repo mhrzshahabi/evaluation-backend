@@ -29,9 +29,9 @@ import java.util.Locale;
 @AllArgsConstructor
 public class EvaluationItemController {
 
+    private final ExceptionUtil exceptionUtil;
     private final IEvaluationItemService service;
     private final ResourceBundleMessageSource messageSource;
-    private final ExceptionUtil exceptionUtil;
 
     /**
      * @param count      is the number of entity to every page

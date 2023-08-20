@@ -70,7 +70,6 @@ public abstract class GroupTypeMeritDTO {
         private Long id;
         private Long groupTypeMeritId;
         private InstanceGroupTypeMeritDTO.InstanceTupleDTO instance;
-
     }
 
     @Getter

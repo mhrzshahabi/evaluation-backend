@@ -57,12 +57,29 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod get(Long id) {
+    public EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod getWithPostInfo(Long id) {
         EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoEvaluationPeriods = evaluationPeriodPostService.getAllByEvaluationPeriodId(id);
         EvaluationPeriodDTO.InfoWithPostInfoEvaluationPeriod evaluationPeriodInfoPost = evaluationPeriodMapper.entityToDtoInfoWithPostInfoEvaluationPeriod(evaluationPeriod);
         evaluationPeriodInfoPost.setPostInfoEvaluationPeriod(postInfoEvaluationPeriods);
         return evaluationPeriodInfoPost;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public EvaluationPeriodDTO.Info get(Long id) {
+        EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return evaluationPeriodMapper.entityToDtoInfo(evaluationPeriod);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public List<EvaluationPeriodDTO.Info> getAllByDateAssessment() {
+       // evaluationPeriodRepository.findAllByStartDateAssessment();
+//        return evaluationPeriodMapper.entityToDtoInfo(evaluationPeriod);
+        return null;
     }
 
     @Override

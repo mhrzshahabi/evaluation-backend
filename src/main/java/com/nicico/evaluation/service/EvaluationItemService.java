@@ -36,14 +36,14 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 public class EvaluationItemService implements IEvaluationItemService {
 
     private final EvaluationItemMapper mapper;
-    private final EvaluationMapper evaluationMapper;
-    private final EvaluationItemRepository repository;
     private final PageableMapper pageableMapper;
-    private final IEvaluationService evaluationService;
+    private final ICatalogService catalogService;
+    private final EvaluationMapper evaluationMapper;
     private final IGroupTypeService groupTypeService;
+    private final EvaluationItemRepository repository;
+    private final IEvaluationService evaluationService;
     private final IGroupTypeMeritService groupTypeMeritService;
     private final IPostMeritComponentService postMeritComponentService;
-    private final ICatalogService catalogService;
     private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
     @Override
@@ -146,7 +146,10 @@ public class EvaluationItemService implements IEvaluationItemService {
         Long statusByCatalogType;
         switch (dto.getStatus().toLowerCase(Locale.ROOT)) {
             case "next":
-                if (evaluation.getStatusCatalog() != null && evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+                if (Objects.nonNull(evaluation.getStatusCatalog()) && Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+                    statusByCatalogType = evaluationStatus
+                            .filter(status -> status.getCode().equals(VALIDATED)).findFirst().orElseThrow().getId();
+                } else if (Objects.nonNull(evaluation.getStatusCatalog()) && Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
                     statusByCatalogType = evaluationStatus
                             .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
                 } else {
