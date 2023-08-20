@@ -277,7 +277,7 @@ public class EvaluationService implements IEvaluationService {
                                         createEvaluationItems(evaluation);
                                     } else {
                                         response.setMessage(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range",
-                                         new Object[]{evaluationPeriodDTO.getValidationStartDate(), evaluationPeriodDTO.getValidationEndDate()}, locale));
+                                                new Object[]{evaluationPeriodDTO.getValidationStartDate(), evaluationPeriodDTO.getValidationEndDate()}, locale));
                                         response.setStatus(406);
                                         return response;
                                     }
@@ -318,10 +318,16 @@ public class EvaluationService implements IEvaluationService {
             return response;
         }
     }
-//    @Scheduled(cron = "0 0 0 * * *")
-//    private void automateChangeStatus(){
-//       evaluationPeriodService
-//    }
+
+    @Scheduled(cron = "0 30 0 * * *")
+    @Transactional
+    public void automateChangeStatus() {
+        String message = messageSource.getMessage(
+                "exception.evaluation.is.finished.because.competency.elements.and.system.rules.were.not.set.properly",
+                null, LocaleContextHolder.getLocale());
+        repository.updateEvaluationStatusId(DateUtil.todayDate(), message);
+    }
+
     private void deleteItems(Evaluation evaluation) {
         List<Long> itemIds = evaluationItemService.getByEvalId(evaluation.getId()).stream().map(EvaluationItemDTO.Info::getId).toList();
         evaluationItemService.deleteAll(itemIds);
