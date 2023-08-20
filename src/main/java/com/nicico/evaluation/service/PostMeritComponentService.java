@@ -59,7 +59,7 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
     public Long getTotalWeight(String groupPostCode) {
         Long revokedMeritId = catalogService.getByCode("Revoked-Merit").getId();
-        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCodeAndStatusCatalogId(groupPostCode, revokedMeritId);
+        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCodeAndStatusCatalogIdNot(groupPostCode, revokedMeritId);
         return byGroupPostCode.stream().map(PostMeritComponent::getWeight).reduce(0L, Long::sum);
     }
 
