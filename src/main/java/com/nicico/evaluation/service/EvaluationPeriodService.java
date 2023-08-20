@@ -27,7 +27,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -170,12 +169,6 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                         case "next" -> {
                             if (evaluationPeriod.getStatusCatalog().getCode() != null && evaluationPeriod.getStatusCatalog().getCode().equals(PERIOD_INITIAL_REGISTRATION)) {
-                                Boolean validatePosts = validatePosts(id);
-                                if (validatePosts.equals(Boolean.FALSE)) {
-                                    response.setMessage(messageSource.getMessage("exception.period.has.invalid.posts", null, locale));
-                                    response.setStatus(100);
-                                    break;
-                                }
                                 Optional<Catalog> optionalCatalog = catalogRepository.findByCode(PERIOD_AWAITING_REVIEW);
                                 optionalCatalog.ifPresent(catalog -> evaluationPeriod.setStatusCatalogId(catalog.getId()));
 
@@ -212,7 +205,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         }
     }
 
-    private Boolean validatePosts(Long evaluationPeriodId) {
+    @Override
+    public Boolean validatePosts(Long evaluationPeriodId) {
 
         List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).
                 stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
@@ -238,20 +232,21 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                 result.set(false);
                 return;
             }
+            Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
             groupTypes.forEach(groupType -> {
                 if (!groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_OPERATIONAL)) {
-                    List<EvaluationItemDTO.MeritTupleDTO> allByGroupType = groupTypeMeritService.getAllByGroupType(groupType.getId());
+                    List<GroupTypeMeritDTO.Info> allByGroupType = groupTypeMeritService.getAllByGroupTypeIdAndMeritStatusId(groupType.getId(), statusCatalogId);
                     if (allByGroupType.isEmpty()) {
                         result.set(false);
                         return;
                     }
-                    double totalWeightGroupTypeMerit = allByGroupType.stream().mapToDouble(EvaluationItemDTO.MeritTupleDTO::getWeight).sum();
+                    double totalWeightGroupTypeMerit = allByGroupType.stream().mapToDouble(GroupTypeMeritDTO::getWeight).sum();
                     if (totalWeightGroupTypeMerit != 100) {
                         result.set(false);
                     }
                 } else {
                     postCodes.forEach(postCode -> {
-                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCode(postCode);
+                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
                         if (byPostCode.isEmpty()) {
                             result.set(false);
                             return;
@@ -272,7 +267,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public ResponseEntity<byte[]> downloadExcel(HttpServletResponse response, Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<byte[]> downloadExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException {
+
         List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostList = createInvalidPostList(evaluationPeriodId);
         byte[] body = BaseService.exportExcelByList(invalidPostList, null, "گزارش لیست پست ها");
         ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
@@ -298,6 +294,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         int typeSize = kpiTypeService.findAll().size();
         List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).
                 stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
+
+        Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
         allGroupTypeMap.forEach((groupId, groupTypes) -> {
             /*check all kpiType define for these group*/
             validateAllGroupType(invalidPostExcelList, typeSize, groupTypes, groupTypes.size(), "exception.not.define.all.group-type.for.these.group");
@@ -307,14 +305,14 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
             groupTypes.forEach(groupType -> {
                 if (!groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_OPERATIONAL)) {
-                    List<GroupTypeMeritDTO.Info> allGroupTypeMeritByGroupType = groupTypeMeritService.getByGroupType(groupType.getId());
+                    List<GroupTypeMeritDTO.Info> allGroupTypeMeritByGroupType = groupTypeMeritService.getAllByGroupTypeIdAndMeritStatusId(groupType.getId(), statusCatalogId);
                     /*check define meritComponents for all groupTypes that are Behavioral or Development*/
                     validateGroupTypeMeritIsDefine(invalidPostExcelList, groupTypes, allGroupTypeMeritByGroupType);
                     /*check total groupTypeMerit's weight for all groupTypes that are Behavioral or Development*/
                     validateGroupTypeMeritWeight(invalidPostExcelList, groupTypes, groupType, allGroupTypeMeritByGroupType);
                 } else {
                     postCodes.forEach(postCode -> {
-                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCode(postCode);
+                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
                         if (byPostCode.isEmpty())
                             validatePostMeritIsDefine(invalidPostExcelList, postCode);
 

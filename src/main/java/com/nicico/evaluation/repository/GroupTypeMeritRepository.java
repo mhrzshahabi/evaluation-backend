@@ -13,4 +13,8 @@ import java.util.List;
 public interface GroupTypeMeritRepository extends JpaRepository<GroupTypeMerit, Long>, JpaSpecificationExecutor<GroupTypeMerit> {
 
     List<GroupTypeMerit> getAllByGroupTypeId(@Param("groupTypeId") Long groupTypeId);
+
+    @Query("from GroupTypeMerit groupTypeMerit join MeritComponent merit on groupTypeMerit.meritComponentId = merit.id " +
+            "where groupTypeMerit.groupTypeId = :groupTypeId and merit.statusCatalogId <> :statusCatalogId")
+    List<GroupTypeMerit> getAllByGroupTypeIdAndMeritStatusId(@Param("groupTypeId") Long groupTypeId, @Param("statusCatalogId") Long statusCatalogId);
 }

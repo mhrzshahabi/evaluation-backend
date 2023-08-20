@@ -36,6 +36,16 @@ public abstract class PostMeritComponentDTO {
 
     @Getter
     @Setter
+    @ApiModel("PostLastActiveMeritInfo")
+    public static class LastActiveMeritInfo extends PostMeritComponentDTO {
+
+        private Long id;
+        private MeritComponentDTO.Info meritComponent;
+        private List<PostMeritInstanceDTO.InstanceTupleDTO> postMeritInstanceList;
+    }
+
+    @Getter
+    @Setter
     @ApiModel("PostMeritComponentInfoWithInstance")
     public static class InfoWithInstance extends PostMeritComponentDTO {
 
@@ -108,7 +118,7 @@ public abstract class PostMeritComponentDTO {
     @Accessors(chain = true)
     @ApiModel("PostMeritComponentResponse")
     public static class Response {
-        private List<Info> data;
+        private List<LastActiveMeritInfo> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

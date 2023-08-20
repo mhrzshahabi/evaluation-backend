@@ -7,10 +7,7 @@ import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IKPITypeService;
-import com.nicico.evaluation.iservice.IMeritComponentAuditService;
-import com.nicico.evaluation.iservice.IMeritComponentService;
-import com.nicico.evaluation.iservice.IMeritComponentTypeService;
+import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.MeritComponent;
@@ -40,6 +37,7 @@ public class MeritComponentService implements IMeritComponentService {
     private final IKPITypeService typeService;
     private final MeritComponentMapper mapper;
     private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
     private final CatalogRepository catalogRepository;
     private final MeritComponentRepository repository;
     private final ResourceBundleMessageSource messageSource;
@@ -104,6 +102,8 @@ public class MeritComponentService implements IMeritComponentService {
                 createDto.setKpiTypeId(Collections.singletonList(kpiType.getId()));
                 createDto.setCode(dto.getCode());
                 createDto.setTitle(dto.getTitle());
+                Long statusId = catalogRepository.findByCode(ACTIVE_MERIT).orElseThrow().getId();
+                createDto.setStatusCatalogId(statusId);
                 create(createDto);
                 response.setStatus(HttpStatus.OK.value());
             } else {
@@ -189,39 +189,64 @@ public class MeritComponentService implements IMeritComponentService {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
             Boolean canChangeStatus = Boolean.FALSE;
-            if (Objects.nonNull(meritComponent.getStatusCatalog())) {
-                switch (meritComponent.getStatusCatalog().getCode()) {
-                    case AWAITING_CREATE_MERIT, AWAITING_EDIT_MERIT -> {
-                        if (request.getStatusCode().equals(RE_EXAMINATION_MERIT) || request.getStatusCode().equals(ACTIVE_MERIT)
-                                || request.getStatusCode().equals(REJECT_MERIT))
-                            canChangeStatus = Boolean.TRUE;
-                    }
-                    case AWAITING_REVOKE_MERIT -> {
-                        if (request.getStatusCode().equals(RE_EXAMINATION_MERIT) || request.getStatusCode().equals(REVOKED_MERIT)
-                                || request.getStatusCode().equals(REJECT_MERIT))
-                            canChangeStatus = Boolean.TRUE;
-                    }
-                    case RE_EXAMINATION_MERIT -> {
-                        if (request.getStatusCode().equals(AWAITING_CREATE_MERIT) || request.getStatusCode().equals(AWAITING_EDIT_MERIT)
-                                || request.getStatusCode().equals(AWAITING_REVOKE_MERIT) || request.getStatusCode().equals(REJECT_MERIT))
-                            canChangeStatus = Boolean.TRUE;
-                    }
-                    default -> throw new IllegalStateException("Unexpected value: " + meritComponent.getStatusCatalog().getCode());
+            switch (meritComponent.getStatusCatalog().getCode()) {
+                case AWAITING_CREATE_MERIT, AWAITING_EDIT_MERIT -> {
+                    if (request.getStatusCode().equals(RE_EXAMINATION_MERIT) || request.getStatusCode().equals(ACTIVE_MERIT))
+                        canChangeStatus = Boolean.TRUE;
                 }
-            } else canChangeStatus = Boolean.TRUE;
-
+                case AWAITING_REVOKE_MERIT -> {
+                    if (request.getStatusCode().equals(RE_EXAMINATION_MERIT) || request.getStatusCode().equals(REVOKED_MERIT))
+                        canChangeStatus = Boolean.TRUE;
+                }
+                case RE_EXAMINATION_MERIT -> {
+                    if (request.getStatusCode().equals(AWAITING_CREATE_MERIT) || request.getStatusCode().equals(AWAITING_EDIT_MERIT)
+                            || request.getStatusCode().equals(AWAITING_REVOKE_MERIT))
+                        canChangeStatus = Boolean.TRUE;
+                }
+            }
             if (canChangeStatus.equals(Boolean.TRUE)) {
                 Optional<Catalog> statusByCode = catalogRepository.findByCode(request.getStatusCode());
                 statusByCode.ifPresent(catalog -> {
                     meritComponent.setStatusCatalogId(catalog.getId());
+                    meritComponent.setTitle(request.getTitle());
                     meritComponent.setDescription(request.getDescription());
                     repository.save(meritComponent);
                 });
+            }
+            if (request.getStatusCode().equals(REJECT_MERIT)
+                    && !meritComponent.getStatusCatalog().getCode().equals(ACTIVE_MERIT)
+                    && !meritComponent.getStatusCatalog().getCode().equals(REVOKED_MERIT)) {
+
+                MeritComponentDTO.Info lastActiveByMeritComponent = findLastActiveByMeritComponentId(meritComponent.getId());
+                if (Objects.nonNull(lastActiveByMeritComponent)) {
+                    meritComponent.setStatusCatalogId(lastActiveByMeritComponent.getId());
+                    meritComponent.setTitle(lastActiveByMeritComponent.getTitle());
+                    meritComponent.setDescription(request.getDescription());
+                }
+                repository.save(meritComponent);
             }
             return mapper.entityToDtoInfo(meritComponent);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
+    }
+
+    @Override
+    @Transactional
+    public Long getMeritComponentStatusCatalogId(Long meritComponentId) {
+        MeritComponent meritComponent = repository.findById(meritComponentId).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return meritComponent.getStatusCatalogId();
+    }
+
+    @Override
+    @Transactional
+    public void updateMeritToAudit() {
+        List<MeritComponent> meritComponentList = repository.findAll();
+        meritComponentList.forEach(item -> {
+            item.setTitle(item.getTitle() + " ");
+            item.setStatusCatalogId(catalogService.getByCode("Active-Merit").getId());
+            repository.save(item);
+        });
     }
 
 }

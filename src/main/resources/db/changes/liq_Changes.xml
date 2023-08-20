@@ -1794,4 +1794,75 @@
             where STATUS_CATALOG_ID is null;
         </sql>
     </changeSet>
+    <changeSet author="semami" id="1692164872">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_catalog_type_id
+            FROM tbl_catalog_type
+            WHERE c_code = 'EvaluationStatus';
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'اعتبار سنجی شده',
+                    'Validated',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'خاتمه',
+                    'Termination',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1692522644">
+        <sql>
+            UPDATE TBL_CATALOG SET c_title = '70' where c_code = 'Very-weak';
+            UPDATE TBL_CATALOG SET c_title = '90' where c_code = 'Weak';
+            UPDATE TBL_CATALOG SET c_title = '110' where c_code = 'Medium';
+            UPDATE TBL_CATALOG SET c_title = '130' where c_code = 'Good';
+            UPDATE TBL_CATALOG SET c_title = '150' where c_code = 'Very-good';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -59,8 +59,8 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
-    public List<GroupTypeMeritDTO.Info> getByGroupType(Long groupTypeId) {
-        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeId(groupTypeId);
+    public List<GroupTypeMeritDTO.Info> getAllByGroupTypeIdAndMeritStatusId(Long groupTypeId, Long statusCatalogId) {
+        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeIdAndMeritStatusId(groupTypeId,statusCatalogId);
         return mapper.entityToDtoInfoList(groupTypeMerit);
     }
 
@@ -78,7 +78,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     public GroupTypeMeritDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<GroupTypeMerit> groupTypeMerits = repository.findAll(pageable);
-        List<GroupTypeMeritDTO.Info> groupTypeInfos = mapper.entityToDtoInfoList(groupTypeMerits.getContent());
+        List<GroupTypeMeritDTO.LastActiveMeritInfo> groupTypeInfos = mapper.entityToDtoLastActiveMeritInfoList(groupTypeMerits.getContent());
 
         GroupTypeMeritDTO.Response response = new GroupTypeMeritDTO.Response();
         GroupTypeMeritDTO.SpecResponse specResponse = new GroupTypeMeritDTO.SpecResponse();
@@ -163,8 +163,8 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
-    public SearchDTO.SearchRs<GroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    public SearchDTO.SearchRs<GroupTypeMeritDTO.LastActiveMeritInfo> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoLastActiveMeritInfo, request);
     }
 
     @Override

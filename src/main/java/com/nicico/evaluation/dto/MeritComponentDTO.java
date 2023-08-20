@@ -32,11 +32,8 @@ public abstract class MeritComponentDTO {
         //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
         //todo
         private Boolean hasEvaluation = false;
-        //بعدا امکان داره لیست بشه
-//        private List<KPITypeDTO.Info> kpiType;
         private MeritComponentTypeDTO.Info meritComponentTypes;
         private CatalogDTO.Info statusCatalog;
-
     }
 
     @Getter
@@ -72,6 +69,7 @@ public abstract class MeritComponentDTO {
 
         private String statusCode;
         private String description;
+        private String title;
 
     }
 
@@ -122,7 +120,6 @@ public abstract class MeritComponentDTO {
         private String code;
         private String title;
         private String kpiTypeTitle;
-        private String status;
     }
 
     @Getter

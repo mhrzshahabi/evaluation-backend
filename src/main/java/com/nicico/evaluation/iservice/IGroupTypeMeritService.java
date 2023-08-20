@@ -14,7 +14,7 @@ public interface IGroupTypeMeritService {
 
     List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupType(Long groupTypeId);
 
-    List<GroupTypeMeritDTO.Info> getByGroupType(Long groupTypeId);
+    List<GroupTypeMeritDTO.Info> getAllByGroupTypeIdAndMeritStatusId(Long groupTypeId, Long statusCatalogId);
 
     Long getTotalComponentWeightByGroupType(Long groupTypeId);
 
@@ -26,7 +26,7 @@ public interface IGroupTypeMeritService {
 
     void delete(Long id);
 
-    SearchDTO.SearchRs<GroupTypeMeritDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+    SearchDTO.SearchRs<GroupTypeMeritDTO.LastActiveMeritInfo> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 

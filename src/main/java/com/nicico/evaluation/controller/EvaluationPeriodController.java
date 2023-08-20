@@ -168,7 +168,7 @@ public class EvaluationPeriodController {
 
     /**
      * @param ChangeStatusDTO is id of evaluation for change status and is next or previous for change status
-     * @return Boolean is the result of function
+     * @return BaseResponse is the result of function
      */
     @PostMapping(value = "/change-status")
     public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO ChangeStatusDTO) {
@@ -176,15 +176,21 @@ public class EvaluationPeriodController {
     }
 
     /**
+     * @param evaluationPeriodId is id of evaluation period for change status and is next or previous for change status
+     * @return Boolean is the result of function
+     */
+    @PostMapping(value = "/validate-posts-of-period/{evaluationPeriodId}")
+    public Boolean validatePostsOfPeriod(@PathVariable Long evaluationPeriodId) {
+        return service.validatePosts(evaluationPeriodId);
+    }
+
+    /**
      * @param evaluationPeriodId is the key value
-     * @return byte[] is the excel of InstanceInfo entity that match the criteria
+     * @return byte[] is the excel of error list of posts that are invalid
      */
     @SneakyThrows
     @GetMapping(value = "/export-error-list-excel/{evaluationPeriodId}")
-    public ResponseEntity<byte[]> exportExcel(HttpServletResponse response, @PathVariable Long evaluationPeriodId) {
-//        executerService.runAsync(() -> {
-        return service.downloadExcel(response, evaluationPeriodId);
-//            return true;
-//        });
+    public ResponseEntity<byte[]> exportExcel(@PathVariable Long evaluationPeriodId) {
+        return service.downloadExcel(evaluationPeriodId);
     }
 }

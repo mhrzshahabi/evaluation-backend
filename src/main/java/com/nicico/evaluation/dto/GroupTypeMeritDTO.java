@@ -39,6 +39,18 @@ public abstract class GroupTypeMeritDTO {
 
     @Getter
     @Setter
+    @ApiModel("GroupTypeLastActiveMeritInfo")
+    public static class LastActiveMeritInfo extends GroupTypeMeritDTO {
+
+        private Long id;
+        private MeritComponentDTO.Info meritComponent;
+        private GroupTypeDTO.Info groupType;
+        private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
+        private Long totalComponentWeight;
+    }
+
+    @Getter
+    @Setter
     @ApiModel("GroupTypeMeritInfoWithInstance")
     public static class InfoWithInstance extends GroupTypeMeritDTO {
 
@@ -117,7 +129,7 @@ public abstract class GroupTypeMeritDTO {
     @Accessors(chain = true)
     @ApiModel("GroupTypeMeritResponse")
     public static class Response {
-        private List<Info> data;
+        private List<LastActiveMeritInfo> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

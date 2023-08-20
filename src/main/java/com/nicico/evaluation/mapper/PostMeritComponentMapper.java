@@ -9,7 +9,7 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {MeritComponentMapper.class, PostMeritInstanceMapper.class})
+@Mapper(componentModel = "spring", uses = {MeritComponentMapper.class, PostMeritInstanceMapper.class, GroupTypeMeritMapper.class})
 public abstract class PostMeritComponentMapper {
 
     public abstract PostMeritComponent dtoCreateToEntity(PostMeritComponentDTO.Create dto);
@@ -22,6 +22,13 @@ public abstract class PostMeritComponentMapper {
     public abstract PostMeritComponentDTO.Info entityToDtoInfo(PostMeritComponent entity);
 
     public abstract List<PostMeritComponentDTO.Info> entityToDtoInfoList(List<PostMeritComponent> entities);
+
+    @Mappings({
+            @Mapping(target = "meritComponent", source = "meritComponentId", qualifiedByName = "getLastActiveMerit")
+    })
+    public abstract PostMeritComponentDTO.LastActiveMeritInfo entityToDtoLastActiveMeritInfo(PostMeritComponent entity);
+
+    public abstract List<PostMeritComponentDTO.LastActiveMeritInfo> entityToDtoLastActiveMeritInfoList(List<PostMeritComponent> entities);
 
     public abstract void update(@MappingTarget PostMeritComponent entity, PostMeritComponentDTO.Update dto);
 

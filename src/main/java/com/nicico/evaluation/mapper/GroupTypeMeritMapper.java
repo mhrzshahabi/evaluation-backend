@@ -1,9 +1,8 @@
 package com.nicico.evaluation.mapper;
 
-import com.nicico.evaluation.dto.EvaluationItemDTO;
-import com.nicico.evaluation.dto.GroupTypeMeritDTO;
-import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
+import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
+import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.model.InstanceGroupTypeMerit;
 import org.mapstruct.*;
@@ -19,6 +18,10 @@ public abstract class GroupTypeMeritMapper {
     @Autowired
     private IGroupTypeMeritService groupTypeMeritService;
 
+    @Lazy
+    @Autowired
+    private IMeritComponentService meritComponentService;
+
     public abstract GroupTypeMerit dtoCreateToEntity(GroupTypeMeritDTO.Create dto);
 
     @Mappings({
@@ -28,6 +31,13 @@ public abstract class GroupTypeMeritMapper {
     public abstract GroupTypeMeritDTO.Info entityToDtoInfo(GroupTypeMerit entity);
 
     public abstract List<GroupTypeMeritDTO.Info> entityToDtoInfoList(List<GroupTypeMerit> entities);
+
+    @Mappings({
+            @Mapping(target = "meritComponent", source = "meritComponentId", qualifiedByName = "getLastActiveMerit")
+    })
+    public abstract GroupTypeMeritDTO.LastActiveMeritInfo entityToDtoLastActiveMeritInfo(GroupTypeMerit entity);
+
+    public abstract List<GroupTypeMeritDTO.LastActiveMeritInfo> entityToDtoLastActiveMeritInfoList(List<GroupTypeMerit> entities);
 
     public abstract List<EvaluationItemDTO.MeritTupleDTO> entityToEvaluationItemDtoList(List<GroupTypeMerit> entities);
 
@@ -48,7 +58,6 @@ public abstract class GroupTypeMeritMapper {
             @Mapping(target = "groupTypeTitle", source = "groupType.group.title"),
             @Mapping(target = "kpiTypeTitle", source = "groupType.kpiType.title"),
             @Mapping(target = "meritComponentTitle", source = "meritComponent.title")
-
     })
     public abstract GroupTypeMeritDTO.Excel entityToDtoExcel(GroupTypeMerit entity);
 
@@ -58,7 +67,11 @@ public abstract class GroupTypeMeritMapper {
 
     @Named("getTotalComponentWeightByGroupType")
     Long getTotalComponentWeightByGroupType(Long groupTypeId) {
-      return groupTypeMeritService.getTotalComponentWeightByGroupType(groupTypeId);
+        return groupTypeMeritService.getTotalComponentWeightByGroupType(groupTypeId);
     }
 
+    @Named("getLastActiveMerit")
+    MeritComponentDTO.Info getLastActiveMerit(Long meritComponentId) {
+        return meritComponentService.findLastActiveByMeritComponentId(meritComponentId);
+    }
 }

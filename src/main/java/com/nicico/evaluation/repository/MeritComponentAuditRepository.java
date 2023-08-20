@@ -26,6 +26,7 @@ public interface MeritComponentAuditRepository extends JpaRepository<MeritCompon
                                 id = :meritComponentId
                                 AND status_catalog_id = :statusCatalogId
                         )
+                        AND id = :meritComponentId
                     """, nativeQuery = true)
     Optional<MeritComponentAudit> findLastActiveByMeritComponentId(Long meritComponentId, Long statusCatalogId);
 }

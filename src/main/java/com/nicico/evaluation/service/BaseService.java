@@ -132,11 +132,64 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
 
                 searchRs = SearchUtil.search(dao, rq, converter);
                 searchRs.setTotalCount(totalCount);
-
             }
         }
         return searchRs;
     }
+
+//    public static <E, INFO, DAO extends JpaSpecificationExecutor<E>> SearchDTO.SearchRs<INFO> optimizedAuditSearch(DAO dao, Function<E, INFO> converter, SearchDTO.SearchRq rq) throws NoSuchFieldException, IllegalAccessException {
+//
+//        SearchDTO.SearchRs<INFO> searchRs;
+//        long totalCount;
+//        List<E> list;
+//
+//        if (rq.getStartIndex() == null) {
+//            searchRs = SearchUtil.search(dao, rq, converter);
+//        } else {
+//            rq.setDistinct(true);
+//            if (rq.getCount() == null) {
+//                list = dao.findAll(NICICOSpecification.of(rq));
+//                totalCount = list.size();
+//            } else {
+//                Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
+//                list = all.getContent();
+//                totalCount = all.getTotalElements();
+//            }
+//
+//            if (totalCount == 0) {
+//
+//                searchRs = new SearchDTO.SearchRs<>();
+//                searchRs.setList(new ArrayList<INFO>());
+//                searchRs.setTotalCount(0L);
+//
+//            } else {
+//                List<Long> revs = new ArrayList<>();
+//                Field field;
+//                for (E e : list) {
+//                    field = e.getClass().getDeclaredField("rev");
+//                    field.setAccessible(true);
+//                    Object value = field.get(e);
+//                    revs.add((Long) value);
+//                }
+//
+//                rq.setCriteria(makeCriteria("", null, EOperator.or, null));
+//                List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+//                int page = 0;
+//
+//                while (page * 1000 < list.size()) {
+//                    page++;
+//                    criteriaRqList.add(makeCriteria("rev", revs.subList((page - 1) * 1000, Math.min((page * 1000), revs.size())), EOperator.inSet, null));
+//
+//                }
+//                rq.setCriteria(makeCriteria("", null, EOperator.or, criteriaRqList));
+//                rq.setStartIndex(null);
+//
+//                searchRs = SearchUtil.search(dao, rq, converter);
+//                searchRs.setTotalCount(totalCount);
+//            }
+//        }
+//        return searchRs;
+//    }
 
     @Override
     @Transactional(readOnly = true)

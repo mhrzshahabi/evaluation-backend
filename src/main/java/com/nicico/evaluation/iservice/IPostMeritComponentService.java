@@ -4,8 +4,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
 import com.nicico.evaluation.utility.BaseResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,7 +17,7 @@ public interface IPostMeritComponentService {
 
     List<EvaluationItemDTO.MeritTupleDTO> getByGroupPostCode(String groupPostCode);
 
-    List<EvaluationItemDTO.MeritTupleDTO> getByPostCode(String postCode);
+    List<EvaluationItemDTO.MeritTupleDTO> getByPostCodeAndMeritStatus(String postCode,Long statusCatalogId);
 
     PostMeritComponentDTO.SpecResponse list(int count, int startIndex);
 
@@ -31,6 +29,6 @@ public interface IPostMeritComponentService {
 
     void delete(Long id);
 
-    SearchDTO.SearchRs<PostMeritComponentDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+    SearchDTO.SearchRs<PostMeritComponentDTO.LastActiveMeritInfo> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
 }

@@ -114,14 +114,14 @@ public class GroupTypeMeritController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<GroupTypeMeritDTO.Info> is the list of groupInfo entity that match the criteria
+     * @return TotalResponse<GroupTypeMeritDTO.LastActiveMeritInfo> is the list of groupTypeLastActiveMeritInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<GroupTypeMeritDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupTypeMeritDTO.Info> data = service.search(request);
+        SearchDTO.SearchRs<GroupTypeMeritDTO.LastActiveMeritInfo> data = service.search(request);
         final GroupTypeMeritDTO.Response response = new GroupTypeMeritDTO.Response();
         final GroupTypeMeritDTO.SpecResponse specRs = new GroupTypeMeritDTO.SpecResponse();
         response.setData(data.getList())

@@ -31,7 +31,16 @@ public abstract class SensitiveEventPersonDTO {
         private SensitiveEventsDTO.Info sensitiveEvent;
         private MeritComponentTupleDTO meritComponent;
         private AttachmentDTO.AttachInfo attachment;
+    }
 
+    @Getter
+    @Setter
+    @ApiModel("SensitiveEventPersonLastActiveMeritInfo")
+    public static class LastActiveMeritInfo extends SensitiveEventPersonDTO {
+        private Long id;
+        private SensitiveEventsDTO.Info sensitiveEvent;
+        private MeritComponentDTO.Info meritComponent;
+        private AttachmentDTO.AttachInfo attachment;
     }
 
     @Getter
@@ -74,11 +83,9 @@ public abstract class SensitiveEventPersonDTO {
     @Accessors(chain = true)
     @ApiModel("SensitiveEventPersonDeleteRq")
     public static class MeritComponentTupleDTO {
-
         private String id;
         private String code;
         private String title;
-
     }
 
     @Getter
@@ -94,7 +101,7 @@ public abstract class SensitiveEventPersonDTO {
     @Accessors(chain = true)
     @ApiModel("SensitiveEventPersonResponse")
     public static class Response {
-        private List<Info> data;
+        private List<LastActiveMeritInfo> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

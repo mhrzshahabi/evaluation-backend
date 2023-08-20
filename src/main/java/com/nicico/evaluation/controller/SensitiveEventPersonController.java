@@ -93,14 +93,14 @@ public class SensitiveEventPersonController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<SensitiveEventPersonDTO.Info> is the list of SensitiveEventPersonInfo entity that match the criteria
+     * @return TotalResponse<SensitiveEventPersonDTO.LastActiveMeritInfo> is the list of SensitiveEventPersonLastActiveMeritInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<SensitiveEventPersonDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                        @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                        @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<SensitiveEventPersonDTO.Info> data = service.search(request);
+        SearchDTO.SearchRs<SensitiveEventPersonDTO.LastActiveMeritInfo> data = service.search(request);
         final SensitiveEventPersonDTO.Response response = new SensitiveEventPersonDTO.Response();
         final SensitiveEventPersonDTO.SpecResponse specRs = new SensitiveEventPersonDTO.SpecResponse();
         response.setData(data.getList())

@@ -7,7 +7,6 @@ import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 import org.springframework.http.ResponseEntity;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
@@ -32,5 +31,7 @@ public interface IEvaluationPeriodService {
 
     BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
 
-    ResponseEntity<byte[]> downloadExcel(HttpServletResponse response, Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
+    Boolean validatePosts(Long evaluationPeriodId);
+
+    ResponseEntity<byte[]> downloadExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
 }
