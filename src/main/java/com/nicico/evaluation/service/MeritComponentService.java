@@ -7,10 +7,7 @@ import com.nicico.evaluation.dto.KPITypeDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.MeritComponentTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
-import com.nicico.evaluation.iservice.IKPITypeService;
-import com.nicico.evaluation.iservice.IMeritComponentAuditService;
-import com.nicico.evaluation.iservice.IMeritComponentService;
-import com.nicico.evaluation.iservice.IMeritComponentTypeService;
+import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.MeritComponentMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.MeritComponent;
@@ -40,6 +37,7 @@ public class MeritComponentService implements IMeritComponentService {
     private final IKPITypeService typeService;
     private final MeritComponentMapper mapper;
     private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
     private final CatalogRepository catalogRepository;
     private final MeritComponentRepository repository;
     private final ResourceBundleMessageSource messageSource;
@@ -231,6 +229,24 @@ public class MeritComponentService implements IMeritComponentService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
+    }
+
+    @Override
+    @Transactional
+    public Long getMeritComponentStatusCatalogId(Long meritComponentId) {
+        MeritComponent meritComponent = repository.findById(meritComponentId).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return meritComponent.getStatusCatalogId();
+    }
+
+    @Override
+    @Transactional
+    public void updateMeritToAudit() {
+        List<MeritComponent> meritComponentList = repository.findAll();
+        meritComponentList.forEach(item -> {
+            item.setTitle(item.getTitle() + " ");
+            item.setStatusCatalogId(catalogService.getByCode("Active-Merit").getId());
+            repository.save(item);
+        });
     }
 
 }

@@ -1,9 +1,12 @@
 package com.nicico.evaluation.mapper;
 
+import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
+import com.nicico.evaluation.iservice.IMeritComponentAuditService;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.model.InstanceGroupTypeMerit;
 import org.mapstruct.*;
@@ -17,7 +20,15 @@ public abstract class GroupTypeMeritMapper {
 
     @Lazy
     @Autowired
+    private ICatalogService catalogService;
+
+    @Lazy
+    @Autowired
     private IGroupTypeMeritService groupTypeMeritService;
+
+    @Lazy
+    @Autowired
+    private IMeritComponentAuditService meritComponentAuditService;
 
     public abstract GroupTypeMerit dtoCreateToEntity(GroupTypeMeritDTO.Create dto);
 
@@ -28,6 +39,15 @@ public abstract class GroupTypeMeritMapper {
     public abstract GroupTypeMeritDTO.Info entityToDtoInfo(GroupTypeMerit entity);
 
     public abstract List<GroupTypeMeritDTO.Info> entityToDtoInfoList(List<GroupTypeMerit> entities);
+
+    @Mappings({
+            @Mapping(target = "meritComponent.title", source = "meritComponentId", qualifiedByName = "getLastActiveMeritTitle"),
+            @Mapping(target = "meritComponent.statusCatalogId", source = "meritComponentId", qualifiedByName = "getLastActiveMeritStatusCatalogId"),
+            @Mapping(target = "meritComponent.statusCatalog", source = "meritComponentId", qualifiedByName = "getLastActiveMeritStatusCatalogInfo")
+    })
+    public abstract GroupTypeMeritDTO.LastActiveMeritInfo entityToDtoLastActiveMeritInfo(GroupTypeMerit entity);
+
+    public abstract List<GroupTypeMeritDTO.LastActiveMeritInfo> entityToDtoLastActiveMeritInfoList(List<GroupTypeMerit> entities);
 
     public abstract List<EvaluationItemDTO.MeritTupleDTO> entityToEvaluationItemDtoList(List<GroupTypeMerit> entities);
 
@@ -58,7 +78,31 @@ public abstract class GroupTypeMeritMapper {
 
     @Named("getTotalComponentWeightByGroupType")
     Long getTotalComponentWeightByGroupType(Long groupTypeId) {
-      return groupTypeMeritService.getTotalComponentWeightByGroupType(groupTypeId);
+        return groupTypeMeritService.getTotalComponentWeightByGroupType(groupTypeId);
+    }
+
+    @Named("getLastActiveMeritTitle")
+    String getLastActiveMeritTitle(Long meritComponentId) {
+        if (meritComponentAuditService.findLastActiveByMeritComponentId(meritComponentId) != null)
+            return meritComponentAuditService.findLastActiveByMeritComponentId(meritComponentId).getTitle();
+        return null;
+    }
+
+    @Named("getLastActiveMeritStatusCatalogId")
+    Long getLastActiveMeritStatusCatalogId(Long meritComponentId) {
+        if (meritComponentAuditService.findLastActiveByMeritComponentId(meritComponentId) != null)
+            return meritComponentAuditService.findLastActiveByMeritComponentId(meritComponentId).getStatusCatalogId();
+        else
+            return catalogService.getByCode("Revoked-Merit").getId();
+    }
+
+    @Named("getLastActiveMeritStatusCatalogInfo")
+    CatalogDTO.Info getLastActiveMeritStatusCatalogInfo(Long meritComponentId) {
+        if (meritComponentAuditService.findLastActiveByMeritComponentId(meritComponentId) != null) {
+            Long statusCatalogId = meritComponentAuditService.findLastActiveByMeritComponentId(meritComponentId).getStatusCatalogId();
+            return catalogService.get(statusCatalogId);
+        } else
+            return catalogService.get(catalogService.getByCode("Revoked-Merit").getId());
     }
 
 }

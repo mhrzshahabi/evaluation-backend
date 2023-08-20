@@ -150,4 +150,10 @@ public class MeritComponentController {
                 .body(excelDownload.getContent());
     }
 
+    @GetMapping(value = "/update-merit-to-audit")
+    public ResponseEntity<Void> updateMeritToAudit() {
+        service.updateMeritToAudit();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
