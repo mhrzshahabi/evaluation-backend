@@ -1854,17 +1854,6 @@
             ]]>
         </sql>
     </changeSet>
-
-    <changeSet author="MShahabi" id="1692522644">
-        <sql>
-            UPDATE TBL_CATALOG SET c_title = '70' where c_code = 'Very-weak';
-            UPDATE TBL_CATALOG SET c_title = '90' where c_code = 'Weak';
-            UPDATE TBL_CATALOG SET c_title = '110' where c_code = 'Medium';
-            UPDATE TBL_CATALOG SET c_title = '130' where c_code = 'Good';
-            UPDATE TBL_CATALOG SET c_title = '150' where c_code = 'Very-good';
-        </sql>
-    </changeSet>
-
     <changeSet id="1692173134" author="semami">
         <addColumn tableName="tbl_evaluation_item">
             <column name="rev" type="NUMBER(10, 0)"/>
@@ -1874,5 +1863,15 @@
         <addColumn tableName="tbl_evaluation">
             <column name="c_description" type="VARCHAR2(3000 CHAR)"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1692522644">
+        <sql>
+            UPDATE TBL_CATALOG SET c_title = '70' where c_code = 'Very-weak';
+            UPDATE TBL_CATALOG SET c_title = '90' where c_code = 'Weak';
+            UPDATE TBL_CATALOG SET c_title = '110' where c_code = 'Medium';
+            UPDATE TBL_CATALOG SET c_title = '130' where c_code = 'Good';
+            UPDATE TBL_CATALOG SET c_title = '150' where c_code = 'Very-good';
+        </sql>
     </changeSet>
 </databaseChangeLog>
