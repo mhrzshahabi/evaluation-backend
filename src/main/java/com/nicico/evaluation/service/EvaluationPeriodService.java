@@ -24,7 +24,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -170,12 +169,6 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                         case "next" -> {
                             if (evaluationPeriod.getStatusCatalog().getCode() != null && evaluationPeriod.getStatusCatalog().getCode().equals(PERIOD_INITIAL_REGISTRATION)) {
-                                Boolean validatePosts = validatePosts(id);
-                                if (validatePosts.equals(Boolean.FALSE)) {
-                                    response.setMessage(messageSource.getMessage("exception.period.has.invalid.posts", null, locale));
-                                    response.setStatus(100);
-                                    break;
-                                }
                                 Optional<Catalog> optionalCatalog = catalogRepository.findByCode(PERIOD_AWAITING_REVIEW);
                                 optionalCatalog.ifPresent(catalog -> evaluationPeriod.setStatusCatalogId(catalog.getId()));
 
@@ -212,7 +205,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         }
     }
 
-    private Boolean validatePosts(Long evaluationPeriodId) {
+    @Override
+    public Boolean validatePosts(Long evaluationPeriodId) {
 
         List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).
                 stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();

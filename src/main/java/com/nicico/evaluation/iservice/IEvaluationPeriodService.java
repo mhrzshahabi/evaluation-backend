@@ -31,5 +31,7 @@ public interface IEvaluationPeriodService {
 
     BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
 
+    Boolean validatePosts(Long evaluationPeriodId);
+
     ResponseEntity<byte[]> downloadExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
 }
