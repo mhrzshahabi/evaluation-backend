@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Api(value = "MeritComponentAudit")
 @RestController
-@RequestMapping(value = "/api/merit-Component-audit")
+@RequestMapping(value = "/api/merit-component-audit")
 public class MeritComponentAuditController {
 
     private final IMeritComponentAuditService service;

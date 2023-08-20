@@ -29,6 +29,6 @@ public interface IPostMeritComponentService {
 
     void delete(Long id);
 
-    SearchDTO.SearchRs<PostMeritComponentDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+    SearchDTO.SearchRs<PostMeritComponentDTO.LastActiveMeritInfo> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
 }

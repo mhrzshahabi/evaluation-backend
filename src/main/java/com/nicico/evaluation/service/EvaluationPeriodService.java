@@ -186,12 +186,6 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                         case "next" -> {
                             if (evaluationPeriod.getStatusCatalog().getCode() != null && evaluationPeriod.getStatusCatalog().getCode().equals(PERIOD_INITIAL_REGISTRATION)) {
-                                Boolean validatePosts = validatePosts(id);
-                                if (validatePosts.equals(Boolean.FALSE)) {
-                                    response.setMessage(messageSource.getMessage("exception.period.has.invalid.posts", null, locale));
-                                    response.setStatus(100);
-                                    break;
-                                }
                                 Optional<Catalog> optionalCatalog = catalogRepository.findByCode(PERIOD_AWAITING_REVIEW);
                                 optionalCatalog.ifPresent(catalog -> evaluationPeriod.setStatusCatalogId(catalog.getId()));
 
