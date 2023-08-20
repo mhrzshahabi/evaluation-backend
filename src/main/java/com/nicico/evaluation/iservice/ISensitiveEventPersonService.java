@@ -9,7 +9,7 @@ public interface ISensitiveEventPersonService {
 
     SensitiveEventPersonDTO.SpecResponse list(int count, int startIndex);
 
-    SearchDTO.SearchRs<SensitiveEventPersonDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+    SearchDTO.SearchRs<SensitiveEventPersonDTO.LastActiveMeritInfo> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     SensitiveEventPersonDTO.Info create(SensitiveEventPersonDTO.Create dto);
 

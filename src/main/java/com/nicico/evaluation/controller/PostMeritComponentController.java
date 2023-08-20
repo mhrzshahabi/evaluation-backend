@@ -101,14 +101,14 @@ public class PostMeritComponentController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<PostMeritComponentDTO.Info> is the list of postMeritComponentInfo entity that match the criteria
+     * @return TotalResponse<PostMeritComponentDTO.LastActiveMeritInfo> is the list of postLastActiveMeritInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<PostMeritComponentDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                      @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                      @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<PostMeritComponentDTO.Info> data = service.search(request);
+        SearchDTO.SearchRs<PostMeritComponentDTO.LastActiveMeritInfo> data = service.search(request);
         final PostMeritComponentDTO.Response response = new PostMeritComponentDTO.Response();
         final PostMeritComponentDTO.SpecResponse specRs = new PostMeritComponentDTO.SpecResponse();
         response.setData(data.getList())

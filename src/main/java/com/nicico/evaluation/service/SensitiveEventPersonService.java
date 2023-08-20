@@ -43,7 +43,7 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
     public SensitiveEventPersonDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<SensitiveEventPerson> sensitiveEventPersonnel = repository.findAll(pageable);
-        List<SensitiveEventPersonDTO.Info> sensitiveEventPersonnelInfos = mapper.entityToDtoInfoList(sensitiveEventPersonnel.getContent());
+        List<SensitiveEventPersonDTO.LastActiveMeritInfo> sensitiveEventPersonnelInfos = mapper.entityToDtoLastActiveMeritInfoList(sensitiveEventPersonnel.getContent());
 
         SensitiveEventPersonDTO.Response response = new SensitiveEventPersonDTO.Response();
         SensitiveEventPersonDTO.SpecResponse specResponse = new SensitiveEventPersonDTO.SpecResponse();
@@ -108,8 +108,8 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS_PERSON')")
-    public SearchDTO.SearchRs<SensitiveEventPersonDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
-        return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    public SearchDTO.SearchRs<SensitiveEventPersonDTO.LastActiveMeritInfo> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoLastActiveMeritInfo, request);
     }
 
 }
