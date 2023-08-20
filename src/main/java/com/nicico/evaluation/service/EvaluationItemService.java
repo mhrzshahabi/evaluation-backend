@@ -149,8 +149,7 @@ public class EvaluationItemService implements IEvaluationItemService {
                 if (Objects.nonNull(evaluation.getStatusCatalog()) && Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
                     statusByCatalogType = evaluationStatus
                             .filter(status -> status.getCode().equals(VALIDATED)).findFirst().orElseThrow().getId();
-                }
-                else if (Objects.nonNull(evaluation.getStatusCatalog()) && Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
+                } else if (Objects.nonNull(evaluation.getStatusCatalog()) && Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
                     statusByCatalogType = evaluationStatus
                             .filter(status -> status.getCode().equals(AWAITING)).findFirst().orElseThrow().getId();
                 } else {
