@@ -22,7 +22,8 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
     @Query("from EvaluationItem  evalItem " +
             " join Evaluation eval on eval.id = evalItem.evaluationId " +
             " join GroupTypeMerit groupTypeMerit on groupTypeMerit.id  = evalItem.groupTypeMeritId " +
-            " join MeritComponent merit on merit.id = groupTypeMerit.meritComponentId " +
+//            " join MeritComponent merit on merit.id = groupTypeMerit.meritComponentId " +
+            " join MeritComponentAudit meritAudit on meritAudit.id = groupTypeMerit.meritComponentId and meritAudit.rev = evalItem.rev " +
             " where eval.id = :evaluationId and groupTypeMerit.id in ( :groupTypeMeritIds)")
     List<EvaluationItem> getAllGroupTypeMeritByEvalId(@Param("evaluationId") Long evaluationId, List<Long> groupTypeMeritIds);
 

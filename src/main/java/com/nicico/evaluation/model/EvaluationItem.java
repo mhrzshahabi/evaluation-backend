@@ -65,6 +65,9 @@ public class EvaluationItem extends Auditable {
     @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<EvaluationItemInstance> evaluationItemInstance;
 
+    @Transient
+    private MeritComponentAudit meritComponentAudit;
+
     @Column(name = "rev")
     private Long rev;
 }

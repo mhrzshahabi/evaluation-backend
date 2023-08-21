@@ -29,6 +29,7 @@ public abstract class MeritComponentDTO {
     public static class Info extends MeritComponentDTO {
 
         private Long id;
+        private Long rev;
         //آیا این مصداق در ارزیابی استفاده شده است یا نه ؟
         //todo
         private Boolean hasEvaluation = false;

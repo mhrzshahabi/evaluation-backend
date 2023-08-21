@@ -337,8 +337,8 @@ public class EvaluationService implements IEvaluationService {
                 evaluationItemDTO.setEvaluationId(evaluation.getId());
                 List<Long> instances = item.getInstances().stream().map(EvaluationItemDTO.InstanceTupleDTO::getId).toList();
                 evaluationItemDTO.setInstanceIds(instances);
-                Long lastActiveMeritId = meritComponentService.findLastActiveByMeritComponentId(item.getMeritComponent().getId()).getId();
-                evaluationItemDTO.setRev(lastActiveMeritId);
+                Long lastActiveMeritRev = meritComponentService.findLastActiveByMeritComponentId(item.getMeritComponent().getId()).getRev();
+                evaluationItemDTO.setRev(lastActiveMeritRev);
                 evaluationItemDTO.setGroupTypeMeritId(item.getGroupTypeMeritId());
                 evaluationItemDTO.setPostMeritComponentId(item.getPostMeritId());
                 evaluationItemDTO.setInstanceGroupTypeMerits(item.getInstanceGroupTypeMerits());
