@@ -36,14 +36,14 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 public class EvaluationItemService implements IEvaluationItemService {
 
     private final EvaluationItemMapper mapper;
-    private final EvaluationMapper evaluationMapper;
-    private final EvaluationItemRepository repository;
     private final PageableMapper pageableMapper;
-    private final IEvaluationService evaluationService;
+    private final ICatalogService catalogService;
+    private final EvaluationMapper evaluationMapper;
     private final IGroupTypeService groupTypeService;
+    private final EvaluationItemRepository repository;
+    private final IEvaluationService evaluationService;
     private final IGroupTypeMeritService groupTypeMeritService;
     private final IPostMeritComponentService postMeritComponentService;
-    private final ICatalogService catalogService;
     private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
     @Override

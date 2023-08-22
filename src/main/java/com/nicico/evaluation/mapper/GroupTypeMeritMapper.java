@@ -33,7 +33,8 @@ public abstract class GroupTypeMeritMapper {
     public abstract List<GroupTypeMeritDTO.Info> entityToDtoInfoList(List<GroupTypeMerit> entities);
 
     @Mappings({
-            @Mapping(target = "meritComponent", source = "meritComponentId", qualifiedByName = "getLastActiveMerit")
+            @Mapping(target = "meritComponent", source = "meritComponentId", qualifiedByName = "getLastActiveMerit"),
+            @Mapping(target = "totalComponentWeight", source = "groupTypeId", qualifiedByName = "getTotalComponentWeightByGroupType")
     })
     public abstract GroupTypeMeritDTO.LastActiveMeritInfo entityToDtoLastActiveMeritInfo(GroupTypeMerit entity);
 

@@ -7,6 +7,7 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupTypeMeritDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
@@ -34,11 +35,12 @@ import java.util.Locale;
 public class GroupTypeMeritService implements IGroupTypeMeritService {
 
     private final GroupTypeMeritMapper mapper;
-    private final PageableMapper pageableMapper;
-    private final GroupTypeMeritRepository repository;
-    private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
     private final ExceptionUtil exceptionUtil;
+    private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
+    private final GroupTypeMeritRepository repository;
     private final ResourceBundleMessageSource messageSource;
+    private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
 
     @Override
     @Transactional(readOnly = true)
@@ -68,7 +70,8 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public Long getTotalComponentWeightByGroupType(Long groupTypeId) {
-        List<GroupTypeMerit> groupTypeMeritList = repository.getAllByGroupTypeId(groupTypeId);
+        Long revokedMeritId = catalogService.getByCode("Revoked-Merit").getId();
+        List<GroupTypeMerit> groupTypeMeritList = repository.getAllByGroupTypeIdAndMeritStatusId(groupTypeId, revokedMeritId);
         return groupTypeMeritList.stream().map(GroupTypeMerit::getWeight).reduce(0L, Long::sum);
     }
 

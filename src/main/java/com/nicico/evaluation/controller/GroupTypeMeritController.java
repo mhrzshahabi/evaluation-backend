@@ -31,9 +31,9 @@ import java.util.Locale;
 @RequestMapping(value = "/api/group-type-merit")
 public class GroupTypeMeritController {
 
-    private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
     private final IGroupTypeMeritService service;
+    private final ResourceBundleMessageSource messageSource;
 
     /**
      * @param id is the groupTypeMerit id
