@@ -23,11 +23,11 @@ public class MeritComponentAudit implements Serializable {
     @EmbeddedId
     private MeritComponentAuditKey auditId;
 
-//    @Column(name = "id", insertable = false, updatable = false, precision = 10)
-//    private Long id;
-//
-//    @Column(name = "rev", insertable = false, updatable = false, precision = 10)
-//    private Long rev;
+    @Column(name = "id", insertable = false, updatable = false, precision = 10)
+    private Long id;
+
+    @Column(name = "rev", insertable = false, updatable = false, precision = 10)
+    private Long rev;
 
     @Column(name = "c_title")
     private String title;

@@ -10,7 +10,9 @@ import java.util.List;
 public interface MeritComponentAuditMapper {
 
     @Mappings({
-            @Mapping(target = "statusCatalog", source = "statusCatalogId", qualifiedByName = "getStatusCatalogInfoByStatusCatalogId")
+            @Mapping(target = "statusCatalog", source = "statusCatalogId", qualifiedByName = "getStatusCatalogInfoByStatusCatalogId"),
+            @Mapping(target = "id", source = "auditId.id"),
+            @Mapping(target = "rev", source = "auditId.rev")
     })
     MeritComponentAuditDTO.Info entityToDtoInfo(MeritComponentAudit entity);
 
