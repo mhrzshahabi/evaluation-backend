@@ -63,6 +63,14 @@ public class MeritComponentService implements IMeritComponentService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
+    public MeritComponentDTO.Info findByRevAndMeritComponentId(Long rev, Long id) {
+        MeritComponentAudit meritComponentAudit = meritComponentAuditService.findAllByRevAndMeritComponentId(rev, id);
+        return mapper.meritComponentAuditToDtoInfo(meritComponentAudit);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
     public MeritComponentDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<MeritComponent> meritComponents = repository.findAll(pageable);

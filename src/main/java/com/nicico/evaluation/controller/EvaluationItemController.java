@@ -66,14 +66,13 @@ public class EvaluationItemController {
     }
 
     /**
-     * @param assessPostCode is the postCode of asses
      * @return List<EvaluationItemDTO.CreateItemInfo> is the list of data that need for create evaluation Item
      */
-    @GetMapping(value = "/getEvaluationItemInfo")
-    public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> get(@RequestParam String assessPostCode) {
-        if (assessPostCode.contains("/"))
-            assessPostCode = assessPostCode.substring(0, assessPostCode.indexOf("/"));
-        return new ResponseEntity<>(service.getInfoByAssessPostCodeForCreate(assessPostCode), HttpStatus.OK);
+    @PostMapping(value = "/getEvaluationItemInfo")
+    public ResponseEntity<List<EvaluationItemDTO.CreateItemInfo>> get(@RequestBody EvaluationItemDTO.CreateInfo request) {
+        if (request.getAssessPostCode().contains("/"))
+            request.setAssessPostCode(request.getAssessPostCode().substring(0, request.getAssessPostCode().indexOf("/")));
+        return new ResponseEntity<>(service.getInfoByAssessPostCodeForCreate(request), HttpStatus.OK);
     }
 
     /**

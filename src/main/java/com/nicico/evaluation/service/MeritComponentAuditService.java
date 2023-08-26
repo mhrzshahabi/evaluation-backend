@@ -55,6 +55,12 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
 
     @Override
     @Transactional(readOnly = true)
+    public MeritComponentAudit findAllByRevAndMeritComponentId(Long rev, Long meritComponentId) {
+        return repository.findAllByRevAndMeritComponentId(rev, meritComponentId).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public SearchDTO.SearchRs<MeritComponentDTO.Info> searchLastActiveMeritComponent(int startIndex, int count, SearchRequestDTO search) {
         List<MeritComponentDTO.Info> data = new ArrayList<>();
         SearchDTO.SearchRs<MeritComponentDTO.Info> searchRs = new SearchDTO.SearchRs<>();

@@ -14,6 +14,8 @@ public interface IGroupTypeMeritService {
 
     List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupType(Long groupTypeId);
 
+    List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupTypeByRev(Long groupTypeId, Long evaluationId);
+
     List<GroupTypeMeritDTO.Info> getAllByGroupTypeIdAndMeritStatusId(Long groupTypeId, Long statusCatalogId);
 
     Long getTotalComponentWeightByGroupType(Long groupTypeId);

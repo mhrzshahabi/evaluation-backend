@@ -52,5 +52,4 @@ public class MeritComponent extends Auditable {
 
     @Column(name = "c_description")
     private String description;
-
 }

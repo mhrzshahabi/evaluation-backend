@@ -24,7 +24,8 @@ public abstract class EvaluationItemDTO {
     private String questionnaireAnswerCatalogCode;
     private String description;
 
-    private Long rev;
+    private Long meritRev;
+    private Long meritId;
 
     @Getter
     @Setter
@@ -61,6 +62,17 @@ public abstract class EvaluationItemDTO {
         private String typeTitle;
         private Long groupTypeWeight;
         private List<MeritTupleDTO> meritTuple;
+
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("CreateEvaluationInfo")
+    public static class CreateInfo {
+
+        private Long evaluationId;
+        private String assessPostCode;
+        private Long statusCatalogId;
 
     }
 

@@ -106,6 +106,7 @@ public class EvaluationItemService implements IEvaluationItemService {
         EvaluationItem entity = mapper.dtoCreateToEntity(dto);
         try {
             EvaluationItem evaluationItem = repository.save(entity);
+            dto.setStatus(Objects.nonNull(dto.getStatus()) ? dto.getStatus() : "next");
             updateEvaluation(dto);
             createAllEvaluationInstance(dto, evaluationItem);
 
@@ -231,11 +232,12 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
-    public List<EvaluationItemDTO.CreateItemInfo> getInfoByAssessPostCodeForCreate(String assessPostCode) {
+    public List<EvaluationItemDTO.CreateItemInfo> getInfoByAssessPostCodeForCreate(EvaluationItemDTO.CreateInfo request) {
 
         List<EvaluationItemDTO.CreateItemInfo> createItemInfoList = new ArrayList<>();
-        getGroupTypeMeritInfoForCreate(assessPostCode, createItemInfoList);
-        getPostMeritInfoForCreate(assessPostCode, createItemInfoList);
+        Long statusCatalogId = catalogService.getByCode(INITIAL).getId();
+        getGroupTypeMeritInfo(request, statusCatalogId, createItemInfoList);
+        getPostMeritInfo(request, statusCatalogId, createItemInfoList);
         calculateAndSetTotalWeight(createItemInfoList);
 
         return createItemInfoList;
@@ -290,26 +292,37 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
-    private void getGroupTypeMeritInfoForCreate(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
-        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_GROUP);
+    private void getGroupTypeMeritInfo(EvaluationItemDTO.CreateInfo request, Long statusCatalogId, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(request.getAssessPostCode(), LEVEL_DEF_GROUP);
+
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
-            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList = groupTypeMeritService.getAllByGroupType(gType.getId());
+            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDtoList;
+            if (request.getStatusCatalogId().equals(statusCatalogId))
+                meritTupleDtoList = groupTypeMeritService.getAllByGroupType(gType.getId());
+            else
+                meritTupleDtoList = groupTypeMeritService.getAllByGroupTypeByRev(gType.getId(), request.getEvaluationId());
+
             createItemInfo.setMeritTuple(meritTupleDtoList);
             createItemInfoList.add(createItemInfo);
 
         });
     }
 
-    private void getPostMeritInfoForCreate(String assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
-        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST);
+    private void getPostMeritInfo(EvaluationItemDTO.CreateInfo request, Long statusCatalogId, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(request.getAssessPostCode(), LEVEL_DEF_POST);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
+            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS;
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
-            List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS = postMeritComponentService.getByGroupPostCode(assessPostCode);
+            if (request.getStatusCatalogId().equals(statusCatalogId))
+                meritTupleDTOS = postMeritComponentService.getByGroupPostCode(request.getAssessPostCode());
+            else
+                meritTupleDTOS = postMeritComponentService.getByGroupPostCodeByRev(request.getAssessPostCode(), request.getEvaluationId());
+
             createItemInfo.setMeritTuple(meritTupleDTOS);
             createItemInfoList.add(createItemInfo);
 
