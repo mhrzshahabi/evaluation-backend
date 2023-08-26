@@ -14,7 +14,8 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class MeritComponentAuditDTO {
 
-    private MeritComponentAuditKey id;
+   // private MeritComponentAuditKey id;
+    private Long id;
     private Long rev;
     private String code;
     private String title;
