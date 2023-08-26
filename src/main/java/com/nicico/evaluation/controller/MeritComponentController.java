@@ -155,5 +155,4 @@ public class MeritComponentController {
         service.updateMeritToAudit();
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
