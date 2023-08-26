@@ -24,12 +24,11 @@ public interface EvaluationItemMapper {
 
     List<EvaluationItemDTO.MeritTupleDTO> entityToUpdateInfoDtoList(List<EvaluationItem> entities);
 
-
     @Mappings({
             @Mapping(target = "evaluationItemId", source = "id"),
-            @Mapping(target = "meritComponent", source = "groupTypeMerit.meritComponent"),
-            @Mapping(target = "meritComponent.id", source = "groupTypeMerit.meritComponent.id"),
-            @Mapping(target = "meritComponent.title", source = "groupTypeMerit.meritComponent.title"),
+            @Mapping(target = "meritComponent", source = "meritComponentAudit"),
+            @Mapping(target = "meritComponent.id", source = "meritComponentAudit.auditId.id"),
+            @Mapping(target = "meritComponent.title", source = "meritComponentAudit.title"),
             @Mapping(target = "meritComponent.meritComponentTypes", ignore = true),
             @Mapping(target = "groupTypeMerit.instanceGroupTypeMerits", ignore = true),
             @Mapping(target = "weight", source = "groupTypeMerit.weight"),

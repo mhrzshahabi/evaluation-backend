@@ -17,7 +17,9 @@ public interface IPostMeritComponentService {
 
     List<EvaluationItemDTO.MeritTupleDTO> getByGroupPostCode(String groupPostCode);
 
-    List<EvaluationItemDTO.MeritTupleDTO> getByPostCodeAndMeritStatus(String postCode,Long statusCatalogId);
+    List<EvaluationItemDTO.MeritTupleDTO> getByGroupPostCodeByRev(String groupPostCode, Long evaluationId);
+
+    List<EvaluationItemDTO.MeritTupleDTO> getByPostCodeAndMeritStatus(String postCode, Long statusCatalogId);
 
     PostMeritComponentDTO.SpecResponse list(int count, int startIndex);
 

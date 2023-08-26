@@ -65,6 +65,17 @@ public class EvaluationItem extends Auditable {
     @OneToMany(mappedBy = "evaluationItem", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<EvaluationItemInstance> evaluationItemInstance;
 
-    @Column(name = "rev")
-    private Long rev;
+    @Setter(AccessLevel.NONE)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "merit_component_audit_rev", referencedColumnName = "rev", insertable = false, updatable = false, nullable = false),
+            @JoinColumn(name = "merit_component_audit_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+    })
+    private MeritComponentAudit meritComponentAudit;
+
+    @Column(name = "merit_component_audit_rev")
+    private Long meritRev;
+
+    @Column(name = "merit_component_audit_id")
+    private Long meritId;
 }
