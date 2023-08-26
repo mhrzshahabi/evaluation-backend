@@ -223,6 +223,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
     @Override
+    @Transactional
     public Boolean validatePosts(Long evaluationPeriodId) {
 
         List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).
