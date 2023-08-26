@@ -3,6 +3,8 @@ package com.nicico.evaluation.model.compositeKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -12,7 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id","rev"}, callSuper = false)
+@Access(AccessType.FIELD)
+@EqualsAndHashCode(of = {"id", "rev"}, callSuper = false)
 @Embeddable
 public class MeritComponentAuditKey implements Serializable {
 

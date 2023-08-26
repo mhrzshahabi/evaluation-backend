@@ -1,6 +1,9 @@
 package com.nicico.evaluation.mapper;
 
-import com.nicico.evaluation.dto.*;
+import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.dto.GroupTypeMeritDTO;
+import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
+import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.model.GroupTypeMerit;
@@ -44,6 +47,7 @@ public abstract class GroupTypeMeritMapper {
 
     @Mapping(target = "groupTypeMeritId", source = "id")
     @Mapping(target = "instances", source = "instanceGroupTypeMerits")
+    @Mapping(target = "meritComponent", source = "meritComponentId", qualifiedByName = "getLastActiveMerit")
     public abstract EvaluationItemDTO.MeritTupleDTO entityToEvaluationItemDtoInfo(GroupTypeMerit entity);
 
     public abstract EvaluationItemDTO.InstanceTupleDTO instanceToPostMeritInstance(InstanceGroupTypeMeritDTO.InstanceTupleDTO postMeritInstance);

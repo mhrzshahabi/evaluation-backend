@@ -1874,4 +1874,13 @@
             UPDATE TBL_CATALOG SET c_title = '150' where c_code = 'Very-good';
         </sql>
     </changeSet>
+    <changeSet author="semami" id="1692695400">
+       <addColumn tableName="tbl_evaluation_item">
+            <column name="merit_component_audit_id" type="NUMBER(10, 0)"/>
+            <column name="merit_component_audit_rev" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1692696906" author="semami">
+        <dropColumn tableName="tbl_evaluation_item" columnName="rev"/>
+    </changeSet>
 </databaseChangeLog>

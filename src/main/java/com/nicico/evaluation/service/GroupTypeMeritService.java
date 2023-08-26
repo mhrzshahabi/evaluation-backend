@@ -10,6 +10,7 @@ import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
+import com.nicico.evaluation.mapper.GroupTypeMapper;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
@@ -29,12 +30,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 public class GroupTypeMeritService implements IGroupTypeMeritService {
 
     private final GroupTypeMeritMapper mapper;
+    private final GroupTypeMapper groupTypeMapper;
     private final ExceptionUtil exceptionUtil;
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
@@ -59,10 +62,30 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     }
 
     @Override
+    public List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupTypeByRev(Long groupTypeId, Long evaluationId) {
+        List<?> data = repository.getAllByGroupTypeIdByRev(groupTypeId, evaluationId);
+        List<GroupTypeMerit> groupTypeMerits = new ArrayList<>();
+        if (Objects.nonNull(data)) {
+            data.forEach(p ->
+                    {
+                        Object[] objects = (Object[]) p;
+                        GroupTypeMerit item = new GroupTypeMerit();
+                        item.setId(objects[0] == null ? null : Long.parseLong(objects[0].toString()));
+                        item.setGroupTypeId(objects[1] == null ? null : Long.parseLong(objects[1].toString()));
+                        item.setMeritComponentId(objects[2] == null ? null : Long.parseLong(objects[2].toString()));
+                        item.setWeight(objects[3] == null ? null : Long.parseLong(objects[3].toString()));
+                        groupTypeMerits.add(item);
+                    }
+            );
+        }
+        return mapper.entityToEvaluationItemDtoList(groupTypeMerits);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public List<GroupTypeMeritDTO.Info> getAllByGroupTypeIdAndMeritStatusId(Long groupTypeId, Long statusCatalogId) {
-        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeIdAndMeritStatusId(groupTypeId,statusCatalogId);
+        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeIdAndMeritStatusId(groupTypeId, statusCatalogId);
         return mapper.entityToDtoInfoList(groupTypeMerit);
     }
 

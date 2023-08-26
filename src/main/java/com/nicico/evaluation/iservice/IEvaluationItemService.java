@@ -21,7 +21,7 @@ public interface IEvaluationItemService {
 
     List<EvaluationItemDTO.Info> createAll(List<EvaluationItemDTO.Create> requests);
 
-    List<EvaluationItemDTO.CreateItemInfo> getInfoByAssessPostCodeForCreate(String assessPostCode);
+    List<EvaluationItemDTO.CreateItemInfo> getInfoByAssessPostCodeForCreate(EvaluationItemDTO.CreateInfo createInfo);
 
     List<EvaluationItemDTO.CreateItemInfo> getInfoByEvaluationIdForUpdate(Long id);
 

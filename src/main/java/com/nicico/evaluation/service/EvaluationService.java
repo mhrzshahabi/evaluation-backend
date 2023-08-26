@@ -263,10 +263,7 @@ public class EvaluationService implements IEvaluationService {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next":
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(VALIDATED);
-                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                                    Evaluation evaluationSave = repository.save(evaluation);
-                                    createEvaluationItems(evaluationSave);
+                                    createEvaluationItems(evaluation);
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
                                     // توسط جاب شبانه انجام میشود
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
@@ -328,8 +325,13 @@ public class EvaluationService implements IEvaluationService {
 
     private void createEvaluationItems(Evaluation evaluation) {
         List<EvaluationItemDTO.Create> requests = new ArrayList<>();
+        String assessPostCode = evaluation.getAssessPostCode().substring(0, evaluation.getAssessPostCode().indexOf("/"));
+        EvaluationItemDTO.CreateInfo createInfo = new EvaluationItemDTO.CreateInfo();
+        createInfo.setAssessPostCode(assessPostCode);
+        createInfo.setEvaluationId(evaluation.getId());
+        createInfo.setStatusCatalogId(evaluation.getStatusCatalogId());
         List<EvaluationItemDTO.CreateItemInfo> infoByAssessPostCodeForCreate =
-                evaluationItemService.getInfoByAssessPostCodeForCreate(evaluation.getAssessPostCode().substring(0, evaluation.getAssessPostCode().indexOf("/")));
+                evaluationItemService.getInfoByAssessPostCodeForCreate(createInfo);
         infoByAssessPostCodeForCreate.forEach(info -> {
             List<EvaluationItemDTO.MeritTupleDTO> items = info.getMeritTuple();
             items.forEach(item -> {
@@ -337,8 +339,9 @@ public class EvaluationService implements IEvaluationService {
                 evaluationItemDTO.setEvaluationId(evaluation.getId());
                 List<Long> instances = item.getInstances().stream().map(EvaluationItemDTO.InstanceTupleDTO::getId).toList();
                 evaluationItemDTO.setInstanceIds(instances);
-                Long lastActiveMeritRev = meritComponentService.findLastActiveByMeritComponentId(item.getMeritComponent().getId()).getRev();
-                evaluationItemDTO.setRev(lastActiveMeritRev);
+                MeritComponentDTO.Info lastActiveByMeritComponent = meritComponentService.findLastActiveByMeritComponentId(item.getMeritComponent().getId());
+                evaluationItemDTO.setMeritRev(lastActiveByMeritComponent.getRev());
+                evaluationItemDTO.setMeritId(lastActiveByMeritComponent.getId());
                 evaluationItemDTO.setGroupTypeMeritId(item.getGroupTypeMeritId());
                 evaluationItemDTO.setPostMeritComponentId(item.getPostMeritId());
                 evaluationItemDTO.setInstanceGroupTypeMerits(item.getInstanceGroupTypeMerits());

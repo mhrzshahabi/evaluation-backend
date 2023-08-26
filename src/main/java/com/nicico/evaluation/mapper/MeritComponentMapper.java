@@ -46,7 +46,7 @@ public abstract class MeritComponentMapper {
     public abstract MeritComponentDTO.Excel entityToDtoExcel(MeritComponent entity);
 
     @Mappings({
-            @Mapping(target = "meritComponentTypes", source = "id", qualifiedByName = "getKpiTypeInfoByMeritComponentId"),
+            @Mapping(target = "meritComponentTypes", source = "meritComponentAudit.auditId.id", qualifiedByName = "getKpiTypeInfoByMeritComponentId"),
             @Mapping(target = "statusCatalog", source = "statusCatalogId", qualifiedByName = "getStatusCatalogInfoByStatusCatalogId")
     })
     public abstract MeritComponentDTO.Info meritComponentAuditToDtoInfo(MeritComponentAudit meritComponentAudit);
@@ -72,10 +72,10 @@ public abstract class MeritComponentMapper {
 
     @Named("getKpiTypeTitleByMeritComponentId")
     String getKpiTypeTitleByMeritComponentId(List<MeritComponentType> meritComponentTypeList) {
-        if (meritComponentTypeList!=null && !meritComponentTypeList.isEmpty()){
+        if (meritComponentTypeList != null && !meritComponentTypeList.isEmpty()) {
             MeritComponentType meritComponentType = meritComponentTypeList.get(0);
-            if(meritComponentType != null && meritComponentType.getKpiType() != null)
-                return  meritComponentType.getKpiType().getTitle();
+            if (meritComponentType != null && meritComponentType.getKpiType() != null)
+                return meritComponentType.getKpiType().getTitle();
         }
         return null;
     }

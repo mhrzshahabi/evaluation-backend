@@ -262,4 +262,12 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="tbl_catalog" validate="true"/>
     </changeSet>
+    <changeSet author="semami" id="1692696184">
+        <addForeignKeyConstraint baseColumnNames="merit_component_audit_id, merit_component_audit_rev"
+                                 baseTableName="tbl_evaluation_item"
+                                 constraintName="f_evaluation_to_merit_audit" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id, rev"
+                                 referencedTableName="tbl_merit_component_aud" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

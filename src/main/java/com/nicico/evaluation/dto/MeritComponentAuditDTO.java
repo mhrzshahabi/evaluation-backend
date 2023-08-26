@@ -1,5 +1,6 @@
 package com.nicico.evaluation.dto;
 
+import com.nicico.evaluation.model.compositeKey.MeritComponentAuditKey;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class MeritComponentAuditDTO {
 
-    private Long id;
+    private MeritComponentAuditKey id;
     private Long rev;
     private String code;
     private String title;

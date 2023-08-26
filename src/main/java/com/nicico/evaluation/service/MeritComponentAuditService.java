@@ -55,6 +55,12 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
 
     @Override
     @Transactional(readOnly = true)
+    public MeritComponentAudit findAllByRevAndMeritComponentId(Long rev, Long meritComponentId) {
+        return repository.findAllByRevAndMeritComponentId(rev, meritComponentId).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public SearchDTO.SearchRs<MeritComponentDTO.Info> searchLastActiveMeritComponent(int startIndex, int count, SearchRequestDTO search) {
         List<MeritComponentDTO.Info> data = new ArrayList<>();
         SearchDTO.SearchRs<MeritComponentDTO.Info> searchRs = new SearchDTO.SearchRs<>();
@@ -123,7 +129,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                             case "code" -> query.append(" and ").append("c_code").append(" like '%").append(search.getValue().toString()).append("%'");
                             case "statusCatalogId" -> query.append(" and ").append("status_catalog_id").append(" like '%").append(search.getValue().toString()).append("%'");
                             case "kpiType.id" -> query.append(" and ").append("kpi_type_id").append(" = ").append(search.getValue().toString());
-                            default -> {}
+                            default -> {
+                            }
                         }
                     }
             );
