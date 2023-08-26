@@ -1,6 +1,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.ExternalMapper;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.FilterDTO;
@@ -10,7 +11,7 @@ import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
-import com.nicico.evaluation.mapper.GroupTypeMapper;
+import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
@@ -37,7 +38,8 @@ import java.util.Objects;
 public class GroupTypeMeritService implements IGroupTypeMeritService {
 
     private final GroupTypeMeritMapper mapper;
-    private final GroupTypeMapper groupTypeMapper;
+    private final IMeritComponentService meritComponentService;
+    private final ExternalMapper externalMapper;
     private final ExceptionUtil exceptionUtil;
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
@@ -78,7 +80,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
                     }
             );
         }
-        return mapper.entityToEvaluationItemDtoList(groupTypeMerits);
+        return externalMapper.entityToEvaluationItemDtoList(groupTypeMerits);
     }
 
     @Override
