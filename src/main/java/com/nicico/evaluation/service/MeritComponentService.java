@@ -137,7 +137,7 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info update(Long id, MeritComponentDTO.Update dto) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         Long statusId = catalogRepository.findByCode(AWAITING_EDIT_MERIT).orElseThrow().getId();
-        meritComponent.setStatusCatalogId(statusId);
+        dto.setStatusCatalogId(statusId);
         mapper.update(meritComponent, dto);
         try {
             List<Long> meritComponentTypeIds = meritComponentTypeService.findAllByMeritComponentId(meritComponent.getId()).stream().map(MeritComponentTypeDTO.Info::getId).toList();
