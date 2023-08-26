@@ -1,6 +1,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.evaluation.ExternalMapper;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.dto.PostMeritComponentDTO;
@@ -10,6 +11,7 @@ import com.nicico.evaluation.iservice.IGroupPostService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IPostMeritComponentService;
 import com.nicico.evaluation.mapper.PostMeritComponentMapper;
+import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.model.PostMeritComponent;
 import com.nicico.evaluation.repository.PostMeritComponentRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -23,8 +25,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -37,6 +41,7 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     private final PostMeritComponentRepository repository;
     private final ResourceBundleMessageSource messageSource;
     private final IMeritComponentService meritComponentService;
+    private final ExternalMapper externalMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -73,8 +78,22 @@ public class PostMeritComponentService implements IPostMeritComponentService {
 
     @Override
     public List<EvaluationItemDTO.MeritTupleDTO> getByGroupPostCodeByRev(String groupPostCode, Long evaluationId) {
-        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCodeByRev(groupPostCode);
-        return mapper.postMeritDtoToEvaluationItemInfoList(byGroupPostCode);
+        List<?> data = repository.findAllByGroupPostCodeByRev(groupPostCode, evaluationId);
+        List<PostMeritComponent> postMeritComponents = new ArrayList<>();
+        if (Objects.nonNull(data)) {
+            data.forEach(p ->
+                    {
+                        Object[] objects = (Object[]) p;
+                        PostMeritComponent item = new PostMeritComponent();
+                        item.setId(objects[0] == null ? null : Long.parseLong(objects[0].toString()));
+                        item.setGroupPostCode(objects[1] == null ? null : objects[1].toString());
+                        item.setMeritComponentId(objects[2] == null ? null : Long.parseLong(objects[2].toString()));
+                        item.setWeight(objects[3] == null ? null : Long.parseLong(objects[3].toString()));
+                        postMeritComponents.add(item);
+                    }
+            );
+        }
+        return externalMapper.postMeritToEvaluationItemDtoList(postMeritComponents);
     }
 
     @Transactional(readOnly = true)

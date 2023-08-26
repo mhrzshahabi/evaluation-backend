@@ -2,7 +2,9 @@ package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.MeritComponentAuditDTO;
 import com.nicico.evaluation.model.MeritComponentAudit;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
