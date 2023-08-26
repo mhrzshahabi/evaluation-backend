@@ -62,6 +62,40 @@ public class MeritComponentAuditController {
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<MeritComponentDTO.Info> is the list of meritComponent entity that match the criteria
+     */
+    @PostMapping(value = "/last-active-merit-kpi-filter/spec-list")
+    public ResponseEntity<MeritComponentDTO.SpecResponse> searchLastActiveMeritComponentKPIFilter(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                                         @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                                         @RequestBody List<FilterDTO> criteria) {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        List<SearchDTO.CriteriaRq> criteriaRqList = request.getCriteria().getCriteria();
+
+        SearchRequestDTO searchRequestDTO = new SearchRequestDTO();
+        List<SearchRequestDTO.SearchDataDTO> searchDataDTOList = new ArrayList<>();
+        criteriaRqList.forEach(item -> {
+            SearchRequestDTO.SearchDataDTO searchDataDTO = new SearchRequestDTO.SearchDataDTO();
+            searchDataDTO.setFieldName(item.getFieldName());
+            searchDataDTO.setValue(item.getValue() != null ? item.getValue().get(0) : null);
+            searchDataDTOList.add(searchDataDTO);
+        });
+        searchRequestDTO.setSearchDataDTOList(searchDataDTOList);
+
+        SearchDTO.SearchRs<MeritComponentDTO.Info> data = service.searchLastActiveMeritComponentKPIFilter(startIndex, count, searchRequestDTO);
+        final MeritComponentDTO.Response response = new MeritComponentDTO.Response();
+        final MeritComponentDTO.SpecResponse specRs = new MeritComponentDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
      * @return TotalResponse<MeritComponentAuditDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/change-list/{id}")
