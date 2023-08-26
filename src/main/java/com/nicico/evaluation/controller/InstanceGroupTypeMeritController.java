@@ -31,6 +31,7 @@ public class InstanceGroupTypeMeritController {
     private final IInstanceGroupTypeMeritService service;
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
+
     /**
      * @param id is the instanceGroupTypeMerit id
      * @return InstanceGroupTypeMeritDTO.Info is the single instanceGroupTypeMerit entity

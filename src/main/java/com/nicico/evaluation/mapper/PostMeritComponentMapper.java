@@ -32,11 +32,12 @@ public abstract class PostMeritComponentMapper {
 
     public abstract void update(@MappingTarget PostMeritComponent entity, PostMeritComponentDTO.Update dto);
 
-    public abstract List<EvaluationItemDTO.MeritTupleDTO> postMeritDtoToEvaluationItemInfoList(List<PostMeritComponent> groupTypeMerits);
+    public abstract List<EvaluationItemDTO.MeritTupleDTO> postMeritDtoToEvaluationItemInfoList(List<PostMeritComponent> postMeritComponents);
 
     @Mapping(target = "postMeritId", source = "id")
     @Mapping(target = "instances", source = "postMeritInstanceList")
-    public abstract EvaluationItemDTO.MeritTupleDTO postMeritDtoToEvaluationItemInfo(PostMeritComponent groupTypeMerit);
+    @Mapping(target = "meritComponent", source = "meritComponentId", qualifiedByName = "getLastActiveMerit")
+    public abstract EvaluationItemDTO.MeritTupleDTO postMeritDtoToEvaluationItemInfo(PostMeritComponent postMeritComponent);
 
     @Mapping(target = "id", source = "postMeritInstance.id")
     @Mapping(target = "instanceId", source = "postMeritInstance.instanceId")
