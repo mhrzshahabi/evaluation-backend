@@ -94,6 +94,8 @@ public class MeritComponentService implements IMeritComponentService {
     @PreAuthorize("hasAuthority('C_MERIT_COMPONENT')")
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
+        Long statusId = catalogRepository.findByCode(AWAITING_CREATE_MERIT).orElseThrow().getId();
+        meritComponent.setStatusCatalogId(statusId);
         MeritComponent meritComponentAdd = repository.save(meritComponent);
         createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
         return mapper.entityToDtoInfo(meritComponentAdd);
