@@ -15,5 +15,7 @@ public interface IMeritComponentAuditService {
 
     SearchDTO.SearchRs<MeritComponentDTO.Info> searchLastActiveMeritComponent(int startIndex, int count, SearchRequestDTO search);
 
+    SearchDTO.SearchRs<MeritComponentDTO.Info> searchLastActiveMeritComponentKPIFilter(int startIndex, int count, SearchRequestDTO search);
+
     SearchDTO.SearchRs<MeritComponentAuditDTO.Info> getChangeList(SearchDTO.SearchRq request , Long id) throws IllegalAccessException, NoSuchFieldException;
 }

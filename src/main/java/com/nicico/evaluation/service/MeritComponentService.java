@@ -211,6 +211,10 @@ public class MeritComponentService implements IMeritComponentService {
                             || request.getStatusCode().equals(AWAITING_REVOKE_MERIT))
                         canChangeStatus = Boolean.TRUE;
                 }
+                case ACTIVE_MERIT -> {
+                    if (request.getStatusCode().equals(AWAITING_REVOKE_MERIT) || request.getStatusCode().equals(AWAITING_EDIT_MERIT))
+                        canChangeStatus = Boolean.TRUE;
+                }
             }
             if (canChangeStatus.equals(Boolean.TRUE)) {
                 Optional<Catalog> statusByCode = catalogRepository.findByCode(request.getStatusCode());

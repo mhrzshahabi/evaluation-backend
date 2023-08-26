@@ -101,6 +101,46 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
 
     @Override
     @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<MeritComponentDTO.Info> searchLastActiveMeritComponentKPIFilter(int startIndex, int count, SearchRequestDTO search) {
+        List<MeritComponentDTO.Info> data = new ArrayList<>();
+        SearchDTO.SearchRs<MeritComponentDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        try {
+            String searchQuery = "";
+            if (search != null && search.getSearchDataDTOList() != null && search.getSearchDataDTOList().size() > 0) {
+                searchQuery = searchQuery(search.getSearchDataDTOList());
+            }
+            String query = getMeritComponentsLastActiveKPIFilter(pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize(),
+                    catalogService.getByCode("Active-Merit").getId(), searchQuery);
+            List<?> queryData = entityManager.createNativeQuery(query).getResultList();
+
+            Long totalNumbers = Long.valueOf(entityManager.createNativeQuery(getMeritComponentsLastActiveKPIFilterCount(catalogService.getByCode("Active-Merit").getId(), searchQuery)).
+                    getSingleResult().toString());
+
+            if (queryData != null) {
+                for (Object meritComponentAudit : queryData) {
+                    Object[] merit = (Object[]) meritComponentAudit;
+                    MeritComponentDTO.Info meritComponentInfo = new MeritComponentDTO.Info();
+                    meritComponentInfo.setId(merit[0] == null ? null : Long.parseLong(merit[0].toString()));
+                    meritComponentInfo.setTitle(merit[6] == null ? null : merit[6].toString());
+                    meritComponentInfo.setCode(merit[7] == null ? null : merit[7].toString());
+                    meritComponentInfo.setStatusCatalogId(merit[8] == null ? null : Long.parseLong(merit[8].toString()));
+                    meritComponentInfo.setDescription(merit[9] == null ? null : merit[9].toString());
+                    meritComponentInfo.setMeritComponentTypes(getKpiTypeInfoByMeritComponentId(meritComponentInfo.getId()));
+                    data.add(meritComponentInfo);
+                }
+            }
+            searchRs.setList(data);
+            searchRs.setTotalCount(totalNumbers);
+        } catch (Exception e) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
+                    messageSource.getMessage("exception.bad.data", null, LocaleContextHolder.getLocale()));
+        }
+        return searchRs;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public SearchDTO.SearchRs<MeritComponentAuditDTO.Info> getChangeList(SearchDTO.SearchRq request, Long id) throws NoSuchFieldException, IllegalAccessException {
 
         final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
@@ -129,8 +169,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                             case "code" -> query.append(" and ").append("c_code").append(" like '%").append(search.getValue().toString()).append("%'");
                             case "statusCatalogId" -> query.append(" and ").append("status_catalog_id").append(" like '%").append(search.getValue().toString()).append("%'");
                             case "kpiType.id" -> query.append(" and ").append("kpi_type_id").append(" = ").append(search.getValue().toString());
-                            default -> {
-                            }
+                            case "meritComponentTypes.kpiType.levelDefCatalog.code" -> query.append(" and ").append("level_def_code").append(" like '%").append(search.getValue().toString()).append("%'");
+                            default -> {}
                         }
                     }
             );
@@ -156,8 +196,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    mcaud.c_title,
                                    mcaud.c_code,
                                    mcaud.status_catalog_id,
-                                   mcaud.c_description,
-                                   kpitype.id AS kpi_type_id
+                                   mcaud.c_description
                                FROM
                                    (
                                        SELECT
@@ -181,24 +220,21 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                        WHERE
                                            tbl_merit_component_aud.status_catalog_id = %s
                                    ) mcaud
-                                   LEFT JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
-                                   LEFT JOIN tbl_merit_component_type mct ON mct.merit_component_id = mcaud.id
-                                   LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
+                                   INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
                                WHERE
                                    price_rank = 1
-                               OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                             )
                         WHERE
                             1 = 1
                             %s
+                        OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                         """,
                 activeStatus,
+                searchQuery,
                 pageNumber,
-                pageSize,
-                searchQuery
+                pageSize
         );
     }
-
     private String getMeritComponentsLastActiveCount(Long activeStatus, String searchQuery) {
         return String.format(
                 """
@@ -216,8 +252,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    mcaud.c_title,
                                    mcaud.c_code,
                                    mcaud.status_catalog_id,
-                                   mcaud.c_description,
-                                   kpitype.id AS kpi_type_id
+                                   mcaud.c_description
                                FROM
                                    (
                                        SELECT
@@ -241,9 +276,127 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                        WHERE
                                            tbl_merit_component_aud.status_catalog_id = %s
                                    ) mcaud
-                                   LEFT JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
+                                   INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
+                               WHERE
+                                   price_rank = 1
+                            )
+                        WHERE
+                            1 = 1
+                            %s
+                        """,
+                activeStatus,
+                searchQuery
+        );
+    }
+
+    private String getMeritComponentsLastActiveKPIFilter(int pageNumber, int pageSize, Long activeStatus, String searchQuery) {
+        return String.format(
+                """
+                        SELECT
+                            *
+                        FROM
+                            (
+                               SELECT
+                                   mcaud.id,
+                                   mcaud.rev,
+                                   mcaud.c_created_by,
+                                   mcaud.d_created_date,
+                                   mcaud.c_last_modified_by,
+                                   mcaud.d_last_modified_date,
+                                   mcaud.c_title,
+                                   mcaud.c_code,
+                                   mcaud.status_catalog_id,
+                                   mcaud.c_description,
+                                   kpitype.id AS kpi_type_id,
+                                   catalog.c_code AS level_def_code
+                               FROM
+                                   (
+                                       SELECT
+                                           id,
+                                           rev,
+                                           c_created_by,
+                                           d_created_date,
+                                           c_last_modified_by,
+                                           d_last_modified_date,
+                                           c_title,
+                                           c_code,
+                                           status_catalog_id,
+                                           c_description,
+                                           RANK()
+                                           OVER(PARTITION BY id
+                                                ORDER BY
+                                                    rev DESC
+                                           ) price_rank
+                                       FROM
+                                           tbl_merit_component_aud
+                                       WHERE
+                                           tbl_merit_component_aud.status_catalog_id = %s
+                                   ) mcaud
+                                   INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
                                    LEFT JOIN tbl_merit_component_type mct ON mct.merit_component_id = mcaud.id
                                    LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
+                                   LEFT JOIN tbl_catalog catalog ON catalog.id = kpitype.level_def_id
+                               WHERE
+                                   price_rank = 1
+                            )
+                        WHERE
+                            1 = 1
+                            %s
+                        OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
+                        """,
+                activeStatus,
+                searchQuery,
+                pageNumber,
+                pageSize
+        );
+    }
+    private String getMeritComponentsLastActiveKPIFilterCount(Long activeStatus, String searchQuery) {
+        return String.format(
+                """
+                        SELECT
+                            COUNT(id)
+                        FROM
+                            (
+                               SELECT
+                                   mcaud.id as id,
+                                   mcaud.rev,
+                                   mcaud.c_created_by,
+                                   mcaud.d_created_date,
+                                   mcaud.c_last_modified_by,
+                                   mcaud.d_last_modified_date,
+                                   mcaud.c_title,
+                                   mcaud.c_code,
+                                   mcaud.status_catalog_id,
+                                   mcaud.c_description,
+                                   kpitype.id AS kpi_type_id,
+                                   catalog.c_code AS level_def_code
+                               FROM
+                                   (
+                                       SELECT
+                                           id,
+                                           rev,
+                                           c_created_by,
+                                           d_created_date,
+                                           c_last_modified_by,
+                                           d_last_modified_date,
+                                           c_title,
+                                           c_code,
+                                           status_catalog_id,
+                                           c_description,
+                                           RANK()
+                                           OVER(PARTITION BY id
+                                                ORDER BY
+                                                    rev DESC
+                                           ) price_rank
+                                       FROM
+                                           tbl_merit_component_aud
+                                       WHERE
+                                           tbl_merit_component_aud.status_catalog_id = %s
+                                   ) mcaud
+                                   INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
+                                   LEFT JOIN tbl_merit_component_type mct ON mct.merit_component_id = mcaud.id
+                                   LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
+                                   LEFT JOIN tbl_catalog catalog ON catalog.id = kpitype.level_def_id
                                WHERE
                                    price_rank = 1
                             )
