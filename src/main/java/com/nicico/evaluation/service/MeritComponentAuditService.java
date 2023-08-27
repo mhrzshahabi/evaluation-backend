@@ -65,16 +65,19 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
         List<MeritComponentDTO.Info> data = new ArrayList<>();
         SearchDTO.SearchRs<MeritComponentDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Long activeStatus = catalogService.getByCode("Active-Merit").getId();
+        Long revokedStatus = catalogService.getByCode("Revoked-Merit").getId();
+
         try {
             String searchQuery = "";
             if (search != null && search.getSearchDataDTOList() != null && search.getSearchDataDTOList().size() > 0) {
                 searchQuery = searchQuery(search.getSearchDataDTOList());
             }
             String query = getMeritComponentsLastActive(pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize(),
-                    catalogService.getByCode("Active-Merit").getId(), searchQuery);
+                    activeStatus, revokedStatus, searchQuery);
             List<?> queryData = entityManager.createNativeQuery(query).getResultList();
 
-            Long totalNumbers = Long.valueOf(entityManager.createNativeQuery(getMeritComponentsLastActiveCount(catalogService.getByCode("Active-Merit").getId(), searchQuery)).
+            Long totalNumbers = Long.valueOf(entityManager.createNativeQuery(getMeritComponentsLastActiveCount(activeStatus, revokedStatus, searchQuery)).
                     getSingleResult().toString());
 
             if (queryData != null) {
@@ -87,6 +90,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                     meritComponentInfo.setStatusCatalogId(merit[8] == null ? null : Long.parseLong(merit[8].toString()));
                     meritComponentInfo.setDescription(merit[9] == null ? null : merit[9].toString());
                     meritComponentInfo.setMeritComponentTypes(getKpiTypeInfoByMeritComponentId(meritComponentInfo.getId()));
+                    meritComponentInfo.setStatusCatalog(merit[8] == null ? null : catalogService.get(Long.parseLong(merit[8].toString())));
                     data.add(meritComponentInfo);
                 }
             }
@@ -105,16 +109,19 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
         List<MeritComponentDTO.Info> data = new ArrayList<>();
         SearchDTO.SearchRs<MeritComponentDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Long activeStatus = catalogService.getByCode("Active-Merit").getId();
+        Long revokedStatus = catalogService.getByCode("Revoked-Merit").getId();
+
         try {
             String searchQuery = "";
             if (search != null && search.getSearchDataDTOList() != null && search.getSearchDataDTOList().size() > 0) {
                 searchQuery = searchQuery(search.getSearchDataDTOList());
             }
             String query = getMeritComponentsLastActiveKPIFilter(pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize(),
-                    catalogService.getByCode("Active-Merit").getId(), searchQuery);
+                    activeStatus, revokedStatus, searchQuery);
             List<?> queryData = entityManager.createNativeQuery(query).getResultList();
 
-            Long totalNumbers = Long.valueOf(entityManager.createNativeQuery(getMeritComponentsLastActiveKPIFilterCount(catalogService.getByCode("Active-Merit").getId(), searchQuery)).
+            Long totalNumbers = Long.valueOf(entityManager.createNativeQuery(getMeritComponentsLastActiveKPIFilterCount(activeStatus, revokedStatus, searchQuery)).
                     getSingleResult().toString());
 
             if (queryData != null) {
@@ -127,6 +134,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                     meritComponentInfo.setStatusCatalogId(merit[8] == null ? null : Long.parseLong(merit[8].toString()));
                     meritComponentInfo.setDescription(merit[9] == null ? null : merit[9].toString());
                     meritComponentInfo.setMeritComponentTypes(getKpiTypeInfoByMeritComponentId(meritComponentInfo.getId()));
+                    meritComponentInfo.setStatusCatalog(merit[8] == null ? null : catalogService.get(Long.parseLong(merit[8].toString())));
                     data.add(meritComponentInfo);
                 }
             }
@@ -179,7 +187,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
             return null;
     }
 
-    private String getMeritComponentsLastActive(int pageNumber, int pageSize, Long activeStatus, String searchQuery) {
+    private String getMeritComponentsLastActive(int pageNumber, int pageSize, Long activeStatus, Long revokedStatus, String searchQuery) {
         return String.format(
                 """
                         SELECT
@@ -222,7 +230,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    ) mcaud
                                    INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
                                WHERE
-                                   price_rank = 1
+                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1
@@ -230,12 +238,13 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                         OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                         """,
                 activeStatus,
+                revokedStatus,
                 searchQuery,
                 pageNumber,
                 pageSize
         );
     }
-    private String getMeritComponentsLastActiveCount(Long activeStatus, String searchQuery) {
+    private String getMeritComponentsLastActiveCount(Long activeStatus, Long revokedStatus, String searchQuery) {
         return String.format(
                 """
                         SELECT
@@ -278,18 +287,19 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    ) mcaud
                                    INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
                                WHERE
-                                   price_rank = 1
+                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1
                             %s
                         """,
                 activeStatus,
+                revokedStatus,
                 searchQuery
         );
     }
 
-    private String getMeritComponentsLastActiveKPIFilter(int pageNumber, int pageSize, Long activeStatus, String searchQuery) {
+    private String getMeritComponentsLastActiveKPIFilter(int pageNumber, int pageSize, Long activeStatus, Long revokedStatus, String searchQuery) {
         return String.format(
                 """
                         SELECT
@@ -337,7 +347,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
                                    LEFT JOIN tbl_catalog catalog ON catalog.id = kpitype.level_def_id
                                WHERE
-                                   price_rank = 1
+                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1
@@ -345,12 +355,13 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                         OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                         """,
                 activeStatus,
+                revokedStatus,
                 searchQuery,
                 pageNumber,
                 pageSize
         );
     }
-    private String getMeritComponentsLastActiveKPIFilterCount(Long activeStatus, String searchQuery) {
+    private String getMeritComponentsLastActiveKPIFilterCount(Long activeStatus, Long revokedStatus, String searchQuery) {
         return String.format(
                 """
                         SELECT
@@ -398,13 +409,14 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
                                    LEFT JOIN tbl_catalog catalog ON catalog.id = kpitype.level_def_id
                                WHERE
-                                   price_rank = 1
+                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1
                             %s
                         """,
                 activeStatus,
+                revokedStatus,
                 searchQuery
         );
     }

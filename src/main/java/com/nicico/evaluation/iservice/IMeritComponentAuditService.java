@@ -5,7 +5,6 @@ import com.nicico.evaluation.dto.MeritComponentAuditDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.SearchRequestDTO;
 import com.nicico.evaluation.model.MeritComponentAudit;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface IMeritComponentAuditService {
 

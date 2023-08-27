@@ -240,6 +240,9 @@ public class MeritComponentService implements IMeritComponentService {
                     meritComponent.setDescription(request.getDescription());
                 }
                 repository.save(meritComponent);
+            } else if (request.getStatusCode().equals(REJECT_MERIT) && meritComponent.getStatusCatalog().getCode().equals(AWAITING_CREATE_MERIT)) {
+                meritComponent.setStatusCatalogId(catalogRepository.findByCode(REVOKED_MERIT).orElseThrow().getId());
+                meritComponent.setDescription(request.getDescription() + " --- " + "عدم پذیرش ایجاد مولقه توسط ادمین");
             }
             return mapper.entityToDtoInfo(meritComponent);
         } catch (Exception exception) {
