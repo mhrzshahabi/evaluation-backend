@@ -77,7 +77,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
     public List<EvaluationPeriodDTO.Info> getAllByDateAssessment() {
-       // evaluationPeriodRepository.findAllByStartDateAssessment();
+        // evaluationPeriodRepository.findAllByStartDateAssessment();
 //        return evaluationPeriodMapper.entityToDtoInfo(evaluationPeriod);
         return null;
     }
@@ -228,6 +228,10 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
         List<String> postCodes = evaluationPeriodPostService.getAllByEvaluationPeriodId(evaluationPeriodId).
                 stream().map(EvaluationPeriodPostDTO.PostInfoEvaluationPeriod::getPostCode).toList();
+        if (postCodes.isEmpty())
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
+                    messageSource.getMessage("exception.evaluation.period.has.not.any.post", null, LocaleContextHolder.getLocale()));
+
         List<PostDTO.Info> allPostsHasNotGrade = postService.getPostGradeHasNotGroupByPeriodId(evaluationPeriodId);
         if (!allPostsHasNotGrade.isEmpty())
             return false;
