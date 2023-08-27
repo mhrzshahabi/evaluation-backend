@@ -42,4 +42,35 @@ public interface MeritComponentAuditRepository extends JpaRepository<MeritCompon
             """, nativeQuery = true)
     Optional<MeritComponentAudit> findAllByRevAndMeritComponentId(Long rev, Long meritComponentId);
 
+    @Query(value = """
+            SELECT
+                *
+            FROM
+                (
+                    SELECT
+                        id,
+                        rev,
+                        c_created_by,
+                        d_created_date,
+                        c_last_modified_by,
+                        d_last_modified_date,
+                        c_title,
+                        c_code,
+                        status_catalog_id,
+                        c_description,
+                        RANK() OVER(
+                            PARTITION BY id
+                            ORDER BY
+                                rev DESC
+                        ) rev_rank
+                    FROM
+                        tbl_merit_component_aud
+                    WHERE
+                        id = :meritComponentId
+                )meritAudit
+            WHERE
+                rev_rank = 2
+            """, nativeQuery = true)
+    Optional<MeritComponentAudit> getPreviousById(Long meritComponentId);
+
 }

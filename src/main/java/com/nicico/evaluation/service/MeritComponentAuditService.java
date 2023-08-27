@@ -55,6 +55,13 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
 
     @Override
     @Transactional(readOnly = true)
+    public MeritComponentAudit getPreviousById(Long meritComponentId) {
+        MeritComponentAudit meritComponentAudit = repository.getPreviousById(meritComponentId).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return meritComponentAudit;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public MeritComponentAudit findAllByRevAndMeritComponentId(Long rev, Long meritComponentId) {
         return repository.findAllByRevAndMeritComponentId(rev, meritComponentId).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
     }
@@ -178,7 +185,8 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                             case "statusCatalogId" -> query.append(" and ").append("status_catalog_id").append(" like '%").append(search.getValue().toString()).append("%'");
                             case "kpiType.id" -> query.append(" and ").append("kpi_type_id").append(" = ").append(search.getValue().toString());
                             case "meritComponentTypes.kpiType.levelDefCatalog.code" -> query.append(" and ").append("level_def_code").append(" like '%").append(search.getValue().toString()).append("%'");
-                            default -> {}
+                            default -> {
+                            }
                         }
                     }
             );
@@ -244,6 +252,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                 pageSize
         );
     }
+
     private String getMeritComponentsLastActiveCount(Long activeStatus, Long revokedStatus, String searchQuery) {
         return String.format(
                 """
@@ -361,6 +370,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                 pageSize
         );
     }
+
     private String getMeritComponentsLastActiveKPIFilterCount(Long activeStatus, Long revokedStatus, String searchQuery) {
         return String.format(
                 """
