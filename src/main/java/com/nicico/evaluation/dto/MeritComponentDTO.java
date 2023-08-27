@@ -51,6 +51,7 @@ public abstract class MeritComponentDTO {
     public static class Create extends MeritComponentDTO {
 
         private List<Long> kpiTypeId;
+        private String createType;
     }
 
     @Getter
