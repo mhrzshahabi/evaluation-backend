@@ -10,6 +10,8 @@ public interface IMeritComponentAuditService {
 
     MeritComponentAudit findLastActiveByMeritComponentId(Long meritComponentId);
 
+    MeritComponentAudit getPreviousById(Long meritComponentId);
+
     MeritComponentAudit findAllByRevAndMeritComponentId(Long rev, Long meritComponentId);
 
     SearchDTO.SearchRs<MeritComponentDTO.Info> searchLastActiveMeritComponent(int startIndex, int count, SearchRequestDTO search);
