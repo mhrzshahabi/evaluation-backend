@@ -104,6 +104,7 @@ public class MeritComponentAuditController {
                                                                      @PathVariable Long id,
                                                                      @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        request.setSortBy("-rev");
         SearchDTO.SearchRs<MeritComponentAuditDTO.Info> data = service.getChangeList(request, id);
         final MeritComponentAuditDTO.Response response = new MeritComponentAuditDTO.Response();
         final MeritComponentAuditDTO.SpecResponse specRs = new MeritComponentAuditDTO.SpecResponse();

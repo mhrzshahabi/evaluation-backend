@@ -93,8 +93,12 @@ public class MeritComponentService implements IMeritComponentService {
     @Transactional
     @PreAuthorize("hasAuthority('C_MERIT_COMPONENT')")
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
+        Long statusId;
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
-        Long statusId = catalogRepository.findByCode(AWAITING_CREATE_MERIT).orElseThrow().getId();
+        if (dto.getCreateType().equalsIgnoreCase("batch"))
+            statusId = catalogRepository.findByCode(ACTIVE_MERIT).orElseThrow().getId();
+        else
+            statusId = catalogRepository.findByCode(AWAITING_CREATE_MERIT).orElseThrow().getId();
         meritComponent.setStatusCatalogId(statusId);
         MeritComponent meritComponentAdd = repository.save(meritComponent);
         createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
@@ -112,8 +116,7 @@ public class MeritComponentService implements IMeritComponentService {
                 createDto.setKpiTypeId(Collections.singletonList(kpiType.getId()));
                 createDto.setCode(dto.getCode());
                 createDto.setTitle(dto.getTitle());
-                Long statusId = catalogRepository.findByCode(ACTIVE_MERIT).orElseThrow().getId();
-                createDto.setStatusCatalogId(statusId);
+                createDto.setCreateType("batch");
                 create(createDto);
                 response.setStatus(HttpStatus.OK.value());
             } else {
