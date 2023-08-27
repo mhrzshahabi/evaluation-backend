@@ -200,6 +200,33 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info changeStatus(Long id, MeritComponentDTO.ChangeStatus request) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         try {
+
+            if (request.getStatusCode().equals(REJECT_MERIT) &&
+                    meritComponent.getStatusCatalog().getCode().equals(AWAITING_CREATE_MERIT)) {
+                meritComponent.setStatusCatalogId(catalogRepository.findByCode(REVOKED_MERIT).orElseThrow().getId());
+                meritComponent.setDescription(request.getDescription() + " --- " + "عدم پذیرش ایجاد مولقه توسط ادمین");
+                repository.save(meritComponent);
+            } else if ((request.getStatusCode().equals(REJECT_MERIT)
+                    && !meritComponent.getStatusCatalog().getCode().equals(ACTIVE_MERIT)
+                    && !meritComponent.getStatusCatalog().getCode().equals(REVOKED_MERIT))) {
+
+                MeritComponentDTO.Info lastActiveByMeritComponent = findLastActiveByMeritComponentId(meritComponent.getId());
+                if (Objects.nonNull(lastActiveByMeritComponent)) {
+                    meritComponent.setStatusCatalogId(lastActiveByMeritComponent.getStatusCatalogId());
+                    meritComponent.setTitle(lastActiveByMeritComponent.getTitle());
+                    meritComponent.setDescription(request.getDescription());
+                    repository.save(meritComponent);
+                }
+            } else if (meritComponent.getStatusCatalog().getCode().equals(RE_EXAMINATION_MERIT)) {
+                MeritComponentAudit previousById = meritComponentAuditService.getPreviousById(meritComponent.getId());
+                if (Objects.nonNull(previousById)) {
+                    meritComponent.setStatusCatalogId(previousById.getStatusCatalogId());
+                    meritComponent.setTitle(previousById.getTitle());
+                    meritComponent.setDescription(request.getDescription());
+                    repository.save(meritComponent);
+                }
+            }
+
             Boolean canChangeStatus = Boolean.FALSE;
             switch (meritComponent.getStatusCatalog().getCode()) {
                 case AWAITING_CREATE_MERIT, AWAITING_EDIT_MERIT -> {
@@ -208,11 +235,6 @@ public class MeritComponentService implements IMeritComponentService {
                 }
                 case AWAITING_REVOKE_MERIT -> {
                     if (request.getStatusCode().equals(RE_EXAMINATION_MERIT) || request.getStatusCode().equals(REVOKED_MERIT))
-                        canChangeStatus = Boolean.TRUE;
-                }
-                case RE_EXAMINATION_MERIT -> {
-                    if (request.getStatusCode().equals(AWAITING_CREATE_MERIT) || request.getStatusCode().equals(AWAITING_EDIT_MERIT)
-                            || request.getStatusCode().equals(AWAITING_REVOKE_MERIT))
                         canChangeStatus = Boolean.TRUE;
                 }
                 case ACTIVE_MERIT -> {
@@ -229,25 +251,13 @@ public class MeritComponentService implements IMeritComponentService {
                     repository.save(meritComponent);
                 });
             }
-            if (request.getStatusCode().equals(REJECT_MERIT)
-                    && !meritComponent.getStatusCatalog().getCode().equals(ACTIVE_MERIT)
-                    && !meritComponent.getStatusCatalog().getCode().equals(REVOKED_MERIT)) {
 
-                MeritComponentDTO.Info lastActiveByMeritComponent = findLastActiveByMeritComponentId(meritComponent.getId());
-                if (Objects.nonNull(lastActiveByMeritComponent)) {
-                    meritComponent.setStatusCatalogId(lastActiveByMeritComponent.getId());
-                    meritComponent.setTitle(lastActiveByMeritComponent.getTitle());
-                    meritComponent.setDescription(request.getDescription());
-                }
-                repository.save(meritComponent);
-            } else if (request.getStatusCode().equals(REJECT_MERIT) && meritComponent.getStatusCatalog().getCode().equals(AWAITING_CREATE_MERIT)) {
-                meritComponent.setStatusCatalogId(catalogRepository.findByCode(REVOKED_MERIT).orElseThrow().getId());
-                meritComponent.setDescription(request.getDescription() + " --- " + "عدم پذیرش ایجاد مولقه توسط ادمین");
-            }
             return mapper.entityToDtoInfo(meritComponent);
-        } catch (Exception exception) {
+        } catch (
+                Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
+
     }
 
     @Override
