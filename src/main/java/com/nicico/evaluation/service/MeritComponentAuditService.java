@@ -230,7 +230,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                            OVER(PARTITION BY id
                                                 ORDER BY
                                                     rev DESC
-                                           ) price_rank
+                                           ) rev_rank
                                        FROM
                                            tbl_merit_component_aud
                                        WHERE
@@ -238,7 +238,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    ) mcaud
                                    INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
                                WHERE
-                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
+                                   rev_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1
@@ -288,7 +288,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                            OVER(PARTITION BY id
                                                 ORDER BY
                                                     rev DESC
-                                           ) price_rank
+                                           ) rev_rank
                                        FROM
                                            tbl_merit_component_aud
                                        WHERE
@@ -296,7 +296,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    ) mcaud
                                    INNER JOIN tbl_merit_component ON tbl_merit_component.id = mcaud.id
                                WHERE
-                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
+                                   rev_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1
@@ -345,7 +345,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                            OVER(PARTITION BY id
                                                 ORDER BY
                                                     rev DESC
-                                           ) price_rank
+                                           ) rev_rank
                                        FROM
                                            tbl_merit_component_aud
                                        WHERE
@@ -356,7 +356,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
                                    LEFT JOIN tbl_catalog catalog ON catalog.id = kpitype.level_def_id
                                WHERE
-                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
+                                   rev_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1
@@ -408,7 +408,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                            OVER(PARTITION BY id
                                                 ORDER BY
                                                     rev DESC
-                                           ) price_rank
+                                           ) rev_rank
                                        FROM
                                            tbl_merit_component_aud
                                        WHERE
@@ -419,7 +419,7 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
                                    LEFT JOIN tbl_kpi_type             kpitype ON kpitype.id = mct.kpi_type_id
                                    LEFT JOIN tbl_catalog catalog ON catalog.id = kpitype.level_def_id
                                WHERE
-                                   price_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
+                                   rev_rank = 1 AND tbl_merit_component.status_catalog_id <> %s
                             )
                         WHERE
                             1 = 1

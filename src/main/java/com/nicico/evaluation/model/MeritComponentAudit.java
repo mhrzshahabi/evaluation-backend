@@ -7,6 +7,7 @@ import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -47,4 +48,16 @@ public class MeritComponentAudit implements Serializable {
 
     @Column(name = "c_description")
     private String description;
+
+    @Column(name = "d_created_date")
+    private Date createdDate;
+
+    @Column(name = "c_created_by")
+    private String createdBy;
+
+    @Column(name = "d_last_modified_date")
+    private Date lastModifiedDate;
+
+    @Column(name = "c_last_modified_by")
+    private String lastModifiedBy;
 }
