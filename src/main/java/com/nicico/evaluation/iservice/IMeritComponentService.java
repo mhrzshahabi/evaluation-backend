@@ -5,6 +5,8 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +33,8 @@ public interface IMeritComponentService {
     MeritComponentDTO.Info getByCode(String code);
 
     ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
+
+    MeritComponentDTO.Info changeStatus1(Long id, MeritComponentDTO.ChangeStatus request);
 
     MeritComponentDTO.Info changeStatus(Long id, MeritComponentDTO.ChangeStatus request);
 
