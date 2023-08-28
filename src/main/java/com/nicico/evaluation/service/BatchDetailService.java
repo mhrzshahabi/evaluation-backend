@@ -38,13 +38,13 @@ public class BatchDetailService implements IBatchDetailService {
     private final BatchDetailMapper mapper;
     private final ObjectMapper objectMapper;
     private final PageableMapper pageableMapper;
-    private final ICatalogService catalogService;
     private final IKPITypeService kpiTypeService;
+    private final ICatalogService catalogService;
     private final BatchDetailRepository repository;
-    private final IPostMeritInstanceService postMeritInstanceService;
-    private final ISpecialCaseService specialCaseService;
     private final IInstanceService instanceService;
+    private final ISpecialCaseService specialCaseService;
     private final IMeritComponentService meritComponentService;
+    private final IPostMeritInstanceService postMeritInstanceService;
     private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
 
     @Autowired
