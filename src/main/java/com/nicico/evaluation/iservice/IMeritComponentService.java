@@ -34,8 +34,6 @@ public interface IMeritComponentService {
 
     ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 
-    MeritComponentDTO.Info changeStatus1(Long id, MeritComponentDTO.ChangeStatus request);
-
     MeritComponentDTO.Info changeStatus(Long id, MeritComponentDTO.ChangeStatus request);
 
     Long getMeritComponentStatusCatalogId(Long meritComponentId);
