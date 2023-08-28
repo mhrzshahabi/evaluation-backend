@@ -8,6 +8,7 @@ import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.EvaluationPeriodMapper;
 import com.nicico.evaluation.model.Catalog;
 import com.nicico.evaluation.model.EvaluationPeriod;
+import com.nicico.evaluation.model.Post;
 import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -321,7 +322,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         allGroupTypeMap.forEach((groupId, groupTypes) -> {
             /*check all kpiType define for these group*/
             validateAllGroupType(invalidPostExcelList, typeSize, groupTypes, groupTypes.size(), "exception.not.define.all.group-type.for.these.group");
-            double totalWeight = groupTypes.stream().mapToDouble(GroupTypeDTO::getWeight).sum();
+            long totalWeight = groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum();
             /*check totalWeight is 100*/
             validateAllGroupType(invalidPostExcelList, 100, groupTypes, totalWeight, "exception.invalid.group.type.weight.for.these.group");
 
@@ -332,32 +333,34 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     validateGroupTypeMeritIsDefine(invalidPostExcelList, groupTypes, allGroupTypeMeritByGroupType);
                     /*check total groupTypeMerit's weight for all groupTypes that are Behavioral or Development*/
                     validateGroupTypeMeritWeight(invalidPostExcelList, groupTypes, groupType, allGroupTypeMeritByGroupType);
-                } else {
-                    postCodes.forEach(postCode -> {
-                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
-                        if (byPostCode.isEmpty())
-                            validatePostMeritIsDefine(invalidPostExcelList, postCode);
-
-                        double totalWeightPostMerit = byPostCode.stream().mapToDouble(EvaluationItemDTO.MeritTupleDTO::getWeight).sum();
-                        if (totalWeightPostMerit != 100) {
-                            EvaluationPeriodPostDTO.InvalidPostExcel notDefinePostMerit = new EvaluationPeriodPostDTO.InvalidPostExcel();
-                            String errorMessage = messageSource.getMessage("exception.invalid.post-merit.total.weight",
-                                    new Object[]{postCode}, LocaleContextHolder.getLocale());
-                            notDefinePostMerit.setDescription(errorMessage);
-                            notDefinePostMerit.setGroupPostCode(String.valueOf(postCode));
-                            invalidPostExcelList.add(notDefinePostMerit);
-                        }
-                    });
                 }
             });
-//            List<String> groupPostCodesHasNotMerit = evaluationPeriodPostService.getAllByPeriodIdNotIn(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO::getPostCode).toList();
-            /*check define meritComponents for all posts that are Operational */
-//            validatePostMeritIsDefine(invalidPostExcelList, groupPostCodesHasNotMerit);
-            /*check postMeritComponent's weight for all posts that are Operational */
-//            List<PostMeritComponentDTO.Info> allByPeriodIdIn = postMeritComponentService.getAllByPeriodIdIn(evaluationPeriodId);
-//            validatePostMeritWeight(invalidPostExcelList, groupPostCodesHasNotMerit, allByPeriodIdIn);
-
         });
+        postCodes.forEach(postCode -> {
+            List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
+            if (byPostCode.isEmpty())
+                validatePostMeritIsDefine(invalidPostExcelList, postCode);
+
+            long totalWeightPostMerit = byPostCode.stream().mapToLong(EvaluationItemDTO.MeritTupleDTO::getWeight).sum();
+            if (totalWeightPostMerit != 100) {
+                EvaluationPeriodPostDTO.InvalidPostExcel notDefinePostMerit = new EvaluationPeriodPostDTO.InvalidPostExcel();
+                String errorMessage = messageSource.getMessage("exception.invalid.post-merit.total.weight",
+                        new Object[]{postCode}, LocaleContextHolder.getLocale());
+                notDefinePostMerit.setDescription(errorMessage);
+                notDefinePostMerit.setGroupPostCode(String.valueOf(postCode));
+                Post post = postService.getByPostCode(postCode);
+                notDefinePostMerit.setPostTitle(post.getPostTitle());
+                notDefinePostMerit.setPostGradeTitle(post.getPostGradeTitle());
+                notDefinePostMerit.setTotalWeightOperational(totalWeightPostMerit);
+                invalidPostExcelList.add(notDefinePostMerit);
+            }
+        });
+        // List<String> groupPostCodesHasNotMerit = evaluationPeriodPostService.getAllByPeriodIdNotIn(evaluationPeriodId).stream().map(EvaluationPeriodPostDTO::getPostCode).toList();
+        /*check define meritComponents for all posts that are Operational */
+        // validatePostMeritIsDefine(invalidPostExcelList, groupPostCodesHasNotMerit);
+        /*check postMeritComponent's weight for all posts that are Operational */
+        // List<PostMeritComponentDTO.Info> allByPeriodIdIn = postMeritComponentService.getAllByPeriodIdIn(evaluationPeriodId);
+        // validatePostMeritWeight(invalidPostExcelList, groupPostCodesHasNotMerit, allByPeriodIdIn);
     }
 
     private void validatePostMeritWeight(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, List<String> postCodes, List<PostMeritComponentDTO.Info> postMerits) {
@@ -383,6 +386,9 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                 new Object[]{groupPostCode}, LocaleContextHolder.getLocale());
         notDefinePostMerit.setDescription(errorMessage);
         notDefinePostMerit.setGroupPostCode(String.valueOf(groupPostCode));
+        Post post = postService.getByPostCode(groupPostCode);
+        notDefinePostMerit.setPostTitle(post.getPostTitle());
+        notDefinePostMerit.setPostGradeTitle(post.getPostGradeTitle());
         invalidPostExcelList.add(notDefinePostMerit);
 
     }
@@ -398,6 +404,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
             inValidTotalGroupTypeMeritWeight.setDescription(errorMessage);
             inValidTotalGroupTypeMeritWeight.setGroupTypeTitle(groupTypes.get(0).getGroup().getTitle());
             inValidTotalGroupTypeMeritWeight.setPostGradeTitle(String.valueOf(groupTypes.get(0).getGroup().getGrade().stream().map(GradeDTO::getTitle).toList()));
+            inValidTotalGroupTypeMeritWeight.setTotalWeightGroup(groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum());
             if (groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_DEVELOPMENT))
                 inValidTotalGroupTypeMeritWeight.setTotalWeightDevelopment(totalWeightGroupTypeMerit);
             else if (groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_BEHAVIORAL))
@@ -414,18 +421,20 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     new Object[]{groupTypes.get(0).getGroup().getTitle(), groupTypes.get(0).getKpiType().getTitle()}, LocaleContextHolder.getLocale());
             notDefineMerit.setDescription(errorMessage);
             notDefineMerit.setGroupTypeTitle(groupTypes.get(0).getGroup().getTitle());
+            notDefineMerit.setTotalWeightGroup(groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum());
             notDefineMerit.setPostGradeTitle(String.valueOf(groupTypes.get(0).getGroup().getGrade().stream().map(GradeDTO::getTitle).toList()));
             invalidPostExcelList.add(notDefineMerit);
         }
     }
 
-    private void validateAllGroupType(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, int typeSize, List<GroupTypeDTO.Info> groupTypes, double size, String s) {
-        if (size != typeSize) {
+    private void validateAllGroupType(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, int typeSize, List<GroupTypeDTO.Info> groupTypes, long weight, String s) {
+        if (weight != typeSize) {
             EvaluationPeriodPostDTO.InvalidPostExcel notDefineAllType = new EvaluationPeriodPostDTO.InvalidPostExcel();
             String errorMessage = messageSource.getMessage(s,
                     new Object[]{groupTypes.get(0).getGroup().getTitle()}, LocaleContextHolder.getLocale());
             notDefineAllType.setDescription(errorMessage);
             notDefineAllType.setGroupTypeTitle(groupTypes.get(0).getGroup().getTitle());
+            notDefineAllType.setTotalWeightGroup(groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum());
             notDefineAllType.setPostGradeTitle(String.valueOf(groupTypes.get(0).getGroup().getGrade().stream().map(GradeDTO::getTitle).toList()));
             invalidPostExcelList.add(notDefineAllType);
         }

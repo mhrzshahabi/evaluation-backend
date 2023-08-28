@@ -53,7 +53,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
                  )
                  AND post.post_code NOT IN (
                      SELECT
-                         post1.post_code
+                        distinct post1.post_code
                      FROM
                          tbl_group_type    grouptype
                          JOIN tbl_group_grade   groupgrade ON groupgrade.group_id = grouptype.group_id

@@ -80,7 +80,7 @@ public class EvaluationPeriodPostDTO {
         private String postGradeTitle;
         private String groupTypeTitle;
         private String description;
-        private String totalWeightGroup;
+        private Long totalWeightGroup;
         private Long totalWeightDevelopment;
         private Long totalWeightOperational;
         private Long totalWeightBehavioral;
