@@ -21,7 +21,7 @@ public interface BatchRepository extends JpaRepository<Batch, Long>, JpaSpecific
                     FROM
                         tbl_batch
                     WHERE
-                        tbl_batch.status_catalog_id =:statusCatalogInProgressId
+                        tbl_batch.status_catalog_id = :statusCatalogInProgressId
                 )
             UNION
             SELECT
@@ -29,15 +29,25 @@ public interface BatchRepository extends JpaRepository<Batch, Long>, JpaSpecific
             FROM
                 (
                     SELECT
-                        *
+                        id,
+                        title_catalog_id,
+                        status_catalog_id,
+                        c_created_by,
+                        d_created_date,
+                        c_last_modified_by,
+                        d_last_modified_date,
+                        RANK()
+                        OVER(
+                            ORDER BY
+                                d_last_modified_date DESC
+                        ) AS modified_date_rank
                     FROM
                         tbl_batch
                     WHERE
-                        tbl_batch.status_catalog_id =:statusCatalogCompleteId
-                        AND ROWNUM <= 3
-                    ORDER BY
-                        tbl_batch.d_last_modified_date DESC
-                )
+                        tbl_batch.status_catalog_id = :statusCatalogCompleteId
+                ) completed
+            WHERE
+                completed.modified_date_rank <= 3
                           """, nativeQuery = true)
     List<Batch> getNeededDataForWebSocket(Long statusCatalogInProgressId, Long statusCatalogCompleteId);
 }
