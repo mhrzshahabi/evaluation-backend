@@ -264,7 +264,7 @@ public class EvaluationService implements IEvaluationService {
                     String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
                     Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
                     EvaluationPeriodDTO.Info evaluationPeriod = evaluationPeriodService.get(evaluation.getEvaluationPeriodId());
-                    if (evaluationPeriod.getStartDateAssessment().after(new Date()) || evaluationPeriod.getEndDateAssessment().before(new Date())) {
+                    if (evaluationPeriod.getValidationStartDate().after(new Date()) || evaluationPeriod.getValidationEndDate().before(new Date())) {
                         throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
                                 messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
                     }
@@ -312,7 +312,7 @@ public class EvaluationService implements IEvaluationService {
             response.setStatus(200);
             return response;
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            response.setMessage(messageSource.getMessage("exception.un-managed", null, locale));
             response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
             return response;
         }
