@@ -79,4 +79,10 @@ public abstract class MeritComponentMapper {
         }
         return null;
     }
+
+    @Named("getKpiTypeTitleByMeritComponentAuditId")
+    String getKpiTypeTitleByMeritComponentAuditId(Long meritComponentId) {
+        MeritComponentTypeDTO.Info info = meritComponentService.get(meritComponentId).getMeritComponentTypes();
+        return info != null ? info.getKpiType().getTitle() : null;
+    }
 }
