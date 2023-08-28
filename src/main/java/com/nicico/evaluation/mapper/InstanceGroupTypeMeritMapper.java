@@ -19,6 +19,7 @@ public interface InstanceGroupTypeMeritMapper {
     @Mappings({
             @Mapping(target = "id", source = "instance.id"),
             @Mapping(target = "title", source = "instance.title"),
+            @Mapping(target = "code", source = "instance.code"),
     })
     InstanceGroupTypeMeritDTO.InstanceTupleDTO entityToTupleDTOInfo(InstanceGroupTypeMerit entity);
 
