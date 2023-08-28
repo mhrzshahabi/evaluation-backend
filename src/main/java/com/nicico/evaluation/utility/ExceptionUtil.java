@@ -84,10 +84,10 @@ public class ExceptionUtil {
                              table_name = '%s'
                              AND column_name LIKE (
                                  CASE
-                                     WHEN column_name LIKE '%%TITLE%%' THEN
-                                         '%%TITLE%%'
-                                     WHEN column_name LIKE '%%CODE%%' THEN
-                                         '%%CODE%%'
+                                 --    WHEN column_name LIKE '%%TITLE%%' THEN
+                                 --        '%%TITLE%%'
+                                 --    WHEN column_name LIKE '%%CODE%%' THEN
+                                 --        '%%CODE%%'
                                      WHEN column_name LIKE 'ID' THEN
                                          'ID'
                                  END
