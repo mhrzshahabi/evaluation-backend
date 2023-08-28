@@ -13,6 +13,7 @@ public interface MeritComponentAuditMapper {
 
     @Mappings({
             @Mapping(target = "statusCatalog", source = "statusCatalogId", qualifiedByName = "getStatusCatalogInfoByStatusCatalogId"),
+            @Mapping(target = "kpiTypeTitle", source = "auditId.id", qualifiedByName = "getKpiTypeTitleByMeritComponentAuditId"),
             @Mapping(target = "id", source = "auditId.id"),
             @Mapping(target = "rev", source = "auditId.rev")
     })
