@@ -108,6 +108,7 @@ public class InstanceGroupTypeMeritDTO {
 
         private Long id;
         private String title;
+        private String code;
     }
 
     @Getter
