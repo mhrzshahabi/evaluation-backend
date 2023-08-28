@@ -27,6 +27,7 @@ public abstract class MeritComponentAuditDTO {
 
         private Date createdDate;
         private String createdBy;
+        private String kpiTypeTitle;
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private CatalogDTO.Info statusCatalog;
