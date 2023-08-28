@@ -95,7 +95,7 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info create(MeritComponentDTO.Create dto) {
         Long statusId;
         MeritComponent meritComponent = mapper.dtoCreateToEntity(dto);
-        if (dto.getCreateType().equalsIgnoreCase("batch"))
+        if (Objects.nonNull(dto.getCreateType()) && dto.getCreateType().equalsIgnoreCase("batch"))
             statusId = catalogRepository.findByCode(ACTIVE_MERIT).orElseThrow().getId();
         else
             statusId = catalogRepository.findByCode(AWAITING_CREATE_MERIT).orElseThrow().getId();
@@ -260,7 +260,6 @@ public class MeritComponentService implements IMeritComponentService {
                 Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
         }
-
     }
 
     @Override
@@ -294,18 +293,30 @@ public class MeritComponentService implements IMeritComponentService {
                         }
                     }
                 }
-                case "CONFORM" -> {
-                    Optional<Catalog> statusByCode = Optional.empty();
-                    if (meritComponent.getStatusCatalog().getCode().equals(AWAITING_CREATE_MERIT) || meritComponent.getStatusCatalog().getCode().equals(AWAITING_EDIT_MERIT))
+                case "CONFIRM" -> {
+                    Optional<Catalog> statusByCode;
+                    if (meritComponent.getStatusCatalog().getCode().equals(AWAITING_CREATE_MERIT) || meritComponent.getStatusCatalog().getCode().equals(AWAITING_EDIT_MERIT)) {
                         statusByCode = catalogRepository.findByCode(ACTIVE_MERIT);
-                    else if (request.getStatusCode().equals(AWAITING_REVOKE_MERIT))
+                        statusByCode.ifPresent(catalog -> {
+                            meritComponent.setStatusCatalogId(catalog.getId());
+                            meritComponent.setTitle(request.getTitle());
+                            meritComponent.setDescription(request.getDescription());
+                        });
+                    } else if (meritComponent.getStatusCatalog().getCode().equals(AWAITING_REVOKE_MERIT)) {
                         statusByCode = catalogRepository.findByCode(REVOKED_MERIT);
-
-                    statusByCode.ifPresent(catalog -> {
-                        meritComponent.setStatusCatalogId(catalog.getId());
-                        meritComponent.setTitle(request.getTitle());
-                        meritComponent.setDescription(request.getDescription());
-                    });
+                        statusByCode.ifPresent(catalog -> {
+                            meritComponent.setStatusCatalogId(catalog.getId());
+                            meritComponent.setTitle(request.getTitle());
+                            meritComponent.setDescription(request.getDescription());
+                        });
+                    } else if (meritComponent.getStatusCatalog().getCode().equals(RE_EXAMINATION_MERIT)) {
+                        MeritComponentAudit previousById = meritComponentAuditService.getPreviousById(meritComponent.getId());
+                        if (Objects.nonNull(previousById)) {
+                            meritComponent.setStatusCatalogId(previousById.getStatusCatalogId());
+                            meritComponent.setTitle(request.getTitle());
+                            meritComponent.setDescription(request.getDescription());
+                        }
+                    }
                 }
                 case "REVOKE" -> {
                     if (meritComponent.getStatusCatalog().getCode().equals(ACTIVE_MERIT)) {
