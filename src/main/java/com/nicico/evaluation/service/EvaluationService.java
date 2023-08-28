@@ -146,6 +146,10 @@ public class EvaluationService implements IEvaluationService {
                         messageSource.getMessage("exception.duplicated.evaluation", new Object[]{evaluationCreate.getPostCode()},
                                 LocaleContextHolder.getLocale()));
 
+            if (Objects.isNull(orgTreeInfo.getNationalCode()))
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
+                        messageSource.getMessage("exception.evaluation.assess-national-code.is.null", null, LocaleContextHolder.getLocale()));
+
             validateSpecialCase(methodTypes, specialCaseInfos, specialCaseRevoked, evaluationCreate, evaluation, orgTreeInfo);
             try {
                 evaluation = repository.save(evaluation);
