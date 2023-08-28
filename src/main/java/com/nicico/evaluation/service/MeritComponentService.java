@@ -139,7 +139,7 @@ public class MeritComponentService implements IMeritComponentService {
     @PreAuthorize("hasAuthority('U_MERIT_COMPONENT')")
     public MeritComponentDTO.Info update(Long id, MeritComponentDTO.Update dto) {
         MeritComponent meritComponent = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        Long statusId = catalogRepository.findByCode(AWAITING_EDIT_MERIT).orElseThrow().getId();
+        Long statusId = catalogRepository.findByCode(ACTIVE_MERIT).orElseThrow().getId();
         dto.setStatusCatalogId(statusId);
         mapper.update(meritComponent, dto);
         try {
@@ -321,6 +321,16 @@ public class MeritComponentService implements IMeritComponentService {
                 case "REVOKE" -> {
                     if (meritComponent.getStatusCatalog().getCode().equals(ACTIVE_MERIT)) {
                         Optional<Catalog> statusByCode = catalogRepository.findByCode(AWAITING_REVOKE_MERIT);
+                        statusByCode.ifPresent(catalog -> {
+                            meritComponent.setStatusCatalogId(catalog.getId());
+                            meritComponent.setTitle(request.getTitle());
+                            meritComponent.setDescription(request.getDescription());
+                        });
+                    }
+                }
+                case "EDIT" -> {
+                    if (meritComponent.getStatusCatalog().getCode().equals(ACTIVE_MERIT)) {
+                        Optional<Catalog> statusByCode = catalogRepository.findByCode(AWAITING_EDIT_MERIT);
                         statusByCode.ifPresent(catalog -> {
                             meritComponent.setStatusCatalogId(catalog.getId());
                             meritComponent.setTitle(request.getTitle());
