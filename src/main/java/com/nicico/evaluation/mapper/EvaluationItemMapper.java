@@ -54,4 +54,7 @@ public interface EvaluationItemMapper {
 
     void update(@MappingTarget EvaluationItem entity, EvaluationItemDTO.Update dto);
 
+    @Mapping(target = "meritRev", ignore = true)
+    @Mapping(target = "meritId", ignore = true)
+    void partialUpdate(@MappingTarget EvaluationItem entity, EvaluationItemDTO.Update dto);
 }
