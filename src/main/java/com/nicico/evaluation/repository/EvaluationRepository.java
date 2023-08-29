@@ -40,7 +40,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                          WHEN (SELECT c_code FROM tbl_catalog  WHERE id = evaluation.STATUS_CATALOG_ID) = 'Validated'
                             THEN (SELECT id FROM tbl_catalog WHERE c_code = 'Awaiting-review')
                          WHEN (SELECT c_code FROM tbl_catalog  WHERE id = evaluation.STATUS_CATALOG_ID) = 'Initial-registration'  
-                            THEN (SELECT id FROM tbl_catalog WHERE c_code = 'Finalized')
+                            THEN (SELECT id FROM tbl_catalog WHERE c_code = 'Termination')
                          ELSE evaluation.STATUS_CATALOG_ID
                        END,
               C_DESCRIPTION = CASE
