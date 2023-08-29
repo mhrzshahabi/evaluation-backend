@@ -116,7 +116,8 @@ public class EvaluationItemService implements IEvaluationItemService {
         }
     }
 
-    private void createAllEvaluationInstance(EvaluationItemDTO.Create dto, EvaluationItem evaluationItem) {
+    @Transactional
+    public void createAllEvaluationInstance(EvaluationItemDTO.Create dto, EvaluationItem evaluationItem) {
 
         List<EvaluationItemInstanceDTO.Create> createInstanceList = new ArrayList<>();
         if (Objects.nonNull(dto.getPostMeritInstanceList()) && !dto.getPostMeritInstanceList().isEmpty()) {
@@ -139,7 +140,8 @@ public class EvaluationItemService implements IEvaluationItemService {
         evaluationItemInstanceService.createAll(createInstanceList);
     }
 
-    private void updateEvaluation(EvaluationItemDTO.Create dto) {
+    @Transactional
+    public void updateEvaluation(EvaluationItemDTO.Create dto) {
 
         Evaluation evaluation = evaluationService.getById(dto.getEvaluationId());
         evaluation.setAverageScore(dto.getAverageScore());

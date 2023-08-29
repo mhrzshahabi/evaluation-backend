@@ -272,7 +272,6 @@ public class EvaluationService implements IEvaluationService {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
                                     if (evaluationPeriod.getValidationStartDate().after(new Date()) || evaluationPeriod.getValidationEndDate().before(new Date())) {
                                         errorMessage.append(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
-                                        break;
                                     } else
                                         createEvaluationItems(evaluation);
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
@@ -338,7 +337,7 @@ public class EvaluationService implements IEvaluationService {
         evaluationItemService.deleteAll(itemIds);
     }
 
-    private void createEvaluationItems(Evaluation evaluation) {
+    public void createEvaluationItems(Evaluation evaluation) {
         List<EvaluationItemDTO.Create> requests = new ArrayList<>();
         String assessPostCode = evaluation.getAssessPostCode().substring(0, evaluation.getAssessPostCode().indexOf("/"));
         EvaluationItemDTO.CreateInfo createInfo = new EvaluationItemDTO.CreateInfo();
