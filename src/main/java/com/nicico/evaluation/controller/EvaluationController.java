@@ -117,7 +117,7 @@ public class EvaluationController {
      */
     @PostMapping(value = "/spec-list")
     public ResponseEntity<EvaluationDTO.SpecResponse> search(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                             @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                             @RequestParam(value = "count", required = false) Integer count,
                                                              @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<EvaluationDTO.Info> data = service.search(request);

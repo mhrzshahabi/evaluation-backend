@@ -17,6 +17,8 @@ import com.nicico.evaluation.repository.MeritComponentRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
@@ -42,7 +44,13 @@ public class MeritComponentService implements IMeritComponentService {
     private final MeritComponentRepository repository;
     private final ResourceBundleMessageSource messageSource;
     private final IMeritComponentTypeService meritComponentTypeService;
+    private IMeritComponentService meritComponentService;
     private final IMeritComponentAuditService meritComponentAuditService;
+
+    @Autowired
+    public void setMeritComponentService(@Lazy IMeritComponentService meritComponentService) {
+        this.meritComponentService = meritComponentService;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -53,11 +61,14 @@ public class MeritComponentService implements IMeritComponentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     @PreAuthorize("hasAuthority('R_MERIT_COMPONENT')")
     public MeritComponentDTO.Info findLastActiveByMeritComponentId(Long id) {
         MeritComponentAudit meritComponentAudit = meritComponentAuditService.findLastActiveByMeritComponentId(id);
-        return mapper.meritComponentAuditToDtoInfo(meritComponentAudit);
+        MeritComponentDTO.Info info = mapper.meritComponentAuditToDtoInfo(meritComponentAudit);
+        if (meritComponentService.getMeritComponentStatusCatalogId(info.getId()).equals(catalogService.getByCode("Revoked-Merit").getId()))
+            info.setStatusCatalogId(catalogService.getByCode("Revoked-Merit").getId());
+        return info;
     }
 
     @Override
