@@ -45,12 +45,9 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public MeritComponentAudit findLastActiveByMeritComponentId(Long meritComponentId) {
-        MeritComponentAudit meritComponentAudit = repository.findLastActiveByMeritComponentId(meritComponentId, catalogService.getByCode("Active-Merit").getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
-        if (meritComponentService.getMeritComponentStatusCatalogId(meritComponentId).equals(catalogService.getByCode("Revoked-Merit").getId()))
-            meritComponentAudit.setStatusCatalogId(catalogService.getByCode("Revoked-Merit").getId());
-        return meritComponentAudit;
+        return repository.findLastActiveByMeritComponentId(meritComponentId, catalogService.getByCode("Active-Merit").getId()).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
     }
 
     @Override
