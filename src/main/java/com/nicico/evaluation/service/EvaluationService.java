@@ -257,6 +257,7 @@ public class EvaluationService implements IEvaluationService {
         final Locale locale = LocaleContextHolder.getLocale();
         try {
             List<Long> ids = changeStatusDTO.getEvaluationIds();
+            StringBuilder errorMessage = new StringBuilder();
             for (Long id : ids) {
                 Optional<Evaluation> optionalEvaluation = repository.findById(id);
                 if (optionalEvaluation.isPresent()) {
@@ -264,15 +265,16 @@ public class EvaluationService implements IEvaluationService {
                     String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
                     Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
                     EvaluationPeriodDTO.Info evaluationPeriod = evaluationPeriodService.get(evaluation.getEvaluationPeriodId());
-                    if (evaluationPeriod.getValidationStartDate().after(new Date()) || evaluationPeriod.getValidationEndDate().before(new Date())) {
-                        throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
-                                messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
-                    }
+
                     if (evaluationDate != null && evaluationDate.after(new Date())) {
                         switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                             case "next":
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                    createEvaluationItems(evaluation);
+                                    if (evaluationPeriod.getValidationStartDate().after(new Date()) || evaluationPeriod.getValidationEndDate().before(new Date())) {
+                                        errorMessage.append(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
+                                        break;
+                                    } else
+                                        createEvaluationItems(evaluation);
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
                                     // توسط جاب شبانه انجام میشود
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
@@ -302,14 +304,18 @@ public class EvaluationService implements IEvaluationService {
                                 break;
                         }
                     } else {
-                        response.setStatus(406);
-                        response.setMessage(messageSource.getMessage("exception.evaluation.date", null, locale));
-                        return response;
+                        errorMessage.append(messageSource.getMessage("exception.evaluation.date", null, locale));
                     }
+
                 }
             }
-            response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
-            response.setStatus(200);
+            if (errorMessage.isEmpty()) {
+                response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+                response.setStatus(200);
+            } else {
+                response.setMessage(String.valueOf(errorMessage));
+                response.setStatus(406);
+            }
             return response;
         } catch (Exception e) {
             response.setMessage(e.getMessage());
