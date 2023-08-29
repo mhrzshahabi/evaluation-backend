@@ -272,6 +272,7 @@ public class EvaluationService implements IEvaluationService {
                                 if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
                                     if (evaluationPeriod.getValidationStartDate().after(new Date()) || evaluationPeriod.getValidationEndDate().before(new Date())) {
                                         errorMessage.append(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
+                                        break;
                                     } else
                                         createEvaluationItems(evaluation);
                                 } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
