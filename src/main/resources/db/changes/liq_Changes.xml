@@ -1883,4 +1883,83 @@
     <changeSet id="1692696906" author="semami">
         <dropColumn tableName="tbl_evaluation_item" columnName="rev"/>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1693374648">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            l_catalog_type_id
+            := seq_catalog_type_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog_type (id,
+                                          c_created_by,
+                                          d_created_date,
+                                          c_last_modified_by,
+                                          d_last_modified_date,
+                                          n_version,
+                                          c_title,
+                                          c_code,
+                                          c_description)
+            VALUES (l_catalog_type_id,
+                    'MShahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    'دسته بندی میزکار',
+                    'WorkSpaceCategory',
+                    '');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'MShahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'بررسی مولفه های شایستگی / ادمین',
+                    'workSpace-meritComponent-admin',
+                    'مولفه های شایستگی در انتظار بررسی / اصلاح / ابطال');
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'MShahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'بررسی مولفه های نیاز به اصلاح / کارشناس ارزیابی',
+                    'workSpace-meritComponent-expert',
+                    'مولفه های شایستگی جهت بررسی مجدد کارشناس');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>
