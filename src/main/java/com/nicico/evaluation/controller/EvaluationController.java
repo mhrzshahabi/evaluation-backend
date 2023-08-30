@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.INITIAL;
+import static com.nicico.evaluation.utility.EvaluationConstant.VALIDATED;
+
 @RestController
 @RequestMapping("/api/evaluation")
 @Api("Evaluation Api")
@@ -152,12 +155,18 @@ public class EvaluationController {
                     .setValue(SecurityUtil.getNationalCode());
             criteriaRqList.add(nationalCodeCriteriaRq);
         }
-        final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
+        final SearchDTO.CriteriaRq statusInitialCriteriaRq = new SearchDTO.CriteriaRq()
                 .setOperator(EOperator.notEqual)
                 .setFieldName("statusCatalogId")
-                .setValue(catalogService.getByCode("Initial-registration").getId());
+                .setValue(catalogService.getByCode(INITIAL).getId());
 
-        criteriaRqList.add(statusCriteriaRq);
+        final SearchDTO.CriteriaRq statusValidateCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.notEqual)
+                .setFieldName("statusCatalogId")
+                .setValue(catalogService.getByCode(VALIDATED).getId());
+
+        criteriaRqList.add(statusInitialCriteriaRq);
+        criteriaRqList.add(statusValidateCriteriaRq);
         criteriaRqList.add(request.getCriteria());
 
         final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
