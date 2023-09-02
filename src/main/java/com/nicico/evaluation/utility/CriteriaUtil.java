@@ -44,11 +44,17 @@ public class CriteriaUtil {
                 criteriaRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, operator, new ArrayList<>());
 
                 if ("NotEqual".equals(criteria.getOperator())) {
-                  //  SearchDTO.CriteriaRq inNullRq = makeCriteria(criteria.getField(), null, EOperator.isNull, new ArrayList<>());
+                    //  SearchDTO.CriteriaRq inNullRq = makeCriteria(criteria.getField(), null, EOperator.isNull, new ArrayList<>());
                     SearchDTO.CriteriaRq notNullRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? criteria.getValues().get(0) : null, EOperator.notEqual, new ArrayList<>());
                     final List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
-               //     criteriaList.add(inNullRq);
+                    //     criteriaList.add(inNullRq);
                     criteriaList.add(notNullRq);
+                    criteriaRq = new SearchDTO.CriteriaRq().setOperator(EOperator.or).setCriteria(criteriaList);
+                }
+                if ("InSet".equals(criteria.getOperator())) {
+                    SearchDTO.CriteriaRq inSetRq = makeCriteria(criteria.getField(), (criteria.getValues() != null && !criteria.getValues().isEmpty()) ? new ArrayList<>(criteria.getValues()) : null, EOperator.inSet, new ArrayList<>());
+                    final List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+                    criteriaList.add(inSetRq);
                     criteriaRq = new SearchDTO.CriteriaRq().setOperator(EOperator.or).setCriteria(criteriaList);
                 }
                 if ("NotNull".equals(criteria.getOperator())) {
@@ -96,7 +102,7 @@ public class CriteriaUtil {
         return criteriaRq;
     }
 
-    public static SearchDTO.SearchRq addCriteria(SearchDTO.SearchRq request, EOperator operator, String field, EOperator innerOperator,Object value) {
+    public static SearchDTO.SearchRq addCriteria(SearchDTO.SearchRq request, EOperator operator, String field, EOperator innerOperator, Object value) {
         final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
         final SearchDTO.CriteriaRq postCodeCriteriaRq = new SearchDTO.CriteriaRq()
                 .setOperator(operator)
