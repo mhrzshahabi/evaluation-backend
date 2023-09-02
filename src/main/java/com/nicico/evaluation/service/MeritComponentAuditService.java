@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.MeritComponentAuditDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
@@ -55,6 +56,14 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
     public MeritComponentAudit getPreviousById(Long meritComponentId) {
         MeritComponentAudit meritComponentAudit = repository.getPreviousById(meritComponentId).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return meritComponentAudit;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getNumberOfExpertWorkInWorkSpace() {
+        String userName = SecurityUtil.getUsername();
+//        return repository.getNumberOfExpertWorkInWorkSpace(catalogService.getByCode("Re-Examination-Merit").getId());
+        return 1;
     }
 
     @Override

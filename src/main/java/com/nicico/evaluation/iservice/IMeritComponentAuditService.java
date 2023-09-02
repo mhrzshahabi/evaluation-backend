@@ -12,6 +12,8 @@ public interface IMeritComponentAuditService {
 
     MeritComponentAudit getPreviousById(Long meritComponentId);
 
+    Integer getNumberOfExpertWorkInWorkSpace();
+
     MeritComponentAudit findAllByRevAndMeritComponentId(Long rev, Long meritComponentId);
 
     SearchDTO.SearchRs<MeritComponentDTO.Info> searchLastActiveMeritComponent(int startIndex, int count, SearchRequestDTO search);

@@ -304,6 +304,13 @@ public class MeritComponentService implements IMeritComponentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Integer getNumberOfAdminWorkInWorkSpace() {
+        return repository.getNumberOfAdminWorkInWorkSpace(catalogService.getByCode("Awaiting-Create-Merit").getId(), catalogService.getByCode("Awaiting-Edit-Merit").getId(),
+                catalogService.getByCode("Awaiting-Revoke-Merit").getId());
+    }
+
+    @Override
     @Transactional
     public void updateMeritToAudit() {
         List<MeritComponent> meritComponentList = repository.findAll();

@@ -67,10 +67,20 @@ public interface MeritComponentAuditRepository extends JpaRepository<MeritCompon
                         tbl_merit_component_aud
                     WHERE
                         id = :meritComponentId
-                )meritAudit
+                ) meritAudit
             WHERE
                 rev_rank = 2
             """, nativeQuery = true)
     Optional<MeritComponentAudit> getPreviousById(Long meritComponentId);
+
+//    @Query(value = """
+//            SELECT
+//                COUNT(*)
+//            FROM
+//                tbl_merit_component
+//            WHERE
+//                status_catalog_id = :reExaminationStatusId
+//                          """, nativeQuery = true)
+//    Integer getNumberOfExpertWorkInWorkSpace(Long reExaminationStatusId);
 
 }
