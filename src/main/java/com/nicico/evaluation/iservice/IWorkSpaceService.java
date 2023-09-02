@@ -7,4 +7,6 @@ import java.util.List;
 public interface IWorkSpaceService {
 
     List<WorkSpaceDTO.Info> workSpaceList();
+
+    List<Long> workSpaceDetail(String code);
 }

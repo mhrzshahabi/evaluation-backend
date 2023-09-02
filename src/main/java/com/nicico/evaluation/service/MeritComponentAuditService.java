@@ -62,8 +62,14 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
     @Transactional(readOnly = true)
     public Integer getNumberOfExpertWorkInWorkSpace() {
         String userName = SecurityUtil.getUsername();
-//        return repository.getNumberOfExpertWorkInWorkSpace(catalogService.getByCode("Re-Examination-Merit").getId());
-        return 1;
+        return repository.getNumberOfExpertWorkInWorkSpace(catalogService.getByCode("Re-Examination-Merit").getId(), userName);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getExpertWorkInWorkSpace() {
+        String userName = SecurityUtil.getUsername();
+        return repository.getExpertWorkInWorkSpace(catalogService.getByCode("Re-Examination-Merit").getId(), userName);
     }
 
     @Override

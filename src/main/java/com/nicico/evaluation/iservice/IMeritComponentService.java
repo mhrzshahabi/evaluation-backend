@@ -38,5 +38,7 @@ public interface IMeritComponentService {
 
     Integer getNumberOfAdminWorkInWorkSpace();
 
+    List<Long> getAdminWorkInWorkSpace();
+
     void updateMeritToAudit();
 }

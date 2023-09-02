@@ -306,8 +306,19 @@ public class MeritComponentService implements IMeritComponentService {
     @Override
     @Transactional(readOnly = true)
     public Integer getNumberOfAdminWorkInWorkSpace() {
-        return repository.getNumberOfAdminWorkInWorkSpace(catalogService.getByCode("Awaiting-Create-Merit").getId(), catalogService.getByCode("Awaiting-Edit-Merit").getId(),
-                catalogService.getByCode("Awaiting-Revoke-Merit").getId());
+        Long awaitingCreateStatusId = catalogService.getByCode("Awaiting-Create-Merit").getId();
+        Long awaitingEditStatusId = catalogService.getByCode("Awaiting-Edit-Merit").getId();
+        Long awaitingRevokeStatusId = catalogService.getByCode("Awaiting-Revoke-Merit").getId();
+        return repository.getNumberOfAdminWorkInWorkSpace(awaitingCreateStatusId, awaitingEditStatusId, awaitingRevokeStatusId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getAdminWorkInWorkSpace() {
+        Long awaitingCreateStatusId = catalogService.getByCode("Awaiting-Create-Merit").getId();
+        Long awaitingEditStatusId = catalogService.getByCode("Awaiting-Edit-Merit").getId();
+        Long awaitingRevokeStatusId = catalogService.getByCode("Awaiting-Revoke-Merit").getId();
+        return repository.getAdminWorkInWorkSpace(awaitingCreateStatusId, awaitingEditStatusId, awaitingRevokeStatusId);
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,7 +22,19 @@ public interface MeritComponentRepository extends JpaRepository<MeritComponent, 
             WHERE
                 status_catalog_id = :awaitingCreateStatusId
                 OR status_catalog_id = :awaitingEditStatusId
-                OR status_catalog_id = :awaitingRevokeStatusId;
+                OR status_catalog_id = :awaitingRevokeStatusId
                           """, nativeQuery = true)
     Integer getNumberOfAdminWorkInWorkSpace(Long awaitingCreateStatusId, Long awaitingEditStatusId, Long awaitingRevokeStatusId);
+
+    @Query(value = """
+            SELECT
+                id
+            FROM
+                tbl_merit_component
+            WHERE
+                status_catalog_id = :awaitingCreateStatusId
+                OR status_catalog_id = :awaitingEditStatusId
+                OR status_catalog_id = :awaitingRevokeStatusId
+                          """, nativeQuery = true)
+    List<Long> getAdminWorkInWorkSpace(Long awaitingCreateStatusId, Long awaitingEditStatusId, Long awaitingRevokeStatusId);
 }

@@ -19,10 +19,18 @@ public class DashboardController {
     private final IWorkSpaceService workSpaceService;
 
     /**
-     * @return MeritComponentDTO.SpecResponse that contain list of MeritComponentDTO and the number of total entity
+     * @return that contain list of WorkSpaceDTO.Info
      */
     @GetMapping(value = "/work-space/list")
     public ResponseEntity<List<WorkSpaceDTO.Info>> workSpaceList() {
         return new ResponseEntity<>(workSpaceService.workSpaceList(), HttpStatus.OK);
+    }
+
+    /**
+     * @return that contain list of meritComponentIds
+     */
+    @GetMapping(value = "/work-space/detail")
+    public ResponseEntity<List<Long>> workSpaceDetail(@RequestParam String code) {
+        return new ResponseEntity<>(workSpaceService.workSpaceDetail(code), HttpStatus.OK);
     }
 }
