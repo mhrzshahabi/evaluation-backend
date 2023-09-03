@@ -5,9 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableFeignClients
 @EnableScheduling
+@EnableWebMvc
 @SpringBootApplication(scanBasePackages = {"com.nicico"})
 public class BaseApplication implements CommandLineRunner {
 
