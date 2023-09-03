@@ -5,8 +5,6 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,6 +35,10 @@ public interface IMeritComponentService {
     MeritComponentDTO.Info changeStatus(Long id, MeritComponentDTO.ChangeStatus request);
 
     Long getMeritComponentStatusCatalogId(Long meritComponentId);
+
+    Integer getNumberOfAdminWorkInWorkSpace();
+
+    List<Long> getAdminWorkInWorkSpace();
 
     void updateMeritToAudit();
 }

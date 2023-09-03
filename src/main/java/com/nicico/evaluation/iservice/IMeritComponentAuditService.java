@@ -6,11 +6,17 @@ import com.nicico.evaluation.dto.MeritComponentDTO;
 import com.nicico.evaluation.dto.SearchRequestDTO;
 import com.nicico.evaluation.model.MeritComponentAudit;
 
+import java.util.List;
+
 public interface IMeritComponentAuditService {
 
     MeritComponentAudit findLastActiveByMeritComponentId(Long meritComponentId);
 
     MeritComponentAudit getPreviousById(Long meritComponentId);
+
+    Integer getNumberOfExpertWorkInWorkSpace();
+
+    List<Long> getExpertWorkInWorkSpace();
 
     MeritComponentAudit findAllByRevAndMeritComponentId(Long rev, Long meritComponentId);
 
