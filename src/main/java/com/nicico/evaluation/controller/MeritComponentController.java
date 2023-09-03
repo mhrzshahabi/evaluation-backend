@@ -168,55 +168,6 @@ public class MeritComponentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/messages")
-    public ResponseEntity<SseEmitter> messages() {
-
-        SseEmitter emitter = new SseEmitter();
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            try {
-                emitter.send(Instant.now().toString());
-            } catch (IOException e) {
-                emitter.complete();
-            }
-        }, 1, 1, TimeUnit.MINUTES);
-
-        return ResponseEntity.ok(emitter);
-    }
-
-    private static final String[] WORDS = "The quick brown fox jumps over the lazy dog.".split(" ");
-    private final ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-
-    @Async
-    @GetMapping(path = "/words", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    SseEmitter getWords() {
-        SseEmitter emitter = new SseEmitter();
-        cachedThreadPool.execute(() -> {
-            try {
-                for (String word : WORDS) {
-                    emitter.send(word);
-                    TimeUnit.SECONDS.sleep(10);
-                }
-                emitter.complete();
-            } catch (Exception e) {
-                emitter.completeWithError(e);
-            }
-        });
-        return emitter;
-    }
-
-//    @GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public void streamFlux() {
-//        Flux.interval(Duration.ofSeconds(2)) // Generate simple notifications every 2 seconds.
-//                .map(i -> generateNotification())
-//                .doOnNext(serverSentEvent -> {
-//                    sink.next(serverSentEvent); // Sending notifications to the global Flux via its FluxSink
-//                    log.info("Sent for {}", serverSentEvent.data().getId());
-//                })
-//                .doFinally(signalType -> log.info("Notification flux closed")) // Logging the closure of our generator
-//                .takeWhile(notification -> !sink.isCancelled()) // We generate messages until the global Flux is closed
-//                .subscribe();
-//    }
-
     @GetMapping("/stream-sse")
     public SseEmitter streamSseMvc() {
         SseEmitter emitter = new SseEmitter();
@@ -227,7 +178,7 @@ public class MeritComponentController {
                         .id(String.valueOf(i))
                         .name("sse event - mvc");
                 emitter.send(event);
-                Thread.sleep(100000);
+                Thread.sleep(10000);
                 log.info("=================>  " + event);
             }
         } catch (Exception ex) {
