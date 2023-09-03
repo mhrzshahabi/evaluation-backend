@@ -11,26 +11,38 @@ import com.nicico.evaluation.utility.ExcelGenerator;
 import com.nicico.evaluation.utility.ExceptionUtil;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Api(value = "MeritComponent")
 @RestController
+@Slf4j
 @RequestMapping(value = "/api/merit-Component")
 public class MeritComponentController {
 
+    private final TaskExecutor taskExecutor;
     private final ExceptionUtil exceptionUtil;
     private final IMeritComponentService service;
     private final ResourceBundleMessageSource messageSource;
@@ -155,4 +167,24 @@ public class MeritComponentController {
         service.updateMeritToAudit();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/stream-sse")
+    public SseEmitter streamSseMvc() {
+        SseEmitter emitter = new SseEmitter();
+        try {
+            for (int i = 0; true; i++) {
+                SseEmitter.SseEventBuilder event = SseEmitter.event()
+                        .data("SSE MVC - " + LocalTime.now().toString())
+                        .id(String.valueOf(i))
+                        .name("sse event - mvc");
+                emitter.send(event);
+                Thread.sleep(10000);
+                log.info("=================>  " + event);
+            }
+        } catch (Exception ex) {
+            emitter.completeWithError(ex);
+        }
+        return emitter;
+    }
+
 }
