@@ -33,4 +33,12 @@ public class DashboardController {
     public ResponseEntity<List<Long>> workSpaceDetail(@RequestParam String code) {
         return new ResponseEntity<>(workSpaceService.workSpaceDetail(code), HttpStatus.OK);
     }
+
+    /**
+     * @return that contain list of WorkSpaceDTO.Info
+     */
+    @GetMapping(value = "/work-space/alarm")
+    public ResponseEntity<List<WorkSpaceDTO.Info>> workSpaceAlarm(@RequestBody List<String> workSpaceCodeList) {
+        return new ResponseEntity<>(workSpaceService.workSpaceAlarm(workSpaceCodeList), HttpStatus.OK);
+    }
 }
