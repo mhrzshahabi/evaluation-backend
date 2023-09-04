@@ -37,4 +37,11 @@ public class WorkSpaceService implements IWorkSpaceService {
         return meritComponentIds;
     }
 
+    @Override
+    public List<WorkSpaceDTO.Info> workSpaceAlarm(List<String> workSpaceCodeList) {
+        List<CatalogDTO.Info> workSpaceCategoryList = null;
+        workSpaceCodeList.forEach(item -> workSpaceCategoryList.add(catalogService.getInfoByCode(item)));
+        return mapper.catalogDtoInfoToWorkSpaceDtoInfoList(workSpaceCategoryList);
+    }
+
 }

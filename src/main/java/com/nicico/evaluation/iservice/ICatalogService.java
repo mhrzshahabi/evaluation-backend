@@ -26,4 +26,6 @@ public interface ICatalogService {
 
     CatalogDTO.PureInfo getByCode(String code);
 
+    CatalogDTO.Info getInfoByCode(String code);
+
 }

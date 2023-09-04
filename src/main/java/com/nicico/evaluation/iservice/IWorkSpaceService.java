@@ -9,4 +9,6 @@ public interface IWorkSpaceService {
     List<WorkSpaceDTO.Info> workSpaceList();
 
     List<Long> workSpaceDetail(String code);
+
+    List<WorkSpaceDTO.Info> workSpaceAlarm(List<String> workSpaceCodeList);
 }

@@ -118,8 +118,16 @@ public class CatalogService implements ICatalogService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CatalogDTO.PureInfo getByCode(String code) {
         Optional<Catalog> optionalCatalog = repository.findByCode(code);
         return mapper.entityToDtoPureInfo(optionalCatalog.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CatalogDTO.Info getInfoByCode(String code) {
+        Optional<Catalog> optionalCatalog = repository.findByCode(code);
+        return mapper.entityToDtoInfo(optionalCatalog.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
     }
 }
