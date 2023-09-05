@@ -66,8 +66,10 @@ public class MeritComponentService implements IMeritComponentService {
     public MeritComponentDTO.Info findLastActiveByMeritComponentId(Long id) {
         MeritComponentAudit meritComponentAudit = meritComponentAuditService.findLastActiveByMeritComponentId(id);
         MeritComponentDTO.Info info = mapper.meritComponentAuditToDtoInfo(meritComponentAudit);
-        if (meritComponentService.getMeritComponentStatusCatalogId(id).equals(catalogService.getByCode("Revoked-Merit").getId()))
+        if (meritComponentService.getMeritComponentStatusCatalogId(id).equals(catalogService.getByCode("Revoked-Merit").getId())) {
             info.setStatusCatalogId(catalogService.getByCode("Revoked-Merit").getId());
+            info.setStatusCatalog(catalogService.getInfoByCode("Revoked-Merit"));
+        }
         return info;
     }
 
