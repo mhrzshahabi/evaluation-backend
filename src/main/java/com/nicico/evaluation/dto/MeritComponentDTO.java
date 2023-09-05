@@ -72,7 +72,16 @@ public abstract class MeritComponentDTO {
         private String statusCode;
         private String description;
         private String title;
+    }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("SensitiveEventDataRq")
+    public static class SensitiveEventData {
+
+        private String title;
+        private CatalogDTO.Info statusCatalog;
     }
 
     @Getter
