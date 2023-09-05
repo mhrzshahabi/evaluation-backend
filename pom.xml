@@ -119,6 +119,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.nicico.copper</groupId>
+            <artifactId>copper-sse</artifactId>
+        </dependency>
+
 
     </dependencies>
 
