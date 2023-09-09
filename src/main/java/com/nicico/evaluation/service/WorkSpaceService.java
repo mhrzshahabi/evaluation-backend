@@ -52,7 +52,7 @@ public class WorkSpaceService implements IWorkSpaceService {
     public List<EvaluationDTO.EvaluationPeriodDashboard> evaluationPeriodListByUser() {
         String userNationalCode = SecurityUtil.getNationalCode();
         Long finalizedStatusCatalog = catalogService.getByCode("Finalized").getId();
-        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId("userNationalCode", finalizedStatusCatalog);
+        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalog);
     }
 
 }
