@@ -121,13 +121,6 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('D_EVALUATION_PERIOD')")
-    public void deleteEvaluationPeriodPost(Long id, String postCode) {
-        evaluationPeriodPostService.deleteByEvaluationPeriodIdAndPostCode(id, postCode);
-    }
-
-    @Override
-    @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_PERIOD')")
     public EvaluationPeriodDTO.Info create(EvaluationPeriodDTO.Create dto) throws ParseException {
         validationDates(dto);

@@ -41,6 +41,14 @@ public abstract class EvaluationMapper {
 
     public abstract List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
 
+    @Mappings({
+            @Mapping(target = "id", source = "evaluationPeriod.id"),
+            @Mapping(target = "title", source = "evaluationPeriod.title")
+    })
+    public abstract EvaluationDTO.EvaluationPeriodDashboard entityToDtoEvaluationPeriodDashboard(Evaluation entity);
+
+    public abstract List<EvaluationDTO.EvaluationPeriodDashboard> entityToDtoEvaluationPeriodDashboardList(List<Evaluation> entities);
+
     public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
 
     @Named("getAssessorPostTitle")
