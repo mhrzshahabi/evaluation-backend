@@ -208,7 +208,7 @@ public class EvaluationController {
                     i++;
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10800);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
