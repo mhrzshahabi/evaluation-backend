@@ -15,6 +15,8 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
 
     Evaluation findByEvaluationPeriodIdAndAssessPostCode(Long id, String assessPostCode);
 
+    List<Evaluation> findAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId);
+
     @Query(value = """
             SELECT
                 tbl_evaluation.c_assess_post_code

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -72,11 +71,6 @@ public class EvaluationPeriodDTO {
     @ApiModel("EvaluationPeriodUpdateRq")
     public static class Update extends EvaluationPeriodDTO {
 
-    }
-
-    public static class Delete {
-        @Min(1)
-        private Long id;
     }
 
     @Getter

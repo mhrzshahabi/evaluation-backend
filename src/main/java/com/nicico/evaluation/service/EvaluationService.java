@@ -323,6 +323,13 @@ public class EvaluationService implements IEvaluationService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId) {
+        List<Evaluation> evaluationList = repository.findAllByAssessNationalCodeAndStatusCatalogId(assessNationalCode, statusCatalogId);
+        return mapper.entityToDtoEvaluationPeriodDashboardList(evaluationList);
+    }
+
     @Scheduled(cron = "0 30 0 * * *")
     @Transactional
     public void automateChangeStatus() {
