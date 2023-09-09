@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -15,6 +16,7 @@ import com.nicico.evaluation.repository.EvaluationRepository;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -32,6 +34,7 @@ import java.util.*;
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class EvaluationService implements IEvaluationService {
 
@@ -366,4 +369,47 @@ public class EvaluationService implements IEvaluationService {
         evaluationItemService.createAll(requests);
     }
 
+    @Override
+    public String sendInitialStatusNotification() {
+
+        StringBuilder notificationList = new StringBuilder();
+        Catalog catalog = catalogRepository.findByCode(INITIAL).orElseThrow();
+        List<EvaluationPeriodDTO.Info> allByCreatorAndStartDateValidation = evaluationPeriodService.
+                getAllByCreatorAndStartDateValidation(SecurityUtil.getUsername(), DateUtil.todayDate(), catalog.getId());
+        if (!allByCreatorAndStartDateValidation.isEmpty()) {
+            List<String> periodTitleList = allByCreatorAndStartDateValidation.stream().map(EvaluationPeriodDTO::getTitle).toList();
+            notificationList.append(messageSource.getMessage("exception.period.validation.time.has.started", new Object[]{periodTitleList}, LocaleContextHolder.getLocale()));
+            notificationList.append("\n");
+            log.info("=========>  " + messageSource.getMessage("exception.period.validation.time.has.started", new Object[]{periodTitleList}, LocaleContextHolder.getLocale()));
+        }
+        List<EvaluationPeriodDTO.RemainDate> allByCreatorAndRemainDateToEndDateValidation = evaluationPeriodService.
+                getAllByCreatorAndRemainDateToEndDateValidation(SecurityUtil.getUsername(), DateUtil.todayDate(), catalog.getId());
+        if (!allByCreatorAndRemainDateToEndDateValidation.isEmpty()) {
+            StringBuilder messageBuilder = new StringBuilder();
+            allByCreatorAndRemainDateToEndDateValidation.forEach(data -> {
+                messageBuilder.append(data.getPeriodTitle()).append(" ").append(data.getRemainDate()).append(" روز ,");
+            });
+            StringBuilder msg = messageBuilder.replace(messageBuilder.length() - 1, messageBuilder.length(), " ");
+            notificationList.append(messageSource.getMessage("exception.period.remaining.time.for.the.validation.of.the.course", new Object[]{msg}, LocaleContextHolder.getLocale()));
+            notificationList.append("\n");
+            log.info("=================>  " + messageSource.getMessage("exception.period.remaining.time.for.the.validation.of.the.course", new Object[]{msg}, LocaleContextHolder.getLocale()));
+        }
+        List<EvaluationPeriodDTO.Info> allByAssessorAndStartDateAssessment =
+                evaluationPeriodService.getAllByAssessorAndStartDateAssessment(SecurityUtil.getNationalCode(), DateUtil.todayDate());
+        if (!allByAssessorAndStartDateAssessment.isEmpty()) {
+            notificationList.append(messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
+            notificationList.append("\n");
+            log.info("=================>  " + messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
+        }
+        Catalog catalog1 = catalogRepository.findByCode(AWAITING).orElseThrow();
+        List<EvaluationPeriodDTO.Info> allByAssessorAndStartDateAssessmentAndStatusId =
+                evaluationPeriodService.getAllByAssessorAndStartDateAssessmentAndStatusId(SecurityUtil.getNationalCode(), DateUtil.todayDate(), catalog1.getId());
+        if (!allByAssessorAndStartDateAssessmentAndStatusId.isEmpty()) {
+            notificationList.append(messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
+            notificationList.append("\n");
+            log.info("=================>  " + messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
+        }
+
+        return String.valueOf(notificationList);
+    }
 }

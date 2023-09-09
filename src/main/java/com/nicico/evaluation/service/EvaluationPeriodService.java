@@ -77,10 +77,32 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public List<EvaluationPeriodDTO.Info> getAllByDateAssessment() {
-        // evaluationPeriodRepository.findAllByStartDateAssessment();
-//        return evaluationPeriodMapper.entityToDtoInfo(evaluationPeriod);
-        return null;
+    public List<EvaluationPeriodDTO.Info> getAllByCreatorAndStartDateValidation(String creator, String toDayDate, Long statusId) {
+        List<EvaluationPeriod> evaluationPeriods = evaluationPeriodRepository.findAllByCreatorAndStartDateValidation(creator, toDayDate, statusId);
+        return evaluationPeriodMapper.entityToDtoInfoList(evaluationPeriods);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public List<EvaluationPeriodDTO.RemainDate> getAllByCreatorAndRemainDateToEndDateValidation(String creator, String toDayDate, Long statusId) {
+        return evaluationPeriodRepository.findAllByCreatorAndRemainDateToEndDateValidation(creator, toDayDate, statusId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessment(String assessmentNationalCode, String toDayDate) {
+        List<EvaluationPeriod> evaluationPeriods = evaluationPeriodRepository.findAllByAssessorAndStartDateAssessment(assessmentNationalCode, toDayDate);
+        return evaluationPeriodMapper.entityToDtoInfoList(evaluationPeriods);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessmentAndStatusId(String assessmentNationalCode, String toDayDate, Long statusId) {
+        List<EvaluationPeriod> evaluationPeriods = evaluationPeriodRepository.findAllByAssessorAndStartDateAssessmentAndStatusId(assessmentNationalCode, toDayDate,statusId);
+        return evaluationPeriodMapper.entityToDtoInfoList(evaluationPeriods);
     }
 
     @Override

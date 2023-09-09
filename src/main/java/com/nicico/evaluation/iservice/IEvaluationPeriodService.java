@@ -6,8 +6,6 @@ import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.List;
@@ -19,7 +17,13 @@ public interface IEvaluationPeriodService {
 
     EvaluationPeriodDTO.Info get(Long id);
 
-    List<EvaluationPeriodDTO.Info> getAllByDateAssessment();
+    List<EvaluationPeriodDTO.Info> getAllByCreatorAndStartDateValidation(String creator, String toDayDate, Long statusId);
+
+    List<EvaluationPeriodDTO.RemainDate> getAllByCreatorAndRemainDateToEndDateValidation(String creator, String toDayDate, Long statusId);
+
+    List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessment(String assessmentNationalCode, String toDayDate);
+
+    List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessmentAndStatusId(String assessmentNationalCode, String toDayDate, Long statusId);
 
     EvaluationPeriodDTO.SpecResponse list(int count, int startIndex);
 
