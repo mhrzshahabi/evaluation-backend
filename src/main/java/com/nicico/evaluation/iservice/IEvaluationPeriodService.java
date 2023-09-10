@@ -17,7 +17,13 @@ public interface IEvaluationPeriodService {
 
     EvaluationPeriodDTO.Info get(Long id);
 
-    List<EvaluationPeriodDTO.Info> getAllByDateAssessment();
+    List<EvaluationPeriodDTO.Info> getAllByCreatorAndStartDateValidation(String creator, String toDayDate, Long statusId);
+
+    List<EvaluationPeriodDTO.RemainDate> getAllByCreatorAndRemainDateToEndDateValidation(String creator, String toDayDate, Long statusId);
+
+    List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessment(String assessmentNationalCode, String toDayDate);
+
+    List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessmentAndStatusId(String assessmentNationalCode, String toDayDate, Long statusId);
 
     EvaluationPeriodDTO.SpecResponse list(int count, int startIndex);
 

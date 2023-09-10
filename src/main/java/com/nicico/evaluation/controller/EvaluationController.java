@@ -3,6 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
+import com.nicico.copper.sse.SSEEngine;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -12,6 +13,7 @@ import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,11 +21,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.INITIAL;
 import static com.nicico.evaluation.utility.EvaluationConstant.VALIDATED;
@@ -32,12 +38,14 @@ import static com.nicico.evaluation.utility.EvaluationConstant.VALIDATED;
 @RequestMapping("/api/evaluation")
 @Api("Evaluation Api")
 @Validated
+@Slf4j
 @AllArgsConstructor
 public class EvaluationController {
 
     private final IEvaluationService service;
     private final ICatalogService catalogService;
     private final ResourceBundleMessageSource messageSource;
+    private final SSEEngine sseEngine;
 
     /**
      * @param id is the evaluation id
@@ -186,6 +194,32 @@ public class EvaluationController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @GetMapping("/notification")
+    public SseEmitter sendNotification() {
+        String notification = service.sendNotification();
+        SseEmitter emitter = sseEngine.create();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                int i = 0;
+                while (i < 3) {
+                    emitter.send(notification);
+                    log.info("========>" + notification);
+                    i++;
+                }
+                try {
+                    Thread.sleep(10800);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                emitter.complete();
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        });
+        executor.shutdown();
+        return emitter;
+    }
 }
 
     
