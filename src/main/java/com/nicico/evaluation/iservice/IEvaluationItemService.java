@@ -17,6 +17,8 @@ public interface IEvaluationItemService {
 
     List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId, List<Long> groupTypeMeritIds);
 
+    Long getGroupTypeAverageScoreByEvaluationId(Long evaluationId, String kpiTypeTitle);
+
     EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto);
 
     List<EvaluationItemDTO.Info> createAll(List<EvaluationItemDTO.Create> requests);
