@@ -35,8 +35,7 @@ public interface IEvaluationService {
 
     List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId);
 
-    String sendNotification();
-
     EvaluationDTO.EvaluationAverageScoreData getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId);
 
+    List<String> sendNotification();
 }

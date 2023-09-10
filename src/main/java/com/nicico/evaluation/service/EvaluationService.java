@@ -384,46 +384,46 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public String sendNotification() {
+    public List<String> sendNotification() {
 
-        StringBuilder notificationList = new StringBuilder();
+        List<String> notificationList = new ArrayList<>();
         Catalog catalog = catalogRepository.findByCode(INITIAL).orElseThrow();
         List<EvaluationPeriodDTO.Info> allByCreatorAndStartDateValidation = evaluationPeriodService.
                 getAllByCreatorAndStartDateValidation(SecurityUtil.getUsername(), DateUtil.todayDate(), catalog.getId());
         if (!allByCreatorAndStartDateValidation.isEmpty()) {
             List<String> periodTitleList = allByCreatorAndStartDateValidation.stream().map(EvaluationPeriodDTO::getTitle).toList();
-            notificationList.append(messageSource.getMessage("exception.period.validation.time.has.started", new Object[]{periodTitleList}, LocaleContextHolder.getLocale()));
-            notificationList.append("\n");
+            notificationList.add(messageSource.getMessage("exception.period.validation.time.has.started", new Object[]{periodTitleList}, LocaleContextHolder.getLocale()));
             log.info("=========>  " + messageSource.getMessage("exception.period.validation.time.has.started", new Object[]{periodTitleList}, LocaleContextHolder.getLocale()));
         }
         List<EvaluationPeriodDTO.RemainDate> allByCreatorAndRemainDateToEndDateValidation = evaluationPeriodService.
                 getAllByCreatorAndRemainDateToEndDateValidation(SecurityUtil.getUsername(), DateUtil.todayDate(), catalog.getId());
         if (!allByCreatorAndRemainDateToEndDateValidation.isEmpty()) {
             StringBuilder messageBuilder = new StringBuilder();
-            allByCreatorAndRemainDateToEndDateValidation.forEach(data -> {
-                messageBuilder.append(data.getPeriodTitle()).append(" ").append(data.getRemainDate()).append(" روز ,");
-            });
+            allByCreatorAndRemainDateToEndDateValidation.forEach(data ->
+                    messageBuilder.append(data.getPeriodTitle()).append(" ").append(data.getRemainDate()).append(" روز ,")
+            );
             StringBuilder msg = messageBuilder.replace(messageBuilder.length() - 1, messageBuilder.length(), " ");
-            notificationList.append(messageSource.getMessage("exception.period.remaining.time.for.the.validation.of.the.course", new Object[]{msg}, LocaleContextHolder.getLocale()));
-            notificationList.append("\n");
+            notificationList.add(messageSource.getMessage("exception.period.remaining.time.for.the.validation.of.the.course", new Object[]{msg}, LocaleContextHolder.getLocale()));
             log.info("=================>  " + messageSource.getMessage("exception.period.remaining.time.for.the.validation.of.the.course", new Object[]{msg}, LocaleContextHolder.getLocale()));
         }
         List<EvaluationPeriodDTO.Info> allByAssessorAndStartDateAssessment =
                 evaluationPeriodService.getAllByAssessorAndStartDateAssessment(SecurityUtil.getNationalCode(), DateUtil.todayDate());
         if (!allByAssessorAndStartDateAssessment.isEmpty()) {
-            notificationList.append(messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
-            notificationList.append("\n");
+            notificationList.add(messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
             log.info("=================>  " + messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
         }
         Catalog catalog1 = catalogRepository.findByCode(AWAITING).orElseThrow();
-        List<EvaluationPeriodDTO.Info> allByAssessorAndStartDateAssessmentAndStatusId =
+        List<EvaluationPeriodDTO.RemainDate> allByAssessorAndStartDateAssessmentAndStatusId =
                 evaluationPeriodService.getAllByAssessorAndStartDateAssessmentAndStatusId(SecurityUtil.getNationalCode(), DateUtil.todayDate(), catalog1.getId());
         if (!allByAssessorAndStartDateAssessmentAndStatusId.isEmpty()) {
-            notificationList.append(messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
-            notificationList.append("\n");
-            log.info("=================>  " + messageSource.getMessage("exception.period.time.to.complete.your.assessments.has.begun", null, LocaleContextHolder.getLocale()));
+            StringBuilder messageBuilder = new StringBuilder();
+            allByAssessorAndStartDateAssessmentAndStatusId.forEach(data ->
+                    messageBuilder.append(data.getPeriodTitle()).append(" ").append(data.getRemainDate()).append(" روز ,"));
+            StringBuilder msg = messageBuilder.replace(messageBuilder.length() - 1, messageBuilder.length(), " ");
+            notificationList.add(messageSource.getMessage("exception.period.that.are.incomplete.sent.in.the.final.state", new Object[]{msg}, LocaleContextHolder.getLocale()));
+            log.info("=================>  " + messageSource.getMessage("exception.period.that.are.incomplete.sent.in.the.final.state", new Object[]{msg}, LocaleContextHolder.getLocale()));
         }
 
-        return String.valueOf(notificationList);
+        return notificationList;
     }
 }
