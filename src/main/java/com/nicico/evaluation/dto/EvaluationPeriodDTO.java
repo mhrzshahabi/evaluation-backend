@@ -93,4 +93,12 @@ public class EvaluationPeriodDTO {
         private Integer totalRows;
     }
 
+    public interface RemainDate {
+
+        String getPeriodTitle();
+
+        String getRemainDate();
+    }
+
+
 }

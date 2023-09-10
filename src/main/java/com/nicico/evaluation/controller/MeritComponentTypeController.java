@@ -31,6 +31,7 @@ public class MeritComponentTypeController {
     private final IMeritComponentTypeService service;
     private final ResourceBundleMessageSource messageSource;
     private final ExceptionUtil exceptionUtil;
+
     /**
      * @param id is the meritComponentType id
      * @return MeritComponentTypeDTO.Info is the single meritComponentType entity
