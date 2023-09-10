@@ -23,7 +23,7 @@ public interface IEvaluationPeriodService {
 
     List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessment(String assessmentNationalCode, String toDayDate);
 
-    List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessmentAndStatusId(String assessmentNationalCode, String toDayDate, Long statusId);
+    List<EvaluationPeriodDTO.RemainDate> getAllByAssessorAndStartDateAssessmentAndStatusId(String assessmentNationalCode, String toDayDate, Long statusId);
 
     EvaluationPeriodDTO.SpecResponse list(int count, int startIndex);
 
