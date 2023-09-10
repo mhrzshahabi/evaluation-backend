@@ -33,5 +33,8 @@ public interface IEvaluationService {
 
     BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
 
+    List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId);
+
+
     String sendInitialStatusNotification();
 }

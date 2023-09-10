@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -103,11 +102,10 @@ public class EvaluationDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("EvaluationDeleteRq")
-    public static class Delete {
-        @NotNull
-        @Min(1)
+    @ApiModel("EvaluationPeriodDashboardRq")
+    public static class EvaluationPeriodDashboard {
         private Long id;
+        private String title;
     }
 
     @Getter

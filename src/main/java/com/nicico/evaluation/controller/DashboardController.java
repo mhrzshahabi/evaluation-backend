@@ -1,5 +1,6 @@
 package com.nicico.evaluation.controller;
 
+import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 import com.nicico.evaluation.iservice.IWorkSpaceService;
 import io.swagger.annotations.Api;
@@ -40,5 +41,13 @@ public class DashboardController {
     @GetMapping(value = "/work-space/alarm")
     public ResponseEntity<List<WorkSpaceDTO.Info>> workSpaceAlarm(@RequestBody List<String> workSpaceCodeList) {
         return new ResponseEntity<>(workSpaceService.workSpaceAlarm(workSpaceCodeList), HttpStatus.OK);
+    }
+
+    /**
+     * @return that contain list of evaluationPeriodList By User
+     */
+    @GetMapping(value = "/evaluation-period/list")
+    public ResponseEntity<List<EvaluationDTO.EvaluationPeriodDashboard>> evaluationPeriodListByUser() {
+        return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(), HttpStatus.OK);
     }
 }

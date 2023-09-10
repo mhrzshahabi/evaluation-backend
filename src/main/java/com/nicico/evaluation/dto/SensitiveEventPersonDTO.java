@@ -50,6 +50,7 @@ public abstract class SensitiveEventPersonDTO {
         private String nationalCode;
         private String firstName;
         private String lastName;
+        private MeritComponentDTO.SensitiveEventData meritComponent;
     }
 
     @Getter
