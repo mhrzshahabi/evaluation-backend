@@ -377,7 +377,7 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public String sendInitialStatusNotification() {
+    public String sendNotification() {
 
         StringBuilder notificationList = new StringBuilder();
         Catalog catalog = catalogRepository.findByCode(INITIAL).orElseThrow();

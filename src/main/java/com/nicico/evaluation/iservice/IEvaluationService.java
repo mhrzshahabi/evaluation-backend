@@ -36,5 +36,5 @@ public interface IEvaluationService {
     List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId);
 
 
-    String sendInitialStatusNotification();
+    String sendNotification();
 }

@@ -195,8 +195,8 @@ public class EvaluationController {
     }
 
     @GetMapping("/notification")
-    public SseEmitter sendInitialStatusNotification() {
-        String notification = service.sendInitialStatusNotification();
+    public SseEmitter sendNotification() {
+        String notification = service.sendNotification();
         SseEmitter emitter = sseEngine.create();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
