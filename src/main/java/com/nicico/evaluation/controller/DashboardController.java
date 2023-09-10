@@ -50,4 +50,13 @@ public class DashboardController {
     public ResponseEntity<List<EvaluationDTO.EvaluationPeriodDashboard>> evaluationPeriodListByUser() {
         return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(), HttpStatus.OK);
     }
+
+    /**
+     * @return that result of my evaluation by evaluationPeriodId
+     */
+    @GetMapping(value = "/my-evaluation/{evaluationPeriodId}")
+    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId) {
+        return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId), HttpStatus.OK);
+    }
+
 }

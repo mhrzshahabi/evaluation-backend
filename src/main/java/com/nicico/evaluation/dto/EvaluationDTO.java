@@ -111,6 +111,17 @@ public class EvaluationDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("EvaluationAverageScoreDataRq")
+    public static class EvaluationAverageScoreData {
+        private Long averageScore;
+        private Long behavioralAverageScore;
+        private Long developmentAverageScore;
+        private Long operationalAverageScore;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("EvaluationSpecResponse")
     public static class SpecResponse {
         private Response response;

@@ -47,9 +47,9 @@ public class EvaluationService implements IEvaluationService {
     private IEvaluationItemService evaluationItemService;
     private final ISpecialCaseService specialCaseService;
     private final ResourceBundleMessageSource messageSource;
-    private final IOrganizationTreeService organizationTreeService;
-    private final IMeritComponentService meritComponentService;
     private IEvaluationPeriodService evaluationPeriodService;
+    private final IMeritComponentService meritComponentService;
+    private final IOrganizationTreeService organizationTreeService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -331,6 +331,13 @@ public class EvaluationService implements IEvaluationService {
     public List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId) {
         List<Evaluation> evaluationList = repository.findAllByAssessNationalCodeAndStatusCatalogId(assessNationalCode, statusCatalogId);
         return mapper.entityToDtoEvaluationPeriodDashboardList(evaluationList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EvaluationDTO.EvaluationAverageScoreData getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId) {
+        Optional<Evaluation> optionalEvaluation = repository.findFirstByAssessNationalCodeAndEvaluationPeriodId(assessNationalCode, evaluationPeriodId);
+        return mapper.entityToDtoAverageScoreData(optionalEvaluation.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
     }
 
     @Scheduled(cron = "0 30 0 * * *")
