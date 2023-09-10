@@ -55,4 +55,11 @@ public class WorkSpaceService implements IWorkSpaceService {
         return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalog);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId) {
+        String userNationalCode = SecurityUtil.getNationalCode();
+        return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
+    }
+
 }

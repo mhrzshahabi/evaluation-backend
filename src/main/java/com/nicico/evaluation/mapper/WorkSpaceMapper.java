@@ -22,7 +22,7 @@ public abstract class WorkSpaceMapper {
     private IMeritComponentAuditService meritComponentAuditService;
 
     @Mappings({
-            @Mapping(target = "number", source = "code", qualifiedByName = "getNumberOfWorkByCatalogCode"),
+            @Mapping(target = "number", source = "code", qualifiedByName = "getNumberOfWorkByCatalogCode")
     })
     public abstract WorkSpaceDTO.Info catalogDtoInfoToWorkSpaceDtoInfo(CatalogDTO.Info catalogDTO);
 
