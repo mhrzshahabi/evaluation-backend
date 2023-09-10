@@ -27,4 +27,18 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
     List<EvaluationItem> getAllGroupTypeMeritByEvalId(@Param("evaluationId") Long evaluationId, List<Long> groupTypeMeritIds);
 
     List<EvaluationItem> getAllByEvaluationId(@Param("evaluationId") Long evaluationId);
+
+    @Query(value = """
+            SELECT
+                SUM(tbl_evaluation_item.questionnaire_answer_catalog_value)
+            FROM
+                tbl_evaluation_item
+                LEFT JOIN tbl_group_type_merit ON tbl_group_type_merit.id = tbl_evaluation_item.group_type_merit_id
+                LEFT JOIN tbl_group_type ON tbl_group_type.id = tbl_group_type_merit.group_type_id
+                LEFT JOIN tbl_kpi_type ON tbl_kpi_type.id = tbl_group_type.kpi_type_id
+            WHERE
+                evaluation_id = :evaluationId
+                AND tbl_kpi_type.c_title = :kpiTypeTitle
+                          """, nativeQuery = true)
+    Long getGroupTypeAverageScoreByEvaluationId(Long evaluationId, String kpiTypeTitle);
 }

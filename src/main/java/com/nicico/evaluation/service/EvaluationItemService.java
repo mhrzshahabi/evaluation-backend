@@ -100,6 +100,12 @@ public class EvaluationItemService implements IEvaluationItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Long getGroupTypeAverageScoreByEvaluationId(Long evaluationId, String kpiTypeTitle) {
+        return repository.getGroupTypeAverageScoreByEvaluationId(evaluationId, kpiTypeTitle);
+    }
+
+    @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_EVALUATION_ITEM')")
     public EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto) {

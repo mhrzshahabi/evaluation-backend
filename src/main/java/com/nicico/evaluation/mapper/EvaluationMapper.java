@@ -71,12 +71,12 @@ public abstract class EvaluationMapper {
 
     @Named("getBehavioralAverageScore")
     Long getBehavioralAverageScore(Long id) {
-        return 1L;
+        return evaluationItemService.getGroupTypeAverageScoreByEvaluationId(id, "رفتاری");
     }
 
     @Named("getDevelopmentAverageScore")
     Long getDevelopmentAverageScore(Long id) {
-        return 2L;
+        return evaluationItemService.getGroupTypeAverageScoreByEvaluationId(id, "توسعه ای");
     }
 
     @Named("getOperationalAverageScore")
