@@ -100,9 +100,8 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public List<EvaluationPeriodDTO.Info> getAllByAssessorAndStartDateAssessmentAndStatusId(String assessmentNationalCode, String toDayDate, Long statusId) {
-        List<EvaluationPeriod> evaluationPeriods = evaluationPeriodRepository.findAllByAssessorAndStartDateAssessmentAndStatusId(assessmentNationalCode, toDayDate,statusId);
-        return evaluationPeriodMapper.entityToDtoInfoList(evaluationPeriods);
+    public List<EvaluationPeriodDTO.RemainDate> getAllByAssessorAndStartDateAssessmentAndStatusId(String assessmentNationalCode, String toDayDate, Long statusId) {
+        return evaluationPeriodRepository.findAllByAssessorAndStartDateAssessmentAndStatusId(assessmentNationalCode, toDayDate, statusId);
     }
 
     @Override

@@ -43,22 +43,26 @@ public interface EvaluationPeriodRepository extends JpaRepository<EvaluationPeri
     List<EvaluationPeriodDTO.RemainDate> findAllByCreatorAndRemainDateToEndDateValidation(String creator, String toDayDate, Long statusId);
 
     @Query(value = """
-            select * from tbl_evaluation eval
+            select * 
+            from tbl_evaluation eval
             join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.EVALUATION_PERIOD_ID
             where
-            eval.C_ASSESSOR_NATIONAL_CODE = :nationalCode
+                eval.C_ASSESSOR_NATIONAL_CODE = :nationalCode
             and evalPeriod.C_START_DATE_ASSESSMENT = :toDayDate
             """, nativeQuery = true)
     List<EvaluationPeriod> findAllByAssessorAndStartDateAssessment(String nationalCode, String toDayDate);
 
     @Query(value = """
-            select * from tbl_evaluation eval
+            select
+                 evalperiod.C_TITLE periodTitle ,
+                 to_date( evalperiod.C_END_DATE_ASSESSMENT, 'YYYY-MM-DD') - to_date( :toDayDate,'YYYY-MM-DD') as remainDate
+            from tbl_evaluation eval
             join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.EVALUATION_PERIOD_ID
             where
-            eval.C_ASSESSOR_NATIONAL_CODE = :nationalCode
-            and evalPeriod.C_START_DATE_ASSESSMENT < :toDayDate
-            AND evalperiod.C_END_DATE_ASSESSMENT >= :toDayDate
-            AND eval.status_catalog_id = :statusId
+                eval.C_ASSESSOR_NATIONAL_CODE = :nationalCode
+                and evalPeriod.C_START_DATE_ASSESSMENT < :toDayDate
+                AND evalperiod.C_END_DATE_ASSESSMENT >= :toDayDate
+                AND eval.status_catalog_id = :statusId
             """, nativeQuery = true)
-    List<EvaluationPeriod> findAllByAssessorAndStartDateAssessmentAndStatusId(String nationalCode, String toDayDate, Long statusId);
+    List<EvaluationPeriodDTO.RemainDate> findAllByAssessorAndStartDateAssessmentAndStatusId(String nationalCode, String toDayDate, Long statusId);
 }

@@ -196,29 +196,32 @@ public class EvaluationController {
 
     @GetMapping("/notification")
     public SseEmitter sendNotification() {
-        String notification = service.sendNotification();
-        SseEmitter emitter = sseEngine.create();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            try {
-                int i = 0;
-                while (i < 3) {
-                    emitter.send(notification);
-                    log.info("========>" + notification);
-                    i++;
-                }
+        List<String> notification = service.sendNotification();
+        if (!notification.isEmpty()) {
+            SseEmitter emitter = sseEngine.create();
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            executor.execute(() -> {
                 try {
-                    Thread.sleep(10800);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    int i = 0;
+                    while (i < 3) {
+                        emitter.send(notification);
+                        log.info("========>" + notification);
+                        i++;
+                    }
+                    try {
+                        Thread.sleep(10800);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    emitter.complete();
+                } catch (IOException e) {
+                    emitter.completeWithError(e);
                 }
-                emitter.complete();
-            } catch (IOException e) {
-                emitter.completeWithError(e);
-            }
-        });
-        executor.shutdown();
-        return emitter;
+            });
+            executor.shutdown();
+            return emitter;
+        }
+        return null;
     }
 }
 
