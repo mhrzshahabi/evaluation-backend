@@ -1,6 +1,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
@@ -303,7 +304,6 @@ public class EvaluationItemService implements IEvaluationItemService {
 
     private void getGroupTypeMeritInfo(EvaluationItemDTO.CreateInfo request, Long statusCatalogId, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
         List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(request.getAssessPostCode(), LEVEL_DEF_GROUP);
-
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());

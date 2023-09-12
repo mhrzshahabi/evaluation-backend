@@ -208,13 +208,9 @@ public class EvaluationController {
                         log.info("========>" + notification);
                         i++;
                     }
-                    try {
-                        Thread.sleep(10800);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Thread.sleep(10800);
                     emitter.complete();
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     emitter.completeWithError(e);
                 }
             });
