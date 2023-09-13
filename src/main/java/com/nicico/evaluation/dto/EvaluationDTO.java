@@ -132,7 +132,7 @@ public class EvaluationDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationResponse")
     public static class Response {
-        private List<Info> data;
+        private List<?> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

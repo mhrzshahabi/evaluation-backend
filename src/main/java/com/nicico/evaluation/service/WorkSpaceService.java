@@ -1,6 +1,6 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.core.SecurityUtil;
+import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.WorkSpaceMapper;
@@ -15,6 +15,7 @@ import java.util.*;
 public class WorkSpaceService implements IWorkSpaceService {
 
     private final WorkSpaceMapper mapper;
+    private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
     private final IEvaluationService evaluationService;
     private final IMeritComponentService meritComponentService;
@@ -49,11 +50,11 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.EvaluationPeriodDashboard> evaluationPeriodListByUser() {
+    public EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex) {
 //        String userNationalCode = SecurityUtil.getNationalCode();
         String userNationalCode = "1229236376";
         Long finalizedStatusCatalog = catalogService.getByCode("Finalized").getId();
-        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalog);
+        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalog, count, startIndex);
     }
 
     @Override

@@ -33,7 +33,7 @@ public interface IEvaluationService {
 
     BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
 
-    List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId);
+    EvaluationDTO.SpecResponse getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId, int count, int startIndex);
 
     EvaluationDTO.EvaluationAverageScoreData getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId);
 

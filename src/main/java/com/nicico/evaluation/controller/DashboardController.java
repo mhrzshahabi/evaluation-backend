@@ -10,12 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @RequiredArgsConstructor
 @Api(value = "Dashboard")
@@ -85,8 +81,8 @@ public class DashboardController {
      * @return that contain list of evaluationPeriodList By User
      */
     @GetMapping(value = "/evaluation-period/list")
-    public ResponseEntity<List<EvaluationDTO.EvaluationPeriodDashboard>> evaluationPeriodListByUser() {
-        return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(), HttpStatus.OK);
+    public ResponseEntity<EvaluationDTO.SpecResponse> evaluationPeriodListByUser(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(count, startIndex), HttpStatus.OK);
     }
 
     /**
