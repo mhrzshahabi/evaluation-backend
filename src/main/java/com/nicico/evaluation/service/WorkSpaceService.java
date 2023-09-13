@@ -50,7 +50,8 @@ public class WorkSpaceService implements IWorkSpaceService {
     @Override
     @Transactional(readOnly = true)
     public List<EvaluationDTO.EvaluationPeriodDashboard> evaluationPeriodListByUser() {
-        String userNationalCode = SecurityUtil.getNationalCode();
+//        String userNationalCode = SecurityUtil.getNationalCode();
+        String userNationalCode = "1229236376";
         Long finalizedStatusCatalog = catalogService.getByCode("Finalized").getId();
         return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalog);
     }
@@ -58,7 +59,8 @@ public class WorkSpaceService implements IWorkSpaceService {
     @Override
     @Transactional(readOnly = true)
     public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId) {
-        String userNationalCode = SecurityUtil.getNationalCode();
+//        String userNationalCode = SecurityUtil.getNationalCode();
+        String userNationalCode = "1229236376";
         return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
     }
 
