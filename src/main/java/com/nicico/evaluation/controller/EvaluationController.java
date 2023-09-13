@@ -42,10 +42,10 @@ import static com.nicico.evaluation.utility.EvaluationConstant.VALIDATED;
 @AllArgsConstructor
 public class EvaluationController {
 
+    private final SSEEngine sseEngine;
     private final IEvaluationService service;
     private final ICatalogService catalogService;
     private final ResourceBundleMessageSource messageSource;
-    private final SSEEngine sseEngine;
 
     /**
      * @param id is the evaluation id
@@ -208,13 +208,9 @@ public class EvaluationController {
                         log.info("========>" + notification);
                         i++;
                     }
-                    try {
-                        Thread.sleep(10800);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Thread.sleep(10800);
                     emitter.complete();
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     emitter.completeWithError(e);
                 }
             });
