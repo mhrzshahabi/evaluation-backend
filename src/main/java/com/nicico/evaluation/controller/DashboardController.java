@@ -1,5 +1,6 @@
 package com.nicico.evaluation.controller;
 
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.sse.SSEEngine;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
@@ -22,6 +23,14 @@ public class DashboardController {
 
     private final SSEEngine sseEngine;
     private final IWorkSpaceService workSpaceService;
+
+    /**
+     * @return that contain user FullName
+     */
+    @GetMapping(value = "/work-space/user-full-name")
+    public ResponseEntity<String> workSpaceUserFullName() {
+        return new ResponseEntity<>(SecurityUtil.getFullName(), HttpStatus.OK);
+    }
 
     /**
      * @return that contain list of WorkSpaceDTO.Info
