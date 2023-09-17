@@ -426,4 +426,10 @@ public class EvaluationService implements IEvaluationService {
 
         return notificationList;
     }
+
+    @Override
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId, String gradeCode) {
+        return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, gradeCode);
+    }
+
 }
