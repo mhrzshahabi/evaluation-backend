@@ -122,6 +122,15 @@ public class EvaluationDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("MostParticipationInFinalizedEvaluationRq")
+    public static class MostParticipationInFinalizedEvaluation {
+        private Integer omoorFinalizedNumber;
+        private String omoorTitle;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("EvaluationSpecResponse")
     public static class SpecResponse {
         private Response response;

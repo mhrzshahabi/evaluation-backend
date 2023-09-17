@@ -16,4 +16,6 @@ public interface IWorkSpaceService {
     EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex);
 
     EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId);
+
+    List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationPerOmoor(Long evaluationPeriodId);
 }

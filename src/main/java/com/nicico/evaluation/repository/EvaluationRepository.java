@@ -159,4 +159,27 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                 and eval.status_catalog_id = (select id from tbl_catalog  where c_code = 'Finalized')
             """, nativeQuery = true)
     String getOmoorCodeByAssessNationalCodeAndPeriodId(String assessNationalCode, Long periodId);
+
+    @Query(value = """
+            SELECT
+                *
+            FROM
+                (
+                    SELECT DISTINCT
+                        COUNT(eval.id)
+                        OVER(PARTITION BY vpost.omoor_title) AS omoor_finalized_number,
+                        vpost.omoor_title                    AS omoor_title
+                    FROM
+                        tbl_evaluation eval
+                        LEFT JOIN view_post      vpost ON vpost.post_code = eval.c_assess_post_code
+                    WHERE
+                        eval.evaluation_period_id = :evaluationPeriodId
+                        AND eval.status_catalog_id = :finalizedStatusCatalogId
+                    ORDER BY
+                        omoor_finalized_number DESC
+                )
+            WHERE
+                ROWNUM <= 6
+                          """, nativeQuery = true)
+    List<?> mostParticipationInFinalizedEvaluationPerOmoor(Long evaluationPeriodId, Long finalizedStatusCatalogId);
 }

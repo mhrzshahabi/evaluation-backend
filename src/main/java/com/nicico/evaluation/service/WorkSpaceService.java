@@ -51,8 +51,8 @@ public class WorkSpaceService implements IWorkSpaceService {
     public EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex) {
 //        String userNationalCode = SecurityUtil.getNationalCode();
         String userNationalCode = "1229236376";
-        Long finalizedStatusCatalog = catalogService.getByCode("Finalized").getId();
-        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalog, count, startIndex);
+        Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
+        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, count, startIndex);
     }
 
     @Override
@@ -61,6 +61,13 @@ public class WorkSpaceService implements IWorkSpaceService {
 //        String userNationalCode = SecurityUtil.getNationalCode();
         String userNationalCode = "1229236376";
         return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationPerOmoor(Long evaluationPeriodId) {
+        Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
+        return evaluationService.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);
     }
 
 }

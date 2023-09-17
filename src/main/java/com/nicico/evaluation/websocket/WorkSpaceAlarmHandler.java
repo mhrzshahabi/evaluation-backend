@@ -29,7 +29,6 @@ public class WorkSpaceAlarmHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-
         System.out.println("connected");
         String id = sessionsManager.getSessionId(session);
         sessionsManager.add(id, session);
@@ -49,27 +48,25 @@ public class WorkSpaceAlarmHandler extends TextWebSocketHandler {
         for (WebSocketSession socketSession : sessionsManager.getSessions().values()) {
             if (socketSession.equals(session)) {
 
-                List<String> workSpaceCodeList = mapper.readValue(message.getPayload(), new TypeReference<>() {});
-                if (!workSpaceCodeList.isEmpty()) {
-                    Thread thread = new Thread() {
-                        @SneakyThrows
-                        @Override
-                        public void run() {
-                            while (session.isOpen()) {
-                                try {
-                                    List<WorkSpaceDTO.Info> workSpaceAlarmList = workSpaceService.workSpaceAlarm(workSpaceCodeList);
-                                    session.sendMessage(new TextMessage(new Gson().toJson(workSpaceAlarmList, new TypeToken<List<WorkSpaceDTO.Info>>() {
-                                    }.getType())));
-                                    Thread.sleep(5000);
-                                } catch (InterruptedException | IOException ie) {
-                                    session.sendMessage(new TextMessage("مشکلی پیش آمده است"));
-                                }
+                List<String> workSpaceCodeList = mapper.readValue(message.getPayload(), new TypeReference<>() {
+                });
+                Thread thread = new Thread() {
+                    @SneakyThrows
+                    @Override
+                    public void run() {
+                        while (session.isOpen()) {
+                            try {
+                                List<WorkSpaceDTO.Info> workSpaceAlarmList = workSpaceService.workSpaceAlarm(workSpaceCodeList);
+                                session.sendMessage(new TextMessage(new Gson().toJson(workSpaceAlarmList, new TypeToken<List<WorkSpaceDTO.Info>>() {
+                                }.getType())));
+                                Thread.sleep(5000);
+                            } catch (InterruptedException | IOException ie) {
+                                session.sendMessage(new TextMessage("مشکلی پیش آمده است"));
                             }
                         }
-                    };
-                    thread.start();
-                } else
-                    session.close();
+                    }
+                };
+                thread.start();
 //                socketSession.sendMessage(new TextMessage(message.getPayload() + "-" + System.currentTimeMillis()));
             }
         }
