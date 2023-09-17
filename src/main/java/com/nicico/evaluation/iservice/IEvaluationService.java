@@ -39,5 +39,5 @@ public interface IEvaluationService {
 
     List<String> sendNotification();
 
-    List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId,String gradeCode);
+    List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId);
 }

@@ -441,8 +441,9 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId, String gradeCode) {
-        return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, gradeCode);
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId) {
+        String omoorCode = repository.getOmoorCodeByAssessNationalCodeAndPeriodId(SecurityUtil.getNationalCode(),periodId);
+        return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, omoorCode);
     }
 
 }

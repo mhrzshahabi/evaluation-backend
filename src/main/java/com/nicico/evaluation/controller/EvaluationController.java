@@ -221,8 +221,8 @@ public class EvaluationController {
     }
 
     @GetMapping("/finalized-average-by-grade-and-period")
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@RequestParam Long periodId, @RequestParam String gradeCode) {
-        return service.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, gradeCode);
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@RequestParam Long periodId) {
+        return service.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
     }
 }
 
