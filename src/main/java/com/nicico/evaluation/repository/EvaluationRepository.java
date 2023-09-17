@@ -2,6 +2,8 @@ package com.nicico.evaluation.repository;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.model.Evaluation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,7 +19,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
 
     Evaluation findByEvaluationPeriodIdAndAssessPostCode(Long id, String assessPostCode);
 
-    List<Evaluation> findAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId);
+    Page<Evaluation> findAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId, Pageable pageable);
 
     Optional<Evaluation> findFirstByAssessNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId);
 

@@ -42,10 +42,10 @@ import static com.nicico.evaluation.utility.EvaluationConstant.VALIDATED;
 @AllArgsConstructor
 public class EvaluationController {
 
+    private final SSEEngine sseEngine;
     private final IEvaluationService service;
     private final ICatalogService catalogService;
     private final ResourceBundleMessageSource messageSource;
-    private final SSEEngine sseEngine;
 
     /**
      * @param id is the evaluation id

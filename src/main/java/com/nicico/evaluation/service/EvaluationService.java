@@ -328,9 +328,22 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId) {
-        List<Evaluation> evaluationList = repository.findAllByAssessNationalCodeAndStatusCatalogId(assessNationalCode, statusCatalogId);
-        return mapper.entityToDtoEvaluationPeriodDashboardList(evaluationList);
+    public EvaluationDTO.SpecResponse getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId, int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<Evaluation> evaluationPageList = repository.findAllByAssessNationalCodeAndStatusCatalogId(assessNationalCode, statusCatalogId, pageable);
+        List<EvaluationDTO.EvaluationPeriodDashboard> evaluationInfos = mapper.entityToDtoEvaluationPeriodDashboardList(evaluationPageList.getContent());
+
+        EvaluationDTO.Response response = new EvaluationDTO.Response();
+        EvaluationDTO.SpecResponse specResponse = new EvaluationDTO.SpecResponse();
+
+        if (evaluationInfos != null) {
+            response.setData(evaluationInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count > evaluationPageList.getTotalElements() ? (int) evaluationPageList.getTotalElements() : startIndex + count)
+                    .setTotalRows((int) evaluationPageList.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
     }
 
     @Override

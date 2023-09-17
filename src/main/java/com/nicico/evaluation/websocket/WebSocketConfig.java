@@ -14,10 +14,16 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(greetingHandler(), "/anonymous/evaluation-ws/{id}").setAllowedOrigins("*");
+        registry.addHandler(workSpaceAlarmHandler(), "/anonymous/evaluation-ws-alarm/{id}").setAllowedOrigins("*");
     }
 
     @Bean
     public WebSocketHandler greetingHandler() {
         return new GreetingHandler();
+    }
+
+    @Bean
+    public WebSocketHandler workSpaceAlarmHandler() {
+        return new WorkSpaceAlarmHandler();
     }
 }
