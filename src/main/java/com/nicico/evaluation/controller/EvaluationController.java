@@ -219,6 +219,11 @@ public class EvaluationController {
         }
         return null;
     }
+
+    @GetMapping("/finalized-average-by-grade-and-period")
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@RequestParam Long periodId) {
+        return service.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
+    }
 }
 
     

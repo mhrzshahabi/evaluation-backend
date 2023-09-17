@@ -149,4 +149,12 @@ public class EvaluationDTO {
         @NotNull
         private String status;
     }
+
+    @Accessors(chain = true)
+    @ApiModel("AverageWeightDTO")
+    public interface AverageWeightDTO {
+
+        String getWeight();
+        String getTitle();
+    }
 }

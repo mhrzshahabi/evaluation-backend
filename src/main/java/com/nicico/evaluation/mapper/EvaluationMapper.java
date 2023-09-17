@@ -80,9 +80,9 @@ public abstract class EvaluationMapper {
     }
 
     @Named("getOperationalAverageScore")
-    Long getOperationalAverageScore(Long id) {
+    Double getOperationalAverageScore(Long id) {
         List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(id);
-        return postMeritTupleDTOList.stream().mapToLong(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum();
+        return postMeritTupleDTOList.stream().mapToDouble(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum();
     }
 
 }
