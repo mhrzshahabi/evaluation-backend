@@ -13,7 +13,9 @@ public interface IWorkSpaceService {
 
     List<WorkSpaceDTO.Info> workSpaceAlarm(List<String> workSpaceCodeList);
 
-    List<EvaluationDTO.EvaluationPeriodDashboard> evaluationPeriodListByUser();
+    EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex);
 
     EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId);
+
+    List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationPerOmoor(Long evaluationPeriodId);
 }

@@ -20,7 +20,7 @@ public abstract class EvaluationItemDTO {
     private Long postMeritComponentId;
 
     private Long questionnaireAnswerCatalogId;
-    private Long questionnaireAnswerCatalogValue;
+    private Double questionnaireAnswerCatalogValue;
     private String questionnaireAnswerCatalogCode;
     private String description;
 
@@ -107,7 +107,7 @@ public abstract class EvaluationItemDTO {
         private List<PostMeritInstanceTuple> postMeritInstanceList;
         private Long evaluationItemId;
         private Long questionnaireAnswerCatalogId;
-        private Long questionnaireAnswerCatalogValue;
+        private Double questionnaireAnswerCatalogValue;
         private String questionnaireAnswerCatalogCode;
 
     }
@@ -158,7 +158,7 @@ public abstract class EvaluationItemDTO {
         private Long evaluationId;
         private Long evaluationItemId;
         private Long questionnaireAnswerCatalogId;
-        private Long questionnaireAnswerCatalogValue;
+        private Double questionnaireAnswerCatalogValue;
         private String questionnaireAnswerCatalogCode;
 
     }

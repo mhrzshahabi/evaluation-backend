@@ -1,6 +1,6 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.sse.SSEEngine;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 import com.nicico.evaluation.iservice.IWorkSpaceService;
@@ -10,12 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @RequiredArgsConstructor
 @Api(value = "Dashboard")
@@ -24,8 +20,15 @@ import java.util.concurrent.Executors;
 @RequestMapping(value = "/api/dashboard")
 public class DashboardController {
 
-    private final SSEEngine sseEngine;
     private final IWorkSpaceService workSpaceService;
+
+    /**
+     * @return that contain user FullName
+     */
+    @GetMapping(value = "/work-space/user-full-name")
+    public ResponseEntity<String> workSpaceUserFullName() {
+        return new ResponseEntity<>(SecurityUtil.getFullName(), HttpStatus.OK);
+    }
 
     /**
      * @return that contain list of WorkSpaceDTO.Info
@@ -51,42 +54,12 @@ public class DashboardController {
         return new ResponseEntity<>(workSpaceService.workSpaceAlarm(workSpaceCodeList), HttpStatus.OK);
     }
 
-//    @GetMapping("/work-space/alarm-notification")
-//    public SseEmitter workSpaceAlarmNotification(@RequestBody List<String> workSpaceCodeList) {
-//        List<WorkSpaceDTO.Info> alarmList = workSpaceService.workSpaceAlarm(workSpaceCodeList);
-//        if (!alarmList.isEmpty()) {
-//            SseEmitter emitter = sseEngine.create();
-//            ExecutorService executor = Executors.newSingleThreadExecutor();
-//            executor.execute(() -> {
-//                try {
-//                    int i = 0;
-//                    while (i < 3) {
-//                        emitter.send(alarmList);
-//                        log.info("========>" + alarmList);
-//                        i++;
-//                    }
-//                    try {
-//                        Thread.sleep(10800);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    emitter.complete();
-//                } catch (IOException e) {
-//                    emitter.completeWithError(e);
-//                }
-//            });
-//            executor.shutdown();
-//            return emitter;
-//        }
-//        return null;
-//    }
-
     /**
      * @return that contain list of evaluationPeriodList By User
      */
     @GetMapping(value = "/evaluation-period/list")
-    public ResponseEntity<List<EvaluationDTO.EvaluationPeriodDashboard>> evaluationPeriodListByUser() {
-        return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(), HttpStatus.OK);
+    public ResponseEntity<EvaluationDTO.SpecResponse> evaluationPeriodListByUser(@RequestParam int count, @RequestParam int startIndex) {
+        return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(count, startIndex), HttpStatus.OK);
     }
 
     /**
@@ -95,6 +68,14 @@ public class DashboardController {
     @GetMapping(value = "/my-evaluation/{evaluationPeriodId}")
     public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId) {
         return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId), HttpStatus.OK);
+    }
+
+    /**
+     * @return that result of most Participation Per Omoor by evaluationPeriodId
+     */
+    @GetMapping(value = "/most-participation/{evaluationPeriodId}")
+    public ResponseEntity<List<EvaluationDTO.MostParticipationInFinalizedEvaluation>> mostParticipationPerOmoor(@PathVariable Long evaluationPeriodId) {
+        return new ResponseEntity<>(workSpaceService.mostParticipationPerOmoor(evaluationPeriodId), HttpStatus.OK);
     }
 
 }

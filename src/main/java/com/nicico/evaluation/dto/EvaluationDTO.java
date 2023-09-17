@@ -122,6 +122,15 @@ public class EvaluationDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("MostParticipationInFinalizedEvaluationRq")
+    public static class MostParticipationInFinalizedEvaluation {
+        private Integer omoorFinalizedNumber;
+        private String omoorTitle;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("EvaluationSpecResponse")
     public static class SpecResponse {
         private Response response;
@@ -132,7 +141,7 @@ public class EvaluationDTO {
     @Accessors(chain = true)
     @ApiModel("EvaluationResponse")
     public static class Response {
-        private List<Info> data;
+        private List<?> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -148,5 +157,13 @@ public class EvaluationDTO {
         private List<Long> evaluationIds;
         @NotNull
         private String status;
+    }
+
+    @Accessors(chain = true)
+    @ApiModel("AverageWeightDTO")
+    public interface AverageWeightDTO {
+
+        String getWeight();
+        String getTitle();
     }
 }

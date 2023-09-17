@@ -1,6 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.WorkSpaceMapper;
@@ -49,17 +48,26 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.EvaluationPeriodDashboard> evaluationPeriodListByUser() {
-        String userNationalCode = SecurityUtil.getNationalCode();
-        Long finalizedStatusCatalog = catalogService.getByCode("Finalized").getId();
-        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalog);
+    public EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex) {
+//        String userNationalCode = SecurityUtil.getNationalCode();
+        String userNationalCode = "1229236376";
+        Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
+        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, count, startIndex);
     }
 
     @Override
     @Transactional(readOnly = true)
     public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId) {
-        String userNationalCode = SecurityUtil.getNationalCode();
+//        String userNationalCode = SecurityUtil.getNationalCode();
+        String userNationalCode = "1229236376";
         return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationPerOmoor(Long evaluationPeriodId) {
+        Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
+        return evaluationService.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);
     }
 
 }

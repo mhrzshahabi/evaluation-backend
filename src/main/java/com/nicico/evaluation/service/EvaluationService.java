@@ -328,9 +328,22 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.EvaluationPeriodDashboard> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId) {
-        List<Evaluation> evaluationList = repository.findAllByAssessNationalCodeAndStatusCatalogId(assessNationalCode, statusCatalogId);
-        return mapper.entityToDtoEvaluationPeriodDashboardList(evaluationList);
+    public EvaluationDTO.SpecResponse getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId, int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        Page<Evaluation> evaluationPageList = repository.findAllByAssessNationalCodeAndStatusCatalogId(assessNationalCode, statusCatalogId, pageable);
+        List<EvaluationDTO.EvaluationPeriodDashboard> evaluationInfos = mapper.entityToDtoEvaluationPeriodDashboardList(evaluationPageList.getContent());
+
+        EvaluationDTO.Response response = new EvaluationDTO.Response();
+        EvaluationDTO.SpecResponse specResponse = new EvaluationDTO.SpecResponse();
+
+        if (evaluationInfos != null) {
+            response.setData(evaluationInfos)
+                    .setStartRow(startIndex)
+                    .setEndRow(startIndex + count > evaluationPageList.getTotalElements() ? (int) evaluationPageList.getTotalElements() : startIndex + count)
+                    .setTotalRows((int) evaluationPageList.getTotalElements());
+            specResponse.setResponse(response);
+        }
+        return specResponse;
     }
 
     @Override
@@ -338,6 +351,25 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.EvaluationAverageScoreData getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId) {
         Optional<Evaluation> optionalEvaluation = repository.findFirstByAssessNationalCodeAndEvaluationPeriodId(assessNationalCode, evaluationPeriodId);
         return mapper.entityToDtoAverageScoreData(optionalEvaluation.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationInFinalizedEvaluationPerOmoor(Long evaluationPeriodId, Long finalizedStatusCatalogId) {
+        List<EvaluationDTO.MostParticipationInFinalizedEvaluation> data = new ArrayList<>();
+        List<?> queryData = repository.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);
+        if (queryData != null) {
+            for (Object evaluationData : queryData) {
+                Object[] evaluation = (Object[]) evaluationData;
+                if (!Objects.isNull(evaluation[1])) {
+                    EvaluationDTO.MostParticipationInFinalizedEvaluation mostParticipation = new EvaluationDTO.MostParticipationInFinalizedEvaluation();
+                    mostParticipation.setOmoorFinalizedNumber(evaluation[0] == null ? null : Integer.parseInt(evaluation[0].toString()));
+                    mostParticipation.setOmoorTitle(evaluation[1].toString());
+                    data.add(mostParticipation);
+                }
+            }
+        }
+        return data;
     }
 
     @Scheduled(cron = "0 30 0 * * *")
@@ -426,4 +458,11 @@ public class EvaluationService implements IEvaluationService {
 
         return notificationList;
     }
+
+    @Override
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId) {
+        String omoorCode = repository.getOmoorCodeByAssessNationalCodeAndPeriodId(SecurityUtil.getNationalCode(),periodId);
+        return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, omoorCode);
+    }
+
 }

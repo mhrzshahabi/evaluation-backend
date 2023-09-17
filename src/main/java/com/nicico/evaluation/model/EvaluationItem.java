@@ -46,7 +46,7 @@ public class EvaluationItem extends Auditable {
     private Long questionnaireAnswerCatalogId;
 
     @Column(name = "questionnaire_answer_catalog_value")
-    private Long questionnaireAnswerCatalogValue;
+    private Double questionnaireAnswerCatalogValue;
 
     @Column(name = "questionnaire_answer_catalog_code")
     private String questionnaireAnswerCatalogCode;
