@@ -57,7 +57,7 @@ public class DashboardController {
     /**
      * @return that contain list of evaluationPeriodList By User
      */
-    @GetMapping(value = "/evaluation-period/list")
+    @PostMapping(value = "/evaluation-period/list")
     public ResponseEntity<EvaluationDTO.SpecResponse> evaluationPeriodListByUser(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(count, startIndex), HttpStatus.OK);
     }
