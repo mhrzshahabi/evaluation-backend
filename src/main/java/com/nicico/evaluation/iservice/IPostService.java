@@ -23,7 +23,6 @@ public interface IPostService {
 
     List<PostDTO.Info> getGroupHasNotGroupTypeByPeriodId(Long periodId);
 
-    @PreAuthorize("hasAuthority('R_POST')")
     List<PostDTO.Info> getGroupHasNotGroupTypeByPostCodes(List<String> postCodes);
 
     List<PostDTO.Info> getAllByGroupByPeriodId(Long periodId);
