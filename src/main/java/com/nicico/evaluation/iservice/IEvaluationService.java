@@ -42,4 +42,6 @@ public interface IEvaluationService {
     List<String> sendNotification();
 
     List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId);
+
+    List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId);
 }

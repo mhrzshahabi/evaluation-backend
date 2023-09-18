@@ -460,9 +460,18 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId) {
-        String omoorCode = repository.getOmoorCodeByAssessNationalCodeAndPeriodId(SecurityUtil.getNationalCode(),periodId);
+        String omoorCode = repository.getOmoorCodeByAssessNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
         return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, omoorCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId) {
+        String omoorCode = repository.getOmoorCodeByAssessNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return repository.getBestAssessesByOmoor(periodId, omoorCode, pageable.getPageNumber(), pageable.getPageSize());
     }
 
 }
