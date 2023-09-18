@@ -203,4 +203,5 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
             """, nativeQuery = true)
     List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(Long periodId, String omoorCode, int pageNumber, int pageSize);
 
+    List<Evaluation> findAllByIdIn(List<Long> ids);
 }
