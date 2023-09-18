@@ -4,8 +4,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.GroupTypeByGroupByDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupType;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +14,8 @@ public interface IGroupTypeService {
     GroupTypeDTO.Info getByCode(String code);
 
     List<GroupTypeDTO.Info> getAllByPeriodId(Long periodId);
+
+    List<GroupTypeDTO.Info> getAllByPostCodes(List<String> postCodes);
 
     List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef);
 

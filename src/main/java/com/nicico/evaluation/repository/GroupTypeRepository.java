@@ -42,4 +42,19 @@ public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, Jpa
             """, nativeQuery = true)
     List<GroupType> findAllByPeriodId(Long periodId);
 
+    @Query(value = """
+            SELECT
+                distinct grouptype.*
+            FROM
+                tbl_group_type    grouptype
+                JOIN tbl_group_grade   groupgrade ON groupgrade.group_id = grouptype.group_id
+                JOIN tbl_group group1 on group1.id = groupGrade.group_id
+                JOIN tbl_kpi_type kpiType on kpiType.id = groupType.kpi_type_id
+                JOIN view_post   post ON post.post_grade_id = groupgrade.grade_id
+                where post.post_code in (
+                :postCodes
+                )
+            """, nativeQuery = true)
+    List<GroupType> findAllByPostCodes(List<String> postCodes);
+
 }

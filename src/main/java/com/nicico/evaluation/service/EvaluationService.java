@@ -14,6 +14,7 @@ import com.nicico.evaluation.model.Post;
 import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationRepository;
 import com.nicico.evaluation.utility.BaseResponse;
+import com.nicico.evaluation.utility.EvaluationConstant;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
@@ -50,6 +53,11 @@ public class EvaluationService implements IEvaluationService {
     private IEvaluationPeriodService evaluationPeriodService;
     private final IMeritComponentService meritComponentService;
     private final IOrganizationTreeService organizationTreeService;
+    private final ICatalogService catalogService;
+    private final IGroupTypeService groupTypeService;
+    private final IKPITypeService kpiTypeService;
+    private final IGroupTypeMeritService groupTypeMeritService;
+    private final IPostMeritComponentService postMeritComponentService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -324,6 +332,68 @@ public class EvaluationService implements IEvaluationService {
             response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
             return response;
         }
+    }
+
+    @Override
+    @Transactional
+    public Boolean validatePosts(List<Long> evaluationIds) {
+
+        List<String> postCodes = repository.findAllByIdIn(evaluationIds).stream().map(Evaluation::getAssessPostCode).toList();
+        if (postCodes.isEmpty())
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
+                    messageSource.getMessage("exception.evaluation.period.has.not.any.post", null, LocaleContextHolder.getLocale()));
+
+        List<PostDTO.Info> allPostsHasNotGrade = postService.getPostGradeHasNotGroupByPostCodes(postCodes);
+        if (!allPostsHasNotGrade.isEmpty())
+            return false;
+
+        List<PostDTO.Info> groupHasNotGroupTypeByPostCode = postService.getGroupHasNotGroupTypeByPostCodes(postCodes);
+        if (!groupHasNotGroupTypeByPostCode.isEmpty())
+            return false;
+
+        List<GroupTypeDTO.Info> allGroupTypeByGroupPostCode = groupTypeService.getAllByPostCodes(postCodes);
+        Map<Long, List<GroupTypeDTO.Info>> allGroupTypeMap = allGroupTypeByGroupPostCode.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
+        int typeSize = kpiTypeService.findAll().size();
+        AtomicReference<Boolean> result = new AtomicReference<>(Boolean.TRUE);
+        allGroupTypeMap.forEach((groupId, groupTypes) -> {
+            if (groupTypes.size() != typeSize) {
+                result.set(false);
+                return;
+            }
+            double totalWeight = groupTypes.stream().mapToDouble(GroupTypeDTO::getWeight).sum();
+            if (totalWeight != 100) {
+                result.set(false);
+                return;
+            }
+            Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
+            groupTypes.forEach(groupType -> {
+                if (!groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_OPERATIONAL)) {
+                    List<GroupTypeMeritDTO.Info> allByGroupType = groupTypeMeritService.getAllByGroupTypeIdAndMeritStatusId(groupType.getId(), statusCatalogId);
+                    if (allByGroupType.isEmpty()) {
+                        result.set(false);
+                        return;
+                    }
+                    double totalWeightGroupTypeMerit = allByGroupType.stream().mapToDouble(GroupTypeMeritDTO::getWeight).sum();
+                    if (totalWeightGroupTypeMerit != 100) {
+                        result.set(false);
+                    }
+                } else {
+                    postCodes.forEach(postCode -> {
+                        List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
+                        if (byPostCode.isEmpty()) {
+                            result.set(false);
+                            return;
+                        }
+                        double totalWeightPostMerit = byPostCode.stream().mapToDouble(EvaluationItemDTO.MeritTupleDTO::getWeight).sum();
+                        if (totalWeightPostMerit != 100) {
+                            result.set(false);
+                            return;
+                        }
+                    });
+                }
+            });
+        });
+        return result.get();
     }
 
     @Override

@@ -54,6 +54,12 @@ public class GroupTypeService implements IGroupTypeService {
         List<GroupType> groupType = repository.findAllByPeriodId(periodId);
         return mapper.entityToDtoInfoList(groupType);
     }
+    
+    @Override
+    public List<GroupTypeDTO.Info> getAllByPostCodes(List<String> postCodes) {
+        List<GroupType> groupType = repository.findAllByPostCodes(postCodes);
+        return mapper.entityToDtoInfoList(groupType);
+    }
 
     @Override
     @Transactional(readOnly = true)
