@@ -125,7 +125,7 @@ public class EvaluationController {
      * @return Boolean is the result of function
      */
     @PostMapping(value = "/validate-posts-of-evaluation")
-    public Boolean validatePostsOfEvaluation(@RequestParam List<Long> evaluationIds) {
+    public Boolean validatePostsOfEvaluation(@RequestBody List<Long> evaluationIds) {
         return service.validatePosts(evaluationIds);
     }
 
