@@ -4,6 +4,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.InstanceGroupTypeMeritDTO;
+import com.nicico.evaluation.model.InstanceGroupTypeMerit;
 import com.nicico.evaluation.utility.BaseResponse;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface IInstanceGroupTypeMeritService {
     InstanceGroupTypeMeritDTO.Info get(Long id);
 
     List<InstanceGroupTypeMeritDTO.InstanceInfo> getAllInstanceByGroupTypeMeritId(Long id);
+
+    List<InstanceGroupTypeMerit> getInstanceByGroupTypeMeritId(Long id);
 
     List<InstanceGroupTypeMeritDTO.Info> getAllByGroupTypeMeritId(Long id);
 
