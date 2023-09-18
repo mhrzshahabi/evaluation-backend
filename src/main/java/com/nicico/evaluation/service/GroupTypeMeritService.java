@@ -13,6 +13,7 @@ import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
+import com.nicico.evaluation.model.InstanceGroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import com.nicico.evaluation.utility.ExceptionUtil;
@@ -200,6 +201,8 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
                         Object[] objects = (Object[]) p;
                         GroupTypeMerit item = new GroupTypeMerit();
                         item.setId(objects[0] == null ? null : Long.parseLong(objects[0].toString()));
+                        List<InstanceGroupTypeMerit> instanceByGroupTypeMeritId = instanceGroupTypeMeritService.getInstanceByGroupTypeMeritId(item.getId());
+                        item.setInstanceGroupTypeMerits(instanceByGroupTypeMeritId);
                         item.setGroupTypeId(objects[1] == null ? null : Long.parseLong(objects[1].toString()));
                         item.setMeritComponentId(objects[2] == null ? null : Long.parseLong(objects[2].toString()));
                         item.setWeight(objects[3] == null ? null : Long.parseLong(objects[3].toString()));
