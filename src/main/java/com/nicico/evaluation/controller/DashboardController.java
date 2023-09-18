@@ -78,4 +78,13 @@ public class DashboardController {
         return new ResponseEntity<>(workSpaceService.mostParticipationPerOmoor(evaluationPeriodId), HttpStatus.OK);
     }
 
+    @GetMapping("/finalized-average-by-grade-and-period")
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@RequestParam Long periodId) {
+        return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
+    }
+
+    @GetMapping("/best_assess_by_omoor")
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@RequestParam Long periodId, @RequestParam int count, @RequestParam int startIndex) {
+        return workSpaceService.getBestAssessesByOmoor(count, startIndex, periodId);
+    }
 }

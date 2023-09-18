@@ -164,6 +164,20 @@ public class EvaluationDTO {
     public interface AverageWeightDTO {
 
         String getWeight();
+
         String getTitle();
+    }
+
+    @Accessors(chain = true)
+    @ApiModel("BestAssessAverageScoreDTO")
+    public interface BestAssessAverageScoreDTO {
+
+        String getAssessFullName();
+
+        String getPersonnelNo();
+
+        String getPostTitle();
+
+        Long getAverageScore();
     }
 }
