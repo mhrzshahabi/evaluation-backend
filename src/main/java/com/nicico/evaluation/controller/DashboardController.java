@@ -1,6 +1,5 @@
 package com.nicico.evaluation.controller;
 
-import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 import com.nicico.evaluation.iservice.IWorkSpaceService;
@@ -21,14 +20,6 @@ import java.util.List;
 public class DashboardController {
 
     private final IWorkSpaceService workSpaceService;
-
-    /**
-     * @return that contain user FullName
-     */
-    @GetMapping(value = "/work-space/user-full-name")
-    public ResponseEntity<String> workSpaceUserFullName() {
-        return new ResponseEntity<>(SecurityUtil.getFullName(), HttpStatus.OK);
-    }
 
     /**
      * @return that contain list of WorkSpaceDTO.Info
@@ -57,7 +48,7 @@ public class DashboardController {
     /**
      * @return that contain list of evaluationPeriodList By User
      */
-    @GetMapping(value = "/evaluation-period/list")
+    @PostMapping(value = "/evaluation-period/list")
     public ResponseEntity<EvaluationDTO.SpecResponse> evaluationPeriodListByUser(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(count, startIndex), HttpStatus.OK);
     }
@@ -78,13 +69,13 @@ public class DashboardController {
         return new ResponseEntity<>(workSpaceService.mostParticipationPerOmoor(evaluationPeriodId), HttpStatus.OK);
     }
 
-    @GetMapping("/finalized-average-by-grade-and-period")
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@RequestParam Long periodId) {
-        return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
+    @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}")
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@PathVariable Long evaluationPeriodId) {
+        return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId);
     }
 
-    @GetMapping("/best_assess_by_omoor")
-    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@RequestParam Long periodId, @RequestParam int count, @RequestParam int startIndex) {
-        return workSpaceService.getBestAssessesByOmoor(count, startIndex, periodId);
+    @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}")
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex) {
+        return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId);
     }
 }
