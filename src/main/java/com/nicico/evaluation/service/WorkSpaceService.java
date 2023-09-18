@@ -1,5 +1,7 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.core.SecurityUtil;
+import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
@@ -55,8 +57,7 @@ public class WorkSpaceService implements IWorkSpaceService {
     @Override
     @Transactional(readOnly = true)
     public EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex) {
-//        String userNationalCode = SecurityUtil.getNationalCode();
-        String userNationalCode = "1229236376";
+        String userNationalCode = SecurityUtil.getNationalCode();
         Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
         return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, count, startIndex);
     }
@@ -64,8 +65,7 @@ public class WorkSpaceService implements IWorkSpaceService {
     @Override
     @Transactional(readOnly = true)
     public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId) {
-//        String userNationalCode = SecurityUtil.getNationalCode();
-        String userNationalCode = "1229236376";
+        String userNationalCode = SecurityUtil.getNationalCode();
         return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
     }
 
