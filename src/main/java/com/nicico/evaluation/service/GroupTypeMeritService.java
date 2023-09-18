@@ -11,7 +11,6 @@ import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IGroupTypeMeritService;
 import com.nicico.evaluation.iservice.IInstanceGroupTypeMeritService;
-import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.mapper.GroupTypeMeritMapper;
 import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.repository.GroupTypeMeritRepository;
@@ -40,7 +39,6 @@ import static com.nicico.evaluation.utility.EvaluationConstant.REVOKED_MERIT;
 public class GroupTypeMeritService implements IGroupTypeMeritService {
 
     private final GroupTypeMeritMapper mapper;
-    private final IMeritComponentService meritComponentService;
     private final ExternalMapper externalMapper;
     private final ExceptionUtil exceptionUtil;
     private final PageableMapper pageableMapper;
@@ -67,27 +65,11 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupTypeByRev(Long groupTypeId, Long evaluationId) {
         List<?> data = repository.getAllByGroupTypeIdByRev(groupTypeId, evaluationId);
         return externalMapper.entityToEvaluationItemDtoList(mapGroupTypeMerit(data));
-    }
-
-    private List<GroupTypeMerit> mapGroupTypeMerit (List<?> data)  {
-        List<GroupTypeMerit> groupTypeMerits = new ArrayList<>();
-        if (Objects.nonNull(data)) {
-            data.forEach(p ->
-                    {
-                        Object[] objects = (Object[]) p;
-                        GroupTypeMerit item = new GroupTypeMerit();
-                        item.setId(objects[0] == null ? null : Long.parseLong(objects[0].toString()));
-                        item.setGroupTypeId(objects[1] == null ? null : Long.parseLong(objects[1].toString()));
-                        item.setMeritComponentId(objects[2] == null ? null : Long.parseLong(objects[2].toString()));
-                        item.setWeight(objects[3] == null ? null : Long.parseLong(objects[3].toString()));
-                        groupTypeMerits.add(item);
-                    }
-            );
-        }
-        return groupTypeMerits;
     }
 
     @Override
@@ -208,6 +190,24 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست مولفه شایستگی گروه-نوع");
         return new ExcelGenerator.ExcelDownload(body);
+    }
+
+    private List<GroupTypeMerit> mapGroupTypeMerit(List<?> data) {
+        List<GroupTypeMerit> groupTypeMerits = new ArrayList<>();
+        if (Objects.nonNull(data)) {
+            data.forEach(p ->
+                    {
+                        Object[] objects = (Object[]) p;
+                        GroupTypeMerit item = new GroupTypeMerit();
+                        item.setId(objects[0] == null ? null : Long.parseLong(objects[0].toString()));
+                        item.setGroupTypeId(objects[1] == null ? null : Long.parseLong(objects[1].toString()));
+                        item.setMeritComponentId(objects[2] == null ? null : Long.parseLong(objects[2].toString()));
+                        item.setWeight(objects[3] == null ? null : Long.parseLong(objects[3].toString()));
+                        groupTypeMerits.add(item);
+                    }
+            );
+        }
+        return groupTypeMerits;
     }
 
 }
