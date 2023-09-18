@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.REVOKED_MERIT;
+
 @RequiredArgsConstructor
 @Service
 public class GroupTypeMeritService implements IGroupTypeMeritService {
@@ -59,13 +61,18 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE_MERIT')")
     public List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupType(Long groupTypeId) {
-        List<GroupTypeMerit> groupTypeMerit = repository.getAllByGroupTypeId(groupTypeId);
-        return mapper.entityToEvaluationItemDtoList(groupTypeMerit);
+        Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
+        List<?> data = repository.getAllByGroupTypeId(groupTypeId, statusCatalogId);
+        return mapper.entityToEvaluationItemDtoList(mapGroupTypeMerit(data));
     }
 
     @Override
     public List<EvaluationItemDTO.MeritTupleDTO> getAllByGroupTypeByRev(Long groupTypeId, Long evaluationId) {
         List<?> data = repository.getAllByGroupTypeIdByRev(groupTypeId, evaluationId);
+        return externalMapper.entityToEvaluationItemDtoList(mapGroupTypeMerit(data));
+    }
+
+    private List<GroupTypeMerit> mapGroupTypeMerit (List<?> data)  {
         List<GroupTypeMerit> groupTypeMerits = new ArrayList<>();
         if (Objects.nonNull(data)) {
             data.forEach(p ->
@@ -80,7 +87,7 @@ public class GroupTypeMeritService implements IGroupTypeMeritService {
                     }
             );
         }
-        return externalMapper.entityToEvaluationItemDtoList(groupTypeMerits);
+        return groupTypeMerits;
     }
 
     @Override
