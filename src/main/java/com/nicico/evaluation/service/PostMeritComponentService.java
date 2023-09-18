@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.REVOKED_MERIT;
+
 @RequiredArgsConstructor
 @Service
 public class PostMeritComponentService implements IPostMeritComponentService {
@@ -72,7 +74,8 @@ public class PostMeritComponentService implements IPostMeritComponentService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
     public List<EvaluationItemDTO.MeritTupleDTO> getByGroupPostCode(String groupPostCode) {
-        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCode(groupPostCode);
+        Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
+        List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCodeAndStatusCatalogIdNot(groupPostCode, statusCatalogId);
         return mapper.postMeritDtoToEvaluationItemInfoList(byGroupPostCode);
     }
 
