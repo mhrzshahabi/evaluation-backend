@@ -3,6 +3,7 @@ package com.nicico.evaluation.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.PostDTO;
 import com.nicico.evaluation.model.Post;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -18,7 +19,12 @@ public interface IPostService {
 
     List<PostDTO.Info> getPostGradeHasNotGroupByPeriodId(Long periodId);
 
+    List<PostDTO.Info> getPostGradeHasNotGroupByPostCodes(List<String> postCodes);
+
     List<PostDTO.Info> getGroupHasNotGroupTypeByPeriodId(Long periodId);
+
+    @PreAuthorize("hasAuthority('R_POST')")
+    List<PostDTO.Info> getGroupHasNotGroupTypeByPostCodes(List<String> postCodes);
 
     List<PostDTO.Info> getAllByGroupByPeriodId(Long periodId);
 }

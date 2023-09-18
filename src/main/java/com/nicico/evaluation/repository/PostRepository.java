@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
 
     Optional<Post> findFirstByPostCode(String postCode);
+
     Optional<Post> findByPostCode(String postCode);
 
     @Query(value = """
@@ -36,7 +37,30 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
                         )
                 )
             """, nativeQuery = true)
-    List<Post> findPostGradeHasNotGroupByPostCode(Long periodId);
+    List<Post> findPostGradeHasNotGroupByPeriodId(Long periodId);
+
+    @Query(value = """
+            SELECT
+            post.*
+            FROM
+                view_post   post
+            WHERE
+                post.post_code IN (
+                    :postCodes
+                )
+                AND post.post_code NOT IN (
+                    SELECT
+                        post1.post_code
+                    FROM
+                        tbl_group_grade   groupgrade
+                        JOIN view_post   post1 ON post1.post_grade_id = groupgrade.grade_id
+                    WHERE
+                        post1.post_code IN (
+                         :postCodes
+                        )
+                )
+            """, nativeQuery = true)
+    List<Post> findPostGradeHasNotGroupByPostCode(List<String> postCodes);
 
     @Query(value = "from Post post join EvaluationPeriodPost periodPost on post.postCode = periodPost.postCode " +
             "where periodPost.evaluationPeriodId = :periodId")
@@ -69,5 +93,29 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
                      )
                  )
              """, nativeQuery = true)
-    List<Post> findGroupHasNotGroupTypeByPostCode(Long periodId);
+    List<Post> findGroupHasNotGroupTypeByPeriodId(Long periodId);
+    
+    @Query(value = """
+            SELECT
+                  post.*
+             FROM
+                 view_post post
+             WHERE
+                 post.post_code IN (
+                    :postCodes
+                 )
+                 AND post.post_code NOT IN (
+                     SELECT
+                        distinct post1.post_code
+                     FROM
+                         tbl_group_type    grouptype
+                         JOIN tbl_group_grade   groupgrade ON groupgrade.group_id = grouptype.group_id
+                         JOIN view_post   post1 ON post1.post_grade_id = groupgrade.grade_id
+                     WHERE
+                         post1.post_code IN (
+                            :postCodes
+                     )
+                 )
+             """, nativeQuery = true)
+    List<Post> findGroupHasNotGroupTypeByPostCode(List<String> postCodes);
 }

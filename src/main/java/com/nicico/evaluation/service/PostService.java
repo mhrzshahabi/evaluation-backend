@@ -68,14 +68,28 @@ public class PostService implements IPostService {
     @Override
     @PreAuthorize("hasAuthority('R_POST')")
     public List<PostDTO.Info> getPostGradeHasNotGroupByPeriodId(Long periodId) {
-        List<Post> allByPostCode = repository.findPostGradeHasNotGroupByPostCode(periodId);
+        List<Post> allByPostCode = repository.findPostGradeHasNotGroupByPeriodId(periodId);
+        return mapper.entityToDtoInfoList(allByPostCode);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('R_POST')")
+    public List<PostDTO.Info> getPostGradeHasNotGroupByPostCodes(List<String> postCodes) {
+        List<Post> allByPostCode = repository.findPostGradeHasNotGroupByPostCode(postCodes);
         return mapper.entityToDtoInfoList(allByPostCode);
     }
 
     @Override
     @PreAuthorize("hasAuthority('R_POST')")
     public List<PostDTO.Info> getGroupHasNotGroupTypeByPeriodId(Long periodId) {
-        List<Post> allByPostCode = repository.findGroupHasNotGroupTypeByPostCode(periodId);
+        List<Post> allByPostCode = repository.findGroupHasNotGroupTypeByPeriodId(periodId);
+        return mapper.entityToDtoInfoList(allByPostCode);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('R_POST')")
+    public List<PostDTO.Info> getGroupHasNotGroupTypeByPostCodes(List<String> postCodes) {
+        List<Post> allByPostCode = repository.findGroupHasNotGroupTypeByPostCode(postCodes);
         return mapper.entityToDtoInfoList(allByPostCode);
     }
 

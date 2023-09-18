@@ -121,6 +121,15 @@ public class EvaluationController {
     }
 
     /**
+     * @param evaluationIds is  list id of evaluation for change status and is next or previous for change status
+     * @return Boolean is the result of function
+     */
+    @PostMapping(value = "/validate-posts-of-evaluation")
+    public Boolean validatePostsOfEvaluation(@RequestParam List<Long> evaluationIds) {
+        return service.validatePosts(evaluationIds);
+    }
+
+    /**
      * @param count      is the number of entity to every page
      * @param startIndex is the start Index in current page
      * @param criteria   is the key value pair for criteria
