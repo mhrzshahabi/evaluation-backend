@@ -228,16 +228,16 @@ public class EvaluationController {
         }
         return null;
     }
-//
-//    /**
-//     * @param evaluationIds is list of the key value
-//     * @return byte[] is the excel of error list of posts that are invalid
-//     */
-//    @SneakyThrows
-//    @GetMapping(value = "/export-error-list-excel")
-//    public ResponseEntity<byte[]> exportExcel(@RequestBody List<Long> evaluationIds) {
-//        return service.downloadInvalidPostExcel(evaluationIds);
-//    }
+
+    /**
+     * @param evaluationIds is list of the key value
+     * @return byte[] is the excel of error list of posts that are invalid
+     */
+    @SneakyThrows
+    @PostMapping(value = "/export-error-list-excel")
+    public ResponseEntity<byte[]> exportExcel(@RequestBody List<Long> evaluationIds) {
+        return service.downloadInvalidPostExcel(evaluationIds);
+    }
 }
 
     

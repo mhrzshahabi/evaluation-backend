@@ -4,8 +4,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.model.Evaluation;
-import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.ExcelGenerator;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public interface IEvaluationService {
 
     SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
+    EvaluationDTO.ErrorResponseDTO changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
 
     Boolean validatePosts(List<Long> evaluationIds);
 
@@ -46,4 +46,7 @@ public interface IEvaluationService {
     List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId);
 
     List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId);
+
+    ResponseEntity<byte[]> downloadInvalidPostExcel(List<Long> evaluationIds) throws NoSuchFieldException, IllegalAccessException;
+
 }
