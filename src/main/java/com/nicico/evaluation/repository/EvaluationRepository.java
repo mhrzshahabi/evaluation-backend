@@ -188,7 +188,8 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                    eval.c_assess_full_name as assessFullName,
                    personnel.PERSONEL_NO as personnelNo,
                    personnel.post_title as postTitle,
-                   eval.average_score as averageScore
+                   eval.average_score as averageScore,
+                   eval.c_assess_national_code as assessNational
                FROM
                    tbl_evaluation            eval
                    JOIN view_post                 post ON eval.c_assess_post_code = post.post_code
