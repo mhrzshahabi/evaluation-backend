@@ -216,7 +216,7 @@ public class EvaluationController {
                         emitter.send(notification);
                         log.info("========>" + notification);
                         i++;
-                        Thread.sleep(10800);
+                        Thread.sleep(10800000);
                     }
                     emitter.complete();
                 } catch (IOException | InterruptedException e) {
