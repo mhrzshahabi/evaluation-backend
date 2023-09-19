@@ -179,5 +179,19 @@ public class EvaluationDTO {
         String getPostTitle();
 
         Long getAverageScore();
+
+        String getAssessNational();
+    }
+
+    @Setter
+    @Getter
+    @Accessors(chain = true)
+    @ApiModel("BestAssessAverageScoreDTO")
+    public static class ErrorResponseDTO {
+
+        private String message;
+        private int status;
+        private List<Long> evaluationIds;
+
     }
 }
