@@ -710,13 +710,11 @@
             ]]>
         </sql>
     </changeSet>
-
-    <changeSet author="a.lotfi" id="1683023514">
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_title"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date_assessment"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date_assessment"/>
+    <changeSet author="semami" id="1695188937">
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_start_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_end_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_start_date_assessment"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_end_date_assessment"/>
     </changeSet>
     <changeSet author="a.lotfi" id="1683095597">
         <sql splitStatements="false" stripComments="false">
