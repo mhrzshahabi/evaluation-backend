@@ -74,11 +74,7 @@ public class MeritComponentController {
      */
     @PostMapping
     public ResponseEntity<MeritComponentDTO.Info> create(@Valid @RequestBody MeritComponentDTO.Create request) {
-        try {
-            return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
-        } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-        }
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     /**
