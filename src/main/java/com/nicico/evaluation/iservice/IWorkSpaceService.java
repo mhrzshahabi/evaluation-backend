@@ -2,7 +2,6 @@ package com.nicico.evaluation.iservice;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
