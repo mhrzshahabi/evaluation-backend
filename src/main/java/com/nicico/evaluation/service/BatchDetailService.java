@@ -253,6 +253,20 @@ public class BatchDetailService implements IBatchDetailService {
                     updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
                 }
             });
+            case BATCH_CREATE_SPECIAL_CASE_EXCEL -> batchDetailList.forEach(detail -> {
+                try {
+                    SpecialCaseDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), SpecialCaseDTO.BatchCreate.class);
+                    BaseResponse response = specialCaseService.batchCreate(batchCreate);
+
+                    String description = "کد پست ارزیاب کننده: " + batchCreate.getAssessPostCode() + " کد پست ارزیاب شونده : " + batchCreate.getAssessorPostCode() ;
+                    if (response.getStatus() == 200)
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
+                    else
+                        updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, response.getMessage(), description);
+                } catch (JsonProcessingException e) {
+                    updateStatusAndExceptionTitleAndDescription(detail.getId(), failCatalogId, e.getMessage(), "");
+                }
+            });
         }
         Long completedCatalogId = catalogService.getByCode("Completed").getId();
         batchService.updateStatus(dto.getBatchId(), completedCatalogId);

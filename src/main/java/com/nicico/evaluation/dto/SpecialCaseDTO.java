@@ -107,11 +107,34 @@ public class SpecialCaseDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("SpecialCaseBatchCreateRq")
-    public static class BatchCreate {
+    @ApiModel("SpecialCaseBatchChangeStatusRq")
+    public static class BatchChangeStatus {
 
         @NotNull
         private List<Long> specialCaseIds;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("SpecialCaseBatchCreateRq")
+    public static class BatchCreate {
+
+        private String assessFullName;
+        @NotNull
+        private String assessNationalCode;
+        private String assessPostCode;
+        @NotNull
+        private String assessRealPostCode;
+        private String assessorFullName;
+        @NotNull
+        private String assessorNationalCode;
+        private String assessorPostCode;
+        @NotNull
+        private Date startDate;
+        @NotNull
+        private Date endDate;
 
     }
 }

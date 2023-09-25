@@ -4,9 +4,11 @@ package com.nicico.evaluation.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.PersonDTO;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
+import com.nicico.evaluation.iservice.IPersonService;
 import com.nicico.evaluation.iservice.ISpecialCaseService;
 import com.nicico.evaluation.mapper.SpecialCaseMapper;
 import com.nicico.evaluation.model.Catalog;
@@ -19,6 +21,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ public class SpecialCaseService implements ISpecialCaseService {
     private final ResourceBundleMessageSource messageSource;
     private final CatalogRepository catalogRepository;
     private final ICatalogService catalogService;
+    private final IPersonService personService;
 
     @Override
     @Transactional(readOnly = true)
@@ -106,6 +110,35 @@ public class SpecialCaseService implements ISpecialCaseService {
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }
+    }
+
+    @Override
+    public BaseResponse batchCreate(SpecialCaseDTO.BatchCreate dto) {
+        BaseResponse response = new BaseResponse();
+        try {
+            List<PersonDTO.Info> allByNationalCode = personService.getAllByNationalCode(Arrays.asList(dto.getAssessNationalCode(), dto.getAssessorNationalCode()));
+            Optional<PersonDTO.Info> assess = allByNationalCode.stream().filter(person -> person.getNationalCode().equals(dto.getAssessNationalCode())).findFirst();
+            Optional<PersonDTO.Info> assessor = allByNationalCode.stream().filter(person -> person.getNationalCode().equals(dto.getAssessorNationalCode())).findFirst();
+            SpecialCaseDTO.Create createDto = new SpecialCaseDTO.Create();
+            if (assess.isPresent() && assessor.isPresent()) {
+                createDto.setAssessFullName(assess.get().getFullName());
+                createDto.setAssessNationalCode(assess.get().getNationalCode());
+                createDto.setAssessPostCode(assess.get().getPostCode());
+                createDto.setAssessorFullName(assessor.get().getFullName());
+                createDto.setAssessorNationalCode(assessor.get().getNationalCode());
+                createDto.setAssessorPostCode(assessor.get().getPostCode());
+                createDto.setAssessRealPostCode(assessor.get().getPostCode());
+                createDto.setStartDate(dto.getStartDate());
+                createDto.setEndDate(dto.getEndDate());
+            }
+            create(createDto);
+            response.setStatus(HttpStatus.OK.value());
+
+        } catch (Exception exception) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(exception.getMessage());
+        }
+        return response;
     }
 
     @Override
