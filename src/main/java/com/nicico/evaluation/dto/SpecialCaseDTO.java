@@ -132,9 +132,9 @@ public class SpecialCaseDTO {
         private String assessorNationalCode;
         private String assessorPostCode;
         @NotNull
-        private Date startDate;
+        private String startDate;
         @NotNull
-        private Date endDate;
+        private String endDate;
 
     }
 }

@@ -30,14 +30,14 @@ public class WorkSpaceAlarmHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         System.out.println("connected");
-        String id = sessionsManager.getSessionId(session);
+        String id = sessionsManager.getAlarmSessionId(session);
         sessionsManager.add(id, session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         System.out.println("Connection Closed！" + status);
-        sessionsManager.remove(sessionsManager.getSessionId(session));
+        sessionsManager.remove(sessionsManager.getAlarmSessionId(session));
     }
 
     @Override
