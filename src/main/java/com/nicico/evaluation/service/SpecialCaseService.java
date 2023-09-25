@@ -27,6 +27,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
@@ -128,8 +129,10 @@ public class SpecialCaseService implements ISpecialCaseService {
                 createDto.setAssessorNationalCode(assessor.get().getNationalCode());
                 createDto.setAssessorPostCode(assessor.get().getPostCode());
                 createDto.setAssessRealPostCode(assessor.get().getPostCode());
-                createDto.setStartDate(dto.getStartDate());
-                createDto.setEndDate(dto.getEndDate());
+                dto.setStartDate(dto.getStartDate().replaceAll("-", "/"));
+                createDto.setStartDate(new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(dto.getStartDate())));
+                dto.setEndDate(dto.getEndDate().replaceAll("-", "/"));
+                createDto.setEndDate(new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(dto.getEndDate())));
             }
             create(createDto);
             response.setStatus(HttpStatus.OK.value());
