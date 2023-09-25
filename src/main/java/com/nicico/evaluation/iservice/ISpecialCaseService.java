@@ -20,6 +20,8 @@ public interface ISpecialCaseService {
 
     SpecialCaseDTO.Info create(SpecialCaseDTO.Create dto);
 
+    BaseResponse batchCreate(SpecialCaseDTO.BatchCreate dto);
+
     SpecialCaseDTO.Info update(Long id, SpecialCaseDTO.Update dto);
 
     void delete(Long id);

@@ -20,6 +20,7 @@ public class EvaluationConstant {
     public static final String SPECIAL_REVOKED = "special-revoked";
     public static final String SPECIAL_ACTIVE = "special-active";
     public static final String SPECIAL_INITIAL_REGISTRATION = "special-initial-registration";
+    public static final String BATCH_CREATE_SPECIAL_CASE_EXCEL = "BatchCreate-Special-Case-Excel";
 
     public static final String BATCH = "Batch";
     public static final String BATCH_TITLES = "BatchTitles";

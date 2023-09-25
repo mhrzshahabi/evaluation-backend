@@ -38,8 +38,16 @@ public class PersonService implements IPersonService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_PERSON')")
     public PersonDTO.Info getByNationalCode(String nationalCode) {
-        Person person = repository.findAllByNationalCode(nationalCode);
+        Person person = repository.findByNationalCode(nationalCode);
         return mapper.entityToDtoInfo(person);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_PERSON')")
+    public List<PersonDTO.Info> getAllByNationalCode(List<String> nationalCodes) {
+        List<Person> personList = repository.findAllByNationalCodeIn(nationalCodes);
+        return mapper.entityToDtoInfoList(personList);
     }
 
     @Override
