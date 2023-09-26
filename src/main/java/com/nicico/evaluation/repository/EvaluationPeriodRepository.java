@@ -30,7 +30,7 @@ public interface EvaluationPeriodRepository extends JpaRepository<EvaluationPeri
     @Query(value = """
             SELECT 
                 evalperiod.C_TITLE periodTitle ,
-                 to_date( evalperiod.C_VALIDATION_END_DATE, 'YYYY-MM-DD') - to_date( :toDayDate,'YYYY-MM-DD') as remainDate
+                '[' || to_char(to_date( evalperiod.C_VALIDATION_END_DATE, 'YYYY-MM-DD') - to_date( '1402/06/28','YYYY-MM-DD') + 2) || ']' as remainDate
             FROM
                 tbl_evaluation          eval
                 JOIN tbl_evaluation_period   evalperiod ON evalperiod.id = eval.evaluation_period_id
@@ -55,7 +55,7 @@ public interface EvaluationPeriodRepository extends JpaRepository<EvaluationPeri
     @Query(value = """
             select
                  evalperiod.C_TITLE periodTitle ,
-                 to_date( evalperiod.C_END_DATE_ASSESSMENT, 'YYYY-MM-DD') - to_date( :toDayDate,'YYYY-MM-DD') as remainDate
+                 '[' || to_char( to_date( evalperiod.C_END_DATE_ASSESSMENT, 'YYYY-MM-DD') - to_date( :toDayDate,'YYYY-MM-DD') + 2) || ']' as remainDate
             from tbl_evaluation eval
             join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.EVALUATION_PERIOD_ID
             where

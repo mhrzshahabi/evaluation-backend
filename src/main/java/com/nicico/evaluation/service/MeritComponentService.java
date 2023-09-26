@@ -113,10 +113,13 @@ public class MeritComponentService implements IMeritComponentService {
         else
             statusId = catalogRepository.findByCode(AWAITING_CREATE_MERIT).orElseThrow().getId();
         meritComponent.setStatusCatalogId(statusId);
-        MeritComponent meritComponentAdd = repository.save(meritComponent);
-        createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
-        return mapper.entityToDtoInfo(meritComponentAdd);
-
+        try {
+            MeritComponent meritComponentAdd = repository.save(meritComponent);
+            createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
+            return mapper.entityToDtoInfo(meritComponentAdd);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+        }
     }
 
     @Override

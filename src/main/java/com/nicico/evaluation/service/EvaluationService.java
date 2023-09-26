@@ -18,6 +18,7 @@ import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTimeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -288,7 +289,8 @@ public class EvaluationService implements IEvaluationService {
                             switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                                 case "next":
                                     if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                        if (evaluationPeriod.getValidationStartDate().after(new Date()) || evaluationPeriod.getValidationEndDate().before(new Date())) {
+                                    if (DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationStartDate(), new Date()) > 0 ||
+                                            DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationEndDate(), new Date()) < 0) {
                                             errorMessage.append(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
                                         } else
                                             createEvaluationItems(evaluation);

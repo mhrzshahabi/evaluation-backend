@@ -710,13 +710,11 @@
             ]]>
         </sql>
     </changeSet>
-
-    <changeSet author="a.lotfi" id="1683023514">
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_title"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_start_date_assessment"/>
-        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="d_end_date_assessment"/>
+    <changeSet author="semami" id="1695188937">
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_start_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_end_date"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_start_date_assessment"/>
+        <addNotNullConstraint tableName="tbl_evaluation_period" columnName="c_end_date_assessment"/>
     </changeSet>
     <changeSet author="a.lotfi" id="1683095597">
         <sql splitStatements="false" stripComments="false">
@@ -1965,5 +1963,46 @@
     <changeSet id="1694501986" author="semami">
         <modifyDataType tableName="tbl_evaluation_item" columnName="QUESTIONNAIRE_ANSWER_CATALOG_VALUE"
                         newDataType="FLOAT(22)"/>
+    </changeSet>
+    <changeSet author="semami" id="1695452123">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_catalog_type_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_catalog_type_id
+            FROM tbl_catalog_type
+            WHERE c_code = 'BatchTitles';
+            END;
+            BEGIN
+            INSERT INTO tbl_catalog (id,
+                                     c_created_by,
+                                     d_created_date,
+                                     c_last_modified_by,
+                                     d_last_modified_date,
+                                     n_version,
+                                     f_catalog_type_id,
+                                     c_title,
+                                     c_code,
+                                     c_description)
+            VALUES (seq_catalog_id.NEXTVAL,
+                    'semami',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    0,
+                    l_catalog_type_id,
+                    'ایجاد گروهی موارد خاص -از اکسل',
+                    'BatchCreate-Special-Case-Excel',
+                    '');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="1695467505" author="semami">
+        <modifyDataType tableName="tbl_batch_detail" columnName="c_exception_title" newDataType="VARCHAR2(3000 CHAR)"/>
     </changeSet>
 </databaseChangeLog>
