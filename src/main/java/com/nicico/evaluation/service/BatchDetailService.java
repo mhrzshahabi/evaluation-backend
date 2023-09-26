@@ -258,7 +258,7 @@ public class BatchDetailService implements IBatchDetailService {
                     SpecialCaseDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), SpecialCaseDTO.BatchCreate.class);
                     BaseResponse response = specialCaseService.batchCreate(batchCreate);
 
-                    String description = "کد پست ارزیاب کننده: " + batchCreate.getAssessPostCode() + " کد پست ارزیاب شونده : " + batchCreate.getAssessorPostCode() ;
+                    String description = "کد ملی ارزیاب کننده: " + batchCreate.getAssessorNationalCode() + " کد ملی ارزیاب شونده : " + batchCreate.getAssessNationalCode() ;
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);
                     else
