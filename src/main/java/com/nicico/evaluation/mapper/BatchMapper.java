@@ -9,6 +9,7 @@ import org.mapstruct.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Mapper(componentModel = "spring")
 public interface BatchMapper {
@@ -47,10 +48,12 @@ public interface BatchMapper {
 
     @Named("changeToLocalTime")
     default Date changeToLocalTime(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.HOUR_OF_DAY, 3);
-        calendar.add(Calendar.MINUTE, 30);
-        return calendar.getTime();
+        if (!Objects.isNull(date)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.HOUR_OF_DAY, 3);
+            calendar.add(Calendar.MINUTE, 30);
+            return calendar.getTime();
+        } else return null;
     }
 }
