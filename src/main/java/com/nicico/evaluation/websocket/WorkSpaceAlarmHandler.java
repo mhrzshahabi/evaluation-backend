@@ -43,11 +43,8 @@ public class WorkSpaceAlarmHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
 
-        System.out.println("here=" + message.getPayload());
-
         for (WebSocketSession socketSession : sessionsManager.getSessions().values()) {
             if (socketSession.equals(session)) {
-
                 List<String> workSpaceCodeList = mapper.readValue(message.getPayload(), new TypeReference<>() {
                 });
                 Thread thread = new Thread() {
@@ -60,7 +57,7 @@ public class WorkSpaceAlarmHandler extends TextWebSocketHandler {
                                 List<WorkSpaceDTO.Info> workSpaceAlarmList = workSpaceService.workSpaceAlarmNotification(workSpaceCodeList, token);
                                 session.sendMessage(new TextMessage(new Gson().toJson(workSpaceAlarmList, new TypeToken<List<WorkSpaceDTO.Info>>() {
                                 }.getType())));
-                                Thread.sleep(5000);
+                                Thread.sleep(10000);
                             } catch (InterruptedException | IOException ie) {
                                 session.sendMessage(new TextMessage("مشکلی پیش آمده است"));
                             }
@@ -68,7 +65,6 @@ public class WorkSpaceAlarmHandler extends TextWebSocketHandler {
                     }
                 };
                 thread.start();
-//                socketSession.sendMessage(new TextMessage(message.getPayload() + "-" + System.currentTimeMillis()));
             }
         }
     }
