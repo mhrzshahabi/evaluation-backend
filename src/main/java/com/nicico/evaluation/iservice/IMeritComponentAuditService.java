@@ -16,6 +16,8 @@ public interface IMeritComponentAuditService {
 
     Integer getNumberOfExpertWorkInWorkSpace();
 
+    Integer getNumberOfExpertWorkInWorkSpaceNotification(String token);
+
     List<Long> getExpertWorkInWorkSpace();
 
     MeritComponentAudit findAllByRevAndMeritComponentId(Long rev, Long meritComponentId);

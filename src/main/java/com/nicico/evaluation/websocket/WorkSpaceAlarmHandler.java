@@ -56,7 +56,8 @@ public class WorkSpaceAlarmHandler extends TextWebSocketHandler {
                     public void run() {
                         while (session.isOpen()) {
                             try {
-                                List<WorkSpaceDTO.Info> workSpaceAlarmList = workSpaceService.workSpaceAlarm(workSpaceCodeList);
+                                String token = session.getUri().getQuery().split("token=")[1];
+                                List<WorkSpaceDTO.Info> workSpaceAlarmList = workSpaceService.workSpaceAlarmNotification(workSpaceCodeList, token);
                                 session.sendMessage(new TextMessage(new Gson().toJson(workSpaceAlarmList, new TypeToken<List<WorkSpaceDTO.Info>>() {
                                 }.getType())));
                                 Thread.sleep(5000);

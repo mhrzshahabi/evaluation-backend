@@ -19,6 +19,12 @@ public class HRMTokenConfig {
     @Value("${spring.security.oauth2.client.provider.oserver.token-uri}")
     private String accessTokenUri;
 
+    @Value("${spring.security.oauth2.client.registration.oserver.client-id}")
+    private String clientIdEvaluation;
+
+    @Value("${spring.security.oauth2.client.registration.oserver.client-secret}")
+    private String clientSecretEvaluation;
+
     private String clientId = "HRM";
 
     @Value("${nicico.hrm-password}")
@@ -42,6 +48,21 @@ public class HRMTokenConfig {
         OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails);
         restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         log.info("## Reinitialize OAuth2RestTemplate. for hrm token: token=[{}]", restTemplate.getAccessToken().getValue().substring(0, 10));
+        return restTemplate;
+    }
+
+    @Bean("oauthToken")
+    public OAuth2RestTemplate reInitializeOAUTH() {
+        ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
+        resourceDetails.setGrantType("password");
+        resourceDetails.setClientId(this.clientIdEvaluation);
+        resourceDetails.setClientSecret(this.clientSecretEvaluation);
+        resourceDetails.setUsername("sys_" + appName);
+        resourceDetails.setPassword(this.sysPassword);
+        resourceDetails.setAccessTokenUri(this.accessTokenUri);
+        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails);
+        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        log.info("## Reinitialize OAuth2RestTemplate. for oauth token: token=[{}]", restTemplate.getAccessToken().getValue().substring(0, 10));
         return restTemplate;
     }
 }
