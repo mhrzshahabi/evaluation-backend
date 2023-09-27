@@ -51,18 +51,4 @@ public class GreetingHandler extends TextWebSocketHandler {
         sessionsManager.remove(sessionsManager.getSessionId(session));
     }
 
-    //    @Override
-//    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-//
-//        System.out.println("uri=" + session.getUri());
-//        System.out.println("uri=" + session.getRemoteAddress());
-//        System.out.println("here=" + message.getPayload());
-//
-//        for (WebSocketSession socketSession : sessionsManager.getSessions().values()) {
-//            if (!socketSession.equals(session)) {
-//                socketSession.sendMessage(new TextMessage(message.getPayload() + "-" + System.currentTimeMillis()));
-//            }
-//        }
-//    }
-
 }

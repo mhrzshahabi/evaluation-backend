@@ -9,10 +9,10 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationService;
-import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -115,9 +115,9 @@ public class EvaluationController {
      * @return Boolean is the result of function
      */
     @PostMapping(value = "/change-status")
-    public ResponseEntity<BaseResponse> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO changeStatusDto) {
-        BaseResponse response = service.changeStatus(changeStatusDto);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    public ResponseEntity<EvaluationDTO.ErrorResponseDTO> changeStatus(@Valid @RequestBody EvaluationDTO.ChangeStatusDTO changeStatusDto) {
+        EvaluationDTO.ErrorResponseDTO response = service.changeStatus(changeStatusDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -227,6 +227,16 @@ public class EvaluationController {
             return emitter;
         }
         return null;
+    }
+
+    /**
+     * @param evaluationIds is list of the key value
+     * @return byte[] is the excel of error list of posts that are invalid
+     */
+    @SneakyThrows
+    @PostMapping(value = "/export-error-list-excel")
+    public ResponseEntity<byte[]> exportExcel(@RequestBody List<Long> evaluationIds) {
+        return service.downloadInvalidPostExcel(evaluationIds);
     }
 }
 

@@ -13,10 +13,10 @@ import com.nicico.evaluation.model.Evaluation;
 import com.nicico.evaluation.model.Post;
 import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationRepository;
-import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.EvaluationConstant;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTimeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,9 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -264,11 +267,13 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional
-    public BaseResponse changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO) {
-        BaseResponse response = new BaseResponse();
+    public EvaluationDTO.ErrorResponseDTO changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO) {
+        EvaluationDTO.ErrorResponseDTO errorResponseDTO = new EvaluationDTO.ErrorResponseDTO();
         final Locale locale = LocaleContextHolder.getLocale();
         try {
             List<Long> ids = changeStatusDTO.getEvaluationIds();
+            List<String> invalidPostList = new ArrayList<>();
+            List<Long> invalidIdList = new ArrayList<>();
             StringBuilder errorMessage = new StringBuilder();
             for (Long id : ids) {
                 Optional<Evaluation> optionalEvaluation = repository.findById(id);
@@ -278,61 +283,73 @@ public class EvaluationService implements IEvaluationService {
                     Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
                     EvaluationPeriodDTO.Info evaluationPeriod = evaluationPeriodService.get(evaluation.getEvaluationPeriodId());
 
-                    if (evaluationDate != null && evaluationDate.after(new Date())) {
-                        switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
-                            case "next":
-                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
+                    Boolean validatePosts = validatePosts(Collections.singletonList(id));
+                    if (Boolean.TRUE.equals(validatePosts)) {
+                        if (evaluationDate != null && evaluationDate.after(new Date())) {
+                            switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
+                                case "next":
+                                    if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
                                     if (DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationStartDate(), new Date()) > 0 ||
                                             DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationEndDate(), new Date()) < 0) {
-                                        errorMessage.append(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
-                                    } else
-                                        createEvaluationItems(evaluation);
-                                } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
-                                    // توسط جاب شبانه انجام میشود
-                                } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(FINALIZED);
-                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                                    repository.save(evaluation);
-                                }
-                                break;
-                            case "previous":
-                                if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(AWAITING);
-                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                                    repository.save(evaluation);
+                                            errorMessage.append(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
+                                        } else
+                                            createEvaluationItems(evaluation);
+                                    } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
+                                        // توسط جاب شبانه انجام میشود
+                                    } else if (Objects.nonNull(evaluation.getStatusCatalog().getCode()) && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(FINALIZED);
+                                        optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                        repository.save(evaluation);
+                                    }
+                                    break;
+                                case "previous":
+                                    if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(FINALIZED)) {
+                                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(AWAITING);
+                                        optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                        repository.save(evaluation);
 
-                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(VALIDATED);
-                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                                    evaluation.setAverageScore(null);
-                                    repository.save(evaluation);
-                                } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
-                                    Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
-                                    optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
-                                    deleteItems(evaluation);
-                                    evaluation.setAverageScore(null);
-                                    repository.save(evaluation);
-                                }
-                                break;
+                                    } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(AWAITING)) {
+                                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(VALIDATED);
+                                        optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                        evaluation.setAverageScore(null);
+                                        repository.save(evaluation);
+                                    } else if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(VALIDATED)) {
+                                        Optional<Catalog> optionalCatalog = catalogRepository.findByCode(INITIAL);
+                                        optionalCatalog.ifPresent(catalog -> evaluation.setStatusCatalogId(catalog.getId()));
+                                        deleteItems(evaluation);
+                                        evaluation.setAverageScore(null);
+                                        repository.save(evaluation);
+                                    }
+                                    break;
+                            }
+                        } else {
+                            errorMessage.append(messageSource.getMessage("exception.evaluation.date", null, locale));
                         }
                     } else {
-                        errorMessage.append(messageSource.getMessage("exception.evaluation.date", null, locale));
+                        invalidPostList.add(evaluation.getEvaluationPeriod().getTitle());
+                        invalidIdList.add(id);
                     }
-
                 }
             }
             if (errorMessage.isEmpty()) {
-                response.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
-                response.setStatus(200);
+                if (invalidIdList.isEmpty()) {
+                    errorResponseDTO.setMessage(messageSource.getMessage("message.successful.operation", null, locale));
+                    errorResponseDTO.setStatus(200);
+                } else {
+
+                    errorResponseDTO.setMessage(messageSource.getMessage("exception.period.has.invalid.posts", new Object[]{invalidPostList}, null, locale));
+                    errorResponseDTO.setEvaluationIds(invalidIdList);
+                    errorResponseDTO.setStatus(406);
+                }
             } else {
-                response.setMessage(String.valueOf(errorMessage));
-                response.setStatus(406);
+                errorResponseDTO.setMessage(String.valueOf(errorMessage));
+                errorResponseDTO.setStatus(406);
             }
-            return response;
+            return errorResponseDTO;
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
-            response.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
-            return response;
+            errorResponseDTO.setMessage(e.getMessage());
+            errorResponseDTO.setStatus(EvaluationHandleException.ErrorType.EvaluationDeadline.getHttpStatusCode());
+            return errorResponseDTO;
         }
     }
 
@@ -546,4 +563,180 @@ public class EvaluationService implements IEvaluationService {
         return repository.getBestAssessesByOmoor(periodId, omoorCode, pageable.getPageNumber(), pageable.getPageSize());
     }
 
+    @SneakyThrows
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public ResponseEntity<byte[]> downloadInvalidPostExcel(List<Long> evaluationIds) {
+
+        List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostList = createInvalidPostList(evaluationIds);
+        byte[] body = BaseService.exportExcelByList(invalidPostList, null, "گزارش لیست پست ها");
+        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    private List<EvaluationPeriodPostDTO.InvalidPostExcel> createInvalidPostList(List<Long> evaluationIds) {
+        List<String> postCodes = repository.findAllByIdIn(evaluationIds).stream().map(Evaluation::getAssessPostCode).toList();
+        List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList = new ArrayList<>();
+        validateGradeHasGroup(postCodes, invalidPostExcelList);
+        validateGroupGradeHasNotGroupType(postCodes, invalidPostExcelList);
+
+        List<GroupTypeDTO.Info> allGroupTypeByPostCode = groupTypeService.getAllByPostCodes(postCodes);
+        Map<Long, List<GroupTypeDTO.Info>> allGroupTypeMap = allGroupTypeByPostCode.stream().collect(Collectors.groupingBy(GroupTypeDTO::getGroupId));
+        validateAllGroupTypeMeritPost(postCodes, invalidPostExcelList, allGroupTypeMap);
+        return invalidPostExcelList;
+    }
+
+    private void validateAllGroupTypeMeritPost(List<String> postCodes, List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, Map<Long, List<GroupTypeDTO.Info>> allGroupTypeMap) {
+        int typeSize = kpiTypeService.findAll().size();
+
+        Long statusCatalogId = catalogService.getByCode(REVOKED_MERIT).getId();
+        allGroupTypeMap.forEach((groupId, groupTypes) -> {
+            /*check all kpiType define for these group*/
+            validateAllGroupType(invalidPostExcelList, typeSize, groupTypes, groupTypes.size(), "exception.not.define.all.group-type.for.these.group");
+            long totalWeight = groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum();
+            /*check totalWeight is 100*/
+            validateAllGroupType(invalidPostExcelList, 100, groupTypes, totalWeight, "exception.invalid.group.type.weight.for.these.group");
+
+            groupTypes.forEach(groupType -> {
+                if (!groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_OPERATIONAL)) {
+                    List<GroupTypeMeritDTO.Info> allGroupTypeMeritByGroupType = groupTypeMeritService.getAllByGroupTypeIdAndMeritStatusId(groupType.getId(), statusCatalogId);
+                    /*check define meritComponents for all groupTypes that are Behavioral or Development*/
+                    validateGroupTypeMeritIsDefine(invalidPostExcelList, groupTypes, allGroupTypeMeritByGroupType);
+                    /*check total groupTypeMerit's weight for all groupTypes that are Behavioral or Development*/
+                    validateGroupTypeMeritWeight(invalidPostExcelList, groupTypes, groupType, allGroupTypeMeritByGroupType);
+                }
+            });
+        });
+        postCodes.forEach(postCode -> {
+            List<EvaluationItemDTO.MeritTupleDTO> byPostCode = postMeritComponentService.getByPostCodeAndMeritStatus(postCode, statusCatalogId);
+            if (byPostCode.isEmpty())
+                validatePostMeritIsDefine(invalidPostExcelList, postCode);
+
+            long totalWeightPostMerit = byPostCode.stream().mapToLong(EvaluationItemDTO.MeritTupleDTO::getWeight).sum();
+            if (totalWeightPostMerit != 100) {
+                EvaluationPeriodPostDTO.InvalidPostExcel notDefinePostMerit = new EvaluationPeriodPostDTO.InvalidPostExcel();
+                String errorMessage = messageSource.getMessage("exception.invalid.post-merit.total.weight",
+                        new Object[]{postCode}, LocaleContextHolder.getLocale());
+                notDefinePostMerit.setDescription(errorMessage);
+                notDefinePostMerit.setGroupPostCode(String.valueOf(postCode));
+                Post post = postService.getByPostCode(postCode);
+                notDefinePostMerit.setPostTitle(post.getPostTitle());
+                notDefinePostMerit.setPostGradeTitle(post.getPostGradeTitle());
+                notDefinePostMerit.setTotalWeightOperational(totalWeightPostMerit);
+                invalidPostExcelList.add(notDefinePostMerit);
+            }
+        });
+    }
+
+    private void validatePostMeritWeight(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, List<String> postCodes, List<PostMeritComponentDTO.Info> postMerits) {
+        Map<String, List<PostMeritComponentDTO.Info>> groupPostCodeList = postMerits.stream().collect(Collectors.groupingBy(PostMeritComponentDTO::getGroupPostCode));
+        groupPostCodeList.forEach((groupPostCode, postMerit) -> {
+            long totalWeightPostMerit = postMerit.stream().mapToLong(PostMeritComponentDTO::getWeight).sum();
+            if (totalWeightPostMerit != 100) {
+                EvaluationPeriodPostDTO.InvalidPostExcel inValidTotalPostMeritWeight = new EvaluationPeriodPostDTO.InvalidPostExcel();
+                String errorMessage = messageSource.getMessage("exception.invalid.post-merit.total.weight",
+                        new Object[]{postCodes}, LocaleContextHolder.getLocale());
+                inValidTotalPostMeritWeight.setDescription(errorMessage);
+                inValidTotalPostMeritWeight.setGroupPostCode(String.valueOf(postCodes));
+                inValidTotalPostMeritWeight.setTotalWeightOperational(totalWeightPostMerit);
+                invalidPostExcelList.add(inValidTotalPostMeritWeight);
+            }
+        });
+    }
+
+    private void validatePostMeritIsDefine(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, String groupPostCode) {
+
+        EvaluationPeriodPostDTO.InvalidPostExcel notDefinePostMerit = new EvaluationPeriodPostDTO.InvalidPostExcel();
+        String errorMessage = messageSource.getMessage("exception.not.define.post-merit.for.these.post",
+                new Object[]{groupPostCode}, LocaleContextHolder.getLocale());
+        notDefinePostMerit.setDescription(errorMessage);
+        notDefinePostMerit.setGroupPostCode(String.valueOf(groupPostCode));
+        Post post = postService.getByPostCode(groupPostCode);
+        notDefinePostMerit.setPostTitle(post.getPostTitle());
+        notDefinePostMerit.setPostGradeTitle(post.getPostGradeTitle());
+        invalidPostExcelList.add(notDefinePostMerit);
+
+    }
+
+    private void validateGroupTypeMeritWeight(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, List<GroupTypeDTO.Info> groupTypes, GroupTypeDTO.Info groupType, List<GroupTypeMeritDTO.Info> allGroupTypeMeritByGroupType) {
+        long totalWeightGroupTypeMerit = allGroupTypeMeritByGroupType.stream().mapToLong(GroupTypeMeritDTO::getWeight).sum();
+        if (totalWeightGroupTypeMerit != 100) {
+            EvaluationPeriodPostDTO.InvalidPostExcel inValidTotalGroupTypeMeritWeight = new EvaluationPeriodPostDTO.InvalidPostExcel();
+            String errorMessage = messageSource.getMessage("exception.invalid.group-type-merit.total.weight",
+                    new Object[]{allGroupTypeMeritByGroupType.get(0).getGroupType().getGroup().getTitle(),
+                            allGroupTypeMeritByGroupType.get(0).getGroupType().getKpiType().getTitle(),
+                            allGroupTypeMeritByGroupType.get(0).getMeritComponent().getTitle()}, LocaleContextHolder.getLocale());
+            inValidTotalGroupTypeMeritWeight.setDescription(errorMessage);
+            inValidTotalGroupTypeMeritWeight.setGroupTypeTitle(groupTypes.get(0).getGroup().getTitle());
+            inValidTotalGroupTypeMeritWeight.setPostGradeTitle(String.valueOf(groupTypes.get(0).getGroup().getGrade().stream().map(GradeDTO::getTitle).toList()));
+            inValidTotalGroupTypeMeritWeight.setTotalWeightGroup(groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum());
+            if (groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_DEVELOPMENT))
+                inValidTotalGroupTypeMeritWeight.setTotalWeightDevelopment(totalWeightGroupTypeMerit);
+            else if (groupType.getKpiType().getTitle().equals(EvaluationConstant.KPI_TYPE_TITLE_BEHAVIORAL))
+                inValidTotalGroupTypeMeritWeight.setTotalWeightBehavioral(totalWeightGroupTypeMerit);
+
+            invalidPostExcelList.add(inValidTotalGroupTypeMeritWeight);
+        }
+    }
+
+    private void validateGroupTypeMeritIsDefine(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, List<GroupTypeDTO.Info> groupTypes, List<GroupTypeMeritDTO.Info> allGroupTypeMeritByGroupType) {
+        if (allGroupTypeMeritByGroupType.isEmpty()) {
+            EvaluationPeriodPostDTO.InvalidPostExcel notDefineMerit = new EvaluationPeriodPostDTO.InvalidPostExcel();
+            String errorMessage = messageSource.getMessage("exception.not.define.group-type-merit.for.these.group-type",
+                    new Object[]{groupTypes.get(0).getGroup().getTitle(), groupTypes.get(0).getKpiType().getTitle()}, LocaleContextHolder.getLocale());
+            notDefineMerit.setDescription(errorMessage);
+            notDefineMerit.setGroupTypeTitle(groupTypes.get(0).getGroup().getTitle());
+            notDefineMerit.setTotalWeightGroup(groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum());
+            notDefineMerit.setPostGradeTitle(String.valueOf(groupTypes.get(0).getGroup().getGrade().stream().map(GradeDTO::getTitle).toList()));
+            invalidPostExcelList.add(notDefineMerit);
+        }
+    }
+
+    private void validateAllGroupType(List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList, int typeSize, List<GroupTypeDTO.Info> groupTypes, long weight, String s) {
+        if (weight != typeSize) {
+            EvaluationPeriodPostDTO.InvalidPostExcel notDefineAllType = new EvaluationPeriodPostDTO.InvalidPostExcel();
+            String errorMessage = messageSource.getMessage(s,
+                    new Object[]{groupTypes.get(0).getGroup().getTitle()}, LocaleContextHolder.getLocale());
+            notDefineAllType.setDescription(errorMessage);
+            notDefineAllType.setGroupTypeTitle(groupTypes.get(0).getGroup().getTitle());
+            notDefineAllType.setTotalWeightGroup(groupTypes.stream().mapToLong(GroupTypeDTO::getWeight).sum());
+            notDefineAllType.setPostGradeTitle(String.valueOf(groupTypes.get(0).getGroup().getGrade().stream().map(GradeDTO::getTitle).toList()));
+            invalidPostExcelList.add(notDefineAllType);
+        }
+    }
+
+    private void validateGroupGradeHasNotGroupType(List<String> postCodes, List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList) {
+        List<PostDTO.Info> groupHasNotGroupTypeByPostCode = postService.getGroupHasNotGroupTypeByPostCodes(postCodes);
+        if (!groupHasNotGroupTypeByPostCode.isEmpty()) {
+            groupHasNotGroupTypeByPostCode.forEach(groupPost -> {
+                EvaluationPeriodPostDTO.InvalidPostExcel groupGradeHaseNotGroupType = new EvaluationPeriodPostDTO.InvalidPostExcel();
+                String errorMessage = messageSource.getMessage("exception.not.exist.group-type.for.these.group-grade", new Object[]{groupPost.getPostGradeTitle()}, LocaleContextHolder.getLocale());
+                groupGradeHaseNotGroupType.setDescription(errorMessage);
+                groupGradeHaseNotGroupType.setGroupPostCode(groupPost.getPostCode());
+                groupGradeHaseNotGroupType.setPostTitle(groupPost.getPostTitle());
+                groupGradeHaseNotGroupType.setPostGradeTitle(groupPost.getPostGradeTitle());
+                invalidPostExcelList.add(groupGradeHaseNotGroupType);
+            });
+        }
+    }
+
+    private void validateGradeHasGroup(List<String> postCodes, List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList) {
+        List<PostDTO.Info> allPostGradeHasNotGroup = postService.getPostGradeHasNotGroupByPostCodes(postCodes);
+        if (!allPostGradeHasNotGroup.isEmpty()) {
+            allPostGradeHasNotGroup.forEach(groupPost -> {
+                EvaluationPeriodPostDTO.InvalidPostExcel gradeHaseNotGroup = new EvaluationPeriodPostDTO.InvalidPostExcel();
+                String errorMessage = messageSource.getMessage("exception.not.exist.group-grade.for.these.post-codes",
+                        new Object[]{groupPost.getPostCode(), groupPost.getPostGradeTitle()}, LocaleContextHolder.getLocale());
+                gradeHaseNotGroup.setDescription(errorMessage);
+                gradeHaseNotGroup.setGroupPostCode(groupPost.getPostCode());
+                gradeHaseNotGroup.setPostTitle(groupPost.getPostTitle());
+                gradeHaseNotGroup.setPostGradeTitle(groupPost.getPostGradeTitle());
+                invalidPostExcelList.add(gradeHaseNotGroup);
+            });
+        }
+    }
 }
