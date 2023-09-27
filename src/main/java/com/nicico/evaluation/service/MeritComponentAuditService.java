@@ -4,10 +4,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.MeritComponentAuditDTO;
-import com.nicico.evaluation.dto.MeritComponentDTO;
-import com.nicico.evaluation.dto.MeritComponentTypeDTO;
-import com.nicico.evaluation.dto.SearchRequestDTO;
+import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IMeritComponentAuditService;
@@ -17,12 +14,19 @@ import com.nicico.evaluation.model.MeritComponentAudit;
 import com.nicico.evaluation.repository.MeritComponentAuditRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -31,6 +35,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MeritComponentAuditService implements IMeritComponentAuditService {
+
+    @Value("${nicico.oauthBackend}")
+    private String oAuthUrl;
+
+    @Autowired
+    @Qualifier("oauthToken")
+    private RestTemplate restTemplateOAuth;
 
     private final EntityManager entityManager;
     private final PageableMapper pageableMapper;
@@ -63,6 +74,28 @@ public class MeritComponentAuditService implements IMeritComponentAuditService {
     public Integer getNumberOfExpertWorkInWorkSpace() {
         String userName = SecurityUtil.getUsername();
         return repository.getNumberOfExpertWorkInWorkSpace(catalogService.getByCode("Re-Examination-Merit").getId(), userName);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getNumberOfExpertWorkInWorkSpaceNotification(String token) {
+        String userName;
+        String url = oAuthUrl + "/tokens/" + token;
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, null);
+        try {
+            OAuthCurrentUserDTO oAuthCurrentUserDTO = restTemplateOAuth.exchange(url, HttpMethod.GET, entity, OAuthCurrentUserDTO.class).getBody();
+            if (oAuthCurrentUserDTO != null) {
+                userName = oAuthCurrentUserDTO.getPrincipal().getUsername();
+                if (userName != null)
+                    return repository.getNumberOfExpertWorkInWorkSpace(catalogService.getByCode("Re-Examination-Merit").getId(), userName);
+                else
+                    throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "شخص مورد نظر در سیستم OAuth یافت نشد");
+            } else
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "شخص مورد نظر در سیستم OAuth یافت نشد");
+        } catch (Exception e) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.Unauthorized, "خطا در دسترسی به سیستم OAuth");
+        }
     }
 
     @Override

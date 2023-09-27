@@ -282,15 +282,19 @@ public class EvaluationService implements IEvaluationService {
                     String miDate = DateUtil.convertKhToMi1(evaluation.getEvaluationPeriod().getEndDate());
                     Date evaluationDate = new SimpleDateFormat("yyyy-MM-dd").parse(miDate);
                     EvaluationPeriodDTO.Info evaluationPeriod = evaluationPeriodService.get(evaluation.getEvaluationPeriodId());
+                    Boolean validatePosts = Boolean.TRUE;
 
-                    Boolean validatePosts = validatePosts(Collections.singletonList(id));
+                    if (evaluation.getStatusCatalog().getCode() != null && !Objects.equals(evaluation.getStatusCatalog().getCode(), FINALIZED)
+                            && !Objects.equals(changeStatusDTO.getStatus().toLowerCase(Locale.ROOT), "previous"))
+                        validatePosts = validatePosts(Collections.singletonList(id));
+
                     if (Boolean.TRUE.equals(validatePosts)) {
                         if (evaluationDate != null && evaluationDate.after(new Date())) {
                             switch (changeStatusDTO.getStatus().toLowerCase(Locale.ROOT)) {
                                 case "next":
                                     if (evaluation.getStatusCatalog().getCode() != null && evaluation.getStatusCatalog().getCode().equals(INITIAL)) {
-                                    if (DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationStartDate(), new Date()) > 0 ||
-                                            DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationEndDate(), new Date()) < 0) {
+                                        if (DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationStartDate(), new Date()) > 0 ||
+                                                DateTimeComparator.getDateOnlyInstance().compare(evaluationPeriod.getValidationEndDate(), new Date()) < 0) {
                                             errorMessage.append(messageSource.getMessage("exception.changing.the.status.to.validated.is.only.possible.in.the.range", null, LocaleContextHolder.getLocale()));
                                         } else
                                             createEvaluationItems(evaluation);

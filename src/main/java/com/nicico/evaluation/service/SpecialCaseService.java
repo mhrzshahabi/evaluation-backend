@@ -133,6 +133,11 @@ public class SpecialCaseService implements ISpecialCaseService {
                 createDto.setStartDate(new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(dto.getStartDate())));
                 dto.setEndDate(dto.getEndDate().replaceAll("-", "/"));
                 createDto.setEndDate(new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(dto.getEndDate())));
+            } else {
+                StringBuilder nationalCode = new StringBuilder(assess.isEmpty() ? dto.getAssessNationalCode() : "");
+                nationalCode.append(assessor.isEmpty() ? (nationalCode.isEmpty() ? dto.getAssessorNationalCode() : (" , " + dto.getAssessorNationalCode())) : "");
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
+                        messageSource.getMessage("exception.special-case.national-code.not.found", new Object[]{nationalCode}, LocaleContextHolder.getLocale()));
             }
             create(createDto);
             response.setStatus(HttpStatus.OK.value());
