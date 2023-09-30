@@ -8,6 +8,8 @@ import java.util.List;
 public interface IOrganizationTreeService {
     List<OrganizationTreeDTO.InfoTree> get(Long orgStructureId);
 
+    List<OrganizationTreeDTO.InfoTree> getByPostIds(List<Long> postIds);
+
     OrganizationTreeDTO.InfoDetail getDetail(Long id);
 
     List<OrganizationTreeDTO.InfoTree> list(int count, int startIndex, Long orgStructureId, Long postParentId);
@@ -16,7 +18,7 @@ public interface IOrganizationTreeService {
 
     List<OrganizationTreeDTO.InfoTree> listTree(int count, int startIndex, Long orgStructureId, Long postParentId);
 
-    SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> search(SearchDTO.SearchRq request , Long orgStructureId) throws IllegalAccessException, NoSuchFieldException;
+    SearchDTO.SearchRs<OrganizationTreeDTO.InfoTree> search(SearchDTO.SearchRq request, Long orgStructureId) throws IllegalAccessException, NoSuchFieldException;
 
     OrganizationTreeDTO.InfoTree getByPostCode(String postCode);
 

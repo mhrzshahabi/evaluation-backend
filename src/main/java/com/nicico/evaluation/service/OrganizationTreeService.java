@@ -40,6 +40,16 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
+    public List<OrganizationTreeDTO.InfoTree> getByPostIds(List<Long> postIds) {
+        List<OrganizationTree> organizationTrees = repository.findAllByPostIdInAndNationalCodeIsNotNullOrderByPostLevelDesc(postIds);
+        if (organizationTrees == null || organizationTrees.isEmpty())
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
+        return mapper.entityToDtoInfoList(organizationTrees);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_ORGANIZATION_TREE')")
     public OrganizationTreeDTO.InfoDetail getDetail(Long id) {
         OrganizationTree organizationTree = repository.findById(id)
                 .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
