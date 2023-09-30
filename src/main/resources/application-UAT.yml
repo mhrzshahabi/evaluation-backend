@@ -30,6 +30,7 @@ nicico:
       sys-password: password
   hrmClient: 'http://uat.icico.net.ir/hrm/api/v1'
   hrmBackend: 'http://uat.icico.net.ir/hrm-backend/api/v1'
+  oauthBackend: 'http://uat.icico.net.ir/api'
   hrm-password: password
 
   upload:
