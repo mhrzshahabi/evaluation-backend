@@ -4,6 +4,7 @@ import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.model.EvaluationPeriod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -65,4 +66,8 @@ public interface EvaluationPeriodRepository extends JpaRepository<EvaluationPeri
                 AND eval.status_catalog_id = :statusId
             """, nativeQuery = true)
     List<EvaluationPeriodDTO.RemainDate> findAllByAssessorAndStartDateAssessmentAndStatusId(String nationalCode, String toDayDate, Long statusId);
+
+    @Modifying
+    @Query(value = "update EvaluationPeriod evalPeriod set evalPeriod.statusCatalogId = :statusCatalogId where evalPeriod.endDateAssessment < :toDayDate")
+    void updateEvaluationPeriodStatus(Long statusCatalogId, String toDayDate);
 }
