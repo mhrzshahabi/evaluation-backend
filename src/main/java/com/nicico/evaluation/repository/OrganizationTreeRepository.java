@@ -19,4 +19,6 @@ public interface OrganizationTreeRepository extends JpaRepository<OrganizationTr
     Optional<OrganizationTree> findFirstByPostCode(String postCode);
 
     Long countByPostParentId(Long postId);
+
+    List<OrganizationTree> findAllByPostIdInAndNationalCodeIsNotNullOrderByPostLevelDesc(List<Long> postIds);
 }

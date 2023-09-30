@@ -201,6 +201,14 @@ public class EvaluationService implements IEvaluationService {
             Long methodCatalogId = methodTypes.stream().filter(x -> x.getCode().equals("Special-case")).findFirst().orElseThrow().getId();
             evaluation.setMethodCatalogId(methodCatalogId);
         } else {
+
+            if (Objects.isNull(orgTreeInfo.getNationalCodeParent()) && Objects.nonNull(orgTreeInfo.getPostPath())) {
+                List<Long> postIds = Arrays.stream(orgTreeInfo.getPostPath().split("/")).map(Long::valueOf).toList();
+                orgTreeInfo = organizationTreeService.getByPostIds(postIds).stream().findFirst().orElseThrow();
+            } else if (Objects.isNull(orgTreeInfo.getNationalCodeParent()) && Objects.isNull(orgTreeInfo.getPostPath())) {
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
+                        messageSource.getMessage("exception.evaluation.national-code.not.found", new Object[]{evaluationCreate.getPostCode()}, LocaleContextHolder.getLocale()));
+            }
             evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode());
             evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent());
             evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent() + " " + orgTreeInfo.getLastNameParent());
