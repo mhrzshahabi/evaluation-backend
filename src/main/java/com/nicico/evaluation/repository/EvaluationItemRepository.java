@@ -30,7 +30,7 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
 
     @Query(value = """
             SELECT
-                SUM(tbl_evaluation_item.questionnaire_answer_catalog_value)
+                SUM(tbl_evaluation_item.questionnaire_answer_catalog_value) * 100 / tbl_group_type.n_weight
             FROM
                 tbl_evaluation_item
                 LEFT JOIN tbl_group_type_merit ON tbl_group_type_merit.id = tbl_evaluation_item.group_type_merit_id
@@ -39,6 +39,9 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
             WHERE
                 evaluation_id = :evaluationId
                 AND tbl_kpi_type.c_title = :kpiTypeTitle
+            GROUP BY
+                tbl_group_type.id,
+                tbl_group_type.n_weight
                           """, nativeQuery = true)
     Long getGroupTypeAverageScoreByEvaluationId(Long evaluationId, String kpiTypeTitle);
 }

@@ -3,6 +3,8 @@ package com.nicico.evaluation.mapper;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.iservice.IEvaluationItemService;
+import com.nicico.evaluation.iservice.IEvaluationService;
+import com.nicico.evaluation.iservice.IGroupTypeService;
 import com.nicico.evaluation.iservice.IPostService;
 import com.nicico.evaluation.model.Evaluation;
 import com.nicico.evaluation.model.Post;
@@ -10,7 +12,10 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static com.nicico.evaluation.utility.EvaluationConstant.LEVEL_DEF_POST;
 
 @Mapper(componentModel = "spring", uses = SpecialCaseMapper.class)
 public abstract class EvaluationMapper {
@@ -18,6 +23,14 @@ public abstract class EvaluationMapper {
     @Lazy
     @Autowired
     private IPostService postService;
+
+    @Lazy
+    @Autowired
+    private IGroupTypeService groupTypeService;
+
+    @Lazy
+    @Autowired
+    private IEvaluationService evaluationService;
 
     @Lazy
     @Autowired
@@ -81,8 +94,10 @@ public abstract class EvaluationMapper {
 
     @Named("getOperationalAverageScore")
     Double getOperationalAverageScore(Long id) {
+        String assessPostCode = Arrays.stream(evaluationService.getById(id).getAssessPostCode().split("/")).findFirst().get();
+        Long groupTypeWeight = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST).stream().findFirst().get().getWeight();
         List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(id);
-        return postMeritTupleDTOList.stream().mapToDouble(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum();
+        return postMeritTupleDTOList.stream().mapToDouble(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum() * 100 / groupTypeWeight;
     }
 
 }
