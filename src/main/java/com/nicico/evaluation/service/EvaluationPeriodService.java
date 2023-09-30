@@ -1,6 +1,7 @@
 package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -516,7 +518,6 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
     private Date changeToSpecialTime(Date date) throws ParseException {
-//        log.info("date " + date + " / ");
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
@@ -531,4 +532,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         log.info("calendar.getTime " + calendar.getTime() + " / ");
         return calendar.getTime();
     }
+
+    @Scheduled(cron = "0 0 1 * * *")
+    @Transactional
+    public void automateChangeStatus() {
+        Long statusCatalogId = catalogService.getByCode(PERIOD_FINALIZED).getId();
+        evaluationPeriodRepository.updateEvaluationPeriodStatus(statusCatalogId, DateUtil.todayDate());
+    }
+
 }

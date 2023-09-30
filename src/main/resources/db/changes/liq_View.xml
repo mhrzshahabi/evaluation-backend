@@ -435,4 +435,24 @@
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1696074824">
+        <dropView ifExists="true" viewName="view_post"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1696074832">
+        <sql>
+            CREATE MATERIALIZED VIEW view_post AS
+            SELECT
+                ROWNUM AS id,
+                post.*
+            FROM
+                (
+                    SELECT
+                        *
+                    FROM
+                        syn_hrm_post
+                ) post
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
