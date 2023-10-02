@@ -101,7 +101,7 @@ public class PostService implements IPostService {
         return mapper.entityToDtoInfoList(allByPostCode);
     }
 
-    @Scheduled(cron = "5 0 0 * * *")
+    @Scheduled(cron = "0 0 2 * * *")
     @Transactional
     public void refreshViewPost() {
         repository.refreshViewPost();
