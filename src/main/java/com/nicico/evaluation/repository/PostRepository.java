@@ -3,6 +3,7 @@ package com.nicico.evaluation.repository;
 import com.nicico.evaluation.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -118,4 +119,12 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
                  )
              """, nativeQuery = true)
     List<Post> findGroupHasNotGroupTypeByPostCode(List<String> postCodes);
+
+    @Modifying
+    @Query(value = """
+            BEGIN
+                dbms_mview.refresh('view_post');
+            END;
+            """, nativeQuery = true)
+    void refreshViewPost();
 }
