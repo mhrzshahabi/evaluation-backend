@@ -15,5 +15,6 @@ public class OAuthCurrentUserDTO {
     @Setter
     public static class principalInfo {
         private String username;
+        private String nationalCode;
     }
 }

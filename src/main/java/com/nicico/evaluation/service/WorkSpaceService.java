@@ -38,13 +38,14 @@ public class WorkSpaceService implements IWorkSpaceService {
     @Override
     @Transactional(readOnly = true)
     public List<Long> workSpaceDetail(String code) {
-        List<Long> meritComponentIds;
+        List<Long> objectIds;
         switch (code) {
-            case "workSpace-meritComponent-admin" -> meritComponentIds = meritComponentService.getAdminWorkInWorkSpace();
-            case "workSpace-meritComponent-expert" -> meritComponentIds = meritComponentAuditService.getExpertWorkInWorkSpace();
-            default -> meritComponentIds = null;
+            case "workSpace-meritComponent-admin" -> objectIds = meritComponentService.getAdminWorkInWorkSpace();
+            case "workSpace-meritComponent-expert" -> objectIds = meritComponentAuditService.getExpertWorkInWorkSpace();
+            case "workSpace-evaluation-assessor" -> objectIds = evaluationService.getAssessorWorkInWorkSpace();
+            default -> objectIds = null;
         }
-        return meritComponentIds;
+        return objectIds;
     }
 
     @Override
@@ -66,6 +67,7 @@ public class WorkSpaceService implements IWorkSpaceService {
             switch (item.getCode()) {
                 case "workSpace-meritComponent-admin" -> number = meritComponentService.getNumberOfAdminWorkInWorkSpace();
                 case "workSpace-meritComponent-expert" -> number  = meritComponentAuditService.getNumberOfExpertWorkInWorkSpaceNotification(token);
+                case "workSpace-evaluation-assessor" -> number  = evaluationService.getNumberOfAssessorWorkInWorkSpaceNotification(token);
                 default -> number = null;
             }
             WorkSpaceDTO.Info info = modelMapper.map(item, WorkSpaceDTO.Info.class);

@@ -2,6 +2,7 @@ package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
+import com.nicico.evaluation.iservice.IEvaluationService;
 import com.nicico.evaluation.iservice.IMeritComponentAuditService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import org.mapstruct.*;
@@ -12,6 +13,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class WorkSpaceMapper {
+
+    @Lazy
+    @Autowired
+    private IEvaluationService evaluationService;
 
     @Lazy
     @Autowired
@@ -34,6 +39,7 @@ public abstract class WorkSpaceMapper {
         switch (code) {
             case "workSpace-meritComponent-admin" -> numberOfWork = meritComponentService.getNumberOfAdminWorkInWorkSpace();
             case "workSpace-meritComponent-expert" -> numberOfWork = meritComponentAuditService.getNumberOfExpertWorkInWorkSpace();
+            case "workSpace-evaluation-assessor" -> numberOfWork = evaluationService.getNumberOfAssessorWorkInWorkSpace();
             default -> numberOfWork = 0;
         }
         return numberOfWork;

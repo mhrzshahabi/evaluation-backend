@@ -205,4 +205,27 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
     List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(Long periodId, String omoorCode, int pageNumber, int pageSize);
 
     List<Evaluation> findAllByIdIn(List<Long> ids);
+
+    @Query(value = """
+             SELECT
+                 COUNT(*)
+             FROM
+                 tbl_evaluation
+             WHERE
+                 status_catalog_id = :awaitingReviewStatusId
+                 AND c_assessor_national_code = :nationalCode
+            """, nativeQuery = true)
+    Integer getNumberOfAssessorWorkInWorkSpace(Long awaitingReviewStatusId, String nationalCode);
+
+    @Query(value = """
+             SELECT
+                 id
+             FROM
+                 tbl_evaluation
+             WHERE
+                 status_catalog_id = :awaitingReviewStatusId
+                 AND c_assessor_national_code = :nationalCode
+            """, nativeQuery = true)
+    List<Long> getAssessorWorkInWorkSpace(Long awaitingReviewStatusId, String nationalCode);
+
 }

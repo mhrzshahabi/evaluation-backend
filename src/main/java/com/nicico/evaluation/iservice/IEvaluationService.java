@@ -49,4 +49,11 @@ public interface IEvaluationService {
 
     ResponseEntity<byte[]> downloadInvalidPostExcel(List<Long> evaluationIds) throws NoSuchFieldException, IllegalAccessException;
 
+    Integer getNumberOfAssessorWorkInWorkSpace();
+
+    List<Long> getAssessorWorkInWorkSpace();
+
+    Integer getNumberOfAssessorWorkInWorkSpaceNotification(String token);
+
+
 }

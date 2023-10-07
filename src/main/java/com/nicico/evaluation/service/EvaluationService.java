@@ -20,18 +20,21 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTimeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,6 +47,13 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 @Slf4j
 @Service
 public class EvaluationService implements IEvaluationService {
+
+    @Value("${nicico.oauthBackend}")
+    private String oAuthUrl;
+
+    @Autowired
+    @Qualifier("oauthToken")
+    private RestTemplate restTemplateOAuth;
 
     private final EvaluationMapper mapper;
     private final IPostService postService;
@@ -588,6 +598,42 @@ public class EvaluationService implements IEvaluationService {
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
                 .body(excelDownload.getContent());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getNumberOfAssessorWorkInWorkSpace() {
+        String nationalCode = SecurityUtil.getNationalCode();
+        return repository.getNumberOfAssessorWorkInWorkSpace(catalogService.getByCode("Awaiting-review").getId(), nationalCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getAssessorWorkInWorkSpace() {
+        String nationalCode = SecurityUtil.getNationalCode();
+        return repository.getAssessorWorkInWorkSpace(catalogService.getByCode("Awaiting-review").getId(), nationalCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getNumberOfAssessorWorkInWorkSpaceNotification(String token) {
+        String nationalCode;
+        String url = oAuthUrl + "/tokens/" + token;
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, null);
+        try {
+            OAuthCurrentUserDTO oAuthCurrentUserDTO = restTemplateOAuth.exchange(url, HttpMethod.GET, entity, OAuthCurrentUserDTO.class).getBody();
+            if (oAuthCurrentUserDTO != null) {
+                nationalCode = oAuthCurrentUserDTO.getPrincipal().getNationalCode();
+                if (nationalCode != null)
+                    return repository.getNumberOfAssessorWorkInWorkSpace(catalogService.getByCode("Awaiting-review").getId(), nationalCode);
+                else
+                    throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "شخص مورد نظر در سیستم OAuth یافت نشد");
+            } else
+                throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, "شخص مورد نظر در سیستم OAuth یافت نشد");
+        } catch (Exception e) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.Unauthorized, "خطا در دسترسی به سیستم OAuth");
+        }
     }
 
     private List<EvaluationPeriodPostDTO.InvalidPostExcel> createInvalidPostList(List<Long> evaluationIds) {

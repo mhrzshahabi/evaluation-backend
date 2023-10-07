@@ -15,7 +15,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(greetingHandler(), "/anonymous/evaluation-ws/{id}").setAllowedOrigins("*");
         registry.addHandler(workSpaceAlarmHandler(), "/anonymous/evaluation-ws-alarm/{id}").setAllowedOrigins("*");
-//        registry.addHandler(workSpaceAlarmHandler(), "/evaluation-ws-alarm/{id}").setAllowedOrigins("*");
     }
 
     @Bean
