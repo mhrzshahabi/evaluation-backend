@@ -37,7 +37,5 @@ public class SessionsManager {
     public String getAlarmSessionId(WebSocketSession session) {
         return new AntPathMatcher()
                 .extractPathWithinPattern("/anonymous/evaluation-ws-alarm/{id}/**", session.getUri().getPath());
-//        return new AntPathMatcher()
-//                .extractPathWithinPattern("/evaluation-ws-alarm/{id}/**", session.getUri().getPath());
     }
 }
