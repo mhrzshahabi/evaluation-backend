@@ -10,6 +10,8 @@ public interface IOrganizationTreeService {
 
     List<OrganizationTreeDTO.InfoTree> getByPostIds(List<Long> postIds);
 
+    List<String> getByParentNationalCode();
+
     OrganizationTreeDTO.InfoDetail getDetail(Long id);
 
     List<OrganizationTreeDTO.InfoTree> list(int count, int startIndex, Long orgStructureId, Long postParentId);

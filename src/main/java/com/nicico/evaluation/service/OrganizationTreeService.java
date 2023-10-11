@@ -2,6 +2,7 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.OrganizationTreeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -45,6 +46,13 @@ public class OrganizationTreeService implements IOrganizationTreeService {
         if (organizationTrees == null || organizationTrees.isEmpty())
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
         return mapper.entityToDtoInfoList(organizationTrees);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getByParentNationalCode() {
+        String nationalCode = SecurityUtil.getNationalCode();
+        return repository.getByParentNationalCode(nationalCode);
     }
 
     @Override
