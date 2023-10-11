@@ -20,25 +20,4 @@ public abstract class WorkSpaceDTO {
         private String description;
         private Integer number;
     }
-
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("WorkSpaceSpecResponse")
-//    public static class SpecResponse {
-//        private Response response;
-//    }
-//
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("WorkSpaceResponse")
-//    public static class Response {
-//        private List<Info> data;
-//        private Integer status;
-//        private Integer startRow;
-//        private Integer endRow;
-//        private Integer totalRows;
-//    }
-
 }
