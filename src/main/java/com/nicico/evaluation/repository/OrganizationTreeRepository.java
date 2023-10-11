@@ -4,6 +4,7 @@ import com.nicico.evaluation.model.OrganizationTree;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,4 +22,8 @@ public interface OrganizationTreeRepository extends JpaRepository<OrganizationTr
     Long countByPostParentId(Long postId);
 
     List<OrganizationTree> findAllByPostIdInAndNationalCodeIsNotNullOrderByPostLevelDesc(List<Long> postIds);
+
+    @Query(value = "select postCode from OrganizationTree where nationalCodeParent= :nationalCode and nationalCode is not Null")
+    List<String> getByParentNationalCode(String nationalCode);
+
 }
