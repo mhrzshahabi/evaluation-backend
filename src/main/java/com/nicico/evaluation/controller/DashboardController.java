@@ -1,6 +1,7 @@
 package com.nicico.evaluation.controller;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 import com.nicico.evaluation.iservice.IWorkSpaceService;
 import io.swagger.annotations.Api;
@@ -49,7 +50,7 @@ public class DashboardController {
      * @return that contain list of evaluationPeriodList By User
      */
     @PostMapping(value = "/evaluation-period/list")
-    public ResponseEntity<EvaluationDTO.SpecResponse> evaluationPeriodListByUser(@RequestParam int count, @RequestParam int startIndex) {
+    public ResponseEntity<List<EvaluationPeriodDTO.Info>> evaluationPeriodListByUser(@RequestParam int count, @RequestParam int startIndex) {
         return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(count, startIndex), HttpStatus.OK);
     }
 

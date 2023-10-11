@@ -4,6 +4,7 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.WorkSpaceMapper;
@@ -16,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.FINALIZED;
+import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_FINALIZED;
+
 @RequiredArgsConstructor
 @Service
 public class WorkSpaceService implements IWorkSpaceService {
@@ -25,6 +29,7 @@ public class WorkSpaceService implements IWorkSpaceService {
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
     private final IEvaluationService evaluationService;
+    private final IEvaluationPeriodService evaluationPeriodService;
     private final IMeritComponentService meritComponentService;
     private final IMeritComponentAuditService meritComponentAuditService;
 
@@ -79,10 +84,11 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex) {
+    public List<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex) {
         String userNationalCode = SecurityUtil.getNationalCode();
-        Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
-        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, count, startIndex);
+        Long finalizedStatusCatalogId = catalogService.getByCode(FINALIZED).getId();
+        Long periodStatusId = catalogService.getByCode(PERIOD_FINALIZED).getId();
+        return evaluationPeriodService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, periodStatusId, count, startIndex);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface IWorkSpaceService {
 
     List<WorkSpaceDTO.Info> workSpaceAlarmNotification(List<String> workSpaceCodeList, String token);
 
-    EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex);
+    List<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex);
 
     EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId);
 
