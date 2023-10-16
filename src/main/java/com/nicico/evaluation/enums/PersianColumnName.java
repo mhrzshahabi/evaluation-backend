@@ -28,8 +28,8 @@ public enum PersianColumnName {
     COSTCENTERCODE("کد مرکز هزینه"),
     GROUPTITLE("گروه"),
     TOTALWEIGHTGROUP("مجموع وزن گروه"),
-    TOTALWEIGHTDEVELOPMENT(" مجموع وزن مولفه های توسعه ای"),
-    TOTALWEIGHTOPERATIONAL("مجموع وزن مولفه های عملکردی"),
+    TOTALWEIGHTDEVELOPMENT("مجموع وزن مولفه های توسعه شایستگی"),
+    TOTALWEIGHTOPERATIONAL("مجموع وزن مولفه های نتیجه ای"),
     TOTALWEIGHTBEHAVIORAL("مجموع وزن مولفه های رفتاری"),
     POSTCOMPANYNAME("شرکت");
 

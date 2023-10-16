@@ -1,6 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.GroupTypeByGroupByDTO;
@@ -20,10 +19,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.nicico.evaluation.utility.CriteriaUtil.makeCriteria;
 
 @RequiredArgsConstructor
 @Service
@@ -54,7 +54,7 @@ public class GroupTypeService implements IGroupTypeService {
         List<GroupType> groupType = repository.findAllByPeriodId(periodId);
         return mapper.entityToDtoInfoList(groupType);
     }
-    
+
     @Override
     public List<GroupTypeDTO.Info> getAllByPostCodes(List<String> postCodes) {
         List<GroupType> groupType = repository.findAllByPostCodes(postCodes);
@@ -180,13 +180,6 @@ public class GroupTypeService implements IGroupTypeService {
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
 
-        if (Objects.nonNull(request.getCriteria()) && Objects.nonNull(request.getCriteria().getCriteria())) {
-            Optional<SearchDTO.CriteriaRq> criteriaRqs = request.getCriteria().getCriteria().stream().filter(q -> q.getFieldName().equals("groupName")).findFirst();
-            if (criteriaRqs.isPresent()) {
-                SearchDTO.CriteriaRq criteriaRq = makeCriteria("group.title", criteriaRqs.get().getValue(), EOperator.contains, new ArrayList<>());
-                request.setCriteria(criteriaRq);
-            }
-        }
         SearchDTO.SearchRs<GroupTypeDTO.Info> infoSearchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
         List<GroupTypeDTO.Info> info = infoSearchRs.getList().stream().toList();
         int kpiSize = kpiTypeService.findAll().size();
@@ -212,7 +205,7 @@ public class GroupTypeService implements IGroupTypeService {
             groupByInfoList.add(groupByInfo);
         });
         searchRs.setList(groupByInfoList);
-        searchRs.setTotalCount((long) groupByInfoList.size());
+        searchRs.setTotalCount((long) repository.findAll().size());
         return searchRs;
     }
 }

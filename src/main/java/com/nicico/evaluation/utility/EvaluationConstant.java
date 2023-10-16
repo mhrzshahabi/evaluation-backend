@@ -39,8 +39,8 @@ public class EvaluationConstant {
     public static final String AWAITING_REVOKE_MERIT = "Awaiting-Revoke-Merit";
     public static final String RE_EXAMINATION_MERIT = "Re-Examination-Merit";
 
-    public static final String KPI_TYPE_TITLE_OPERATIONAL = "عملکردی";
-    public static final String KPI_TYPE_TITLE_DEVELOPMENT = "توسعه ای";
+    public static final String KPI_TYPE_TITLE_OPERATIONAL = "نتیجه ای";
+    public static final String KPI_TYPE_TITLE_DEVELOPMENT = "توسعه شایستگی ها";
     public static final String KPI_TYPE_TITLE_BEHAVIORAL = "رفتاری";
 
 }
