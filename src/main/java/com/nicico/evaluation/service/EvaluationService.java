@@ -294,9 +294,15 @@ public class EvaluationService implements IEvaluationService {
         final SearchDTO.CriteriaRq assessorPostCodeCriteriaRq = new SearchDTO.CriteriaRq()
                 .setOperator(EOperator.inSet)
                 .setFieldName("assessorPostCode")
-                .setValue(postCodeList);
+                .setValue(!postCodeList.isEmpty() ? postCodeList : "0");
+
+        final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("statusCatalogId")
+                .setValue(catalogService.getByCode(FINALIZED).getId());
 
         criteriaRqList.add(assessorPostCodeCriteriaRq);
+        criteriaRqList.add(statusCriteriaRq);
         criteriaRqList.add(request.getCriteria());
 
         final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
