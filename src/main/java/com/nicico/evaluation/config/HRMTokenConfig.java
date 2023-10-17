@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -36,6 +37,7 @@ public class HRMTokenConfig {
     @Value("${nicico.security.sys-password}")
     private String sysPassword;
 
+    @Lazy
     @Bean("hrmToken")
     public OAuth2RestTemplate reInitialize() {
         ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
@@ -51,6 +53,7 @@ public class HRMTokenConfig {
         return restTemplate;
     }
 
+    @Lazy
     @Bean("oauthToken")
     public OAuth2RestTemplate reInitializeOAUTH() {
         ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
