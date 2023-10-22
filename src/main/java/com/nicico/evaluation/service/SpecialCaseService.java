@@ -128,7 +128,7 @@ public class SpecialCaseService implements ISpecialCaseService {
                 createDto.setAssessorFullName(assessor.get().getFullName());
                 createDto.setAssessorNationalCode(assessor.get().getNationalCode());
                 createDto.setAssessorPostCode(assessor.get().getPostCode());
-                createDto.setAssessRealPostCode(assessor.get().getPostCode());
+                createDto.setAssessRealPostCode(dto.getAssessRealPostCode());
                 dto.setStartDate(dto.getStartDate().replaceAll("-", "/"));
                 createDto.setStartDate(new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(dto.getStartDate())));
                 dto.setEndDate(dto.getEndDate().replaceAll("-", "/"));

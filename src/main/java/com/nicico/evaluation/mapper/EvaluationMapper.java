@@ -89,7 +89,7 @@ public abstract class EvaluationMapper {
 
     @Named("getDevelopmentAverageScore")
     Long getDevelopmentAverageScore(Long id) {
-        return evaluationItemService.getGroupTypeAverageScoreByEvaluationId(id, "توسعه ای");
+        return evaluationItemService.getGroupTypeAverageScoreByEvaluationId(id, "توسعه شایستگی ها");
     }
 
     @Named("getOperationalAverageScore")

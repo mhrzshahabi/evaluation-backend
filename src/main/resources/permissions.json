@@ -1,6 +1,78 @@
 {
   "list": [
     {
+      "code": "R_MENU_DASHBOARD",
+      "title": "نمایش منو داشبورد"
+    },
+    {
+      "code": "R_MENU_BASE_INFO",
+      "title": "نمایش منو اطلاعات پایه"
+    },
+    {
+      "code": "R_MENU_EVALUATION",
+      "title": "نمایش منو ارزیابی"
+    },
+    {
+      "code": "R_MENU_BATCH",
+      "title": "نمایش منو اسنادها"
+    },
+    {
+      "code": "R_MENU_REPORTS",
+      "title": "نمایش منو گزارشات"
+    },
+    {
+      "code": "R_SUB_MENU_GROUP_TYPE",
+      "title": "نمایش زیرمنو گروه-نوع"
+    },
+    {
+      "code": "R_SUB_MENU_MERIT_COMPONENT",
+      "title": "نمایش زیرمنو مولفه شایستگی"
+    },
+    {
+      "code": "R_SUB_MENU_POST",
+      "title": "نمایش زیرمنو پست"
+    },
+    {
+      "code": "R_SUB_MENU_PERSON",
+      "title": "نمایش زیرمنو اشخاص"
+    },
+    {
+      "code": "R_SUB_MENU_PERSONNEL",
+      "title": "نمایش زیرمنو کارکنان"
+    },
+    {
+      "code": "R_SUB_MENU_ORGANIZATION",
+      "title": "نمایش زیرمنو سازمان"
+    },
+    {
+      "code": "R_SUB_MENU_EVALUATION_PERIOD",
+      "title": "نمایش زیرمنو دوره ارزیابی"
+    },
+    {
+      "code": "R_SUB_MENU_SPECIAL_CASE",
+      "title": "نمایش زیرمنو موارد خاص"
+    },
+    {
+      "code": "R_SUB_MENU_SENSITIVE_EVENTS",
+      "title": "نمایش زیرمنو وقایع حساس"
+    },
+    {
+      "code": "R_SUB_MENU_EVALUATION",
+      "title": "نمایش زیرمنو ارزیابی"
+    },
+    {
+      "code": "R_SUB_MENU_EVALUATION_COMPLETE",
+      "title": "نمایش زیرمنو تکمیل ارزیابی"
+    },
+    {
+      "code": "R_SUB_MENU_BATCH",
+      "title": "نمایش زیرمنو اسناد گروهی"
+    },
+    {
+      "code": "R_SUB_MENU_LAST_FINALIZED_EVALUATION",
+      "title": "نمایش زیرمنو آخرین ارزیابی نهایی شده"
+    },
+    {
       "code": "R_KPI_TYPE",
       "title": "نمایش نوع شاخص"
     },
