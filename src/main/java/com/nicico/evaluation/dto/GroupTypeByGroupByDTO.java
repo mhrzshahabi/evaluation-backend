@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -36,12 +33,25 @@ public abstract class GroupTypeByGroupByDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("GroupTypeResponseByGroupBy")
-    public static class Response{
+    public static class Response {
         private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+
+    @Accessors(chain = true)
+    @ApiModel("ResponseByGroupBy")
+    public interface Resp {
+        String getTitle();
+
+        Long getGroupId();
+
+        Long getTotalWeight();
+
+        Long getHasAllKpiType();
     }
 
 }

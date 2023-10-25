@@ -1,6 +1,8 @@
 package com.nicico.evaluation.controller;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 import com.nicico.evaluation.iservice.IWorkSpaceService;
 import io.swagger.annotations.Api;
@@ -50,7 +52,15 @@ public class DashboardController {
      */
     @PostMapping(value = "/evaluation-period/list")
     public ResponseEntity<EvaluationDTO.SpecResponse> evaluationPeriodListByUser(@RequestParam int count, @RequestParam int startIndex) {
-        return new ResponseEntity<>(workSpaceService.evaluationPeriodListByUser(count, startIndex), HttpStatus.OK);
+        SearchDTO.SearchRs<EvaluationPeriodDTO.Info> infoSearchRs = workSpaceService.evaluationPeriodListByUser(count, startIndex);
+        final EvaluationDTO.Response response = new EvaluationDTO.Response();
+        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
+        response.setData(infoSearchRs.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + infoSearchRs.getList().size())
+                .setTotalRows(infoSearchRs.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     /**
