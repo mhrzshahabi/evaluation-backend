@@ -27,11 +27,11 @@ public abstract class GroupTypeMapper {
 
     public abstract List<GroupTypeDTO.Info> entityToDtoInfoList(List<GroupType> entities);
 
-    public abstract List<GroupTypeDTO.Info> dtoInfoToGroupByDtoList(List<GroupTypeByGroupByDTO.Resp> groupByDtoList);
+    public abstract List<GroupTypeDTO.GroupByInfo> dtoInfoToGroupByDtoList(List<GroupTypeByGroupByDTO.Resp> groupByDtoList);
 
     @Mapping(target = "hasAllKpiType", source = "hasAllKpiType", qualifiedByName = "setHasAllKpiType")
-    @Mapping(target = "group.title", source = "title")
-    public abstract GroupTypeDTO.Info dtoInfoToGroupByDto(GroupTypeByGroupByDTO.Resp groupByDto);
+    @Mapping(target = "groupName", source = "title")
+    public abstract GroupTypeDTO.GroupByInfo dtoInfoToGroupByDto(GroupTypeByGroupByDTO.Resp groupByDto);
 
     public abstract void update(@MappingTarget GroupType entity, GroupTypeDTO.Update dto);
 

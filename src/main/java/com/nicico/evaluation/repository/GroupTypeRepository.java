@@ -78,4 +78,29 @@ public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, Jpa
             """, nativeQuery = true)
     List<GroupTypeByGroupByDTO.Resp> findAllByGroupBy(int pageNumber, int pageSize);
 
+    @Query(value = """
+            SELECT
+                  COUNT(*)
+            FROM
+              (
+                  SELECT
+                      MAX(group1.c_title) title,
+                      gtype.group_id groupid,
+                      SUM(gtype.n_weight) totalweight,
+                      CASE COUNT(ktype.id)\s
+                             WHEN 3 THEN
+                                 1
+                             ELSE
+                                 0
+                         END hasAllKpiType
+                  FROM
+                      tbl_group_type   gtype
+                      JOIN tbl_kpi_type     ktype ON ktype.id = gtype.kpi_type_id
+                      JOIN tbl_group        group1 ON group1.id = gtype.group_id
+                  GROUP BY
+                      gtype.group_id
+              )
+            """, nativeQuery = true)
+    Long totalCountByGroupBy();
+
 }
