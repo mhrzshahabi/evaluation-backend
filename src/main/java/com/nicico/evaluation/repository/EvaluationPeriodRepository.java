@@ -70,4 +70,11 @@ public interface EvaluationPeriodRepository extends JpaRepository<EvaluationPeri
     @Modifying
     @Query(value = "update EvaluationPeriod evalPeriod set evalPeriod.statusCatalogId = :statusCatalogId where evalPeriod.endDateAssessment < :toDayDate")
     void updateEvaluationPeriodStatus(Long statusCatalogId, String toDayDate);
+
+    @Query(value = "select period.* from tbl_evaluation_period period " +
+            " join tbl_evaluation eval on eval.EVALUATION_PERIOD_ID = period.id " +
+            " where eval.STATUS_CATALOG_ID = :statusCatalogId and eval.C_ASSESS_NATIONAL_CODE = :assessNationalCode and " +
+            " period.STATUS_CATALOG_ID = :periodStatusId " +
+            " OFFSET :pageNumber ROWS FETCH NEXT :pageSize ROWS ONLY ", nativeQuery = true)
+    List<EvaluationPeriod> findAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId, Long periodStatusId, int pageNumber, int pageSize);
 }

@@ -86,6 +86,14 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<EvaluationPeriodDTO.Info> getAllByAssessNationalCodeAndStatusCatalogId(String assessNationalCode, Long statusCatalogId, Long periodStatusId, int count, int startIndex) {
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        List<EvaluationPeriod> evaluationPeriodList = evaluationPeriodRepository.findAllByAssessNationalCodeAndStatusCatalogId(assessNationalCode, statusCatalogId, periodStatusId, pageable.getPageNumber(), pageable.getPageSize());
+        return evaluationPeriodMapper.entityToDtoInfoList(evaluationPeriodList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
     public List<EvaluationPeriodDTO.RemainDate> getAllByCreatorAndRemainDateToEndDateValidation(String creator, String toDayDate, Long statusId) {
         return evaluationPeriodRepository.findAllByCreatorAndRemainDateToEndDateValidation(creator, toDayDate, statusId);

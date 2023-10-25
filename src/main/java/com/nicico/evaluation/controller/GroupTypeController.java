@@ -1,9 +1,7 @@
 package com.nicico.evaluation.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.dto.GroupTypeByGroupByDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IGroupTypeService;
@@ -129,16 +127,32 @@ public class GroupTypeController {
      * @return TotalResponse<GroupTypeByGroupByDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list/group-by")
-    public ResponseEntity<GroupTypeByGroupByDTO.SpecResponse> searchByGroupBy(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                            @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                            @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<GroupTypeDTO.SpecResponse> searchByGroupBy(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                     @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                     @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> data = service.searchByGroupBy(request);
-        final GroupTypeByGroupByDTO.Response response = new GroupTypeByGroupByDTO.Response();
-        final GroupTypeByGroupByDTO.SpecResponse specRs = new GroupTypeByGroupByDTO.SpecResponse();
+        SearchDTO.SearchRs<GroupTypeDTO.Info> data = service.searchByGroupBy(count, startIndex, request);
+        final GroupTypeDTO.Response response = new GroupTypeDTO.Response();
+        final GroupTypeDTO.SpecResponse specRs = new GroupTypeDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @return TotalResponse<GroupTypeByGroupByDTO.Info> is the list of groupInfo entity that match the criteria
+     */
+    @PostMapping(value = "/list/by-group-id")
+    public ResponseEntity<GroupTypeDTO.SpecResponse> findAllByGroupId(@RequestParam Long groupId) {
+        SearchDTO.SearchRs<GroupTypeDTO.Info> data = service.searchByGroupId(groupId);
+        final GroupTypeDTO.Response response = new GroupTypeDTO.Response();
+        final GroupTypeDTO.SpecResponse specRs = new GroupTypeDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(0)
+                .setEndRow(data.getList().size())
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);

@@ -1,9 +1,11 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
 import com.nicico.evaluation.iservice.*;
 import com.nicico.evaluation.mapper.WorkSpaceMapper;
@@ -16,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nicico.evaluation.utility.EvaluationConstant.FINALIZED;
+import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_FINALIZED;
+
 @RequiredArgsConstructor
 @Service
 public class WorkSpaceService implements IWorkSpaceService {
@@ -25,6 +30,7 @@ public class WorkSpaceService implements IWorkSpaceService {
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
     private final IEvaluationService evaluationService;
+    private final IEvaluationPeriodService evaluationPeriodService;
     private final IMeritComponentService meritComponentService;
     private final IMeritComponentAuditService meritComponentAuditService;
 
@@ -66,8 +72,8 @@ public class WorkSpaceService implements IWorkSpaceService {
             Integer number;
             switch (item.getCode()) {
                 case "workSpace-meritComponent-admin" -> number = meritComponentService.getNumberOfAdminWorkInWorkSpace();
-                case "workSpace-meritComponent-expert" -> number  = meritComponentAuditService.getNumberOfExpertWorkInWorkSpaceNotification(token);
-                case "workSpace-evaluation-assessor" -> number  = evaluationService.getNumberOfAssessorWorkInWorkSpaceNotification(token);
+                case "workSpace-meritComponent-expert" -> number = meritComponentAuditService.getNumberOfExpertWorkInWorkSpaceNotification(token);
+                case "workSpace-evaluation-assessor" -> number = evaluationService.getNumberOfAssessorWorkInWorkSpaceNotification(token);
                 default -> number = null;
             }
             WorkSpaceDTO.Info info = modelMapper.map(item, WorkSpaceDTO.Info.class);
@@ -79,10 +85,15 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public EvaluationDTO.SpecResponse evaluationPeriodListByUser(int count, int startIndex) {
+    public SearchDTO.SearchRs<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex) {
         String userNationalCode = SecurityUtil.getNationalCode();
-        Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
-        return evaluationService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, count, startIndex);
+        Long finalizedStatusCatalogId = catalogService.getByCode(FINALIZED).getId();
+        Long periodStatusId = catalogService.getByCode(PERIOD_FINALIZED).getId();
+        List<EvaluationPeriodDTO.Info> allByAssessNationalCodeAndStatusCatalogId = evaluationPeriodService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, periodStatusId, count, startIndex);
+        SearchDTO.SearchRs<EvaluationPeriodDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(allByAssessNationalCodeAndStatusCatalogId);
+        searchRs.setTotalCount((long) allByAssessNationalCodeAndStatusCatalogId.size());
+        return searchRs;
     }
 
     @Override
