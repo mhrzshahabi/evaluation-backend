@@ -1,6 +1,7 @@
 package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.GroupDTO;
+import com.nicico.evaluation.dto.GroupTypeByGroupByDTO;
 import com.nicico.evaluation.dto.GroupTypeDTO;
 import com.nicico.evaluation.model.GroupType;
 import org.mapstruct.Mapper;
@@ -26,10 +27,21 @@ public abstract class GroupTypeMapper {
 
     public abstract List<GroupTypeDTO.Info> entityToDtoInfoList(List<GroupType> entities);
 
+    public abstract List<GroupTypeDTO.Info> dtoInfoToGroupByDtoList(List<GroupTypeByGroupByDTO.Resp> groupByDtoList);
+
+    @Mapping(target = "hasAllKpiType", source = "hasAllKpiType", qualifiedByName = "setHasAllKpiType")
+    @Mapping(target = "group.title", source = "title")
+    public abstract GroupTypeDTO.Info dtoInfoToGroupByDto(GroupTypeByGroupByDTO.Resp groupByDto);
+
     public abstract void update(@MappingTarget GroupType entity, GroupTypeDTO.Update dto);
 
     @Named("setGroupGrade")
     GroupDTO.Info setGroupGrade(GroupType entity) {
         return groupMapper.entityToDtoInfo(entity.getGroup());
+    }
+
+    @Named("setHasAllKpiType")
+    Boolean setHasAllKpiType(String hasAllKpiType) {
+        return Boolean.getBoolean(hasAllKpiType);
     }
 }
