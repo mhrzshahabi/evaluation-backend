@@ -103,6 +103,7 @@ public class BatchDetailService implements IBatchDetailService {
                     BatchDetail batchDetail = mapper.dtoCreateToEntity(create);
                     repository.save(batchDetail);
                     response.setStatus(HttpStatus.OK.value());
+                    response.setMessage("عملیات درحال انجام است");
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
