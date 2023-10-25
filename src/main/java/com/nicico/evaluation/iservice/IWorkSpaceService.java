@@ -1,5 +1,6 @@
 package com.nicico.evaluation.iservice;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.WorkSpaceDTO;
@@ -16,7 +17,7 @@ public interface IWorkSpaceService {
 
     List<WorkSpaceDTO.Info> workSpaceAlarmNotification(List<String> workSpaceCodeList, String token);
 
-    List<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex);
+   SearchDTO.SearchRs<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex);
 
     EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId);
 

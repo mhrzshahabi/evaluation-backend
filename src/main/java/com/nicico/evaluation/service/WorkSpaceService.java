@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
@@ -71,8 +72,8 @@ public class WorkSpaceService implements IWorkSpaceService {
             Integer number;
             switch (item.getCode()) {
                 case "workSpace-meritComponent-admin" -> number = meritComponentService.getNumberOfAdminWorkInWorkSpace();
-                case "workSpace-meritComponent-expert" -> number  = meritComponentAuditService.getNumberOfExpertWorkInWorkSpaceNotification(token);
-                case "workSpace-evaluation-assessor" -> number  = evaluationService.getNumberOfAssessorWorkInWorkSpaceNotification(token);
+                case "workSpace-meritComponent-expert" -> number = meritComponentAuditService.getNumberOfExpertWorkInWorkSpaceNotification(token);
+                case "workSpace-evaluation-assessor" -> number = evaluationService.getNumberOfAssessorWorkInWorkSpaceNotification(token);
                 default -> number = null;
             }
             WorkSpaceDTO.Info info = modelMapper.map(item, WorkSpaceDTO.Info.class);
@@ -84,11 +85,15 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex) {
+    public SearchDTO.SearchRs<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex) {
         String userNationalCode = SecurityUtil.getNationalCode();
         Long finalizedStatusCatalogId = catalogService.getByCode(FINALIZED).getId();
         Long periodStatusId = catalogService.getByCode(PERIOD_FINALIZED).getId();
-        return evaluationPeriodService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, periodStatusId, count, startIndex);
+        List<EvaluationPeriodDTO.Info> allByAssessNationalCodeAndStatusCatalogId = evaluationPeriodService.getAllByAssessNationalCodeAndStatusCatalogId(userNationalCode, finalizedStatusCatalogId, periodStatusId, count, startIndex);
+        SearchDTO.SearchRs<EvaluationPeriodDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(allByAssessNationalCodeAndStatusCatalogId);
+        searchRs.setTotalCount((long) allByAssessNationalCodeAndStatusCatalogId.size());
+        return searchRs;
     }
 
     @Override
