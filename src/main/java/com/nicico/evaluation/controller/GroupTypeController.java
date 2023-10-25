@@ -127,13 +127,13 @@ public class GroupTypeController {
      * @return TotalResponse<GroupTypeByGroupByDTO.Info> is the list of groupInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list/group-by")
-    public ResponseEntity<GroupTypeDTO.SpecResponse> searchByGroupBy(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                     @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
-                                                                     @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<GroupTypeDTO.GroupBySpecResponse> searchByGroupBy(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                            @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                            @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<GroupTypeDTO.Info> data = service.searchByGroupBy(count, startIndex, request);
-        final GroupTypeDTO.Response response = new GroupTypeDTO.Response();
-        final GroupTypeDTO.SpecResponse specRs = new GroupTypeDTO.SpecResponse();
+        SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> data = service.searchByGroupBy(count, startIndex, request);
+        final GroupTypeDTO.GroupByResponse response = new GroupTypeDTO.GroupByResponse();
+        final GroupTypeDTO.GroupBySpecResponse specRs = new GroupTypeDTO.GroupBySpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())

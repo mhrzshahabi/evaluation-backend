@@ -39,7 +39,7 @@ public interface IGroupTypeService {
 
     SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> searchByGroupBy1(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    SearchDTO.SearchRs<GroupTypeDTO.Info> searchByGroupBy(int count, int startIndex, SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+    SearchDTO.SearchRs<GroupTypeDTO.GroupByInfo> searchByGroupBy(int count, int startIndex, SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
     SearchDTO.SearchRs<GroupTypeDTO.Info> searchByGroupId(Long groupId);
 }

@@ -37,6 +37,16 @@ public abstract class GroupTypeDTO {
         private Long totalWeight;
         private Boolean hasAllKpiType;
     }
+    @Getter
+    @Setter
+    @ApiModel("GroupTypeInfo")
+    public static class GroupByInfo extends GroupTypeDTO {
+
+        private Long id;
+        private String groupName;
+        private Long totalWeight;
+        private Boolean hasAllKpiType;
+    }
 
     @Getter
     @Setter
@@ -80,6 +90,14 @@ public abstract class GroupTypeDTO {
         private Response response;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupTypeSpecResponse")
+    public static class GroupBySpecResponse {
+        private GroupByResponse response;
+    }
+
 
     @Getter
     @Setter
@@ -87,6 +105,18 @@ public abstract class GroupTypeDTO {
     @ApiModel("GroupTypeResponse")
     public static class Response {
         private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupTypeResponse")
+    public static class GroupByResponse {
+        private List<GroupByInfo> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
