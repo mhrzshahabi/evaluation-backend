@@ -2044,4 +2044,9 @@
             ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="1698216718" author="MShahabi">
+        <modifyDataType tableName="tbl_batch_detail" columnName="c_description" newDataType="VARCHAR2(3900 CHAR)"/>
+    </changeSet>
+
 </databaseChangeLog>
