@@ -218,14 +218,14 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public SearchDTO.SearchRs<GroupTypeDTO.Info> searchByGroupBy(int count, int startIndex, SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+    public SearchDTO.SearchRs<GroupTypeDTO.Info> searchByGroupBy(int count, int startIndex, SearchDTO.SearchRq request) {
 
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         List<GroupTypeByGroupByDTO.Resp> byGroupBy = repository.findAllByGroupBy(pageable.getPageNumber(), pageable.getPageSize());
         List<GroupTypeDTO.Info> groupByDtoList = mapper.dtoInfoToGroupByDtoList(byGroupBy);
         SearchDTO.SearchRs<GroupTypeDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setList(groupByDtoList);
-        searchRs.setTotalCount((long) groupByDtoList.size());
+        searchRs.setTotalCount(repository.totalCountByGroupBy());
         return searchRs;
     }
 
