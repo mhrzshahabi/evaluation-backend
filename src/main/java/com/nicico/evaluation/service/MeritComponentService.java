@@ -118,7 +118,7 @@ public class MeritComponentService implements IMeritComponentService {
             createAllMeritComponentType(dto.getKpiTypeId(), meritComponentAdd.getId());
             return mapper.entityToDtoInfo(meritComponentAdd);
         } catch (Exception exception) {
-            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotEditable);
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave, "", exception.getMessage());
         }
     }
 
