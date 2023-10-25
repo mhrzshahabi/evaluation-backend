@@ -1,5 +1,6 @@
 package com.nicico.evaluation.repository;
 
+import com.nicico.evaluation.dto.GroupTypeByGroupByDTO;
 import com.nicico.evaluation.model.GroupType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -56,5 +57,25 @@ public interface GroupTypeRepository extends JpaRepository<GroupType, Long>, Jpa
                 )
             """, nativeQuery = true)
     List<GroupType> findAllByPostCodes(List<String> postCodes);
+
+    @Query(value = """
+            SELECT
+               MAX(group1.c_title) title,
+               gtype.group_id groupId,
+               SUM(gtype.n_weight) totalWeight,
+               CASE COUNT(ktype.id) 
+                   WHEN 3 THEN
+                       1
+                   ELSE
+                       0
+               END hasAllKpiType
+            FROM
+                tbl_group_type gtype
+                join tbl_kpi_type ktype on ktype.id = gtype.KPI_TYPE_ID
+                join tbl_group group1 on group1.id = gtype.group_id
+            group by gtype.group_id
+            OFFSET :pageNumber ROWS FETCH NEXT :pageSize ROWS ONLY
+            """, nativeQuery = true)
+    List<GroupTypeByGroupByDTO.Resp> findAllByGroupBy(int pageNumber, int pageSize);
 
 }

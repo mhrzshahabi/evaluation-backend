@@ -62,6 +62,12 @@ public class GroupTypeService implements IGroupTypeService {
     }
 
     @Override
+    public List<GroupTypeDTO.Info> getAllByGroupId(Long groupId) {
+        List<GroupType> groupType = repository.getAllByGroupId(groupId);
+        return mapper.entityToDtoInfoList(groupType);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
     public List<GroupType> getTypeByAssessPostCode(String assessPostCode, String levelDef) {
@@ -178,7 +184,7 @@ public class GroupTypeService implements IGroupTypeService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
-    public SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> searchByGroupBy(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+    public SearchDTO.SearchRs<GroupTypeByGroupByDTO.Info> searchByGroupBy1(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
 
         SearchDTO.SearchRs<GroupTypeDTO.Info> infoSearchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
         List<GroupTypeDTO.Info> info = infoSearchRs.getList().stream().toList();
@@ -206,6 +212,32 @@ public class GroupTypeService implements IGroupTypeService {
         });
         searchRs.setList(groupByInfoList);
         searchRs.setTotalCount((long) repository.findAll().size());
+        return searchRs;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public SearchDTO.SearchRs<GroupTypeDTO.Info> searchByGroupBy(int count, int startIndex, SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        List<GroupTypeByGroupByDTO.Resp> byGroupBy = repository.findAllByGroupBy(pageable.getPageNumber(), pageable.getPageSize());
+        List<GroupTypeDTO.Info> groupByDtoList = mapper.dtoInfoToGroupByDtoList(byGroupBy);
+        SearchDTO.SearchRs<GroupTypeDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(groupByDtoList);
+        searchRs.setTotalCount((long) groupByDtoList.size());
+        return searchRs;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_GROUP_TYPE')")
+    public SearchDTO.SearchRs<GroupTypeDTO.Info> searchByGroupId(Long groupId) {
+
+        List<GroupTypeDTO.Info> allByGroupId = getAllByGroupId(groupId);
+        SearchDTO.SearchRs<GroupTypeDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(allByGroupId);
+        searchRs.setTotalCount((long) allByGroupId.size());
         return searchRs;
     }
 }
