@@ -87,6 +87,9 @@ public class OrganizationTreeDTO {
     public static class InfoTree {
         private Long id;
         private Long postId;
+        private String postCode;
+        private String firstName;
+        private String lastName;
         private Long postParentId;
         private String nameFa;
         private Long childNode;

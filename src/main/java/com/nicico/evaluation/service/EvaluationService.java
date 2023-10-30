@@ -215,14 +215,23 @@ public class EvaluationService implements IEvaluationService {
 
             if (Objects.isNull(orgTreeInfo.getNationalCodeParent()) && Objects.nonNull(orgTreeInfo.getPostPath())) {
                 List<Long> postIds = Arrays.stream(orgTreeInfo.getPostPath().split("/")).map(Long::valueOf).toList();
-                orgTreeInfo = organizationTreeService.getByPostIds(postIds).stream().findFirst().orElseThrow();
+                OrganizationTreeDTO.InfoTree orgTreeInfo1 = organizationTreeService.getByPostIds(postIds).stream().findFirst().orElseThrow();
+                if (Objects.nonNull(orgTreeInfo1)) {
+                    evaluation.setAssessorPostCode(orgTreeInfo1.getPostCode());
+                    evaluation.setAssessorNationalCode(orgTreeInfo1.getNationalCode());
+                    evaluation.setAssessorFullName(orgTreeInfo1.getFirstName() + " " + orgTreeInfo1.getLastName());
+                } else
+                    throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
+                            messageSource.getMessage("exception.evaluation.assessor.not.found", new Object[]{evaluationCreate.getPostCode()}, LocaleContextHolder.getLocale()));
+
             } else if (Objects.isNull(orgTreeInfo.getNationalCodeParent()) && Objects.isNull(orgTreeInfo.getPostPath())) {
                 throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound, null,
                         messageSource.getMessage("exception.evaluation.national-code.not.found", new Object[]{evaluationCreate.getPostCode()}, LocaleContextHolder.getLocale()));
+            } else {
+                evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode());
+                evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent());
+                evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent() + " " + orgTreeInfo.getLastNameParent());
             }
-            evaluation.setAssessorPostCode(orgTreeInfo.getPostParentCode());
-            evaluation.setAssessorNationalCode(orgTreeInfo.getNationalCodeParent());
-            evaluation.setAssessorFullName(orgTreeInfo.getFirstNameParent() + " " + orgTreeInfo.getLastNameParent());
             evaluation.setAssessFullName(orgTreeInfo.getFullName());
             evaluation.setAssessNationalCode(orgTreeInfo.getNationalCode());
             evaluation.setAssessPostCode(evaluationCreate.getPostCode());
