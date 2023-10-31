@@ -9,6 +9,7 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationService;
+import com.nicico.evaluation.iservice.IEvaluationViewService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import io.swagger.annotations.Api;
@@ -47,6 +48,7 @@ public class EvaluationController {
 
     private final SSEEngine sseEngine;
     private final IEvaluationService service;
+    private final IEvaluationViewService serviceView;
     private final ICatalogService catalogService;
     private final ResourceBundleMessageSource messageSource;
 
@@ -144,6 +146,28 @@ public class EvaluationController {
                                                              @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<EvaluationDTO.Info> data = service.search(request);
+        final EvaluationDTO.Response response = new EvaluationDTO.Response();
+        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<EvaluationDTO.Info> is the list of EvaluationInfo entity that match the criteria
+     */
+    @PostMapping(value = "/spec-list/view")
+    public ResponseEntity<EvaluationDTO.SpecResponse> searchView(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                             @RequestParam(value = "count", required = false) Integer count,
+                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.search(request);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())
@@ -271,7 +295,7 @@ public class EvaluationController {
      */
     @PostMapping(value = "/export-excel")
     public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        ExcelGenerator.ExcelDownload excelDownload = service.downloadExcel(criteria);
+        ExcelGenerator.ExcelDownload excelDownload = serviceView.downloadExcel(criteria);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
