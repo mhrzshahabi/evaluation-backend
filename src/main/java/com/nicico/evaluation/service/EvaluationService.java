@@ -87,14 +87,6 @@ public class EvaluationService implements IEvaluationService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION')")
-    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        byte[] body = BaseService.exportExcel(repository, entity -> mapper.entityToDtoExcel(entity, postService.getByPostCode(entity.getAssessPostCode())), criteria, null, "گزارش لیست ارزیابی");
-        return new ExcelGenerator.ExcelDownload(body);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION')")
     public EvaluationDTO.SpecResponse list(int count, int startIndex) {
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         Page<Evaluation> evaluations = repository.findAll(pageable);
