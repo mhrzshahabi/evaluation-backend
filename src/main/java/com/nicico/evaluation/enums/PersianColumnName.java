@@ -14,14 +14,16 @@ public enum PersianColumnName {
     MERITCOMPONENTTITLE("مولفه شایستگی"),
     WEIGHT("وزن"),
     HASINSTANCESTR("مصداق"),
-    DESCRIPTION("شرح"),
+    DESCRIPTION("توضیحات"),
     EXCEPTIONTITLE("عنوان خطا"),
     STATUSCATALOG("وضعیت"),
     GROUPPOSTCODE("کد پست"),
     POSTTITLE("عنوان پست"),
+    AVERAGESCORE("میانگین نمره"),
     POSTGRADETITLE("رده پستی"),
     TOTALWEIGHT("مجموع وزن مولفه ها"),
     MOJTAMATITLE("مجتمع"),
+    MOAVENATTITLE("معاونت"),
     OMOORTITLE("امور"),
     GHESMATTITLE("قسمت"),
     VAHEDTITLE("واحد"),
@@ -31,7 +33,17 @@ public enum PersianColumnName {
     TOTALWEIGHTDEVELOPMENT("مجموع وزن مولفه های توسعه شایستگی"),
     TOTALWEIGHTOPERATIONAL("مجموع وزن مولفه های نتیجه ای"),
     TOTALWEIGHTBEHAVIORAL("مجموع وزن مولفه های رفتاری"),
-    POSTCOMPANYNAME("شرکت");
+    POSTCOMPANYNAME("شرکت"),
+    ASSESSFULLNAME("نام ارزیابی شونده"),
+    ASSESSPOSTCODE("کدپست ارزیابی شونده"),
+    ASSESSPOSTTITLE("پست ارزیابی شونده"),
+    ASSESSORFULLNAME("نام ارزیابی کننده"),
+    ASSESSORPOSTCODE("کدپست ارزیابی کننده"),
+    ASSESSORPOSTTITLE("پست ارزیابی کننده"),
+    EVALUATIONPERIODTITLE("دوره ارزیابی"),
+    EVALUATIONPERIODSTARTDATEASSESSMENT("شروع ارزشیابی"),
+    EVALUATIONPERIODENDDATEASSESSMENT("پایان ارزشیابی"),
+    STATUSCATALOGTITLE("وضعیت");
 
     private String persianName;
 
