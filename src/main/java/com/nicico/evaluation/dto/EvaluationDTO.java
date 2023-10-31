@@ -34,15 +34,6 @@ public class EvaluationDTO {
 
     @Getter
     @Setter
-    @ApiModel("EvaluationExcel")
-    public static class Excel {
-        private Long id;
-        private String code;
-        private String title;
-    }
-
-    @Getter
-    @Setter
     @Accessors(chain = true)
     @ApiModel("EvaluationCreateRq")
     public static class Create extends EvaluationDTO {
@@ -79,6 +70,28 @@ public class EvaluationDTO {
         private String ghesmatTitle;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("EvaluationExcel")
+    public static class Excel {
+        private String assessFullName;
+        private String assessPostCode;
+        private String assessPostTitle;
+        private String assessorFullName;
+        private String assessorPostCode;
+        private String assessorPostTitle;
+        private String evaluationPeriodTitle;
+        private String evaluationPeriodStartDateAssessment;
+        private String evaluationPeriodEndDateAssessment;
+        private Long averageScore;
+        private String postGradeTitle;
+        private String mojtamaTitle;
+        private String moavenatTitle;
+        private String omoorTitle;
+        private String ghesmatTitle;
+        private String description;
+        private String statusCatalogTitle;
+    }
 
     @Getter
     @Setter
