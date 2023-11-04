@@ -4,7 +4,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodDTO;
 import com.nicico.evaluation.dto.EvaluationPeriodPostDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.utility.BaseResponse;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import org.springframework.http.ResponseEntity;
 
 import java.text.ParseException;
@@ -43,5 +45,7 @@ public interface IEvaluationPeriodService {
 
     Boolean validatePosts(Long evaluationPeriodId);
 
-    ResponseEntity<byte[]> downloadExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
+    ResponseEntity<byte[]> downloadInvalidPostExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
+
+    ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 }

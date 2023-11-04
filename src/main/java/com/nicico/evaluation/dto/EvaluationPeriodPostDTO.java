@@ -85,4 +85,13 @@ public class EvaluationPeriodPostDTO {
         private Long totalWeightOperational;
         private Long totalWeightBehavioral;
     }
+
+    @Getter
+    @Setter
+    @ApiModel("EvaluationPeriodPostExcel")
+    public static class Excel {
+        private Long evaluationPeriodId;
+        private String postCode;
+        private EvaluationPeriodDTO evaluationPeriod;
+    }
 }

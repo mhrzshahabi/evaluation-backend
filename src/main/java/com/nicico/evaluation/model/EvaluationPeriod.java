@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -52,4 +53,7 @@ public class EvaluationPeriod extends Auditable {
 
     @Column(name = "c_validation_end_date")
     private String validationEndDate;
+
+    @OneToMany(mappedBy = "evaluationPeriod", fetch = FetchType.LAZY)
+    private List<EvaluationPeriodPost> evaluationPeriodPostList;
 }
