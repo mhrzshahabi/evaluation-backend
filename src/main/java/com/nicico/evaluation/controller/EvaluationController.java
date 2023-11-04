@@ -295,7 +295,7 @@ public class EvaluationController {
      */
     @PostMapping(value = "/export-excel")
     public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        ExcelGenerator.ExcelDownload excelDownload = service.downloadExcel(criteria);
+        ExcelGenerator.ExcelDownload excelDownload = serviceView.downloadExcel(criteria);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())

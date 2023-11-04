@@ -57,23 +57,6 @@ public abstract class EvaluationMapper {
     public abstract List<EvaluationDTO.Info> entityToDtoInfoList(List<Evaluation> entities);
 
     @Mappings({
-            @Mapping(target = "assessorPostTitle", source = "entity.assessorPostCode", qualifiedByName = "getAssessorPostTitle"),
-            @Mapping(target = "assessPostTitle", source = "assessPost.postTitle"),
-            @Mapping(target = "evaluationPeriodTitle", source = "entity.evaluationPeriod.title"),
-            @Mapping(target = "evaluationPeriodStartDateAssessment", source = "entity.evaluationPeriod.startDateAssessment"),
-            @Mapping(target = "evaluationPeriodEndDateAssessment", source = "entity.evaluationPeriod.endDateAssessment"),
-            @Mapping(target = "postGradeTitle", source = "assessPost.postGradeTitle"),
-            @Mapping(target = "mojtamaTitle", source = "assessPost.mojtamaTitle"),
-            @Mapping(target = "moavenatTitle", source = "assessPost.moavenatTitle"),
-            @Mapping(target = "omoorTitle", source = "assessPost.omoorTitle"),
-            @Mapping(target = "ghesmatTitle", source = "assessPost.ghesmatTitle"),
-            @Mapping(target = "statusCatalogTitle", source = "entity.statusCatalog.title")
-    })
-    public abstract EvaluationDTO.Excel entityToDtoExcel(Evaluation entity, Post assessPost);
-
-    public abstract List<EvaluationDTO.Excel> entityToDtoExcelList(List<Evaluation> entities);
-
-    @Mappings({
             @Mapping(target = "id", source = "evaluationPeriod.id"),
             @Mapping(target = "title", source = "evaluationPeriod.title")
     })
