@@ -110,4 +110,7 @@ public class EvaluationView {
 
     @Column(name = "VAHED_TITLE")
     private String vahedTitle;
+
+    @Column(name = "ASSESSOR_POST_TITLE")
+    private String assessorPostTitle;
 }
