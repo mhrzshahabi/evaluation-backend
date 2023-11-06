@@ -54,6 +54,6 @@ public class EvaluationPeriod extends Auditable {
     @Column(name = "c_validation_end_date")
     private String validationEndDate;
 
-    @OneToMany(mappedBy = "evaluationPeriod", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "evaluationPeriod", fetch = FetchType.EAGER)
     private List<EvaluationPeriodPost> evaluationPeriodPostList;
 }
