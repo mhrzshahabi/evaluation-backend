@@ -439,6 +439,18 @@
     {
       "code": "D_EVALUATION_ITEM_INSTANCE",
       "title": "حذف مصداق های آیتم ارزیابی"
+    },
+    {
+      "code": "R_EVALUATION_COMPREHENSIVE",
+      "title": "گزارش ارزیابی جامع"
+    },
+    {
+      "code": "R_LAST_FINALIZED_EVALUATION",
+      "title": "گزارش  آخرین ارزیابی های نهایی شده"
+    },
+    {
+      "code": "R_SUB_MENU_EVALUATION_COMPREHENSIVE",
+      "title": "نمایش زیرمنو ارزیابی جامع"
     }
   ]
 }

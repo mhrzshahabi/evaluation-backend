@@ -47,6 +47,14 @@ public class EvaluationPeriodDTO {
         private Long id;
         private List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoEvaluationPeriod;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationPeriodRq")
+    public static class InfoWithPost extends EvaluationPeriodDTO {
+        private Long id;
+        private List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostList;
+    }
 
     @Getter
     @Setter
@@ -100,5 +108,20 @@ public class EvaluationPeriodDTO {
         String getRemainDate();
     }
 
+    @Getter
+    @Setter
+    @ApiModel("EvaluationPeriodExcel")
+    public static class Excel {
+        private Long id;
+        private String title;
+        private String startDate;
+        private String endDate;
+        private String startDateAssessment;
+        private String endDateAssessment;
+        private String description;
+        private String validationStartDate;
+        private String validationEndDate;
+        private String postCode;
+    }
 
 }

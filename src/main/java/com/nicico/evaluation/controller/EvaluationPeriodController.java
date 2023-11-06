@@ -10,16 +10,18 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
-import com.nicico.evaluation.service.ExecuterService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +37,6 @@ import java.util.Locale;
 @RequestMapping(value = "/api/evaluation-period")
 public class EvaluationPeriodController {
 
-    private final ExecuterService executerService;
     private final IEvaluationPeriodService service;
     private final ResourceBundleMessageSource messageSource;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
@@ -189,7 +190,20 @@ public class EvaluationPeriodController {
      */
     @SneakyThrows
     @GetMapping(value = "/export-error-list-excel/{evaluationPeriodId}")
-    public ResponseEntity<byte[]> exportExcel(@PathVariable Long evaluationPeriodId) {
-        return service.downloadExcel(evaluationPeriodId);
+    public ResponseEntity<byte[]> exportInvalidPostExcel(@PathVariable Long evaluationPeriodId) {
+        return service.downloadInvalidPostExcel(evaluationPeriodId);
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of MeritComponentInfo entity that match the criteria
+     */
+    @PostMapping(value = "/export-excel")
+    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        ExcelGenerator.ExcelDownload excelDownload = service.downloadExcel(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
     }
 }

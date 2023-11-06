@@ -164,10 +164,32 @@ public class EvaluationController {
      */
     @PostMapping(value = "/spec-list/view")
     public ResponseEntity<EvaluationDTO.SpecResponse> searchView(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                             @RequestParam(value = "count", required = false) Integer count,
-                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                                 @RequestParam(value = "count", required = false) Integer count,
+                                                                 @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.search(request);
+        final EvaluationDTO.Response response = new EvaluationDTO.Response();
+        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<EvaluationDTO.Info> is the list of EvaluationInfo entity that match the criteria
+     */
+    @PostMapping(value = "/spec-list/evaluation-comprehensive")
+    public ResponseEntity<EvaluationDTO.SpecResponse> searchEvaluationComprehensive(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                                    @RequestParam(value = "count", required = false) Integer count,
+                                                                                    @RequestBody List<FilterDTO> criteria) {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.searchEvaluationComprehensive(request, count, startIndex);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())
@@ -274,11 +296,11 @@ public class EvaluationController {
      */
     @PostMapping(value = "/spec-list/by-parent")
     public ResponseEntity<EvaluationDTO.SpecResponse> searchByParent(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                             @RequestParam(value = "count", required = false) Integer count,
-                                                             @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                                     @RequestParam(value = "count", required = false) Integer count,
+                                                                     @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = service.searchByParent(request);
+        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.searchByParent(request);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())

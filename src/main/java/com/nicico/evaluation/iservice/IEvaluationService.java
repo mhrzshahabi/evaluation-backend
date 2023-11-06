@@ -27,8 +27,6 @@ public interface IEvaluationService {
 
     SearchDTO.SearchRs<EvaluationDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    SearchDTO.SearchRs<EvaluationDTO.Info> searchByParent(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
-
     EvaluationDTO.ErrorResponseDTO changeStatus(EvaluationDTO.ChangeStatusDTO changeStatusDTO);
 
     Boolean validatePosts(List<Long> evaluationIds);

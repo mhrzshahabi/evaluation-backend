@@ -13,6 +13,7 @@ import com.nicico.evaluation.model.Post;
 import com.nicico.evaluation.repository.CatalogRepository;
 import com.nicico.evaluation.repository.EvaluationPeriodRepository;
 import com.nicico.evaluation.utility.BaseResponse;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.EvaluationConstant;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
@@ -314,7 +315,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public ResponseEntity<byte[]> downloadExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<byte[]> downloadInvalidPostExcel(Long evaluationPeriodId) {
 
         List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostList = createInvalidPostList(evaluationPeriodId);
         byte[] body = BaseService.exportExcelByList(invalidPostList, null, "گزارش لیست پست ها");
@@ -548,4 +549,34 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         evaluationPeriodRepository.updateEvaluationPeriodStatus(statusCatalogId, DateUtil.todayDate());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, Integer.MAX_VALUE, 0);
+        SearchDTO.SearchRs<EvaluationPeriodDTO.InfoWithPost> searchRs =
+                BaseService.optimizedSearch(evaluationPeriodRepository, evaluationPeriodMapper::entityToDtoInfoWithPost, request);
+        List<EvaluationPeriodDTO.Excel> excelDtoList = new ArrayList<>();
+        searchRs.getList().forEach(evalPeriod ->
+                excelDtoList.addAll(evalPeriod.getEvaluationPeriodPostList().stream().map(postInfo -> {
+                    EvaluationPeriodDTO.Excel excelDto = new EvaluationPeriodDTO.Excel();
+                    excelDto.setStartDate(convertDateToString(evalPeriod.getStartDate()));
+                    excelDto.setEndDate(convertDateToString(evalPeriod.getEndDate()));
+                    excelDto.setTitle(evalPeriod.getTitle());
+                    excelDto.setStartDateAssessment(convertDateToString(evalPeriod.getStartDateAssessment()));
+                    excelDto.setPostCode(postInfo.getPostCode());
+                    return excelDto;
+                }).toList())
+        );
+        byte[] body = BaseService.exportExcelByList(excelDtoList, null, "گزارش لیست پست ها");
+        return new ExcelGenerator.ExcelDownload(body);
+
+    }
+
+    public String convertDateToString(Date date) {
+        if (Objects.isNull(date)) return null;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Tehran"));
+        return DateUtil.convertMiToKh(dateFormat.format(date));
+    }
 }
