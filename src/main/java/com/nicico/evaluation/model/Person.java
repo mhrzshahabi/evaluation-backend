@@ -26,6 +26,9 @@ public class Person {
     @Column(name = "PERSONEL_ID")
     private Long personelId;
 
+    @Column(name = "PERSONNEL_CODE")
+    private String personnelCode;
+
     @Column(name = "FIRST_NAME")
     private String firstName;
 
