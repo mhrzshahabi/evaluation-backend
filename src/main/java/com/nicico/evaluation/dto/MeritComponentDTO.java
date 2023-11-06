@@ -131,6 +131,7 @@ public abstract class MeritComponentDTO {
         private String code;
         private String title;
         private String kpiTypeTitle;
+        private String status;
     }
 
     @Getter

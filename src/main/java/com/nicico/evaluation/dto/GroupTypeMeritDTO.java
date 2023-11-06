@@ -143,7 +143,9 @@ public abstract class GroupTypeMeritDTO {
         private String groupTypeTitle;
         private String kpiTypeTitle;
         private String meritComponentTitle;
+        private String status;
         private Long weight;
+        private Long totalWeight;
         private String hasInstanceStr;
     }
 
