@@ -555,7 +555,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
     public ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
 
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, Integer.MAX_VALUE, 0);
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
         SearchDTO.SearchRs<EvaluationPeriodDTO.InfoWithPost> searchRs =
                 BaseService.optimizedSearch(evaluationPeriodRepository, evaluationPeriodMapper::entityToDtoInfoWithPost, request);
         List<EvaluationPeriodDTO.Excel> excelDtoList = new ArrayList<>();
@@ -570,7 +570,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     return excelDto;
                 }).toList())
         );
-        byte[] body = BaseService.exportExcelByList(excelDtoList, null, "گزارش لیست پست ها");
+        byte[] body = BaseService.exportExcelByList(excelDtoList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
         ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
@@ -582,10 +582,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
     public void downloadAsyncExcel(List<FilterDTO> criteria) {
-        executorService.runAsync(() -> {
-            downloadExcel(criteria);
-            return true;
-        });
+        executorService.runAsync(() -> downloadExcel(criteria));
     }
 
     public String convertDateToString(Date date) {
