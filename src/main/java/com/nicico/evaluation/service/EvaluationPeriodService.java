@@ -57,6 +57,7 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     private final IKPITypeService kpiTypeService;
     private final IGroupTypeMeritService groupTypeMeritService;
     private final IPostMeritComponentService postMeritComponentService;
+    private final ExecutorService executorService;
 
     @Override
     @Transactional(readOnly = true)
@@ -552,8 +553,9 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, Integer.MAX_VALUE, 0);
+    public ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
         SearchDTO.SearchRs<EvaluationPeriodDTO.InfoWithPost> searchRs =
                 BaseService.optimizedSearch(evaluationPeriodRepository, evaluationPeriodMapper::entityToDtoInfoWithPost, request);
         List<EvaluationPeriodDTO.Excel> excelDtoList = new ArrayList<>();
@@ -568,9 +570,19 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                     return excelDto;
                 }).toList())
         );
-        byte[] body = BaseService.exportExcelByList(excelDtoList, null, "گزارش لیست پست ها");
-        return new ExcelGenerator.ExcelDownload(body);
+        byte[] body = BaseService.exportExcelByList(excelDtoList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
+        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public void downloadAsyncExcel(List<FilterDTO> criteria) {
+        executorService.runAsync(() -> downloadExcel(criteria));
     }
 
     public String convertDateToString(Date date) {

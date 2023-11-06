@@ -323,6 +323,28 @@ public class EvaluationController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
                 .body(excelDownload.getContent());
     }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
+     */
+    @PostMapping(value = "/export-excel-by-parent")
+    public ResponseEntity<byte[]> exportExcelByParent(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        ExcelGenerator.ExcelDownload excelDownload = serviceView.downloadExcelByParent(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
+     */
+    @PostMapping(value = "/export-excel-evaluation-comprehensive")
+    public ResponseEntity<byte[]> exportExcelEvaluationComprehensive(@RequestBody List<FilterDTO> criteria) {
+        return serviceView.downloadExcelEvaluationComprehensive(criteria);
+    }
 }
 
     

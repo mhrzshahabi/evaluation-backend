@@ -21,6 +21,7 @@ public abstract class PersonDTO {
         private Long id;
         private Long personId;
         private Long personelId;
+        private String personnelCode;
         private String firstName;
         private String lastName;
         private String fullName;
