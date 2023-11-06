@@ -42,6 +42,7 @@ public abstract class MeritComponentMapper {
 
     @Mappings({
             @Mapping(target = "kpiTypeTitle", source = "meritComponentTypes", qualifiedByName = "getKpiTypeTitleByMeritComponentId"),
+            @Mapping(target = "status", source = "statusCatalog.title")
     })
     public abstract MeritComponentDTO.Excel entityToDtoExcel(MeritComponent entity);
 

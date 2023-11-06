@@ -62,7 +62,9 @@ public abstract class GroupTypeMeritMapper {
             @Mapping(target = "hasInstanceStr", expression = "java(hasInstanceSTR(entity.getHasInstance()))"),
             @Mapping(target = "groupTypeTitle", source = "groupType.group.title"),
             @Mapping(target = "kpiTypeTitle", source = "groupType.kpiType.title"),
-            @Mapping(target = "meritComponentTitle", source = "meritComponent.title")
+            @Mapping(target = "meritComponentTitle", source = "meritComponent.title"),
+            @Mapping(target = "status", source = "meritComponent.statusCatalog.title"),
+            @Mapping(target = "totalWeight", source = "groupTypeId", qualifiedByName = "getTotalComponentWeightByGroupType")
     })
     public abstract GroupTypeMeritDTO.Excel entityToDtoExcel(GroupTypeMerit entity);
 
