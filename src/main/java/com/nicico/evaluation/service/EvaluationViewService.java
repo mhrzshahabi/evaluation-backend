@@ -12,10 +12,14 @@ import com.nicico.evaluation.iservice.IEvaluationViewService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
 import com.nicico.evaluation.mapper.EvaluationViewMapper;
 import com.nicico.evaluation.repository.EvaluationViewRepository;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,12 +85,13 @@ public class EvaluationViewService implements IEvaluationViewService {
     public SearchDTO.SearchRs<EvaluationDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex) {
 
         List<EvaluationDTO.Info> infoList = new ArrayList<>();
-        String whereClause = getWhereClause(request);
+        StringBuilder whereClause = getWhereClause(request);
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getSubAssessorQuery(whereClause, pageable);
+        whereClause.append(String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber(), pageable.getPageSize()));
+        String query = getSubAssessorQuery(String.valueOf(whereClause));
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
         setInfoList(infoList, resultList);
-        Long totalCount = Long.valueOf(entityManager.createNativeQuery(getTotalCountSubAssessorQuery(whereClause)).getSingleResult().toString());
+        Long totalCount = Long.valueOf(entityManager.createNativeQuery(getTotalCountSubAssessorQuery(String.valueOf(whereClause))).getSingleResult().toString());
         SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setList(infoList);
         searchRs.setTotalCount(totalCount);
@@ -130,45 +135,45 @@ public class EvaluationViewService implements IEvaluationViewService {
         return infoList;
     }
 
-    private String getSubAssessorQuery(String whereClause, Pageable pageable) {
+    private String getSubAssessorQuery(String whereClause) {
 
         return String.format(" SELECT  " +
-                "                 eval.*, " +
-                "                 evalPeriod.c_title, " +
-                "                 evalPeriod.c_start_date_assessment, " +
-                "                 evalPeriod.c_end_date_assessment,  " +
-                "                 catalog.c_title status_catalog_title " +
-                "            FROM  " +
-                "                view_evaluation  eval" +
-                "                join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.evaluation_period_id " +
-                "               join tbl_catalog             catalog ON catalog.id = eval.status_catalog_id " +
-                "            WHERE  " +
-                "                c_assessor_post_code IN (  " +
-                "                    SELECT  " +
-                "                        *  " +
-                "                    FROM  " +
-                "                        (  " +
-                "                            SELECT  " +
-                "                                post_code  " +
-                "                            FROM  " +
-                "                                view_organization_tree  " +
-                "                            START WITH  " +
-                "                                post_code = (  " +
-                "                                    SELECT  " +
-                "                                        post_code  " +
-                "                                    FROM  " +
-                "                                        view_organization_tree  " +
-                "                                    WHERE  " +
-                "                                        national_code = %s  " +
-                "                                )  " +
-                "                            CONNECT BY  " +
-                "                                PRIOR post_code = post_parent_code  " +
-                "                            ORDER BY  " +
-                "                                level  " +
-                "                        )  " +
-                "                )" +
-                "               %s " +
-                "OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", SecurityUtil.getNationalCode(), whereClause, pageable.getPageNumber(), pageable.getPageSize());
+                        "                 eval.*, " +
+                        "                 evalPeriod.c_title, " +
+                        "                 evalPeriod.c_start_date_assessment, " +
+                        "                 evalPeriod.c_end_date_assessment,  " +
+                        "                 catalog.c_title status_catalog_title " +
+                        "            FROM  " +
+                        "                view_evaluation  eval" +
+                        "                join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.evaluation_period_id " +
+                        "                join tbl_catalog             catalog ON catalog.id = eval.status_catalog_id " +
+                        "            WHERE  " +
+                        "                c_assessor_post_code IN (  " +
+                        "                    SELECT  " +
+                        "                        *  " +
+                        "                    FROM  " +
+                        "                        (  " +
+                        "                            SELECT  " +
+                        "                                post_code  " +
+                        "                            FROM  " +
+                        "                                view_organization_tree  " +
+                        "                            START WITH  " +
+                        "                                post_code = (  " +
+                        "                                    SELECT  " +
+                        "                                        post_code  " +
+                        "                                    FROM  " +
+                        "                                        view_organization_tree  " +
+                        "                                    WHERE  " +
+                        "                                        national_code = %s  " +
+                        "                                )  " +
+                        "                            CONNECT BY  " +
+                        "                                PRIOR post_code = post_parent_code  " +
+                        "                            ORDER BY  " +
+                        "                                level  " +
+                        "                        )  " +
+                        "                )" +
+                        "               %s "
+                , SecurityUtil.getNationalCode(), whereClause);
     }
 
     private String getTotalCountSubAssessorQuery(String whereClause) {
@@ -207,7 +212,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                 "               %s ", SecurityUtil.getNationalCode(), whereClause);
     }
 
-    private String getWhereClause(SearchDTO.SearchRq request) {
+    private StringBuilder getWhereClause(SearchDTO.SearchRq request) {
         StringBuilder whereClause = new StringBuilder();
         if (Objects.nonNull(request.getCriteria()) && !request.getCriteria().getCriteria().isEmpty())
             request.getCriteria().getCriteria().forEach(criteria -> {
@@ -231,7 +236,58 @@ public class EvaluationViewService implements IEvaluationViewService {
                     case "statusCatalog.id" -> whereClause.append(" and ").append("eval.status_catalog_id").append(" like '%").append(criteria.getValue()).append("%'");
                 }
             });
-        return String.valueOf(whereClause).replaceAll("\\[|\\]", "");
+        return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE')")
+    public ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria) {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
+        List<EvaluationDTO.Info> infoList = new ArrayList<>();
+        String whereClause = String.valueOf(getWhereClause(request));
+        String query = getSubAssessorQuery(whereClause);
+        List<?> resultList = entityManager.createNativeQuery(query).getResultList();
+        setInfoList(infoList, resultList);
+        List<EvaluationDTO.Excel> excelList = mapper.infoDtoToDtoExcelList(infoList);
+        byte[] body = BaseService.exportExcelByList(excelList, "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
+        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_LAST_FINALIZED_EVALUATION')")
+    public ExcelGenerator.ExcelDownload downloadExcelByParent(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
+        List<String> postCodeList = organizationTreeService.getByParentNationalCode();
+
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq assessorPostCodeCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.inSet)
+                .setFieldName("assessorPostCode")
+                .setValue(!postCodeList.isEmpty() ? postCodeList : "0");
+
+        final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("statusCatalogId")
+                .setValue(catalogService.getByCode(FINALIZED).getId());
+
+        criteriaRqList.add(assessorPostCodeCriteriaRq);
+        criteriaRqList.add(statusCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, " آخرین ارزیابی های نهایی شده", "گزارش  آخرین ارزیابی های نهایی شده");
+        return new ExcelGenerator.ExcelDownload(body);
     }
 
     @Override
