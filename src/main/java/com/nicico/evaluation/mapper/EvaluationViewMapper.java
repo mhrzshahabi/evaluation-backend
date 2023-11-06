@@ -24,4 +24,14 @@ public interface EvaluationViewMapper {
     })
     EvaluationDTO.Excel entityToDtoExcel(EvaluationView evaluationView);
 
+    @Mappings({
+            @Mapping(target = "evaluationPeriodTitle", source = "evaluationView.evaluationPeriod.title"),
+            @Mapping(target = "evaluationPeriodStartDateAssessment", source = "evaluationView.evaluationPeriod.startDateAssessment"),
+            @Mapping(target = "evaluationPeriodEndDateAssessment", source = "evaluationView.evaluationPeriod.endDateAssessment"),
+            @Mapping(target = "statusCatalogTitle", source = "evaluationView.statusCatalog.title")
+    })
+    EvaluationDTO.Excel infoDtoToDtoExcel(EvaluationDTO.Info evaluationView);
+
+    List<EvaluationDTO.Excel> infoDtoToDtoExcelList(List<EvaluationDTO.Info> evaluationViewList);
+
 }
