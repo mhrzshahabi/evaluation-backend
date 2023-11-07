@@ -72,6 +72,11 @@ public abstract class SensitiveEventPersonMapper {
         return personService.getByNationalCode(nationalCode).getFirstName();
     }
 
+    @Named("getPersonPersonnelCode")
+    String getPersonPersonnelCode(String nationalCode) {
+        return personService.getByNationalCode(nationalCode).getPersonnelCode();
+    }
+
     @Named("getAttachment")
     AttachmentDTO.AttachInfo getAttachment(Long id) {
         AttachmentDTO.AttachInfo attachInfoDto = new AttachmentDTO.AttachInfo();

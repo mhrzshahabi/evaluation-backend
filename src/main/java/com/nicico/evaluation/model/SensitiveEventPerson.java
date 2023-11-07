@@ -54,4 +54,7 @@ public class SensitiveEventPerson extends Auditable {
 
     @Transient
     String lastName;
+
+    @Transient
+    String personnelCode;
 }

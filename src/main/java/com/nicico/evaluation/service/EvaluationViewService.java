@@ -7,6 +7,7 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
+import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationViewService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -85,17 +87,19 @@ public class EvaluationViewService implements IEvaluationViewService {
     public SearchDTO.SearchRs<EvaluationDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex) {
 
         List<EvaluationDTO.Info> infoList = new ArrayList<>();
-        StringBuilder whereClause = getWhereClause(request);
+        String whereClause = String.valueOf(getWhereClause(request));
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        whereClause.append(String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber(), pageable.getPageSize()));
-        String query = getSubAssessorQuery(String.valueOf(whereClause));
+        String query = getSubAssessorQuery(whereClause, pageable);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
-        setInfoList(infoList, resultList);
-        Long totalCount = Long.valueOf(entityManager.createNativeQuery(getTotalCountSubAssessorQuery(String.valueOf(whereClause))).getSingleResult().toString());
-        SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setList(infoList);
-        searchRs.setTotalCount(totalCount);
-        return searchRs;
+        if (!resultList.isEmpty()) {
+            setInfoList(infoList, resultList);
+            List totalResultList = entityManager.createNativeQuery(getTotalCountSubAssessorQuery(String.valueOf(whereClause))).getResultList();
+            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(infoList);
+            searchRs.setTotalCount(totalCount);
+            return searchRs;
+        } else throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
     }
 
     private List<EvaluationDTO.Info> setInfoList(List<EvaluationDTO.Info> infoList, List<?> resultList) {
@@ -135,8 +139,9 @@ public class EvaluationViewService implements IEvaluationViewService {
         return infoList;
     }
 
-    private String getSubAssessorQuery(String whereClause) {
-
+    private String getSubAssessorQuery(String whereClause, Pageable pageable) {
+        if (Objects.nonNull(pageable))
+            whereClause = MessageFormat.format("{0}{1}", whereClause, String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));
         return String.format(" SELECT  " +
                         "                 eval.*, " +
                         "                 evalPeriod.c_title, " +
@@ -245,8 +250,7 @@ public class EvaluationViewService implements IEvaluationViewService {
     public ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria) {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
         List<EvaluationDTO.Info> infoList = new ArrayList<>();
-        String whereClause = String.valueOf(getWhereClause(request));
-        String query = getSubAssessorQuery(whereClause);
+        String query = getSubAssessorQuery(String.valueOf(getWhereClause(request)), null);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
         setInfoList(infoList, resultList);
         List<EvaluationDTO.Excel> excelList = mapper.infoDtoToDtoExcelList(infoList);
