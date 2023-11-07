@@ -41,7 +41,7 @@ public class EvaluationPeriod extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluation_period_status_catalog_to_catalog"))
     private Catalog statusCatalog;
 
