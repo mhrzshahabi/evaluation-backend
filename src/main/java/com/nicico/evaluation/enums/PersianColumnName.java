@@ -43,7 +43,14 @@ public enum PersianColumnName {
     EVALUATIONPERIODTITLE("دوره ارزیابی"),
     EVALUATIONPERIODSTARTDATEASSESSMENT("شروع ارزشیابی"),
     EVALUATIONPERIODENDDATEASSESSMENT("پایان ارزشیابی"),
-    STATUSCATALOGTITLE("وضعیت");
+    STATUSCATALOGTITLE("وضعیت"),
+    STARTDATE("تاریخ شروع"),
+    ENDDATE("تاریخ پایان "),
+    STARTDATEASSESSMENT("تاریخ شروع ارزشیابی"),
+    ENDDATEASSESSMENT("تاریخ پایان ارزشیابی "),
+    POSTCODE("کد پست"),
+    VALIDATIONSTARTDATE("تاریخ شروع اعتبار سنجی"),
+    VALIDATIONENDDATE("تاریخ پایان اعتبار سنجی");
 
     private String persianName;
 

@@ -10,6 +10,7 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.IEvaluationPeriodPostService;
 import com.nicico.evaluation.iservice.IEvaluationPeriodService;
+import com.nicico.evaluation.service.ExecutorService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
@@ -27,6 +28,7 @@ import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @Api(value = " Evaluation Period")
@@ -37,6 +39,7 @@ public class EvaluationPeriodController {
     private final IEvaluationPeriodService service;
     private final ResourceBundleMessageSource messageSource;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
+    private final ExecutorService executorService;
 
     /**
      * @param id is the EvaluationPeriod id
@@ -191,12 +194,32 @@ public class EvaluationPeriodController {
         return service.downloadInvalidPostExcel(evaluationPeriodId);
     }
 
-    /**
-     * @param criteria is the key value pair for criteria
-     * @return byte[] is the Excel of MeritComponentInfo entity that match the criteria
-     */
+//    /**
+//     * @param criteria is the key value pair for criteria
+//     * @return byte[] is the Excel of MeritComponentInfo entity that match the criteria
+//     */
+//    @PostMapping(value = "/export-excel")
+//    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, ExecutionException, InterruptedException {
+//        List<EvaluationPeriodDTO.Excel> excelList = service.downloadExcel(criteria);
+//        byte[] body = BaseService.exportExcelByList(excelList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
+//        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+//                .body(excelDownload.getContent());
+//    }
+
+    @PostMapping(value = "/export-excel-async")
+    public CompletableFuture<ResponseEntity<byte[]>> exportExcel(@RequestBody List<FilterDTO> criteria) {
+        return service.downloadExcelAsync(criteria);
+    }
+
     @PostMapping(value = "/export-excel")
-    public void exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        service.downloadAsyncExcel(criteria);
+    public @ResponseBody
+    void exportExcelAsync(@RequestBody List<FilterDTO> criteria) {
+        executorService.runAsync(() -> {
+            service.downloadExcelAsync(criteria);
+            return true;
+        });
     }
 }
