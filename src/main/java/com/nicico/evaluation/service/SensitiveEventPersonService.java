@@ -112,4 +112,11 @@ public class SensitiveEventPersonService implements ISensitiveEventPersonService
         return BaseService.optimizedSearch(repository, mapper::entityToDtoLastActiveMeritInfo, request);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS')")
+    public SearchDTO.SearchRs<SensitiveEventPersonDTO.SensitiveEventListInfo> sensitiveEventSearchList(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoSensitiveEventListInfo, request);
+    }
+
 }

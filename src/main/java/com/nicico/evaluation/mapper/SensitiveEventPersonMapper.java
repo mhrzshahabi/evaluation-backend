@@ -53,6 +53,23 @@ public abstract class SensitiveEventPersonMapper {
     public abstract List<SensitiveEventPersonDTO.LastActiveMeritInfo> entityToDtoLastActiveMeritInfoList(List<SensitiveEventPerson> entities);
 
     @Mappings({
+            @Mapping(target = "id", source = "sensitiveEvent.id"),
+            @Mapping(target = "sensitiveEventPersonId", source = "id"),
+            @Mapping(target = "title", source = "sensitiveEvent.title"),
+            @Mapping(target = "levelEffect", source = "sensitiveEvent.levelEffect"),
+            @Mapping(target = "eventDate", source = "sensitiveEvent.eventDate"),
+            @Mapping(target = "eventPolicyCatalog", source = "sensitiveEvent.eventPolicyCatalog"),
+            @Mapping(target = "typeCatalog", source = "sensitiveEvent.typeCatalog"),
+            @Mapping(target = "statusCatalog", source = "sensitiveEvent.statusCatalog"),
+            @Mapping(target = "firstName", source = "nationalCode", qualifiedByName = "getPersonFirstName"),
+            @Mapping(target = "lastName", source = "nationalCode", qualifiedByName = "getPersonLastName"),
+            @Mapping(target = "personnelCode", source = "nationalCode", qualifiedByName = "getPersonPersonnelCode")
+    })
+    public abstract SensitiveEventPersonDTO.SensitiveEventListInfo entityToDtoSensitiveEventListInfo(SensitiveEventPerson entity);
+
+    public abstract List<SensitiveEventPersonDTO.SensitiveEventListInfo> entityToDtoSensitiveEventListInfoList(List<SensitiveEventPerson> entities);
+
+    @Mappings({
             @Mapping(target = "firstName", source = "nationalCode", qualifiedByName = "getPersonFirstName"),
             @Mapping(target = "lastName", source = "nationalCode", qualifiedByName = "getPersonLastName")
     })
@@ -70,6 +87,11 @@ public abstract class SensitiveEventPersonMapper {
     @Named("getPersonFirstName")
     String getPersonFirstName(String nationalCode) {
         return personService.getByNationalCode(nationalCode).getFirstName();
+    }
+
+    @Named("getPersonPersonnelCode")
+    String getPersonPersonnelCode(String nationalCode) {
+        return personService.getByNationalCode(nationalCode).getPersonnelCode();
     }
 
     @Named("getAttachment")

@@ -111,4 +111,20 @@ public class SensitiveEventPersonController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/sensitive-event/spec-list")
+    public ResponseEntity<SensitiveEventPersonDTO.SpecResponse> sensitiveEventSearchList(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                       @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                       @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<SensitiveEventPersonDTO.SensitiveEventListInfo> data = service.sensitiveEventSearchList(request);
+        final SensitiveEventPersonDTO.Response response = new SensitiveEventPersonDTO.Response();
+        final SensitiveEventPersonDTO.SpecResponse specRs = new SensitiveEventPersonDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 }
