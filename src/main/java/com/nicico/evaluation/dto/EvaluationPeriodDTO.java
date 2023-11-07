@@ -47,12 +47,14 @@ public class EvaluationPeriodDTO {
         private Long id;
         private List<EvaluationPeriodPostDTO.PostInfoEvaluationPeriod> postInfoEvaluationPeriod;
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("EvaluationPeriodRq")
     public static class InfoWithPost extends EvaluationPeriodDTO {
         private Long id;
+        private CatalogDTO.PureInfo statusCatalog;
         private List<EvaluationPeriodPostDTO.Info> evaluationPeriodPostList;
     }
 
@@ -122,6 +124,7 @@ public class EvaluationPeriodDTO {
         private String validationStartDate;
         private String validationEndDate;
         private String postCode;
+        private String statusCatalog;
     }
 
 }

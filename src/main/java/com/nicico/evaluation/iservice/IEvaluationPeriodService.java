@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public interface IEvaluationPeriodService {
 
@@ -46,7 +47,11 @@ public interface IEvaluationPeriodService {
 
     ResponseEntity<byte[]> downloadInvalidPostExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
 
-    ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
+     List<EvaluationPeriodDTO.Excel> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
 
-    void downloadAsyncExcel(List<FilterDTO> criteria);
+//    List<EvaluationPeriodDTO.Excel> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
+
+    CompletableFuture<ResponseEntity<byte[]>> downloadExcelAsync(List<FilterDTO> criteria);
+
+//    CompletableFuture<ResponseEntity<byte[]>> downloadAsyncExcel(List<FilterDTO> criteria);
 }

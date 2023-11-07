@@ -30,11 +30,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -327,6 +333,11 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
                 .body(excelDownload.getContent());
     }
 
+    @Override
+    public List<EvaluationPeriodDTO.Excel> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        return null;
+    }
+
     private List<EvaluationPeriodPostDTO.InvalidPostExcel> createInvalidPostList(Long evaluationPeriodId) {
 
         List<EvaluationPeriodPostDTO.InvalidPostExcel> invalidPostExcelList = new ArrayList<>();
@@ -553,37 +564,68 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
-        SearchDTO.SearchRs<EvaluationPeriodDTO.InfoWithPost> searchRs =
-                BaseService.optimizedSearch(evaluationPeriodRepository, evaluationPeriodMapper::entityToDtoInfoWithPost, request);
-        List<EvaluationPeriodDTO.Excel> excelDtoList = new ArrayList<>();
-        searchRs.getList().forEach(evalPeriod ->
-                excelDtoList.addAll(evalPeriod.getEvaluationPeriodPostList().stream().map(postInfo -> {
-                    EvaluationPeriodDTO.Excel excelDto = new EvaluationPeriodDTO.Excel();
-                    excelDto.setStartDate(convertDateToString(evalPeriod.getStartDate()));
-                    excelDto.setEndDate(convertDateToString(evalPeriod.getEndDate()));
-                    excelDto.setTitle(evalPeriod.getTitle());
-                    excelDto.setStartDateAssessment(convertDateToString(evalPeriod.getStartDateAssessment()));
-                    excelDto.setPostCode(postInfo.getPostCode());
-                    return excelDto;
-                }).toList())
-        );
-        byte[] body = BaseService.exportExcelByList(excelDtoList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
-        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                .body(excelDownload.getContent());
+    public CompletableFuture<ResponseEntity<byte[]>> downloadExcelAsync(List<FilterDTO> criteria) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
+                SearchDTO.SearchRs<EvaluationPeriodDTO.InfoWithPost> searchRs =
+                        BaseService.optimizedSearch(
+                                evaluationPeriodRepository,
+                                evaluationPeriodMapper::entityToDtoInfoWithPost,
+                                request
+                        );
+                List<EvaluationPeriodDTO.Excel> excelDtoList = new ArrayList<>();
+                searchRs.getList().forEach(evalPeriod ->
+                        excelDtoList.addAll(evalPeriod.getEvaluationPeriodPostList().stream().map(postInfo -> {
+                            EvaluationPeriodDTO.Excel excelDto = new EvaluationPeriodDTO.Excel();
+                            excelDto.setStartDate(convertDateToString(evalPeriod.getStartDate()));
+                            excelDto.setEndDate(convertDateToString(evalPeriod.getEndDate()));
+                            excelDto.setTitle(evalPeriod.getTitle());
+                            excelDto.setStartDateAssessment(convertDateToString(evalPeriod.getStartDateAssessment()));
+                            excelDto.setEndDateAssessment(convertDateToString(evalPeriod.getEndDateAssessment()));
+                            excelDto.setValidationEndDate(convertDateToString(evalPeriod.getValidationEndDate()));
+                            excelDto.setValidationStartDate(convertDateToString(evalPeriod.getValidationStartDate()));
+                            excelDto.setDescription(evalPeriod.getDescription());
+                            excelDto.setPostCode(postInfo.getPostCode());
+                            excelDto.setStatusCatalog(evalPeriod.getStatusCatalog().getTitle());
+                            return excelDto;
+                        }).toList())
+                );
+                return excelDtoList;
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }).thenApply(excelList -> {
+            byte[] body = BaseService.exportExcelByList(excelList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
+            ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                    .body(excelDownload.getContent());
+        });
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public void downloadAsyncExcel(List<FilterDTO> criteria) {
-        executorService.runAsync(() -> downloadExcel(criteria));
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+//    public CompletableFuture<ResponseEntity<byte[]>> downloadAsyncExcel(List<FilterDTO> criteria) {
+//
+//        return CompletableFuture.supplyAsync(() -> {
+//            try {
+//                byte[] body = downloadExcel(criteria).getBody();
+//                ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+//                return ResponseEntity.ok()
+//                        .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+//                        .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+//                        .body(excelDownload.getContent());
+//
+//            } catch (NoSuchFieldException e) {
+//                e.printStackTrace();
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//        }, executorService);
+//    }
 
     public String convertDateToString(Date date) {
         if (Objects.isNull(date)) return null;
