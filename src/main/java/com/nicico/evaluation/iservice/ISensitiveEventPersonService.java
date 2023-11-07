@@ -11,8 +11,6 @@ public interface ISensitiveEventPersonService {
 
     SearchDTO.SearchRs<SensitiveEventPersonDTO.LastActiveMeritInfo> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    SearchDTO.SearchRs<SensitiveEventPersonDTO.SensitiveEventListInfo> sensitiveEventSearchList(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
-
     SensitiveEventPersonDTO.Info create(SensitiveEventPersonDTO.Create dto);
 
     SensitiveEventPersonDTO.Info update(Long id, SensitiveEventPersonDTO.Update dto);

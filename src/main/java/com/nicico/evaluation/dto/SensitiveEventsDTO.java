@@ -38,6 +38,23 @@ public abstract class SensitiveEventsDTO {
 
     @Getter
     @Setter
+    @ApiModel("SensitiveEventPersonInfo")
+    public static class SensitiveEventPersonInfo {
+        private Long id;
+        private Long sensitiveEventPersonId;
+        private String title;
+        private Long levelEffect;
+        private String eventDate;
+        private CatalogDTO.Info eventPolicyCatalog;
+        private CatalogDTO.Info typeCatalog;
+        private CatalogDTO.Info statusCatalog;
+        private String firstName;
+        private String lastName;
+        private String personnelCode;
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("SensitiveEventsCreateRq")
     public static class Create extends SensitiveEventsDTO {
@@ -74,7 +91,7 @@ public abstract class SensitiveEventsDTO {
     @Accessors(chain = true)
     @ApiModel("SensitiveEventsResponse")
     public static class Response {
-        private List<Info> data;
+        private List<?> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
