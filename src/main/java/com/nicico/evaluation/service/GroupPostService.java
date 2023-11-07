@@ -13,6 +13,7 @@ import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,6 +75,12 @@ public class GroupPostService implements IGroupPostService {
     public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست پست");
         return new ExcelGenerator.ExcelDownload(body);
+    }
+
+    @Scheduled(cron = "0 0 3 * * *")
+    @Transactional
+    public void refreshViewGroupPost() {
+        repository.refreshViewGroupPost();
     }
 
 }

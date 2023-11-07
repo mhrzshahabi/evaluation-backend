@@ -608,4 +608,111 @@
             ]]>
         </createView>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1699337783">
+        <dropView ifExists="true" viewName="view_group_post"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1699337790">
+        <sql>
+            CREATE MATERIALIZED VIEW view_group_post AS
+            SELECT
+                ROWNUM AS id,
+                grouppost."POST_ID",
+                grouppost."POST_GRADE_ID",
+                grouppost."POST_GRADE_CODE",
+                grouppost."POST_GRADE_TITLE",
+                grouppost."POST_GRADE_CODE_PARENT",
+                grouppost."POST_GRADE_TITLE_PARENT",
+                grouppost."GROUP_POST_CODE",
+                grouppost."POST_TITLE",
+                grouppost."POST_PARENT_ID",
+                grouppost."POST_LEVEL",
+                grouppost."POST_FULL_PATH_CODE",
+                grouppost."POST_MOSAVAB",
+                grouppost."POST_COMPANY_ID",
+                grouppost."POST_COMPANY_CODE",
+                grouppost."POST_COMPANY_NAME",
+                grouppost."COST_CENTER_ID",
+                grouppost."COST_CENTER_CODE",
+                grouppost."COST_CENTER_TITLE",
+                grouppost."HOZE_CODE",
+                grouppost."HOZE_TITLE",
+                grouppost."MOJTAMA_CODE",
+                grouppost."MOJTAMA_TITLE",
+                grouppost."OMOOR_CODE",
+                grouppost."OMOOR_TITLE",
+                grouppost."MOAVENAT_CODE",
+                grouppost."MOAVENAT_TITLE",
+                grouppost."GHESMAT_CODE",
+                grouppost."GHESMAT_TITLE",
+                grouppost."VAHED_CODE",
+                grouppost."VAHED_TITLE"
+            FROM
+                (
+                    SELECT DISTINCT
+                        MIN(post_id)
+                            OVER(PARTITION BY post_group_code) AS post_id,
+                            MIN(post_grade_id)
+                                OVER(PARTITION BY post_group_code) AS post_grade_id,
+                            MIN(post_grade_code)
+                                OVER(PARTITION BY post_group_code) AS post_grade_code,
+                            MIN(post_grade_title)
+                                OVER(PARTITION BY post_group_code) AS post_grade_title,
+                            MIN(post_grade_code_parent)
+                                OVER(PARTITION BY post_group_code) AS post_grade_code_parent,
+                            MIN(post_grade_title_parent)
+                                OVER(PARTITION BY post_group_code) AS post_grade_title_parent,
+                            post_group_code                    group_post_code,
+                        MIN(post_title)
+                            OVER(PARTITION BY post_group_code) AS post_title,
+                            MIN(post_parent_id)
+                                OVER(PARTITION BY post_group_code) AS post_parent_id,
+                            MIN(post_level)
+                                OVER(PARTITION BY post_group_code) AS post_level,
+                            MIN(post_full_path_code)
+                                OVER(PARTITION BY post_group_code) AS post_full_path_code,
+                            MIN(post_mosavab)
+                                OVER(PARTITION BY post_group_code) AS post_mosavab,
+                            MIN(post_company_id)
+                                OVER(PARTITION BY post_group_code) AS post_company_id,
+                            MIN(post_company_code)
+                                OVER(PARTITION BY post_group_code) AS post_company_code,
+                            MIN(post_company_name)
+                                OVER(PARTITION BY post_group_code) AS post_company_name,
+                            MIN(cost_center_id)
+                                OVER(PARTITION BY post_group_code) AS cost_center_id,
+                            MIN(cost_center_code)
+                                OVER(PARTITION BY post_group_code) AS cost_center_code,
+                            MIN(cost_center_title)
+                                OVER(PARTITION BY post_group_code) AS cost_center_title,
+                            MIN(hoze_code)
+                                OVER(PARTITION BY post_group_code) AS hoze_code,
+                            MIN(hoze_title)
+                                OVER(PARTITION BY post_group_code) AS hoze_title,
+                            MIN(mojtama_code)
+                                OVER(PARTITION BY post_group_code) AS mojtama_code,
+                            MIN(mojtama_title)
+                                OVER(PARTITION BY post_group_code) AS mojtama_title,
+                            MIN(omoor_code)
+                                OVER(PARTITION BY post_group_code) AS omoor_code,
+                            MIN(omoor_title)
+                                OVER(PARTITION BY post_group_code) AS omoor_title,
+                            MIN(moavenat_code)
+                                OVER(PARTITION BY post_group_code) AS moavenat_code,
+                            MIN(moavenat_title)
+                                OVER(PARTITION BY post_group_code) AS moavenat_title,
+                            MIN(ghesmat_code)
+                                OVER(PARTITION BY post_group_code) AS ghesmat_code,
+                            MIN(ghesmat_title)
+                                OVER(PARTITION BY post_group_code) AS ghesmat_title,
+                            MIN(vahed_code)
+                                OVER(PARTITION BY post_group_code) AS vahed_code,
+                            MIN(vahed_title)
+                                OVER(PARTITION BY post_group_code) AS vahed_title
+                    FROM
+                        syn_hrm_post
+                ) grouppost
+        </sql>
+    </changeSet>
 </databaseChangeLog>
