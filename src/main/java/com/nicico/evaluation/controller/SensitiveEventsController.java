@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.SensitiveEventsDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.ISensitiveEventPersonViewService;
 import com.nicico.evaluation.iservice.ISensitiveEventsService;
 import com.nicico.evaluation.utility.BaseResponse;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -28,9 +29,10 @@ import java.util.Locale;
 @RequestMapping(value = "/api/sensitive-events")
 public class SensitiveEventsController {
 
+    private final ExceptionUtil exceptionUtil;
     private final ISensitiveEventsService service;
     private final ResourceBundleMessageSource messageSource;
-    private final ExceptionUtil exceptionUtil;
+    private final ISensitiveEventPersonViewService sensitiveEventPersonViewService;
 
     /**
      * @param id is the SensitiveEvents id
@@ -132,6 +134,28 @@ public class SensitiveEventsController {
                                                                   @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
         SearchDTO.SearchRs<SensitiveEventsDTO.Info> data = service.search(request);
+        final SensitiveEventsDTO.Response response = new SensitiveEventsDTO.Response();
+        final SensitiveEventsDTO.SpecResponse specRs = new SensitiveEventsDTO.SpecResponse();
+        response.setData(data.getList())
+                .setStartRow(startIndex)
+                .setEndRow(startIndex + data.getList().size())
+                .setTotalRows(data.getTotalCount().intValue());
+        specRs.setResponse(response);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param count      is the number of entity to every page
+     * @param startIndex is the start Index in current page
+     * @param criteria   is the key value pair for criteria
+     * @return TotalResponse<SensitiveEventsDTO.Info> is the list of SensitiveEventsInfo entity that match the criteria
+     */
+    @PostMapping(value = "/new/spec-list")
+    public ResponseEntity<SensitiveEventsDTO.SpecResponse> newSearch(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
+                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
+        SearchDTO.SearchRs<SensitiveEventsDTO.SensitiveEventPersonInfo> data = sensitiveEventPersonViewService.search(request);
         final SensitiveEventsDTO.Response response = new SensitiveEventsDTO.Response();
         final SensitiveEventsDTO.SpecResponse specRs = new SensitiveEventsDTO.SpecResponse();
         response.setData(data.getList())
