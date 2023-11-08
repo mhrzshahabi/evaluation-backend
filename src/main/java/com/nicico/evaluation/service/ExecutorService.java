@@ -15,7 +15,7 @@ import java.util.concurrent.Executor;
 
 @Component
 @RequiredArgsConstructor
-public class ExecutorService1 {
+public class ExecutorService {
 
     @Autowired
     @Qualifier("threadPoolAsync")
