@@ -33,26 +33,26 @@ public class SensitiveEventPersonView {
     @Column(name = "n_level_effect")
     private Long levelEffect;
 
-//    @Setter(AccessLevel.NONE)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "type_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_sensitive_event_person_type_to_catalog"))
-//    private Catalog typeCatalog;
+    @Setter(AccessLevel.NONE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_sensitive_event_person_type_to_catalog"))
+    private Catalog typeCatalog;
 
     @Column(name = "type_catalog_id")
     private Long typeCatalogId;
 
-//    @Setter(AccessLevel.NONE)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "event_policy_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_sensitive_event_person_policy_status_to_catalog"))
-//    private Catalog eventPolicyCatalog;
+    @Setter(AccessLevel.NONE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_policy_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_sensitive_event_person_policy_status_to_catalog"))
+    private Catalog eventPolicyCatalog;
 
     @Column(name = "event_policy_catalog_id")
     private Long eventPolicyCatalogId;
 
-//    @Setter(AccessLevel.NONE)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_sensitive_event_person_status_to_catalog"))
-//    private Catalog statusCatalog;
+    @Setter(AccessLevel.NONE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_sensitive_event_person_status_to_catalog"))
+    private Catalog statusCatalog;
 
     @Column(name = "status_catalog_id")
     private Long statusCatalogId;
