@@ -99,7 +99,12 @@ public class EvaluationViewService implements IEvaluationViewService {
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
             return searchRs;
-        } else throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound);
+        } else {
+            SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<>());
+            searchRs.setTotalCount(0L);
+            return searchRs;
+        }
     }
 
     private List<EvaluationDTO.Info> setInfoList(List<EvaluationDTO.Info> infoList, List<?> resultList) {
@@ -252,14 +257,17 @@ public class EvaluationViewService implements IEvaluationViewService {
         List<EvaluationDTO.Info> infoList = new ArrayList<>();
         String query = getSubAssessorQuery(String.valueOf(getWhereClause(request)), null);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
-        setInfoList(infoList, resultList);
-        List<EvaluationDTO.Excel> excelList = mapper.infoDtoToDtoExcelList(infoList);
-        byte[] body = BaseService.exportExcelByList(excelList, "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
-        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                .body(excelDownload.getContent());
+        if (!resultList.isEmpty()) {
+            setInfoList(infoList, resultList);
+            List<EvaluationDTO.Excel> excelList = mapper.infoDtoToDtoExcelList(infoList);
+            byte[] body = BaseService.exportExcelByList(excelList, "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
+            ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                    .body(excelDownload.getContent());
+        }
+        return null;
     }
 
     @Override
