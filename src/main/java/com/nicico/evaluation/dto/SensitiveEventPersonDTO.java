@@ -102,7 +102,7 @@ public abstract class SensitiveEventPersonDTO {
     @Accessors(chain = true)
     @ApiModel("SensitiveEventPersonResponse")
     public static class Response {
-        private List<LastActiveMeritInfo> data;
+        private List<?> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
