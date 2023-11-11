@@ -1,6 +1,5 @@
 package com.nicico.evaluation.mapper;
 
-import com.ctc.wstx.util.DataUtil;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.evaluation.dto.SpecialCaseDTO;
 import com.nicico.evaluation.model.SpecialCase;

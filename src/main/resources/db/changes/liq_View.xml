@@ -743,4 +743,37 @@
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1699688813">
+        <createView viewName="view_sensitive_event_person" replaceIfExists="true">
+            <![CDATA[
+                    SELECT
+                        ROWNUM AS id,
+                        sensitiveEventPerson.*
+                    FROM
+                        (
+                            SELECT
+                                se.id              AS sensitive_event_id,
+                                se.c_title,
+                                se.d_event_date,
+                                se.d_to_date,
+                                se.n_level_effect,
+                                se.type_catalog_id,
+                                se.event_policy_catalog_id,
+                                se.status_catalog_id,
+                                se.c_description,
+                                se.c_national_code AS creator_national_code,
+                                sep.id             AS sensitive_event_person_id,
+                                sep.c_national_code,
+                                per.first_name,
+                                per.last_name,
+                                per.personnel_code
+                            FROM
+                                tbl_sensitive_events       se
+                                LEFT JOIN tbl_sensitive_event_person sep ON se.id = sep.sensitive_event_id
+                                LEFT JOIN view_person                per ON per.national_code = sep.c_national_code
+                        ) sensitiveEventPerson
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
