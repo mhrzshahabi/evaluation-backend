@@ -38,7 +38,6 @@ public abstract class SensitiveEventPersonDTO {
     @ApiModel("SensitiveEventPersonLastActiveMeritInfo")
     public static class LastActiveMeritInfo extends SensitiveEventPersonDTO {
         private Long id;
-        private SensitiveEventsDTO.Info sensitiveEvent;
         private MeritComponentDTO.Info meritComponent;
         private AttachmentDTO.AttachInfo attachment;
     }

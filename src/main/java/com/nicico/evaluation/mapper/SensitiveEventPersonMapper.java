@@ -41,8 +41,6 @@ public abstract class SensitiveEventPersonMapper {
     public abstract List<SensitiveEventPersonDTO.Info> entityToDtoInfoList(List<SensitiveEventPerson> entities);
 
     @Mappings({
-            @Mapping(target = "sensitiveEvent.eventDate", ignore = true),
-            @Mapping(target = "sensitiveEvent.toDate", ignore = true),
             @Mapping(target = "firstName", source = "nationalCode", qualifiedByName = "getPersonFirstName"),
             @Mapping(target = "attachment", source = "id", qualifiedByName = "getAttachment"),
             @Mapping(target = "lastName", source = "nationalCode", qualifiedByName = "getPersonLastName"),
