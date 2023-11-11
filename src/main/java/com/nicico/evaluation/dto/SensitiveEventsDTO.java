@@ -41,12 +41,28 @@ public abstract class SensitiveEventsDTO {
     @ApiModel("SensitiveEventPersonInfo")
     public static class SensitiveEventPersonInfo {
         private Long id;
+        private Long sensitiveEventId;
         private Long sensitiveEventPersonId;
         private String title;
         private Long levelEffect;
         private String eventDate;
         private String eventPolicyCatalog;
         private String typeCatalog;
+        private String statusCatalog;
+        private String firstName;
+        private String lastName;
+        private String personnelCode;
+    }
+
+    @Getter
+    @Setter
+    @ApiModel("ExcelInfo")
+    public static class Excel {
+        private String title;
+        private String eventPolicyCatalog;
+        private String typeCatalog;
+        private Long levelEffect;
+        private String eventDate;
         private String statusCatalog;
         private String firstName;
         private String lastName;

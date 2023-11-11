@@ -21,6 +21,9 @@ public class SensitiveEventPersonView {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "sensitive_event_id")
+    private Long sensitiveEventId;
+
     @Column(name = "c_title")
     private String title;
 
