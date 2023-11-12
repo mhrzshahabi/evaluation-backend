@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -25,6 +24,7 @@ public abstract class AttachmentDTO {
     private String groupId;
     @NotNull
     private String fmsKey;
+    private Integer status;
 
     @Getter
     @Setter
