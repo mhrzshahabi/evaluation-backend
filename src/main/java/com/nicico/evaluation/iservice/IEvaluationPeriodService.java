@@ -8,10 +8,10 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.utility.BaseResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 public interface IEvaluationPeriodService {
 
@@ -47,11 +47,5 @@ public interface IEvaluationPeriodService {
 
     ResponseEntity<byte[]> downloadInvalidPostExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
 
-     List<EvaluationPeriodDTO.Excel> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
-
-//    List<EvaluationPeriodDTO.Excel> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
-
-    CompletableFuture<ResponseEntity<byte[]>> downloadExcelAsync(List<FilterDTO> criteria);
-
-//    CompletableFuture<ResponseEntity<byte[]>> downloadAsyncExcel(List<FilterDTO> criteria);
+    ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, IOException;
 }
