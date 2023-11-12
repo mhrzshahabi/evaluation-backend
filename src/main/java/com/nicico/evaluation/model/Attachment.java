@@ -66,5 +66,7 @@ public class Attachment<E> extends Auditable {
     @Column(name = "c_group_id")
     private String groupId;
 
+    @Column(name = "n_status")
+    private Integer status;
 
 }
