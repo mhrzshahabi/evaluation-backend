@@ -1,11 +1,13 @@
 package com.nicico.evaluation.dto;
 
 import io.swagger.annotations.ApiModel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -35,10 +37,40 @@ public abstract class AttachmentDTO {
 
     @Getter
     @Setter
+    @Builder
+    @Accessors(chain = true)
+    @ApiModel("AttachmentCreateBlobFileRq")
+    public static class CreateBlobFile {
+        private String fileName;
+        private Long objectId;
+        private String objectType;
+        private byte[] blobFile;
+        private Integer status;
+    }
+
+    @Getter
+    @Setter
     @ApiModel("AttachmentInfo")
     public static class Info extends AttachmentDTO {
         private Long id;
 
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AttachmentInfoBlobFileRq")
+    public static class InfoBlobFile {
+        private Long id;
+        @NotNull
+        private Long objectId;
+        @NotNull
+        private String objectType;
+        private Date createdDate;
+        private String createdBy;
+        private String fileName;
+        private byte[] blobFile;
+        private Integer status;
     }
 
     @Getter

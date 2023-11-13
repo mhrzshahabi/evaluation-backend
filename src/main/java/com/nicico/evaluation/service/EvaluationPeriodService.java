@@ -24,8 +24,10 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -46,17 +48,18 @@ import static com.nicico.evaluation.utility.EvaluationConstant.*;
 @Slf4j
 public class EvaluationPeriodService implements IEvaluationPeriodService {
 
+    private final IPostService postService;
     private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
+    private final IKPITypeService kpiTypeService;
+    private final IGroupTypeService groupTypeService;
+    private final CatalogRepository catalogRepository;
+    private final IAttachmentService attachmentService;
+    private final ResourceBundleMessageSource messageSource;
+    private final IGroupTypeMeritService groupTypeMeritService;
     private final EvaluationPeriodMapper evaluationPeriodMapper;
     private final EvaluationPeriodRepository evaluationPeriodRepository;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
-    private final ICatalogService catalogService;
-    private final CatalogRepository catalogRepository;
-    private final ResourceBundleMessageSource messageSource;
-    private final IPostService postService;
-    private final IGroupTypeService groupTypeService;
-    private final IKPITypeService kpiTypeService;
-    private final IGroupTypeMeritService groupTypeMeritService;
     private final IPostMeritComponentService postMeritComponentService;
 
     @Override
@@ -551,15 +554,20 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
-    public ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, IOException {
+//    @Transactional
+    @Async("threadPoolAsync")
+//    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    public String downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, IOException {
         List<EvaluationPeriodDTO.Excel> excelList = getExcelList(criteria);
         byte[] body = BaseService.exportExcelByList(excelList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
-        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                .body(excelDownload.getContent());
+        AttachmentDTO.CreateBlobFile createBlobFile = AttachmentDTO.CreateBlobFile.builder().blobFile(body).status(0).fileName(String.valueOf(new Date())).objectType(EVALUATION_PERIOD).build();
+        AttachmentDTO.InfoBlobFile blobFile = attachmentService.createBlobFile(createBlobFile);
+//        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+//                .body(excelDownload.getContent());
+        return HttpStatus.OK.toString();
     }
 
     private List<EvaluationPeriodDTO.Excel> getExcelList(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {

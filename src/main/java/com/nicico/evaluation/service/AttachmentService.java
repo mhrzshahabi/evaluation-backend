@@ -86,6 +86,17 @@ public class AttachmentService implements IAttachmentService {
 
     @Override
     @Transactional
+    public AttachmentDTO.InfoBlobFile createBlobFile(AttachmentDTO.CreateBlobFile dto) {
+        Attachment Attachment = mapper.dtoCreateBlobFileToEntity(dto);
+        try {
+            Attachment save = repository.save(Attachment);
+            return mapper.entityToDtoInfoBlobFile(save);
+        } catch (Exception exception) {
+            throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
+        }    }
+
+    @Override
+    @Transactional
     @PreAuthorize("hasAuthority('U_ATTACHMENT')")
     public AttachmentDTO.Info update(Long id, AttachmentDTO.Update dto) {
         Attachment Attachment = repository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));

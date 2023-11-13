@@ -12,7 +12,11 @@ public interface AttachmentMapper {
 
     Attachment dtoCreateToEntity(AttachmentDTO.Create dto);
 
+    Attachment dtoCreateBlobFileToEntity(AttachmentDTO.CreateBlobFile dto);
+
     AttachmentDTO.Info entityToDtoInfo(Attachment entity);
+
+    AttachmentDTO.InfoBlobFile entityToDtoInfoBlobFile(Attachment entity);
 
     List<AttachmentDTO.Info> entityToDtoInfoList(List<Attachment> entities);
 

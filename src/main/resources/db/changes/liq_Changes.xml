@@ -2055,4 +2055,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1699792438">
+        <addColumn tableName="tbl_attachment">
+            <column name="b_blob_file" type="blob"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

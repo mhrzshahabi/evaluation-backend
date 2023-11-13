@@ -24,8 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
@@ -195,8 +195,12 @@ public class EvaluationPeriodController {
     }
 
     @PostMapping(value = "/export-excel")
-    public @ResponseBody
-    void exportExcelAsync(@RequestBody List<FilterDTO> criteria) {
-        executorService.runAsync(() -> service.downloadExcel(criteria));
+    public @ResponseBody ResponseEntity<BaseResponse> exportExcelAsync(@RequestBody List<FilterDTO> criteria) throws IOException, NoSuchFieldException, IllegalAccessException {
+        BaseResponse response = new BaseResponse();
+//        executorService.runAsync(() -> service.downloadExcel(criteria));
+        service.downloadExcel(criteria);
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage(messageSource.getMessage("message.successful.operation", null, LocaleContextHolder.getLocale()));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

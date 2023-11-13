@@ -15,6 +15,8 @@ public interface IAttachmentService {
 
     AttachmentDTO.Info create(AttachmentDTO.Create dto);
 
+    AttachmentDTO.InfoBlobFile createBlobFile(AttachmentDTO.CreateBlobFile dto);
+
     AttachmentDTO.Info update(Long id, AttachmentDTO.Update dto);
 
     void delete(Long id);
