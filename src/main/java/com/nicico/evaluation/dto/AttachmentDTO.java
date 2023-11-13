@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -62,7 +63,7 @@ public abstract class AttachmentDTO {
     public static class BlobFileInfo {
         private Long id;
         private String objectType;
-        private String createdDate;
+        private Date createdDate;
         private String createdTime;
         private String createdBy;
         private String fileName;
