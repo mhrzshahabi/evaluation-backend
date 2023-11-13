@@ -25,10 +25,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @Api(value = " Evaluation Period")
@@ -194,32 +194,13 @@ public class EvaluationPeriodController {
         return service.downloadInvalidPostExcel(evaluationPeriodId);
     }
 
-//    /**
-//     * @param criteria is the key value pair for criteria
-//     * @return byte[] is the Excel of MeritComponentInfo entity that match the criteria
-//     */
-//    @PostMapping(value = "/export-excel")
-//    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, ExecutionException, InterruptedException {
-//        List<EvaluationPeriodDTO.Excel> excelList = service.downloadExcel(criteria);
-//        byte[] body = BaseService.exportExcelByList(excelList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
-//        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-//                .body(excelDownload.getContent());
-//    }
-
-    @PostMapping(value = "/export-excel-async")
-    public CompletableFuture<ResponseEntity<byte[]>> exportExcel(@RequestBody List<FilterDTO> criteria) {
-        return service.downloadExcelAsync(criteria);
-    }
-
     @PostMapping(value = "/export-excel")
-    public @ResponseBody
-    void exportExcelAsync(@RequestBody List<FilterDTO> criteria) {
-        executorService.runAsync(() -> {
-            service.downloadExcelAsync(criteria);
-            return true;
-        });
+    public @ResponseBody ResponseEntity<BaseResponse> exportExcelAsync(@RequestBody List<FilterDTO> criteria) throws IOException, NoSuchFieldException, IllegalAccessException {
+        BaseResponse response = new BaseResponse();
+//        executorService.runAsync(() -> service.downloadExcel(criteria));
+        service.downloadExcel(criteria);
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage(messageSource.getMessage("message.successful.operation", null, LocaleContextHolder.getLocale()));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -2049,4 +2049,16 @@
         <modifyDataType tableName="tbl_batch_detail" columnName="c_description" newDataType="VARCHAR2(3900 CHAR)"/>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1699780419">
+        <addColumn tableName="tbl_attachment">
+            <column name="n_status" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1699792438">
+        <addColumn tableName="tbl_attachment">
+            <column name="b_blob_file" type="blob"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
