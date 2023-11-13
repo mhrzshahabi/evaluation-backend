@@ -48,7 +48,7 @@ public abstract class SensitiveEventsDTO {
         private String eventDate;
         private String eventPolicyCatalog;
         private String typeCatalog;
-        private String statusCatalog;
+        private CatalogDTO statusCatalog;
         private String firstName;
         private String lastName;
         private String personnelCode;

@@ -12,7 +12,7 @@ public interface SensitiveEventPersonViewMapper {
     @Mappings({
             @Mapping(target = "eventPolicyCatalog", source = "eventPolicyCatalog.title"),
             @Mapping(target = "typeCatalog", source = "typeCatalog.title"),
-            @Mapping(target = "statusCatalog", source = "statusCatalog.title")
+            @Mapping(target = "statusCatalog", source = "statusCatalog")
     })
     SensitiveEventsDTO.SensitiveEventPersonInfo entityToDtoInfo(SensitiveEventPersonView entity);
 
