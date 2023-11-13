@@ -153,7 +153,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                         "                 evalPeriod.c_title, " +
                         "                 evalPeriod.c_start_date_assessment, " +
                         "                 evalPeriod.c_end_date_assessment,  " +
-                        "                 catalog.c_title status_catalog_title " +
+                        "                 catalog.c_title status_catalog_title, " +
                         "                 catalog.c_code status_catalog_code " +
                         "            FROM  " +
                         "                view_evaluation  eval" +

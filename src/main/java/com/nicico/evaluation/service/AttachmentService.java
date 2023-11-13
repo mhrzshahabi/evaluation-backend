@@ -79,10 +79,15 @@ public class AttachmentService implements IAttachmentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public AttachmentDTO.DownloadBlobInfo downloadAsyncExcel(Long id) {
         Optional<Attachment> optionalAttachment = repository.findById(id);
-        return mapper.entityToDtoDownloadBlobInfo(optionalAttachment.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
+        Attachment attachment = optionalAttachment.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        if (attachment.getStatus() != null && attachment.getStatus().equals(0)) {
+            attachment.setStatus(1);
+            repository.save(attachment);
+        }
+        return mapper.entityToDtoDownloadBlobInfo(attachment);
     }
 
     @Override
