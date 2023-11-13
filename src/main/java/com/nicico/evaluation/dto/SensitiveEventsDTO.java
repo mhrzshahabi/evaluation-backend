@@ -45,7 +45,7 @@ public abstract class SensitiveEventsDTO {
         private Long sensitiveEventPersonId;
         private String title;
         private Long levelEffect;
-        private String eventDate;
+        private Date eventDate;
         private String eventPolicyCatalog;
         private String typeCatalog;
         private CatalogDTO statusCatalog;

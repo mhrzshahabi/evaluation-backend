@@ -22,7 +22,7 @@ public interface AttachmentMapper {
     AttachmentDTO.Info entityToDtoInfo(Attachment entity);
 
     @Mappings({
-            @Mapping(target = "createdDate", source = "createdDate", qualifiedByName = "convertDateToString"),
+            @Mapping(target = "createdDate", source = "createdDate"),
             @Mapping(target = "createdTime", source = "createdDate", qualifiedByName = "convertTimeToString")
     })
     AttachmentDTO.BlobFileInfo entityToDtoBlobFileInfo(Attachment entity);
