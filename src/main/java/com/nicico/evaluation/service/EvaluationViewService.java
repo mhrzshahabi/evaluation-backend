@@ -137,6 +137,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                 CatalogDTO.Info statusCatalog = new CatalogDTO.Info();
                 statusCatalog.setId(eval[12] == null ? null : (Long.parseLong(eval[12].toString())));
                 statusCatalog.setTitle(eval[34] == null ? null : (eval[34].toString()));
+                statusCatalog.setCode(eval[35] == null ? null : (eval[35].toString()));
                 evaluationInfo.setStatusCatalog(statusCatalog);
                 infoList.add(evaluationInfo);
             }
@@ -153,6 +154,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                         "                 evalPeriod.c_start_date_assessment, " +
                         "                 evalPeriod.c_end_date_assessment,  " +
                         "                 catalog.c_title status_catalog_title " +
+                        "                 catalog.c_code status_catalog_code " +
                         "            FROM  " +
                         "                view_evaluation  eval" +
                         "                join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.evaluation_period_id " +

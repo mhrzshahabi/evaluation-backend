@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -72,6 +73,19 @@ public class AttachmentService implements IAttachmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<AttachmentDTO.BlobFileInfo> asyncExcelSearch(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
+        return BaseService.optimizedSearch(repository, mapper::entityToDtoBlobFileInfo, request);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AttachmentDTO.DownloadBlobInfo downloadAsyncExcel(Long id) {
+        Optional<Attachment> optionalAttachment = repository.findById(id);
+        return mapper.entityToDtoDownloadBlobInfo(optionalAttachment.orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound)));
+    }
+
+    @Override
     @Transactional
     @PreAuthorize("hasAuthority('C_ATTACHMENT')")
     public AttachmentDTO.Info create(AttachmentDTO.Create dto) {
@@ -86,14 +100,15 @@ public class AttachmentService implements IAttachmentService {
 
     @Override
     @Transactional
-    public AttachmentDTO.InfoBlobFile createBlobFile(AttachmentDTO.CreateBlobFile dto) {
+    public AttachmentDTO.BlobFileInfo createBlobFile(AttachmentDTO.CreateBlobFile dto) {
         Attachment Attachment = mapper.dtoCreateBlobFileToEntity(dto);
         try {
             Attachment save = repository.save(Attachment);
-            return mapper.entityToDtoInfoBlobFile(save);
+            return mapper.entityToDtoBlobFileInfo(save);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
-        }    }
+        }
+    }
 
     @Override
     @Transactional

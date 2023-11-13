@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -59,18 +58,24 @@ public abstract class AttachmentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("AttachmentInfoBlobFileRq")
-    public static class InfoBlobFile {
+    @ApiModel("AttachmentBlobFileInfoRq")
+    public static class BlobFileInfo {
         private Long id;
-        @NotNull
-        private Long objectId;
-        @NotNull
         private String objectType;
-        private Date createdDate;
+        private String createdDate;
+        private String createdTime;
         private String createdBy;
         private String fileName;
-        private byte[] blobFile;
         private Integer status;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AttachmentDownloadBlobInfoRq")
+    public static class DownloadBlobInfo {
+        private String fileName;
+        private byte[] blobFile;
     }
 
     @Getter
@@ -120,7 +125,7 @@ public abstract class AttachmentDTO {
     @Accessors(chain = true)
     @ApiModel("AttachmentResponse")
     public static class Response {
-        private List<Info> data;
+        private List<?> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
