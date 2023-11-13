@@ -15,13 +15,17 @@ public interface IAttachmentService {
 
     AttachmentDTO.Info create(AttachmentDTO.Create dto);
 
-    AttachmentDTO.InfoBlobFile createBlobFile(AttachmentDTO.CreateBlobFile dto);
+    AttachmentDTO.BlobFileInfo createBlobFile(AttachmentDTO.CreateBlobFile dto);
 
     AttachmentDTO.Info update(Long id, AttachmentDTO.Update dto);
 
     void delete(Long id);
 
     SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+
+    SearchDTO.SearchRs<AttachmentDTO.BlobFileInfo> asyncExcelSearch(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
+
+    AttachmentDTO.DownloadBlobInfo downloadAsyncExcel(Long id);
 
 }
 

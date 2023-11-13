@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface AttachmentRepository extends JpaRepository<Attachment, Long>, JpaSpecificationExecutor<Attachment> {
+
     List<Attachment> findAllByObjectIdAndObjectTypeAndGroupId(Long objectId, String objectType, String groupId);
 }

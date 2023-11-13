@@ -195,12 +195,11 @@ public class EvaluationPeriodController {
     }
 
     @PostMapping(value = "/export-excel")
-    public @ResponseBody ResponseEntity<BaseResponse> exportExcelAsync(@RequestBody List<FilterDTO> criteria) throws IOException, NoSuchFieldException, IllegalAccessException {
+    public @ResponseBody ResponseEntity<BaseResponse> exportExcelAsync(@RequestBody List<FilterDTO> criteria) {
         BaseResponse response = new BaseResponse();
-//        executorService.runAsync(() -> service.downloadExcel(criteria));
-        service.downloadExcel(criteria);
+        executorService.runAsync(() -> service.downloadExcel(criteria));
         response.setStatus(HttpStatus.OK.value());
-        response.setMessage(messageSource.getMessage("message.successful.operation", null, LocaleContextHolder.getLocale()));
+        response.setMessage(messageSource.getMessage("message.successful.async.excel", null, LocaleContextHolder.getLocale()));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -554,14 +554,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
     }
 
     @Override
-//    @Transactional
-    @Async("threadPoolAsync")
-//    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
+    @Transactional
     public String downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, IOException {
         List<EvaluationPeriodDTO.Excel> excelList = getExcelList(criteria);
         byte[] body = BaseService.exportExcelByList(excelList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
         AttachmentDTO.CreateBlobFile createBlobFile = AttachmentDTO.CreateBlobFile.builder().blobFile(body).status(0).fileName(String.valueOf(new Date())).objectType(EVALUATION_PERIOD).build();
-        AttachmentDTO.InfoBlobFile blobFile = attachmentService.createBlobFile(createBlobFile);
+        AttachmentDTO.BlobFileInfo blobFile = attachmentService.createBlobFile(createBlobFile);
 //        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
 //        return ResponseEntity.ok()
 //                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
