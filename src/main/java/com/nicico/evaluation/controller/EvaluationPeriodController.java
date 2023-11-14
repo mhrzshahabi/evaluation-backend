@@ -25,7 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
@@ -36,10 +35,10 @@ import java.util.Locale;
 @RequestMapping(value = "/api/evaluation-period")
 public class EvaluationPeriodController {
 
+    private final ExecutorService executorService;
     private final IEvaluationPeriodService service;
     private final ResourceBundleMessageSource messageSource;
     private final IEvaluationPeriodPostService evaluationPeriodPostService;
-    private final ExecutorService executorService;
 
     /**
      * @param id is the EvaluationPeriod id

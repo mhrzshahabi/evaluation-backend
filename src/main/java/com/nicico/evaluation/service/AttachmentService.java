@@ -24,8 +24,8 @@ import java.util.Optional;
 public class AttachmentService implements IAttachmentService {
 
     private final AttachmentMapper mapper;
-    private final AttachmentRepository repository;
     private final PageableMapper pageableMapper;
+    private final AttachmentRepository repository;
 
     @Override
     @Transactional(readOnly = true)
@@ -105,11 +105,10 @@ public class AttachmentService implements IAttachmentService {
 
     @Override
     @Transactional
-    public AttachmentDTO.BlobFileInfo createBlobFile(AttachmentDTO.CreateBlobFile dto) {
+    public void createBlobFile(AttachmentDTO.CreateBlobFile dto) {
         Attachment Attachment = mapper.dtoCreateBlobFileToEntity(dto);
         try {
-            Attachment save = repository.save(Attachment);
-            return mapper.entityToDtoBlobFileInfo(save);
+            repository.save(Attachment);
         } catch (Exception exception) {
             throw new EvaluationHandleException(EvaluationHandleException.ErrorType.NotSave);
         }

@@ -27,7 +27,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -555,16 +554,12 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('R_EVALUATION_PERIOD')")
     public String downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, IOException {
         List<EvaluationPeriodDTO.Excel> excelList = getExcelList(criteria);
         byte[] body = BaseService.exportExcelByList(excelList, "گزارش لیست دوره ها", "گزارش لیست دوره ها");
         AttachmentDTO.CreateBlobFile createBlobFile = AttachmentDTO.CreateBlobFile.builder().blobFile(body).status(0).fileName(String.valueOf(new Date())).objectType(EVALUATION_PERIOD).build();
-        AttachmentDTO.BlobFileInfo blobFile = attachmentService.createBlobFile(createBlobFile);
-//        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-//                .body(excelDownload.getContent());
+        attachmentService.createBlobFile(createBlobFile);
         return HttpStatus.OK.toString();
     }
 

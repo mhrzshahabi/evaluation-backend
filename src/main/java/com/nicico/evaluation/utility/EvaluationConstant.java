@@ -16,6 +16,8 @@ public class EvaluationConstant {
 
     public static final String EVALUATION_PERIOD = "EvaluationPeriod";
 
+    public static final String GROUP_POST = "GroupPost";
+
     public static final String SENSITIVE_EVENTS = "SensitiveEvents";
     public static final String SENSITIVE_EVENT_PERSON = "SensitiveEventPerson";
 

@@ -2,22 +2,26 @@ package com.nicico.evaluation.service;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
+import com.nicico.evaluation.dto.AttachmentDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.dto.GroupPostDTO;
 import com.nicico.evaluation.exception.EvaluationHandleException;
+import com.nicico.evaluation.iservice.IAttachmentService;
 import com.nicico.evaluation.iservice.IGroupPostService;
 import com.nicico.evaluation.mapper.GroupPostMapper;
 import com.nicico.evaluation.model.GroupPost;
 import com.nicico.evaluation.repository.GroupPostRepository;
-import com.nicico.evaluation.utility.ExcelGenerator;
+import com.nicico.evaluation.utility.EvaluationConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -25,8 +29,9 @@ import java.util.List;
 public class GroupPostService implements IGroupPostService {
 
     private final GroupPostMapper mapper;
-    private final GroupPostRepository repository;
     private final PageableMapper pageableMapper;
+    private final GroupPostRepository repository;
+    private final IAttachmentService attachmentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -72,9 +77,11 @@ public class GroupPostService implements IGroupPostService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_GROUP_POST')")
-    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+    public String downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست پست");
-        return new ExcelGenerator.ExcelDownload(body);
+        AttachmentDTO.CreateBlobFile createBlobFile = AttachmentDTO.CreateBlobFile.builder().blobFile(body).status(0).fileName(String.valueOf(new Date())).objectType(EvaluationConstant.GROUP_POST).build();
+        attachmentService.createBlobFile(createBlobFile);
+        return HttpStatus.OK.toString();
     }
 
     @Scheduled(cron = "0 0 3 * * *")
