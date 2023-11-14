@@ -34,7 +34,8 @@ public abstract class SensitiveEventPersonMapper {
             @Mapping(target = "sensitiveEvent.toDate", ignore = true),
             @Mapping(target = "firstName", source = "nationalCode", qualifiedByName = "getPersonFirstName"),
             @Mapping(target = "attachment", source = "id", qualifiedByName = "getAttachment"),
-            @Mapping(target = "lastName", source = "nationalCode", qualifiedByName = "getPersonLastName")
+            @Mapping(target = "lastName", source = "nationalCode", qualifiedByName = "getPersonLastName"),
+            @Mapping(target = "personnelCode", source = "nationalCode", qualifiedByName = "getPersonPersonnelCode")
     })
     public abstract SensitiveEventPersonDTO.Info entityToDtoInfo(SensitiveEventPerson entity);
 
@@ -44,6 +45,7 @@ public abstract class SensitiveEventPersonMapper {
             @Mapping(target = "firstName", source = "nationalCode", qualifiedByName = "getPersonFirstName"),
             @Mapping(target = "attachment", source = "id", qualifiedByName = "getAttachment"),
             @Mapping(target = "lastName", source = "nationalCode", qualifiedByName = "getPersonLastName"),
+            @Mapping(target = "personnelCode", source = "nationalCode", qualifiedByName = "getPersonPersonnelCode"),
             @Mapping(target = "meritComponent", source = "meritComponentId", qualifiedByName = "getLastActiveMerit")
     })
     public abstract SensitiveEventPersonDTO.LastActiveMeritInfo entityToDtoLastActiveMeritInfo(SensitiveEventPerson entity);
