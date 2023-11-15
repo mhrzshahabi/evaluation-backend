@@ -451,6 +451,10 @@
     {
       "code": "R_SUB_MENU_EVALUATION_COMPREHENSIVE",
       "title": "نمایش زیرمنو ارزیابی جامع"
+    },
+    {
+      "code": "R_SUB_MENU_EXCEL_EXPORT",
+      "title": "نمایش زیرمنو خروجی های اکسل"
     }
   ]
 }
