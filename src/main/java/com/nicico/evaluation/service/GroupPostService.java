@@ -75,7 +75,7 @@ public class GroupPostService implements IGroupPostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     @PreAuthorize("hasAuthority('R_GROUP_POST')")
     public String downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست پست");
