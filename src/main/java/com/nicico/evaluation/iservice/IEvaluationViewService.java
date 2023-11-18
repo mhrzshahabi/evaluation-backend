@@ -18,6 +18,8 @@ public interface IEvaluationViewService {
 
     SearchDTO.SearchRs<EvaluationDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex);
 
+    SearchDTO.SearchRs<EvaluationDTO.Info> searchByPermission(SearchDTO.SearchRq request, int count, int startIndex) throws IllegalAccessException, NoSuchFieldException;
+
     ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria);
 
     ExcelGenerator.ExcelDownload downloadExcelByParent(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;

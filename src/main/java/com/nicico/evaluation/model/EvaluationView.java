@@ -110,7 +110,16 @@ public class EvaluationView {
 
     @Column(name = "VAHED_TITLE")
     private String vahedTitle;
+    
+    @Column(name = "PERSONNEL_CODE")
+    private String personnelCode;
 
     @Column(name = "ASSESSOR_POST_TITLE")
     private String assessorPostTitle;
+
+    @Column(name = "COST_CENTER_CODE")
+    private String costCenterCode;
+
+    @Column(name = "COST_CENTER_TITLE")
+    private String costCenterTitle;
 }

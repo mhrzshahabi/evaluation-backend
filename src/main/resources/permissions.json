@@ -455,6 +455,10 @@
     {
       "code": "R_SUB_MENU_EXCEL_EXPORT",
       "title": "نمایش زیرمنو خروجی های اکسل"
+    },
+    {
+      "code": "R_SUB_MENU_EVALUATION_ITEMS",
+      "title": "گزارش مولفه های ارزیابی"
     }
   ]
 }

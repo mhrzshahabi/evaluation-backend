@@ -775,5 +775,50 @@
             ]]>
         </createView>
     </changeSet>
-
+    <changeSet author="semami" id="1700292111">
+        <createView viewName="view_evaluation" replaceIfExists="true">
+            <![CDATA[
+                    SELECT
+                        evaluation.id,
+                        evaluation.c_assess_national_code,
+                        evaluation.c_assess_post_code,
+                        evaluation.c_assessor_national_code,
+                        evaluation.c_assessor_post_code,
+                        evaluation.method_catalog_id,
+                        evaluation.evaluation_period_id,
+                        evaluation.average_score,
+                        evaluation.c_assessor_full_name,
+                        evaluation.c_assess_full_name,
+                        evaluation.special_case_id,
+                        evaluation.c_description,
+                        evaluation.status_catalog_id,
+                        evaluation.c_created_by,
+                        evaluation.d_created_date,
+                        evaluation.c_last_modified_by,
+                        evaluation.d_last_modified_date,
+                        evaluation.n_version,
+                        post.ghesmat_title,
+                        post.hoze_title,
+                        post.moavenat_title,
+                        post.mojtama_title,
+                        post.omoor_title,
+                        post.post_code,
+                        post.post_grade_code,
+                        post.post_grade_title,
+                        post.post_group_code,
+                        post.post_id,
+                        post.post_title,
+                        post.vahed_title,
+                        post.cost_center_code ,
+                        post.cost_center_title ,
+                        post1.post_title as assessor_post_title,
+                        person.personnel_code personnel_code
+                    FROM
+                        tbl_evaluation evaluation
+                        join view_post post on post.post_code = evaluation.c_assess_post_code
+                        join view_post post1 on post1.post_code = evaluation.c_assessor_post_code
+                        join view_person person on person.national_code = evaluation.c_assess_national_code
+            ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

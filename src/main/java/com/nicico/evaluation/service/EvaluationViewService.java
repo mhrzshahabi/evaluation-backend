@@ -7,7 +7,6 @@ import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.exception.EvaluationHandleException;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationViewService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
@@ -105,6 +104,33 @@ public class EvaluationViewService implements IEvaluationViewService {
             searchRs.setTotalCount(0L);
             return searchRs;
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<EvaluationDTO.Info> searchByPermission(SearchDTO.SearchRq request, int count, int startIndex) throws IllegalAccessException, NoSuchFieldException {
+
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("statusCatalogId")
+                .setValue(catalogService.getByCode(FINALIZED).getId());
+
+        criteriaRqList.add(statusCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
+        if (SecurityUtil.isAdmin())
+            return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_LAST_FINALIZED_EVALUATION")))
+            this.searchByParent(request);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_COMPREHENSIVE")))
+            this.searchEvaluationComprehensive(request, count, startIndex);
+        return null;
     }
 
     private List<EvaluationDTO.Info> setInfoList(List<EvaluationDTO.Info> infoList, List<?> resultList) {
