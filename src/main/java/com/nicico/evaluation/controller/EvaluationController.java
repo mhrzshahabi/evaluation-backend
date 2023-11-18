@@ -241,7 +241,7 @@ public class EvaluationController {
         request.setCriteria(criteriaRq);
 
 
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = service.search(request);
+        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.search(request);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())
