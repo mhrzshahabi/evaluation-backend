@@ -60,7 +60,7 @@ public class EvaluationViewService implements IEvaluationViewService {
         final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
         final SearchDTO.CriteriaRq assessorPostCodeCriteriaRq = new SearchDTO.CriteriaRq()
                 .setOperator(EOperator.inSet)
-                .setFieldName("assessorPostCode")
+                .setFieldName("assessPostCode")
                 .setValue(!postCodeList.isEmpty() ? postCodeList : "0");
 
         final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
