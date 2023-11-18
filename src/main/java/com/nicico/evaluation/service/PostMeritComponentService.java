@@ -11,7 +11,6 @@ import com.nicico.evaluation.iservice.IGroupPostService;
 import com.nicico.evaluation.iservice.IMeritComponentService;
 import com.nicico.evaluation.iservice.IPostMeritComponentService;
 import com.nicico.evaluation.mapper.PostMeritComponentMapper;
-import com.nicico.evaluation.model.GroupTypeMerit;
 import com.nicico.evaluation.model.PostMeritComponent;
 import com.nicico.evaluation.repository.PostMeritComponentRepository;
 import com.nicico.evaluation.utility.BaseResponse;
@@ -63,7 +62,6 @@ public class PostMeritComponentService implements IPostMeritComponentService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_POST_MERIT_COMPONENT')")
     public Long getTotalWeight(String groupPostCode) {
         Long revokedMeritId = catalogService.getByCode("Revoked-Merit").getId();
         List<PostMeritComponent> byGroupPostCode = repository.findAllByGroupPostCodeAndStatusCatalogIdNot(groupPostCode, revokedMeritId);
