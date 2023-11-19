@@ -14,9 +14,9 @@ public class EvaluationConstant {
     public static final String VALIDATED = "Validated";
     public static final String INITIAL = "Initial-registration";
 
-    public static final String EVALUATION_PERIOD = "EvaluationPeriod";
+    public static final String EVALUATION_PERIOD_EXCEL_TYPE = "دوره ارزیابی";
 
-    public static final String GROUP_POST = "GroupPost";
+    public static final String GROUP_POST_EXCEL_TYPE = "پست";
 
     public static final String SENSITIVE_EVENTS = "SensitiveEvents";
     public static final String SENSITIVE_EVENT_PERSON = "SensitiveEventPerson";
