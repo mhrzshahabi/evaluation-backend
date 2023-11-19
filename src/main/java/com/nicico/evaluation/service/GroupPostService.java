@@ -79,7 +79,7 @@ public class GroupPostService implements IGroupPostService {
     @PreAuthorize("hasAuthority('R_GROUP_POST')")
     public String downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست پست");
-        AttachmentDTO.CreateBlobFile createBlobFile = AttachmentDTO.CreateBlobFile.builder().blobFile(body).status(0).fileName(String.valueOf(new Date())).objectType(EvaluationConstant.GROUP_POST).build();
+        AttachmentDTO.CreateBlobFile createBlobFile = AttachmentDTO.CreateBlobFile.builder().blobFile(body).status(0).fileName(String.valueOf(new Date())).objectType(EvaluationConstant.GROUP_POST_EXCEL_TYPE).build();
         attachmentService.createBlobFile(createBlobFile);
         return HttpStatus.OK.toString();
     }
