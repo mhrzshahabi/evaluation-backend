@@ -3,13 +3,11 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,8 +24,6 @@ import java.util.List;
 public class EvaluationReportController {
 
     private final IEvaluationGeneralReportService evaluationGeneralReportService;
-    private final ICatalogService catalogService;
-    private final ResourceBundleMessageSource messageSource;
 
     /**
      * @param count      is the number of entity to every page
@@ -58,7 +54,7 @@ public class EvaluationReportController {
      * @param criteria   is the key value pair for criteria
      * @return TotalResponse<EvaluationGeneralReportDTO.Info> is the list of EvaluationInfo entity that match the criteria
      */
-    @PostMapping(value = "/spec-list/evaluation-comprehensive")
+    @PostMapping(value = "/spec-list/comprehensive")
     public ResponseEntity<EvaluationGeneralReportDTO.SpecResponse> searchEvaluationComprehensive(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                                                  @RequestParam(value = "count", required = false) Integer count,
                                                                                                  @RequestBody List<FilterDTO> criteria) {
@@ -80,7 +76,7 @@ public class EvaluationReportController {
      * @param criteria   is the key value pair for criteria
      * @return TotalResponse<EvaluationGeneralReportDTO.Info> is the list of EvaluationInfo entity that match the criteria
      */
-    @PostMapping(value = "/spec-list/view/by-permisson")
+    @PostMapping(value = "/spec-list/by-permisson")
     public ResponseEntity<EvaluationGeneralReportDTO.SpecResponse> searchViewByPermission(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                                           @RequestParam(value = "count", required = false) Integer count,
                                                                                           @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
