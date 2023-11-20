@@ -963,4 +963,150 @@
             ]]>
         </createView>
     </changeSet>
+        <changeSet author="semami" id="1700395658">
+        <createView viewName="view_evaluation_general_report" replaceIfExists="true">
+            <![CDATA[
+                    WITH
+                    behavioral_development_avg AS (
+                        SELECT
+                            SUM(evalItem.questionnaire_answer_catalog_value) AS avg_value,
+                            MAX(groupType.n_weight) weight,
+                            evalItem.evaluation_id   AS evaluation_id,
+                            kpiType.c_title          AS title
+                        FROM
+                            tbl_group_type_merit   groupTypeMerit
+                            JOIN tbl_evaluation_item    evalItem ON evalItem.group_type_merit_id = groupTypeMerit.id
+                            JOIN tbl_group_type         groupType ON groupType.id = groupTypeMerit.group_type_id
+                            JOIN tbl_kpi_type           kpiType ON kpiType.id = groupType.kpi_type_id
+                        GROUP BY
+                            evalItem.evaluation_id,
+                            kpiType.c_title
+                    ),
+                    operational_avg AS (
+                        SELECT DISTINCT
+                            groupType.n_weight       weight,
+                            SUM(evalItem.questionnaire_answer_catalog_value) AS avg_value,
+                            evalItem.evaluation_id   AS evaluation_id,
+                            post.post_code,
+                            kpiType.c_title          AS title
+                        FROM
+                            tbl_post_merit_component   postMerit
+                            JOIN tbl_evaluation_item        evalItem ON evalItem.post_merit_id = postMerit.id
+                            JOIN tbl_merit_component_type   meritType ON meritType.merit_component_id = postMerit.merit_component_id
+                            JOIN tbl_group_type             groupType ON groupType.kpi_type_id = meritType.kpi_type_id
+                            JOIN tbl_group                  group1 ON group1.id = groupType.group_id
+                            JOIN tbl_group_grade            groupGrade ON groupGrade.group_id = group1.id
+                            JOIN view_grade                 grade ON grade.id = groupGrade.grade_id
+                            JOIN view_post                  post ON post.post_grade_code = grade.c_post_grade_code
+                            JOIN tbl_kpi_type               kpiType ON kpiType.id = meritType.kpi_type_id
+                        GROUP BY
+                            evalItem.evaluation_id,
+                            groupType.n_weight,
+                            post.post_code,
+                            kpiType.c_title
+                    ),
+                    evaluationItemCount AS (
+                        SELECT
+                            evaluation_id,
+                            COUNT(*) AS countItem
+                        FROM
+                            tbl_evaluation_item
+                        GROUP BY
+                            evaluation_id
+                    )
+                    SELECT
+                        evaluation.id,
+                        evaluation.c_assess_national_code,
+                        evaluation.c_assess_post_code,
+                        evaluation.c_assessor_national_code,
+                        evaluation.c_assessor_post_code,
+                        evaluation.evaluation_period_id,
+                        evaluation.average_score,
+                        evaluation.c_assessor_full_name,
+                        evaluation.c_assess_full_name,
+                        evaluation.status_catalog_id,
+                        evaluation.ghesmat_title,
+                        evaluation.moavenat_title,
+                        evaluation.mojtama_title,
+                        evaluation.omoor_title,
+                        evaluation.post_title   AS assessor_post_title,
+                        nvl(evaluation.cost_center_code , evaluation.assessor_cost_center_code) as cost_center_code,
+                        nvl(evaluation.cost_center_title , evaluation.assessor_cost_center_title) as cost_center_title,
+                        evaluation.personnel_code,
+                        behavioral.avg_value            AS avg_behavioral,
+                        behavioral.weight               AS weight_behavioral,
+                        development.avg_value            AS avg_development,
+                        development.weight               AS weight_development,
+                        operational.avg_value            AS avg_operational,
+                        operational.weight               AS weight_operational,
+                        items.countItem
+                    FROM
+                        view_evaluation evaluation
+                        JOIN (
+                            SELECT
+                                evaluation_id,
+                                avg_value,
+                                weight,
+                                title
+                            FROM
+                                behavioral_development_avg
+                        ) behavioral ON evaluation.id = behavioral.evaluation_id
+                                AND behavioral.title = 'رفتاری'
+                        JOIN (
+                            SELECT
+                                evaluation_id,
+                                avg_value,
+                                weight,
+                                title
+                            FROM
+                                behavioral_development_avg
+                        ) development ON evaluation.id = development.evaluation_id
+                                AND development.title = 'توسعه شایستگی ها'
+                        JOIN (
+                            SELECT
+                                evaluation_id,
+                                avg_value,
+                                weight,
+                                post_code,
+                                title
+                            FROM
+                                operational_avg
+                        ) operational ON   evaluation.id = operational.evaluation_id
+                         AND operational.title ='نتیجه ای'
+                         JOIN (
+                                SELECT
+                                    evaluation_id,
+                                    countItem
+                                FROM
+                                    evaluationItemCount
+                            ) items ON items.evaluation_id = evaluation.id
+                    GROUP BY
+                        evaluation.id,
+                        evaluation.c_assess_national_code,
+                        evaluation.c_assess_post_code,
+                        evaluation.c_assessor_national_code,
+                        evaluation.c_assessor_post_code,
+                        evaluation.evaluation_period_id,
+                        evaluation.average_score,
+                        evaluation.c_assessor_full_name,
+                        evaluation.c_assess_full_name,
+                        evaluation.status_catalog_id,
+                        evaluation.ghesmat_title,
+                        evaluation.moavenat_title,
+                        evaluation.mojtama_title,
+                        evaluation.omoor_title,
+                        evaluation.post_title,
+                        behavioral.avg_value,
+                        behavioral.weight,
+                        development.avg_value,
+                        development.weight,
+                        operational.avg_value,
+                        operational.weight,
+                        nvl(evaluation.cost_center_code , evaluation.assessor_cost_center_code) ,
+                        nvl(evaluation.cost_center_title , evaluation.assessor_cost_center_title) ,
+                        evaluation.personnel_code,
+                        items.countItem
+            ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>
