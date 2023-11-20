@@ -458,7 +458,15 @@
     },
     {
       "code": "R_SUB_MENU_EVALUATION_ITEMS",
-      "title": "گزارش مولفه های ارزیابی"
+      "title": "گزارش زیرمنو مولفه های ارزیابی"
+    },
+    {
+      "code": "R_EVALUATION_GENERAL_REPORT_FIRST_LEVEL",
+      "title": "گزارش مولفه های ارزیابی - سطح اول"
+    },
+    {
+      "code": "R_EVALUATION_GENERAL_REPORT_LAST_LEVEL",
+      "title": "گزارش مولفه های ارزیابی -تا آخرین سطح"
     }
   ]
 }

@@ -48,7 +48,7 @@ public class EvaluationController {
 
     private final SSEEngine sseEngine;
     private final IEvaluationService service;
-    private final IEvaluationViewService serviceView;
+    private final IEvaluationViewService evaluationViewService;
     private final ICatalogService catalogService;
     private final ResourceBundleMessageSource messageSource;
 
@@ -167,51 +167,7 @@ public class EvaluationController {
                                                                  @RequestParam(value = "count", required = false) Integer count,
                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.search(request);
-        final EvaluationDTO.Response response = new EvaluationDTO.Response();
-        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
-        response.setData(data.getList())
-                .setStartRow(startIndex)
-                .setEndRow(startIndex + data.getList().size())
-                .setTotalRows(data.getTotalCount().intValue());
-        specRs.setResponse(response);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-    /**
-     * @param count      is the number of entity to every page
-     * @param startIndex is the start Index in current page
-     * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<EvaluationDTO.Info> is the list of EvaluationInfo entity that match the criteria
-     */
-    @PostMapping(value = "/spec-list/evaluation-comprehensive")
-    public ResponseEntity<EvaluationDTO.SpecResponse> searchEvaluationComprehensive(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                                    @RequestParam(value = "count", required = false) Integer count,
-                                                                                    @RequestBody List<FilterDTO> criteria) {
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.searchEvaluationComprehensive(request, count, startIndex);
-        final EvaluationDTO.Response response = new EvaluationDTO.Response();
-        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
-        response.setData(data.getList())
-                .setStartRow(startIndex)
-                .setEndRow(startIndex + data.getList().size())
-                .setTotalRows(data.getTotalCount().intValue());
-        specRs.setResponse(response);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-    /**
-     * @param count      is the number of entity to every page
-     * @param startIndex is the start Index in current page
-     * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<EvaluationDTO.Info> is the list of EvaluationInfo entity that match the criteria
-     */
-    @PostMapping(value = "/spec-list/view/by-permisson")
-    public ResponseEntity<EvaluationDTO.SpecResponse> searchViewByPermission(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                                    @RequestParam(value = "count", required = false) Integer count,
-                                                                                    @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.searchByPermission(request, count, startIndex);
+        SearchDTO.SearchRs<EvaluationDTO.Info> data = evaluationViewService.search(request);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())
@@ -263,7 +219,7 @@ public class EvaluationController {
         request.setCriteria(criteriaRq);
 
 
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.search(request);
+        SearchDTO.SearchRs<EvaluationDTO.Info> data = evaluationViewService.search(request);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())
@@ -311,62 +267,18 @@ public class EvaluationController {
     }
 
     /**
-     * @param count      is the number of entity to every page
-     * @param startIndex is the start Index in current page
-     * @param criteria   is the key value pair for criteria
-     * @return TotalResponse<EvaluationDTO.Info> is the list of EvaluationInfo entity that match the criteria
-     */
-    @PostMapping(value = "/spec-list/by-parent")
-    public ResponseEntity<EvaluationDTO.SpecResponse> searchByParent(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                     @RequestParam(value = "count", required = false) Integer count,
-                                                                     @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = serviceView.searchByParent(request);
-        final EvaluationDTO.Response response = new EvaluationDTO.Response();
-        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
-        response.setData(data.getList())
-                .setStartRow(startIndex)
-                .setEndRow(startIndex + data.getList().size())
-                .setTotalRows(data.getTotalCount().intValue());
-        specRs.setResponse(response);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
-
-    /**
      * @param criteria is the key value pair for criteria
      * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
      */
     @PostMapping(value = "/export-excel")
     public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        ExcelGenerator.ExcelDownload excelDownload = serviceView.downloadExcel(criteria);
+        ExcelGenerator.ExcelDownload excelDownload = evaluationViewService.downloadExcel(criteria);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
                 .body(excelDownload.getContent());
     }
 
-    /**
-     * @param criteria is the key value pair for criteria
-     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
-     */
-    @PostMapping(value = "/export-excel-by-parent")
-    public ResponseEntity<byte[]> exportExcelByParent(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        ExcelGenerator.ExcelDownload excelDownload = serviceView.downloadExcelByParent(criteria);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                .body(excelDownload.getContent());
-    }
-
-    /**
-     * @param criteria is the key value pair for criteria
-     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
-     */
-    @PostMapping(value = "/export-excel-evaluation-comprehensive")
-    public ResponseEntity<byte[]> exportExcelEvaluationComprehensive(@RequestBody List<FilterDTO> criteria) {
-        return serviceView.downloadExcelEvaluationComprehensive(criteria);
-    }
 }
 
     
