@@ -7,10 +7,13 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.IEvaluationCostCenterReportViewService;
 import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
 import com.nicico.evaluation.utility.CriteriaUtil;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -114,6 +117,19 @@ public class EvaluationReportController {
                 .setTotalRows(data.getTotalCount().intValue());
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTO.CostCenterExcel entity that match the criteria
+     */
+    @PostMapping(value = "/export-excel/cost-center")
+    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        ExcelGenerator.ExcelDownload excelDownload = evaluationCostCenterReportViewService.downloadExcel(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
     }
 }
 

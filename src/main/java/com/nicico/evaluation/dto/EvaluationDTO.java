@@ -168,10 +168,10 @@ public class EvaluationDTO {
         private String costCenterCode;
         private String costCenterTitle;
         private Integer personCount;
-        private Double averageBehavioral;
-        private Double averageDevelopment;
-        private Double averageOperational;
-        private Double averageScore;
+        private String averageBehavioral;
+        private String averageDevelopment;
+        private String averageOperational;
+        private String averageScore;
     }
 
     @Getter
