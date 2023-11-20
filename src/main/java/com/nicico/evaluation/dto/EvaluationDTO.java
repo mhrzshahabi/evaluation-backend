@@ -68,6 +68,7 @@ public class EvaluationDTO {
         private String moavenatTitle;
         private String omoorTitle;
         private String ghesmatTitle;
+        private String personnelCode;
     }
 
     @Getter
@@ -84,6 +85,8 @@ public class EvaluationDTO {
         private String evaluationPeriodStartDateAssessment;
         private String evaluationPeriodEndDateAssessment;
         private Long averageScore;
+        private String costCenterCode;
+        private String costCenterTitle;
         private String postGradeTitle;
         private String mojtamaTitle;
         private String moavenatTitle;

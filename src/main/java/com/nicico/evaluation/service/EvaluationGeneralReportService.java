@@ -6,20 +6,14 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.CatalogDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
-import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
-import com.nicico.evaluation.iservice.IEvaluationViewService;
+import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
-import com.nicico.evaluation.mapper.EvaluationViewMapper;
-import com.nicico.evaluation.repository.EvaluationViewRepository;
-import com.nicico.evaluation.utility.CriteriaUtil;
-import com.nicico.evaluation.utility.ExcelGenerator;
+import com.nicico.evaluation.mapper.EvaluationViewGeneralReportMapper;
+import com.nicico.evaluation.repository.EvaluationViewGeneralReportRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,10 +29,10 @@ import static com.nicico.evaluation.utility.EvaluationConstant.FINALIZED;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class EvaluationViewService implements IEvaluationViewService {
+public class EvaluationGeneralReportService implements IEvaluationGeneralReportService {
 
-    private final EvaluationViewMapper mapper;
-    private final EvaluationViewRepository repository;
+    private final EvaluationViewGeneralReportMapper mapper;
+    private final EvaluationViewGeneralReportRepository repository;
     private final PageableMapper pageableMapper;
     private final EntityManager entityManager;
     private final IOrganizationTreeService organizationTreeService;
@@ -106,6 +100,33 @@ public class EvaluationViewService implements IEvaluationViewService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<EvaluationDTO.Info> searchByPermission(SearchDTO.SearchRq request, int count, int startIndex) throws IllegalAccessException, NoSuchFieldException {
+
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("statusCatalogId")
+                .setValue(catalogService.getByCode(FINALIZED).getId());
+
+        criteriaRqList.add(statusCriteriaRq);
+        criteriaRqList.add(request.getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
+        if (SecurityUtil.isAdmin())
+            return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_FIRST_LEVEL")))
+            this.searchByParent(request);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_LAST_LEVEL")))
+            this.searchEvaluationComprehensive(request, count, startIndex);
+        return null;
+    }
+
     private List<EvaluationDTO.Info> setInfoList(List<EvaluationDTO.Info> infoList, List<?> resultList) {
         if (resultList != null) {
             for (Object evaluation : resultList) {
@@ -155,7 +176,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                         "                 catalog.c_title status_catalog_title, " +
                         "                 catalog.c_code status_catalog_code " +
                         "            FROM  " +
-                        "                view_evaluation  eval" +
+                        "                view_evaluation_general_report  eval" +
                         "                join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.evaluation_period_id " +
                         "                join tbl_catalog             catalog ON catalog.id = eval.status_catalog_id " +
                         "            WHERE  " +
@@ -192,7 +213,7 @@ public class EvaluationViewService implements IEvaluationViewService {
         return String.format(" SELECT  " +
                 "                 count(eval.id) " +
                 "            FROM  " +
-                "                view_evaluation  eval" +
+                "                view_evaluation_general_report  eval" +
                 "                join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.evaluation_period_id " +
                 "               join tbl_catalog             catalog ON catalog.id = eval.status_catalog_id " +
                 "            WHERE  " +
@@ -250,64 +271,4 @@ public class EvaluationViewService implements IEvaluationViewService {
         return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE')")
-    public ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria) {
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
-        List<EvaluationDTO.Info> infoList = new ArrayList<>();
-        String query = getSubAssessorQuery(String.valueOf(getWhereClause(request)), null);
-        List<?> resultList = entityManager.createNativeQuery(query).getResultList();
-        if (!resultList.isEmpty()) {
-            setInfoList(infoList, resultList);
-            List<EvaluationDTO.Excel> excelList = mapper.infoDtoToDtoExcelList(infoList);
-            byte[] body = BaseService.exportExcelByList(excelList, "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
-            ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                    .body(excelDownload.getContent());
-        }
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_LAST_FINALIZED_EVALUATION')")
-    public ExcelGenerator.ExcelDownload downloadExcelByParent(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
-        List<String> postCodeList = organizationTreeService.getByParentNationalCode();
-
-        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        final SearchDTO.CriteriaRq assessorPostCodeCriteriaRq = new SearchDTO.CriteriaRq()
-                .setOperator(EOperator.inSet)
-                .setFieldName("assessorPostCode")
-                .setValue(!postCodeList.isEmpty() ? postCodeList : "0");
-
-        final SearchDTO.CriteriaRq statusCriteriaRq = new SearchDTO.CriteriaRq()
-                .setOperator(EOperator.equals)
-                .setFieldName("statusCatalogId")
-                .setValue(catalogService.getByCode(FINALIZED).getId());
-
-        criteriaRqList.add(assessorPostCodeCriteriaRq);
-        criteriaRqList.add(statusCriteriaRq);
-        criteriaRqList.add(request.getCriteria());
-
-        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
-                .setOperator(EOperator.and)
-                .setCriteria(criteriaRqList);
-        request.setCriteria(criteriaRq);
-
-        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, " آخرین ارزیابی های نهایی شده", "گزارش  آخرین ارزیابی های نهایی شده");
-        return new ExcelGenerator.ExcelDownload(body);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION')")
-    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش لیست ارزیابی");
-        return new ExcelGenerator.ExcelDownload(body);
-    }
 }

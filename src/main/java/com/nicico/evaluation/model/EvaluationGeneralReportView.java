@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select  * from view_evaluation")
-@DiscriminatorValue("viewEvaluation")
-public class EvaluationView {
+@Subselect("select  * from view_evaluation_general_report")
+@DiscriminatorValue("viewEvaluationGeneralReport")
+public class EvaluationGeneralReportView {
 
     @Id
     @Column(name = "id")
@@ -45,7 +45,7 @@ public class EvaluationView {
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "method_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluationView_method_catalog_to_catalog"))
+    @JoinColumn(name = "method_catalog_id", insertable = false, updatable = false, nullable = false)
     private Catalog methodCatalog;
 
     @Column(name = "method_catalog_id")
@@ -56,7 +56,7 @@ public class EvaluationView {
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluationView_status_catalog_to_catalog"))
+    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false)
     private Catalog statusCatalog;
 
     @NotNull
@@ -65,7 +65,7 @@ public class EvaluationView {
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "evaluation_period_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluationView_to_evaluation_period"))
+    @JoinColumn(name = "evaluation_period_id", insertable = false, updatable = false, nullable = false)
     private EvaluationPeriod evaluationPeriod;
 
     @NotNull
@@ -110,7 +110,7 @@ public class EvaluationView {
 
     @Column(name = "VAHED_TITLE")
     private String vahedTitle;
-    
+
     @Column(name = "PERSONNEL_CODE")
     private String personnelCode;
 
