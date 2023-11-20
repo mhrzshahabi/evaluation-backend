@@ -147,6 +147,36 @@ public class EvaluationDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("EvaluationCostCenterInfo")
+    public static class CostCenterInfo {
+        private Long id;
+        private Long evaluationPeriodId;
+        private String costCenterCode;
+        private String costCenterTitle;
+        private Integer personCount;
+        private Double averageBehavioral;
+        private Double averageDevelopment;
+        private Double averageOperational;
+        private Double averageScore;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationCostCenterExcel")
+    public static class CostCenterExcel {
+        private String costCenterCode;
+        private String costCenterTitle;
+        private Integer personCount;
+        private Double averageBehavioral;
+        private Double averageDevelopment;
+        private Double averageOperational;
+        private Double averageScore;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("EvaluationSpecResponse")
     public static class SpecResponse {
         private Response response;

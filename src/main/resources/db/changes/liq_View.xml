@@ -963,4 +963,139 @@
             ]]>
         </createView>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1700469968">
+        <createView viewName="view_evaluation_cost_center_report" replaceIfExists="true">
+            <![CDATA[
+                    SELECT
+                        ROWNUM AS id,
+                        costcenterreport.*
+                    FROM
+                        (
+                            SELECT
+                                evaluation.evaluation_period_id,
+                                evaluation.cost_center_code,
+                                evaluation.cost_center_title,
+                                COUNT(evaluation.id)                                   AS person_count,
+                                SUM(evaluation.avg_behavioral) / COUNT(evaluation.id)  AS average_behavioral,
+                                SUM(evaluation.avg_development) / COUNT(evaluation.id) AS average_development,
+                                SUM(evaluation.avg_operational) / COUNT(evaluation.id) AS average_operational,
+                                SUM(evaluation.average_score) / COUNT(evaluation.id)   AS average_score
+                            FROM
+                                (
+                                    WITH behavioral_development_avg AS (
+                                        SELECT
+                                            SUM(evalitem.questionnaire_answer_catalog_value) AS avg_value,
+                                            evalitem.evaluation_id                           AS evaluation_id,
+                                            kpitype.c_title                                  AS title
+                                        FROM
+                                            tbl_group_type_merit grouptypemerit
+                                            JOIN tbl_evaluation_item evalitem ON evalitem.group_type_merit_id = grouptypemerit.id
+                                            JOIN tbl_group_type      grouptype ON grouptype.id = grouptypemerit.group_type_id
+                                            JOIN tbl_kpi_type        kpitype ON kpitype.id = grouptype.kpi_type_id
+                                        GROUP BY
+                                            evalitem.evaluation_id,
+                                            kpitype.c_title
+                                    ), operational_avg AS (
+                                        SELECT DISTINCT
+                                            SUM(evalitem.questionnaire_answer_catalog_value) AS avg_value,
+                                            evalitem.evaluation_id                           AS evaluation_id,
+                                            post.post_code,
+                                            kpitype.c_title                                  AS title
+                                        FROM
+                                            tbl_post_merit_component postmerit
+                                            JOIN tbl_evaluation_item      evalitem ON evalitem.post_merit_id = postmerit.id
+                                            JOIN tbl_merit_component_type merittype ON merittype.merit_component_id = postmerit.merit_component_id
+                                            JOIN tbl_group_type           grouptype ON grouptype.kpi_type_id = merittype.kpi_type_id
+                                            JOIN tbl_group                group1 ON group1.id = grouptype.group_id
+                                            JOIN tbl_group_grade          groupgrade ON groupgrade.group_id = group1.id
+                                            JOIN view_grade               grade ON grade.id = groupgrade.grade_id
+                                            JOIN view_post                post ON post.post_grade_code = grade.c_post_grade_code
+                                            JOIN tbl_kpi_type             kpitype ON kpitype.id = merittype.kpi_type_id
+                                        GROUP BY
+                                            evalitem.evaluation_id,
+                                            post.post_code,
+                                            kpitype.c_title
+                                    )
+                                    SELECT
+                                        evaluation.id,
+                                        evaluation.c_assess_post_code,
+                                        evaluation.c_assessor_post_code,
+                                        evaluation.evaluation_period_id,
+                                        evaluation.average_score,
+                                        evaluation.status_catalog_id,
+                                        behavioral.avg_value  AS avg_behavioral,
+                                        development.avg_value AS avg_development,
+                                        operational.avg_value AS avg_operational,
+                                        nvl(
+                                            evaluation.cost_center_code, evaluation.assessor_cost_center_code
+                                        )                     AS cost_center_code,
+                                        nvl(
+                                            evaluation.cost_center_title, evaluation.assessor_cost_center_title
+                                        )                     AS cost_center_title
+                                    FROM
+                                        view_evaluation evaluation
+                                        JOIN (
+                                            SELECT
+                                                evaluation_id,
+                                                avg_value,
+                                                title
+                                            FROM
+                                                behavioral_development_avg
+                                        ) behavioral ON evaluation.id = behavioral.evaluation_id
+                                                        AND behavioral.title = 'رفتاری'
+                                        JOIN (
+                                            SELECT
+                                                evaluation_id,
+                                                avg_value,
+                                                title
+                                            FROM
+                                                behavioral_development_avg
+                                        ) development ON evaluation.id = development.evaluation_id
+                                                         AND development.title = 'توسعه شایستگی ها'
+                                        JOIN (
+                                            SELECT
+                                                evaluation_id,
+                                                avg_value,
+                                                post_code,
+                                                title
+                                            FROM
+                                                operational_avg
+                                        ) operational ON evaluation.id = operational.evaluation_id
+                                                         AND operational.title = 'نتیجه ای'
+                                    WHERE
+                                        evaluation.status_catalog_id = (
+                                            SELECT
+                                                cat.id
+                                            FROM
+                                                tbl_catalog cat
+                                            WHERE
+                                                cat.c_code = 'Finalized'
+                                        )
+                                    GROUP BY
+                                        evaluation.id,
+                                        evaluation.c_assess_post_code,
+                                        evaluation.c_assessor_post_code,
+                                        evaluation.evaluation_period_id,
+                                        evaluation.average_score,
+                                        evaluation.status_catalog_id,
+                                        behavioral.avg_value,
+                                        development.avg_value,
+                                        operational.avg_value,
+                                        nvl(
+                                            evaluation.cost_center_code, evaluation.assessor_cost_center_code
+                                        ),
+                                        nvl(
+                                            evaluation.cost_center_title, evaluation.assessor_cost_center_title
+                                        )
+                                ) evaluation
+                            GROUP BY
+                                evaluation.evaluation_period_id,
+                                evaluation.cost_center_code,
+                                evaluation.cost_center_title
+                        ) costcenterreport
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
