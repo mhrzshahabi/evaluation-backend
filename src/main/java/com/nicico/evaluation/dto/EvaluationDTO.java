@@ -68,6 +68,7 @@ public class EvaluationDTO {
         private String moavenatTitle;
         private String omoorTitle;
         private String ghesmatTitle;
+        private String personnelCode;
     }
 
     @Getter
@@ -84,6 +85,8 @@ public class EvaluationDTO {
         private String evaluationPeriodStartDateAssessment;
         private String evaluationPeriodEndDateAssessment;
         private Long averageScore;
+        private String costCenterCode;
+        private String costCenterTitle;
         private String postGradeTitle;
         private String mojtamaTitle;
         private String moavenatTitle;
@@ -139,6 +142,36 @@ public class EvaluationDTO {
     public static class MostParticipationInFinalizedEvaluation {
         private Integer omoorFinalizedNumber;
         private String omoorTitle;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationCostCenterInfo")
+    public static class CostCenterInfo {
+        private Long id;
+        private Long evaluationPeriodId;
+        private String costCenterCode;
+        private String costCenterTitle;
+        private Integer personCount;
+        private Double averageBehavioral;
+        private Double averageDevelopment;
+        private Double averageOperational;
+        private Double averageScore;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationCostCenterExcel")
+    public static class CostCenterExcel {
+        private String costCenterCode;
+        private String costCenterTitle;
+        private Integer personCount;
+        private Double averageBehavioral;
+        private Double averageDevelopment;
+        private Double averageOperational;
+        private Double averageScore;
     }
 
     @Getter

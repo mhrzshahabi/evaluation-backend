@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select  * from view_evaluation")
-@DiscriminatorValue("viewEvaluation")
-public class EvaluationView {
+@Subselect("select  * from view_evaluation_general_report")
+@DiscriminatorValue("viewEvaluationGeneralReport")
+public class EvaluationGeneralReportView {
 
     @Id
     @Column(name = "id")
@@ -40,23 +40,12 @@ public class EvaluationView {
     @Column(name = "c_assessor_full_name")
     private String assessorFullName;
 
-    @Column(name = "c_description")
-    private String description;
-
-    @Setter(AccessLevel.NONE)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "method_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluationView_method_catalog_to_catalog"))
-    private Catalog methodCatalog;
-
-    @Column(name = "method_catalog_id")
-    private Long methodCatalogId;
-
     @Column(name = "average_score")
     private Long averageScore;
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluationView_status_catalog_to_catalog"))
+    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false)
     private Catalog statusCatalog;
 
     @NotNull
@@ -65,21 +54,15 @@ public class EvaluationView {
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "evaluation_period_id", insertable = false, updatable = false, nullable = false, foreignKey = @ForeignKey(name = "f_evaluationView_to_evaluation_period"))
+    @JoinColumn(name = "evaluation_period_id", insertable = false, updatable = false, nullable = false)
     private EvaluationPeriod evaluationPeriod;
 
     @NotNull
     @Column(name = "evaluation_period_id")
     private Long evaluationPeriodId;
 
-    @Column(name = "special_case_id")
-    private Long specialCaseId;
-
     @Column(name = "GHESMAT_TITLE")
     private String ghesmatTitle;
-
-    @Column(name = "HOZE_TITLE")
-    private String hozeTitle;
 
     @Column(name = "MOAVENAT_TITLE")
     private String moavenatTitle;
@@ -90,27 +73,6 @@ public class EvaluationView {
     @Column(name = "OMOOR_TITLE")
     private String omoorTitle;
 
-    @Column(name = "POST_CODE")
-    private String postCode;
-
-    @Column(name = "POST_GRADE_CODE")
-    private String postGradeCode;
-
-    @Column(name = "POST_GRADE_TITLE")
-    private String postGradeTitle;
-
-    @Column(name = "POST_GROUP_CODE")
-    private String postGroupCode;
-
-    @Column(name = "POST_ID")
-    private Long postId;
-
-    @Column(name = "POST_TITLE")
-    private String postTitle;
-
-    @Column(name = "VAHED_TITLE")
-    private String vahedTitle;
-    
     @Column(name = "PERSONNEL_CODE")
     private String personnelCode;
 
@@ -122,4 +84,22 @@ public class EvaluationView {
 
     @Column(name = "COST_CENTER_TITLE")
     private String costCenterTitle;
+
+    @Column(name = "avg_behavioral")
+    private String avgBehavioral;
+
+    @Column(name = "weight_behavioral")
+    private String weightBehavioral;
+
+    @Column(name = "avg_development")
+    private String avgDevelopment;
+
+    @Column(name = "weight_development")
+    private String weightDevelopment;
+
+    @Column(name = "avg_operational")
+    private String avgOperational;
+
+    @Column(name = "weight_operational")
+    private String weightOperational;
 }
