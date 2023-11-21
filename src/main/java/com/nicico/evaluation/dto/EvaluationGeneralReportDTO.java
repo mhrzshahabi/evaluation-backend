@@ -15,7 +15,7 @@ public class EvaluationGeneralReportDTO {
     @Getter
     @Setter
     @ApiModel("EvaluationGeneralReportInfo")
-    public static class Info extends EvaluationGeneralReportDTO {
+    public static class Info {
         private Long id;
         private EvaluationPeriodTupleDTO evaluationPeriod;
 
@@ -36,14 +36,28 @@ public class EvaluationGeneralReportDTO {
         private Long evaluationPeriodId;
 
         private String avgBehavioral;
-        private String weightBehavioral;
         private String avgDevelopment;
-        private String weightDevelopment;
         private String avgOperational;
+        private String weightBehavioral;
+        private String weightDevelopment;
         private String weightOperational;
 
         private Long countItem;
     }
+
+    @Getter
+    @Setter
+    @ApiModel("EvaluationGeneralReportDetailInfo")
+    public static class DetailInfo {
+
+        String meritCode;
+        String meritTitle;
+        String effectiveScore;
+        String kpiTitle;
+        String description;
+        String meritWeight;
+    }
+
 
     @Getter
     @Setter
