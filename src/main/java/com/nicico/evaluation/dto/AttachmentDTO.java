@@ -15,6 +15,7 @@ import java.util.List;
 @Accessors(chain = true)
 public abstract class AttachmentDTO {
 
+
     private String fileName;
     private Long fileTypeId;
     private String description;

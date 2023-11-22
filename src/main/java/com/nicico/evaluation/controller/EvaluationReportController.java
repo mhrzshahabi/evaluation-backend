@@ -4,13 +4,14 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.iservice.IEvaluationCostCenterReportViewService;
+import com.nicico.evaluation.iservice.IEvaluationCostCenterReportService;
 import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
 import com.nicico.evaluation.iservice.IEvaluationViewService;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class EvaluationReportController {
 
     private final IEvaluationViewService evaluationViewService;
     private final IEvaluationGeneralReportService evaluationGeneralReportService;
-    private final IEvaluationCostCenterReportViewService evaluationCostCenterReportViewService;
+    private final IEvaluationCostCenterReportService evaluationCostCenterReportViewService;
 
     /**
      * @param count      is the number of entity to every page
@@ -132,7 +133,7 @@ public class EvaluationReportController {
                                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationGeneralReportService.searchByCostCenter(request, count, startIndex);
+        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationCostCenterReportViewService.searchByCostCenter(request, count, startIndex);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())
@@ -154,6 +155,42 @@ public class EvaluationReportController {
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
                 .body(excelDownload.getContent());
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTO.CostCenterExcel entity that match the criteria
+     */
+    @PostMapping(value = "/export-excel/general-report")
+    public ResponseEntity<byte[]> exportExcelGeneralReport(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        ExcelGenerator.ExcelDownload excelDownload = evaluationGeneralReportService.downloadExcel(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
+     */
+    @SneakyThrows
+    @PostMapping(value = "/export-excel-by-parent")
+    public ResponseEntity<byte[]> exportExcelByParent(@RequestBody List<FilterDTO> criteria) {
+        ExcelGenerator.ExcelDownload excelDownload = evaluationViewService.downloadExcelByParent(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
+     */
+    @PostMapping(value = "/export-excel-evaluation-comprehensive")
+    public ResponseEntity<byte[]> exportExcelEvaluationComprehensive(@RequestBody List<FilterDTO> criteria) {
+        return evaluationViewService.downloadExcelEvaluationComprehensive(criteria);
     }
 }
 
