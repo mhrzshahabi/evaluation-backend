@@ -4,7 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.utility.ExcelGenerator;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -29,6 +29,5 @@ public interface IEvaluationGeneralReportService {
 
     SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchLastLevelByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, int count, int startIndex);
 
-    ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException;
-
+    ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria);
 }

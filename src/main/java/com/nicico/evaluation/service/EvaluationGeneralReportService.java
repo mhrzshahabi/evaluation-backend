@@ -13,11 +13,15 @@ import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
 import com.nicico.evaluation.mapper.EvaluationViewGeneralReportMapper;
 import com.nicico.evaluation.repository.EvaluationViewGeneralReportRepository;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -474,8 +478,19 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
 
     @Override
     @Transactional(readOnly = true)
-    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش مولفه های ارزیابی ");
-        return new ExcelGenerator.ExcelDownload(body);
+    public ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) {
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
+        String whereClause = String.valueOf(getGeneralReportWhereClause(request));
+        String query = getGeneralReportQuery(whereClause, null);
+        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new HashMap<>());
+        List<EvaluationDTO.Excel> excelList = modelMapper.map(resultList, new TypeReference<List<EvaluationGeneralReportDTO.Info>>() {
+        }.getType());
+        byte[] body = BaseService.exportExcelByList(excelList, "گزارش مولفه های ارزیابی", "گزارش مولفه های ارزیابی");
+        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+
     }
 }
