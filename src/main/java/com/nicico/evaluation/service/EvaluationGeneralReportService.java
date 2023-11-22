@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
@@ -12,15 +13,16 @@ import com.nicico.evaluation.mapper.EvaluationViewGeneralReportMapper;
 import com.nicico.evaluation.repository.EvaluationViewGeneralReportRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.FINALIZED;
 
@@ -32,9 +34,11 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
     private final EvaluationViewGeneralReportMapper mapper;
     private final EvaluationViewGeneralReportRepository repository;
     private final PageableMapper pageableMapper;
-    private final EntityManager entityManager;
     private final IOrganizationTreeService organizationTreeService;
     private final ICatalogService catalogService;
+    private final NamedParameterJdbcTemplate parameterJdbcTemplate;
+    private final ModelMapper modelMapper;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -68,15 +72,15 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex) {
 
-        List<EvaluationGeneralReportDTO.Info> infoList = new ArrayList<>();
-        String whereClause = String.valueOf(getWhereClause(request));
+        String whereClause = String.valueOf(getGeneralReportWhereClause(request));
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getSubAssessorQuery(whereClause, pageable);
-        List<?> resultList = entityManager.createNativeQuery(query).getResultList();
+        String query = getGeneralReportQuery(whereClause, pageable);
+        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new HashMap<>());
+        List<EvaluationGeneralReportDTO.Info> infoList = modelMapper.map(resultList, new TypeReference<List<EvaluationGeneralReportDTO.Info>>() {
+        }.getType());
         if (!resultList.isEmpty()) {
-            setInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalCountSubAssessorQuery(String.valueOf(whereClause))).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            String totalQuery = getGeneralReportQuery(whereClause, null);
+            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -93,15 +97,15 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<EvaluationGeneralReportDTO.DetailInfo> searchEvaluationGeneralReportDetail(SearchDTO.SearchRq request, int count, int startIndex) {
 
-        List<EvaluationGeneralReportDTO.DetailInfo> infoList = new ArrayList<>();
         String whereClause = String.valueOf(getGeneralReportDetailWhereClause(request));
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         String query = getGeneralReportDetailQuery(whereClause, pageable);
-        List<?> resultList = entityManager.createNativeQuery(query).getResultList();
+        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new MapSqlParameterSource());
+        List<EvaluationGeneralReportDTO.DetailInfo> infoList = modelMapper.map(resultList, new TypeReference<List<EvaluationGeneralReportDTO.DetailInfo>>() {
+        }.getType());
         if (!resultList.isEmpty()) {
-            setGeneralReportDetailInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalEvaluationGeneralReportQuery(String.valueOf(whereClause))).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            String totalQuery = getGeneralReportDetailQuery(whereClause, null);
+            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             SearchDTO.SearchRs<EvaluationGeneralReportDTO.DetailInfo> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -136,93 +140,65 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         if (SecurityUtil.isAdmin())
             return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_FIRST_LEVEL")))
-            this.searchByParent(request);
+            return this.searchByParent(request);
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_LAST_LEVEL")))
-            this.searchEvaluationComprehensive(request, count, startIndex);
+            return this.searchEvaluationComprehensive(request, count, startIndex);
         return null;
     }
 
-    private List<EvaluationGeneralReportDTO.Info> setInfoList(List<EvaluationGeneralReportDTO.Info> infoList, List<?> resultList) {
-        if (resultList != null) {
-            for (Object evaluation : resultList) {
-                Object[] eval = (Object[]) evaluation;
-                EvaluationGeneralReportDTO.Info evaluationInfo = new EvaluationGeneralReportDTO.Info();
-                evaluationInfo.setId(eval[0] == null ? null : Long.parseLong(eval[0].toString()));
-                evaluationInfo.setAssessPostCode(eval[2] == null ? null : (eval[2].toString()));
-                evaluationInfo.setEvaluationPeriodId(eval[5] == null ? null : (Long.parseLong(eval[5].toString())));
-                evaluationInfo.setAverageScore(eval[6] == null ? null : Long.parseLong(eval[6].toString()));
-                evaluationInfo.setAssessFullName(eval[8] == null ? null : (eval[8].toString()));
-                evaluationInfo.setGhesmatTitle(eval[10] == null ? null : (eval[10].toString()));
-                evaluationInfo.setMoavenatTitle(eval[11] == null ? null : (eval[11].toString()));
-                evaluationInfo.setMojtamaTitle(eval[12] == null ? null : (eval[12].toString()));
-                evaluationInfo.setOmoorTitle(eval[13] == null ? null : (eval[13].toString()));
-                evaluationInfo.setCostCenterCode(eval[15] == null ? null : (eval[15].toString()));
-                evaluationInfo.setCostCenterTitle(eval[16] == null ? null : (eval[16].toString()));
-                evaluationInfo.setPersonnelCode(eval[17] == null ? null : (eval[17].toString()));
-                evaluationInfo.setAvgBehavioral(eval[18] == null ? null : (eval[18].toString()));
-                evaluationInfo.setWeightBehavioral(eval[19] == null ? null : (eval[19].toString()));
-                evaluationInfo.setAvgDevelopment(eval[20] == null ? null : (eval[20].toString()));
-                evaluationInfo.setWeightDevelopment(eval[21] == null ? null : (eval[21].toString()));
-                evaluationInfo.setAvgOperational(eval[22] == null ? null : (eval[22].toString()));
-                evaluationInfo.setWeightOperational(eval[23] == null ? null : (eval[23].toString()));
-                evaluationInfo.setCountItem(eval[24] == null ? null : (Long.parseLong(eval[24].toString())));
-                infoList.add(evaluationInfo);
-            }
-        }
-        return infoList;
-    }
-
-    private List<EvaluationGeneralReportDTO.DetailInfo> setGeneralReportDetailInfoList(List<EvaluationGeneralReportDTO.DetailInfo> infoList, List<?> resultList) {
-        if (resultList != null) {
-            for (Object evaluation : resultList) {
-                Object[] eval = (Object[]) evaluation;
-                EvaluationGeneralReportDTO.DetailInfo evaluationInfo = new EvaluationGeneralReportDTO.DetailInfo();
-                evaluationInfo.setMeritCode(eval[0] == null ? null : (eval[0].toString()));
-                evaluationInfo.setMeritTitle(eval[1] == null ? null : (eval[1].toString()));
-                evaluationInfo.setEffectiveScore(eval[2] == null ? null : (eval[2].toString()));
-                evaluationInfo.setDescription(eval[3] == null ? null : (eval[3].toString()));
-                evaluationInfo.setKpiTitle(eval[4] == null ? null : (eval[4].toString()));
-                evaluationInfo.setMeritWeight(eval[5] == null ? null : (eval[5].toString()));
-                infoList.add(evaluationInfo);
-            }
-        }
-        return infoList;
-    }
-
-    private String getSubAssessorQuery(String whereClause, Pageable pageable) {
+    private String getGeneralReportQuery(String whereClause, Pageable pageable) {
         if (Objects.nonNull(pageable))
             whereClause = MessageFormat.format("{0}{1}", whereClause, String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));
         return String.format(" SELECT  " +
-                        "                 eval.* " +
-                        "            FROM  " +
-                        "                view_evaluation_general_report  eval" +
-                        "            WHERE  " +
-                        "                c_assessor_post_code IN (  " +
-                        "                    SELECT  " +
-                        "                        *  " +
-                        "                    FROM  " +
-                        "                        (  " +
-                        "                            SELECT  " +
-                        "                                post_code  " +
-                        "                            FROM  " +
-                        "                                view_organization_tree  " +
-                        "                            START WITH  " +
-                        "                                post_code = (  " +
-                        "                                    SELECT  " +
-                        "                                        post_code  " +
-                        "                                    FROM  " +
-                        "                                        view_organization_tree  " +
-                        "                                    WHERE  " +
-                        "                                        national_code = %s  " +
-                        "                                )  " +
-                        "                            CONNECT BY  " +
-                        "                                PRIOR post_code = post_parent_code  " +
-                        "                            ORDER BY  " +
-                        "                                level  " +
-                        "                        )  " +
-                        "                )" +
-                        "               %s "
-                , SecurityUtil.getNationalCode(), whereClause);
+                        "           id      \"id\"  , " +
+                        "           c_assess_full_name     \"assessFullName\"  , " +
+                        "           C_ASSESS_POST_CODE    \"assessPostCode\"  , " +
+                        "           personnel_code \"personnelCode\"   , " +
+                        "           cost_center_code  \"costCenterCode\"  , " +
+                        "           cost_center_title \"costCenterTitle\" , " +
+                        "           mojtama_title \"mojtamaTitle\"    , " +
+                        "           moavenat_title \"moavenatTitle\"   , " +
+                        "           omoor_title \"omoorTitle\"  , " +
+                        "           ghesmat_title \"ghesmatTitle\"    , " +
+                        "           average_score \"averageScore\"    , " +
+                        "           status_catalog_id \"statusCatalogId\" , " +
+                        "           evaluation_period_id \"evaluationPeriodId\"  , " +
+                        "           avg_behavioral \"avgBehavioral\"   , " +
+                        "           avg_development \"avgDevelopment\"  , " +
+                        "           avg_operational \"avgOperational\"  , " +
+                        "           weight_behavioral \"weightBehavioral\"    , " +
+                        "           weight_development \"weightDevelopment\"   , " +
+                        "           weight_operational \"weightOperational\"   , " +
+                        "           countitem \"countItem\"   " +
+                        "      FROM  " +
+                        "          view_evaluation_general_report  eval" +
+                        "      WHERE  " +
+                        "          c_assessor_post_code IN (  " +
+                        "              SELECT  " +
+                        "                  *  " +
+                        "              FROM  " +
+                        "                  (  " +
+                        "                      SELECT  " +
+                        "                          post_code  " +
+                        "                      FROM  " +
+                        "                          view_organization_tree  " +
+                        "                      START WITH  " +
+                        "                          post_code = (  " +
+                        "                              SELECT  " +
+                        "                                  post_code  " +
+                        "                              FROM  " +
+                        "                                  view_organization_tree  " +
+                        "                              WHERE  " +
+                        "                                  national_code = %s  " +
+                        "                          )  " +
+                        "                      CONNECT BY  " +
+                        "                          PRIOR post_code = post_parent_code  " +
+                        "                      ORDER BY  " +
+                        "                          level  " +
+                        "                  )  " +
+                        "          )" +
+                        "         %s "
+                , SecurityUtil.getNationalCode(), whereClause).replaceAll("\\[|\\]", "");
     }
 
     private String getGeneralReportDetailQuery(String whereClause, Pageable pageable) {
@@ -231,12 +207,12 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         return String.format(" " +
                         " SELECT " +
                         " distinct " +
-                        "    merit.c_code, " +
-                        "    merit.c_title, " +
-                        "    catalog.c_value, " +
-                        "    evalItem.c_description, " +
-                        "    nvl( kpiType.c_title,kpiType1.c_title) kpiTitle, " +
-                        "    nvl(groupTypeMerit.N_WEIGHT,postMerit.N_WEIGHT) meritWeight " +
+                        "    merit.c_code \"meritCode\" , " +
+                        "    merit.c_title  \"meritTitle\" , " +
+                        "    catalog.c_value \"effectiveScore\" , " +
+                        "    evalItem.c_description \"description\" , " +
+                        "    nvl( kpiType.c_title,kpiType1.c_title) \"kpiTitle\" , " +
+                        "    nvl(groupTypeMerit.N_WEIGHT,postMerit.N_WEIGHT) \"meritWeight\" " +
                         " FROM " +
                         "    tbl_evaluation_item        evalItem " +
                         "    JOIN tbl_merit_component_aud   merit ON merit.id =  evalItem.merit_component_audit_id " +
@@ -253,73 +229,11 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                         "    left JOIN view_grade                 grade ON grade.id = groupGrade.grade_id " +
                         "    left JOIN view_post                  post ON post.post_grade_code = grade.c_post_grade_code " +
                         "    left JOIN tbl_kpi_type              kpiType1 ON kpiType1.id = meritType.kpi_type_id" +
-                        "     Where 1 = 1  %s "
-                , whereClause);
+                        "    Where 1 = 1  %s "
+                , whereClause).replaceAll("\\[|\\]", "");
     }
 
-    private String getTotalCountSubAssessorQuery(String whereClause) {
-
-        return String.format(" SELECT  " +
-                "                 count(eval.id) " +
-                "            FROM  " +
-                "                view_evaluation_general_report  eval" +
-                "               join tbl_catalog             catalog ON catalog.id = eval.status_catalog_id " +
-                "            WHERE  " +
-                "                c_assessor_post_code IN (  " +
-                "                    SELECT  " +
-                "                        *  " +
-                "                    FROM  " +
-                "                        (  " +
-                "                            SELECT  " +
-                "                                post_code  " +
-                "                            FROM  " +
-                "                                view_organization_tree  " +
-                "                            START WITH  " +
-                "                                post_code = (  " +
-                "                                    SELECT  " +
-                "                                        post_code  " +
-                "                                    FROM  " +
-                "                                        view_organization_tree  " +
-                "                                    WHERE  " +
-                "                                        national_code = %s  " +
-                "                                )  " +
-                "                            CONNECT BY  " +
-                "                                PRIOR post_code = post_parent_code  " +
-                "                            ORDER BY  " +
-                "                                level  " +
-                "                        )  " +
-                "                )" +
-                "               %s ", SecurityUtil.getNationalCode(), whereClause);
-    }
-
-    private String getTotalEvaluationGeneralReportQuery(String whereClause) {
-
-        return String.format("SELECT COUNT(*) " +
-                        "FROM(" +
-                        " SELECT " +
-                        " distinct " +
-                        "    evalItem.id " +
-                        " FROM " +
-                        "    tbl_evaluation_item        evalItem " +
-                        "    JOIN tbl_merit_component_aud   merit ON merit.id =  evalItem.merit_component_audit_id " +
-                        "                                          AND merit.rev =  evalItem.merit_component_audit_rev " +
-                        "    JOIN tbl_catalog   catalog ON catalog.id =  evalItem.questionnaire_answer_catalog_id " +
-                        "    left join tbl_group_type_merit groupTypeMerit on  groupTypeMerit.id =  evalItem.group_type_merit_id " +
-                        "    left join tbl_group_type groupType on groupType.id = groupTypeMerit.GROUP_TYPE_ID " +
-                        "    left join tbl_kpi_type kpiType on kpiType.id = groupType.KPI_TYPE_ID " +
-                        "    left join tbl_post_merit_component   postMerit on postMerit.id =  evalItem.POST_MERIT_ID " +
-                        "    left JOIN tbl_merit_component_type   meritType ON meritType.merit_component_id = postMerit.merit_component_id " +
-                        "    left JOIN tbl_group_type             groupType1 ON groupType1.kpi_type_id = meritType.kpi_type_id " +
-                        "    left JOIN tbl_group                  group1 ON group1.id = groupType1.group_id " +
-                        "    left JOIN tbl_group_grade            groupGrade ON groupGrade.group_id = group1.id " +
-                        "    left JOIN view_grade                 grade ON grade.id = groupGrade.grade_id " +
-                        "    left JOIN view_post                  post ON post.post_grade_code = grade.c_post_grade_code " +
-                        "    left JOIN tbl_kpi_type              kpiType1 ON kpiType1.id = meritType.kpi_type_id" +
-                        "    Where 1 = 1  %s )"
-                , whereClause);
-    }
-
-    private StringBuilder getWhereClause(SearchDTO.SearchRq request) {
+    private StringBuilder getGeneralReportWhereClause(SearchDTO.SearchRq request) {
         StringBuilder whereClause = new StringBuilder();
         if (Objects.nonNull(request.getCriteria()) && !request.getCriteria().getCriteria().isEmpty())
             request.getCriteria().getCriteria().forEach(criteria -> {
@@ -343,7 +257,7 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                     case "weightOperational" -> whereClause.append(" and ").append("eval.weight_operational").append(" like '%").append(criteria.getValue()).append("%'");
                 }
             });
-        return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
+        return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
     }
 
     private StringBuilder getGeneralReportDetailWhereClause(SearchDTO.SearchRq request) {
@@ -358,9 +272,8 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                     case "kpiTitle" -> whereClause.append(" and ").append("kpiTitle").append(" like '%").append(criteria.getValue().toString()).append("%'");
                     case "description" -> whereClause.append(" and ").append("evalItem.c_description").append(" like '%").append(criteria.getValue().toString()).append("%'");
                     case "meritWeight" -> whereClause.append(" and ").append("meritWeight").append(" like '%").append(criteria.getValue().toString()).append("%'");
-
                 }
             });
-        return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
+        return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
     }
 }
