@@ -22,6 +22,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -40,6 +41,7 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
     private final NamedParameterJdbcTemplate parameterJdbcTemplate;
     private final ModelMapper modelMapper;
     private final JdbcTemplate jdbcTemplate;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional(readOnly = true)
@@ -193,12 +195,12 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
         String whereClause = String.valueOf(getWhereClauseByCostCenter(request));
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getSubAssessorQuery(whereClause, pageable);
+        String query = getGeneralReportQuery(whereClause, pageable);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
         if (!resultList.isEmpty()) {
             setCostCenterInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalCountSubAssessorQuery(String.valueOf(whereClause))).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            String totalQuery = getGeneralReportDetailQuery(whereClause, null);
+            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -218,12 +220,12 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
         String whereClause = String.valueOf(getWhereClauseByCostCenter(request));
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getSubAssessorQuery(whereClause, pageable);
+        String query = getGeneralReportQuery(whereClause, pageable);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
         if (!resultList.isEmpty()) {
             setCostCenterInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalCountSubAssessorQuery(String.valueOf(whereClause))).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            String totalQuery = getGeneralReportDetailQuery(whereClause, null);
+            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -234,53 +236,6 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
             searchRs.setTotalCount(0L);
             return searchRs;
         }
-    }
-
-    private List<EvaluationGeneralReportDTO.Info> setInfoList(List<EvaluationGeneralReportDTO.Info> infoList, List<?> resultList) {
-        if (resultList != null) {
-            for (Object evaluation : resultList) {
-                Object[] eval = (Object[]) evaluation;
-                EvaluationGeneralReportDTO.Info evaluationInfo = new EvaluationGeneralReportDTO.Info();
-                evaluationInfo.setId(eval[0] == null ? null : Long.parseLong(eval[0].toString()));
-                evaluationInfo.setAssessPostCode(eval[2] == null ? null : (eval[2].toString()));
-                evaluationInfo.setEvaluationPeriodId(eval[5] == null ? null : (Long.parseLong(eval[5].toString())));
-                evaluationInfo.setAverageScore(eval[6] == null ? null : Long.parseLong(eval[6].toString()));
-                evaluationInfo.setAssessFullName(eval[8] == null ? null : (eval[8].toString()));
-                evaluationInfo.setGhesmatTitle(eval[10] == null ? null : (eval[10].toString()));
-                evaluationInfo.setMoavenatTitle(eval[11] == null ? null : (eval[11].toString()));
-                evaluationInfo.setMojtamaTitle(eval[12] == null ? null : (eval[12].toString()));
-                evaluationInfo.setOmoorTitle(eval[13] == null ? null : (eval[13].toString()));
-                evaluationInfo.setCostCenterCode(eval[15] == null ? null : (eval[15].toString()));
-                evaluationInfo.setCostCenterTitle(eval[16] == null ? null : (eval[16].toString()));
-                evaluationInfo.setPersonnelCode(eval[17] == null ? null : (eval[17].toString()));
-                evaluationInfo.setAvgBehavioral(eval[18] == null ? null : (eval[18].toString()));
-                evaluationInfo.setWeightBehavioral(eval[19] == null ? null : (eval[19].toString()));
-                evaluationInfo.setAvgDevelopment(eval[20] == null ? null : (eval[20].toString()));
-                evaluationInfo.setWeightDevelopment(eval[21] == null ? null : (eval[21].toString()));
-                evaluationInfo.setAvgOperational(eval[22] == null ? null : (eval[22].toString()));
-                evaluationInfo.setWeightOperational(eval[23] == null ? null : (eval[23].toString()));
-                evaluationInfo.setCountItem(eval[24] == null ? null : (Long.parseLong(eval[24].toString())));
-                infoList.add(evaluationInfo);
-            }
-        }
-        return infoList;
-    }
-
-    private List<EvaluationGeneralReportDTO.DetailInfo> setGeneralReportDetailInfoList(List<EvaluationGeneralReportDTO.DetailInfo> infoList, List<?> resultList) {
-        if (resultList != null) {
-            for (Object evaluation : resultList) {
-                Object[] eval = (Object[]) evaluation;
-                EvaluationGeneralReportDTO.DetailInfo evaluationInfo = new EvaluationGeneralReportDTO.DetailInfo();
-                evaluationInfo.setMeritCode(eval[0] == null ? null : (eval[0].toString()));
-                evaluationInfo.setMeritTitle(eval[1] == null ? null : (eval[1].toString()));
-                evaluationInfo.setEffectiveScore(eval[2] == null ? null : (eval[2].toString()));
-                evaluationInfo.setDescription(eval[3] == null ? null : (eval[3].toString()));
-                evaluationInfo.setKpiTitle(eval[4] == null ? null : (eval[4].toString()));
-                evaluationInfo.setMeritWeight(eval[5] == null ? null : (eval[5].toString()));
-                infoList.add(evaluationInfo);
-            }
-        }
-        return infoList;
     }
 
     private List<EvaluationDTO.CostCenterInfo> setCostCenterInfoList(List<EvaluationDTO.CostCenterInfo> infoList, List<?> resultList) {
@@ -390,6 +345,31 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
     }
 
     private StringBuilder getGeneralReportWhereClause(SearchDTO.SearchRq request) {
+        StringBuilder whereClause = new StringBuilder();
+        if (Objects.nonNull(request.getCriteria()) && !request.getCriteria().getCriteria().isEmpty())
+            request.getCriteria().getCriteria().forEach(criteria -> {
+                switch (criteria.getFieldName()) {
+                    case "assessFullName" -> whereClause.append(" and ").append("eval.c_assess_full_name").append(" like '%").append(criteria.getValue().toString()).append("%'");
+                    case "assessPostCode" -> whereClause.append(" and ").append("eval.c_assess_post_code").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "assessPostTitle" -> whereClause.append(" and ").append("eval.post_title").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "evaluationPeriodId" -> whereClause.append(" and ").append("eval.evaluation_period_id").append(" = ").append(criteria.getValue());
+                    case "averageScore" -> whereClause.append(" and ").append("eval.average_score").append(" =").append(criteria.getValue());
+                    case "postGradeTitle" -> whereClause.append(" and ").append("eval.post_grade_title").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "mojtamaTitle" -> whereClause.append(" and ").append("eval.mojtama_title").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "moavenatTitle" -> whereClause.append(" and ").append("eval.moavenat_title").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "omoorTitle" -> whereClause.append(" and ").append("eval.omoor_title").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "ghesmatTitle" -> whereClause.append(" and ").append("eval.ghesmat_title").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "statusCatalogId" -> whereClause.append(" and ").append("eval.status_catalog_id").append(" = ").append(criteria.getValue());
+                    case "avgBehavioral" -> whereClause.append(" and ").append("eval.avg_behavioral").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "avgDevelopment" -> whereClause.append(" and ").append("eval.avg_development").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "avgOperational" -> whereClause.append(" and ").append("eval.avg_operational").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "weightBehavioral" -> whereClause.append(" and ").append("eval.weight_behavioral").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "weightDevelopment" -> whereClause.append(" and ").append("eval.weight_development").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "weightOperational" -> whereClause.append(" and ").append("eval.weight_operational").append(" like '%").append(criteria.getValue()).append("%'");
+                }
+            });
+        return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
+    }
 
     private String getAdminQueryByCostCenter(String whereClause, Long statusCatalogId, int pageNumber, int pageSize) {
         return String.format("""
@@ -453,33 +433,6 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                             )
                         """
                 , statusCatalogId, whereClause);
-    }
-
-    private StringBuilder getWhereClause(SearchDTO.SearchRq request) {
-        StringBuilder whereClause = new StringBuilder();
-        if (Objects.nonNull(request.getCriteria()) && !request.getCriteria().getCriteria().isEmpty())
-            request.getCriteria().getCriteria().forEach(criteria -> {
-                switch (criteria.getFieldName()) {
-                    case "assessFullName" -> whereClause.append(" and ").append("eval.c_assess_full_name").append(" like '%").append(criteria.getValue().toString()).append("%'");
-                    case "assessPostCode" -> whereClause.append(" and ").append("eval.c_assess_post_code").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "assessPostTitle" -> whereClause.append(" and ").append("eval.post_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "evaluationPeriodId" -> whereClause.append(" and ").append("eval.evaluation_period_id").append(" = ").append(criteria.getValue());
-                    case "averageScore" -> whereClause.append(" and ").append("eval.average_score").append(" =").append(criteria.getValue());
-                    case "postGradeTitle" -> whereClause.append(" and ").append("eval.post_grade_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "mojtamaTitle" -> whereClause.append(" and ").append("eval.mojtama_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "moavenatTitle" -> whereClause.append(" and ").append("eval.moavenat_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "omoorTitle" -> whereClause.append(" and ").append("eval.omoor_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "ghesmatTitle" -> whereClause.append(" and ").append("eval.ghesmat_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "statusCatalogId" -> whereClause.append(" and ").append("eval.status_catalog_id").append(" = ").append(criteria.getValue());
-                    case "avgBehavioral" -> whereClause.append(" and ").append("eval.avg_behavioral").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "avgDevelopment" -> whereClause.append(" and ").append("eval.avg_development").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "avgOperational" -> whereClause.append(" and ").append("eval.avg_operational").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "weightBehavioral" -> whereClause.append(" and ").append("eval.weight_behavioral").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "weightDevelopment" -> whereClause.append(" and ").append("eval.weight_development").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "weightOperational" -> whereClause.append(" and ").append("eval.weight_operational").append(" like '%").append(criteria.getValue()).append("%'");
-                }
-            });
-        return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
     }
 
     private StringBuilder getWhereClauseByCostCenter(SearchDTO.SearchRq request) {
