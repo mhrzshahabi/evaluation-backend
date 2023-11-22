@@ -4,7 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
 import com.nicico.evaluation.dto.FilterDTO;
-import com.nicico.evaluation.iservice.IEvaluationCostCenterReportViewService;
+import com.nicico.evaluation.iservice.IEvaluationCostCenterReportService;
 import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
 import com.nicico.evaluation.iservice.IEvaluationViewService;
 import com.nicico.evaluation.utility.CriteriaUtil;
@@ -32,7 +32,7 @@ public class EvaluationReportController {
 
     private final IEvaluationViewService evaluationViewService;
     private final IEvaluationGeneralReportService evaluationGeneralReportService;
-    private final IEvaluationCostCenterReportViewService evaluationCostCenterReportViewService;
+    private final IEvaluationCostCenterReportService evaluationCostCenterReportViewService;
 
     /**
      * @param count      is the number of entity to every page
@@ -133,7 +133,7 @@ public class EvaluationReportController {
                                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationGeneralReportService.searchByCostCenter(request, count, startIndex);
+        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationCostCenterReportViewService.searchByCostCenter(request, count, startIndex);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())

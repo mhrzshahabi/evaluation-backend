@@ -5,7 +5,6 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
-import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
@@ -28,7 +27,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -39,15 +37,14 @@ import static com.nicico.evaluation.utility.EvaluationConstant.FINALIZED;
 @Service
 public class EvaluationGeneralReportService implements IEvaluationGeneralReportService {
 
-    private final EvaluationViewGeneralReportMapper mapper;
-    private final EvaluationViewGeneralReportRepository repository;
-    private final PageableMapper pageableMapper;
-    private final IOrganizationTreeService organizationTreeService;
-    private final ICatalogService catalogService;
-    private final NamedParameterJdbcTemplate parameterJdbcTemplate;
     private final ModelMapper modelMapper;
     private final JdbcTemplate jdbcTemplate;
-    private final EntityManager entityManager;
+    private final PageableMapper pageableMapper;
+    private final ICatalogService catalogService;
+    private final EvaluationViewGeneralReportMapper mapper;
+    private final EvaluationViewGeneralReportRepository repository;
+    private final IOrganizationTreeService organizationTreeService;
+    private final NamedParameterJdbcTemplate parameterJdbcTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -139,7 +136,7 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
 
         criteriaRqList.add(statusCriteriaRq);
         if (Objects.nonNull(request.getCriteria()) && !request.getCriteria().getCriteria().isEmpty())
-            criteriaRqList.add(request.getCriteria());
+            criteriaRqList.addAll(request.getCriteria().getCriteria());
 
         final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
                 .setOperator(EOperator.and)
@@ -153,114 +150,6 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_LAST_LEVEL")))
             return this.searchEvaluationComprehensive(request, count, startIndex);
         return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchByCostCenter(SearchDTO.SearchRq request, int count, int startIndex) {
-
-        Long statusCatalogId = catalogService.getByCode(FINALIZED).getId();
-        if (SecurityUtil.isAdmin())
-            return this.searchAdminByCostCenter(request, statusCatalogId, count, startIndex);
-        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_COST_CENTER_REPORT_FIRST_LEVEL")))
-            return this.searchFirstLevelByCostCenter(request, statusCatalogId, count, startIndex);
-        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_COST_CENTER_REPORT_LAST_LEVEL")))
-            return this.searchLastLevelByCostCenter(request, statusCatalogId, count, startIndex);
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchAdminByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, int count, int startIndex) {
-
-        List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
-        String whereClause = String.valueOf(getWhereClauseByCostCenter(request));
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getAdminQueryByCostCenter(whereClause, statusCatalogId, pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize());
-        List<?> resultList = entityManager.createNativeQuery(query).getResultList();
-        if (!resultList.isEmpty()) {
-            setCostCenterInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalCountAdminQueryByCostCenter(whereClause, statusCatalogId)).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
-            SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(infoList);
-            searchRs.setTotalCount(totalCount);
-            return searchRs;
-        } else {
-            SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
-            searchRs.setTotalCount(0L);
-            return searchRs;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchFirstLevelByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, int count, int startIndex) {
-
-        List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
-        String whereClause = String.valueOf(getWhereClauseByCostCenter(request));
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getGeneralReportQuery(whereClause, pageable);
-        List<?> resultList = entityManager.createNativeQuery(query).getResultList();
-        if (!resultList.isEmpty()) {
-            setCostCenterInfoList(infoList, resultList);
-            String totalQuery = getGeneralReportDetailQuery(whereClause, null);
-            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
-            SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(infoList);
-            searchRs.setTotalCount(totalCount);
-            return searchRs;
-        } else {
-            SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
-            searchRs.setTotalCount(0L);
-            return searchRs;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchLastLevelByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, int count, int startIndex) {
-
-        List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
-        String whereClause = String.valueOf(getWhereClauseByCostCenter(request));
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getGeneralReportQuery(whereClause, pageable);
-        List<?> resultList = entityManager.createNativeQuery(query).getResultList();
-        if (!resultList.isEmpty()) {
-            setCostCenterInfoList(infoList, resultList);
-            String totalQuery = getGeneralReportDetailQuery(whereClause, null);
-            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
-            SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(infoList);
-            searchRs.setTotalCount(totalCount);
-            return searchRs;
-        } else {
-            SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
-            searchRs.setTotalCount(0L);
-            return searchRs;
-        }
-    }
-
-    private List<EvaluationDTO.CostCenterInfo> setCostCenterInfoList(List<EvaluationDTO.CostCenterInfo> infoList, List<?> resultList) {
-        if (resultList != null) {
-            for (Object evaluation : resultList) {
-                Object[] eval = (Object[]) evaluation;
-                EvaluationDTO.CostCenterInfo costCenterInfo = new EvaluationDTO.CostCenterInfo();
-                costCenterInfo.setCostCenterCode(eval[0] == null ? null : eval[0].toString());
-                costCenterInfo.setCostCenterTitle(eval[1] == null ? null : eval[1].toString());
-                costCenterInfo.setEvaluationPeriodId(eval[2] == null ? null : (Long.parseLong(eval[2].toString())));
-                costCenterInfo.setPersonCount(eval[3] == null ? null : (Integer.parseInt(eval[3].toString())));
-                costCenterInfo.setAverageBehavioral(eval[4] == null ? null : eval[4].toString());
-                costCenterInfo.setAverageDevelopment(eval[5] == null ? null : eval[5].toString());
-                costCenterInfo.setAverageOperational(eval[6] == null ? null : eval[6].toString());
-                costCenterInfo.setAverageScore(eval[7] == null ? null : eval[7].toString());
-                infoList.add(costCenterInfo);
-            }
-        }
-        return infoList;
     }
 
     private String getGeneralReportQuery(String whereClause, Pageable pageable) {
@@ -375,88 +264,6 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                 }
             });
         return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
-    }
-
-    private String getAdminQueryByCostCenter(String whereClause, Long statusCatalogId, int pageNumber, int pageSize) {
-        return String.format("""
-                        SELECT
-                            evaluation.cost_center_code,
-                            evaluation.cost_center_title,
-                            evaluation.evaluation_period_id,
-                            COUNT(DISTINCT evaluation.id)   AS person_count,
-                            SUM(evaluation.avg_behavioral)  AS average_behavioral,
-                            SUM(evaluation.avg_development) AS average_development,
-                            SUM(evaluation.avg_operational) AS average_operational,
-                            SUM(evaluation.average_score)   AS average_score
-                        FROM
-                            (
-                                SELECT
-                                    eval.*
-                                FROM
-                                    view_evaluation_general_report eval
-                                WHERE
-                                    eval.status_catalog_id = %s
-                                    %s
-                            ) evaluation
-                        GROUP BY
-                            evaluation.evaluation_period_id,
-                            evaluation.cost_center_code,
-                            evaluation.cost_center_title
-                        OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
-                        """
-                , statusCatalogId, whereClause, pageNumber, pageSize);
-    }
-
-    private String getTotalCountAdminQueryByCostCenter(String whereClause, Long statusCatalogId) {
-        return String.format("""
-                        SELECT
-                            COUNT(DISTINCT cost_center_title)
-                        FROM
-                            (
-                                SELECT
-                                    evaluation.cost_center_code,
-                                    evaluation.cost_center_title,
-                                    evaluation.evaluation_period_id,
-                                    COUNT(DISTINCT evaluation.id)   AS person_count,
-                                    SUM(evaluation.avg_behavioral)  AS average_behavioral,
-                                    SUM(evaluation.avg_development) AS average_development,
-                                    SUM(evaluation.avg_operational) AS average_operational,
-                                    SUM(evaluation.average_score)   AS average_score
-                                FROM
-                                    (
-                                        SELECT
-                                            eval.*
-                                        FROM
-                                            view_evaluation_general_report eval
-                                        WHERE
-                                            eval.status_catalog_id = %s
-                                            %s
-                                    ) evaluation
-                                GROUP BY
-                                    evaluation.evaluation_period_id,
-                                    evaluation.cost_center_code,
-                                    evaluation.cost_center_title
-                            )
-                        """
-                , statusCatalogId, whereClause);
-    }
-
-    private StringBuilder getWhereClauseByCostCenter(SearchDTO.SearchRq request) {
-        StringBuilder whereClause = new StringBuilder();
-        if (Objects.nonNull(request.getCriteria()) && !request.getCriteria().getCriteria().isEmpty())
-            request.getCriteria().getCriteria().forEach(criteria -> {
-                if (Objects.nonNull(criteria.getFieldName())) {
-                    switch (criteria.getFieldName()) {
-                        case "costCenterCode" -> whereClause.append(" and ").append("eval.cost_center_code").append(" like '%").append(criteria.getValue()).append("%'");
-                        case "costCenterTitle" -> whereClause.append(" and ").append("eval.cost_center_title").append(" like '%").append(criteria.getValue()).append("%'");
-                        case "evaluationPeriodId" -> whereClause.append(" and ").append("eval.evaluation_period_id").append(" = ").append(criteria.getValue().toString());
-//                        case "averageScore" -> whereClause.append(" and ").append("eval.average_score").append(" like '%").append(criteria.getValue()).append("%'");
-                        default -> {
-                        }
-                    }
-                }
-            });
-        return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
     }
 
     private StringBuilder getGeneralReportDetailWhereClause(SearchDTO.SearchRq request) {
