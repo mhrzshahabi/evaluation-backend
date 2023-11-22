@@ -132,7 +132,7 @@ public class EvaluationReportController {
                                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationCostCenterReportViewService.search(request);
+        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationGeneralReportService.searchByCostCenter(request, count, startIndex);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())

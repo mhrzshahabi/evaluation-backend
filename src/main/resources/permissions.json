@@ -467,6 +467,14 @@
     {
       "code": "R_EVALUATION_GENERAL_REPORT_LAST_LEVEL",
       "title": "گزارش مولفه های ارزیابی -تا آخرین سطح"
+    },
+    {
+      "code": "R_EVALUATION_COST_CENTER_REPORT_FIRST_LEVEL",
+      "title": "گزارش مولفه های سازمان - سطح اول"
+    },
+    {
+      "code": "R_EVALUATION_COST_CENTER_REPORT_LAST_LEVEL",
+      "title": "گزارش مولفه های سازمان -تا آخرین سطح"
     }
   ]
 }
