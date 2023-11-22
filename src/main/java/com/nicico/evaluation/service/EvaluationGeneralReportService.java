@@ -43,7 +43,6 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
     private final JdbcTemplate jdbcTemplate;
     private final EntityManager entityManager;
 
-
     @Override
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
