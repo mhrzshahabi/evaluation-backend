@@ -7,11 +7,13 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
+import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
 import com.nicico.evaluation.mapper.EvaluationViewGeneralReportMapper;
 import com.nicico.evaluation.repository.EvaluationViewGeneralReportRepository;
+import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -468,5 +470,12 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                 }
             });
         return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش مولفه های ارزیابی ");
+        return new ExcelGenerator.ExcelDownload(body);
     }
 }

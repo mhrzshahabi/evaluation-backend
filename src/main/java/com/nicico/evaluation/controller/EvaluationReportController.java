@@ -11,6 +11,7 @@ import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -154,6 +155,42 @@ public class EvaluationReportController {
                 .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
                 .body(excelDownload.getContent());
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTO.CostCenterExcel entity that match the criteria
+     */
+    @PostMapping(value = "/export-excel/general-report")
+    public ResponseEntity<byte[]> exportExcelGeneralReport(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
+        ExcelGenerator.ExcelDownload excelDownload = evaluationGeneralReportService.downloadExcel(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
+     */
+    @SneakyThrows
+    @PostMapping(value = "/export-excel-by-parent")
+    public ResponseEntity<byte[]> exportExcelByParent(@RequestBody List<FilterDTO> criteria) {
+        ExcelGenerator.ExcelDownload excelDownload = evaluationViewService.downloadExcelByParent(criteria);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    /**
+     * @param criteria is the key value pair for criteria
+     * @return byte[] is the Excel of EvaluationDTOExcel that match the criteria
+     */
+    @PostMapping(value = "/export-excel-evaluation-comprehensive")
+    public ResponseEntity<byte[]> exportExcelEvaluationComprehensive(@RequestBody List<FilterDTO> criteria) {
+        return evaluationViewService.downloadExcelEvaluationComprehensive(criteria);
     }
 }
 
