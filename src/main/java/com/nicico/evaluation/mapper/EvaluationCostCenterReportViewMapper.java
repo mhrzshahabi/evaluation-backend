@@ -7,8 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface EvaluationCostCenterReportViewMapper {
 
-    EvaluationDTO.CostCenterInfo entityToDtoInfo(EvaluationCostCenterReportView entity);
-
     EvaluationDTO.CostCenterExcel entityToDtoExcel(EvaluationCostCenterReportView entity);
 
 }
