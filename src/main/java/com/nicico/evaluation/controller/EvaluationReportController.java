@@ -158,12 +158,8 @@ public class EvaluationReportController {
      * @return byte[] is the Excel of EvaluationDTO.CostCenterExcel entity that match the criteria
      */
     @PostMapping(value = "/export-excel/general-report")
-    public ResponseEntity<byte[]> exportExcelGeneralReport(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        ExcelGenerator.ExcelDownload excelDownload = evaluationGeneralReportService.downloadExcel(criteria);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                .body(excelDownload.getContent());
+    public ResponseEntity<byte[]> exportExcelGeneralReport(@RequestBody List<FilterDTO> criteria) {
+        return evaluationGeneralReportService.downloadExcel(criteria);
     }
 
     /**
