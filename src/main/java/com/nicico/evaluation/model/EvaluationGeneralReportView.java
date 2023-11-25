@@ -19,46 +19,46 @@ import javax.validation.constraints.NotNull;
 public class EvaluationGeneralReportView {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "c_assess_national_code")
+    @Column(name = "C_ASSESS_NATIONAL_CODE")
     private String assessNationalCode;
 
-    @Column(name = "c_assess_post_code")
+    @Column(name = "C_ASSESS_POST_CODE")
     private String assessPostCode;
 
-    @Column(name = "c_assess_full_name")
+    @Column(name = "C_ASSESS_FULL_NAME")
     private String assessFullName;
 
-    @Column(name = "c_assessor_national_code")
+    @Column(name = "C_ASSESSOR_NATIONAL_CODE")
     private String assessorNationalCode;
 
-    @Column(name = "c_assessor_post_code")
+    @Column(name = "C_ASSESSOR_POST_CODE")
     private String assessorPostCode;
 
-    @Column(name = "c_assessor_full_name")
+    @Column(name = "C_ASSESSOR_FULL_NAME")
     private String assessorFullName;
 
-    @Column(name = "average_score")
+    @Column(name = "AVERAGE_SCORE")
     private Long averageScore;
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_catalog_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "STATUS_CATALOG_ID", insertable = false, updatable = false, nullable = false)
     private Catalog statusCatalog;
 
     @NotNull
-    @Column(name = "status_catalog_id")
+    @Column(name = "STATUS_CATALOG_ID")
     private Long statusCatalogId;
 
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "evaluation_period_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "EVALUATION_PERIOD_ID", insertable = false, updatable = false, nullable = false)
     private EvaluationPeriod evaluationPeriod;
 
     @NotNull
-    @Column(name = "evaluation_period_id")
+    @Column(name = "EVALUATION_PERIOD_ID")
     private Long evaluationPeriodId;
 
     @Column(name = "GHESMAT_TITLE")
@@ -85,21 +85,24 @@ public class EvaluationGeneralReportView {
     @Column(name = "COST_CENTER_TITLE")
     private String costCenterTitle;
 
-    @Column(name = "avg_behavioral")
+    @Column(name = "AVG_BEHAVIORAL")
     private String avgBehavioral;
 
-    @Column(name = "weight_behavioral")
+    @Column(name = "WEIGHT_BEHAVIORAL")
     private String weightBehavioral;
 
-    @Column(name = "avg_development")
+    @Column(name = "AVG_DEVELOPMENT")
     private String avgDevelopment;
 
-    @Column(name = "weight_development")
+    @Column(name = "WEIGHT_DEVELOPMENT")
     private String weightDevelopment;
 
-    @Column(name = "avg_operational")
+    @Column(name = "AVG_OPERATIONAL")
     private String avgOperational;
 
-    @Column(name = "weight_operational")
+    @Column(name = "WEIGHT_OPERATIONAL")
     private String weightOperational;
+
+    @Column(name = "COUNTITEM")
+    private Long countItem;
 }
