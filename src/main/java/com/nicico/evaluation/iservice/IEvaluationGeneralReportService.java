@@ -1,7 +1,6 @@
 package com.nicico.evaluation.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.utility.ExcelGenerator;

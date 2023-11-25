@@ -1244,4 +1244,8 @@
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1700906386">
+        <dropView ifExists="true" viewName="view_evaluation_cost_center_report"/>
+    </changeSet>
+
 </databaseChangeLog>
