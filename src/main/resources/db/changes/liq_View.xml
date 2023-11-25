@@ -1244,4 +1244,26 @@
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1700906386">
+        <dropView ifExists="true" viewName="view_evaluation_cost_center_report"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1700907901">
+        <createView viewName="view_cost_center" replaceIfExists="true">
+            <![CDATA[
+                  select
+                    rownum as id,
+                    cost_center.*
+                    from
+                    (
+                        SELECT DISTINCT
+                            vp.cost_center_code,
+                            vp.cost_center_title
+                        FROM
+                            view_post vp
+                    ) cost_center
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

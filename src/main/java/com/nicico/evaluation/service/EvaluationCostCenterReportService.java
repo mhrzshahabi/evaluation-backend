@@ -8,16 +8,21 @@ import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationCostCenterReportService;
 import com.nicico.evaluation.iservice.IOrganizationTreeService;
-import com.nicico.evaluation.mapper.EvaluationCostCenterReportViewMapper;
-import com.nicico.evaluation.repository.EvaluationCostCenterReportViewRepository;
+import com.nicico.evaluation.mapper.EvaluationCostCenterReportMapper;
+import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,41 +35,41 @@ import static com.nicico.evaluation.utility.EvaluationConstant.FINALIZED;
 @Service
 public class EvaluationCostCenterReportService implements IEvaluationCostCenterReportService {
 
+    private final JdbcTemplate jdbcTemplate;
     private final EntityManager entityManager;
     private final PageableMapper pageableMapper;
     private final ICatalogService catalogService;
-    private final EvaluationCostCenterReportViewMapper mapper;
+    private final EvaluationCostCenterReportMapper mapper;
     private final IOrganizationTreeService organizationTreeService;
-    private final EvaluationCostCenterReportViewRepository repository;
 
     @Override
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchByCostCenter(SearchDTO.SearchRq request, int count, int startIndex) {
 
         Long statusCatalogId = catalogService.getByCode(FINALIZED).getId();
+        Pageable pageable = pageableMapper.toPageable(count, startIndex);
         if (SecurityUtil.isAdmin())
-            return this.searchAdminByCostCenter(request, statusCatalogId, count, startIndex);
+            return this.searchAdminByCostCenter(request, statusCatalogId, pageable);
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_COST_CENTER_REPORT_LAST_LEVEL")))
-            return this.searchLastLevelByCostCenter(request, statusCatalogId, count, startIndex);
+            return this.searchLastLevelByCostCenter(request, statusCatalogId, pageable);
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_COST_CENTER_REPORT_FIRST_LEVEL")))
-            return this.searchFirstLevelByCostCenter(request, statusCatalogId, count, startIndex);
+            return this.searchFirstLevelByCostCenter(request, statusCatalogId, pageable);
         return null;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchAdminByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, int count, int startIndex) {
+    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchAdminByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, Pageable pageable) {
 
         List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
         String whereClause = String.valueOf(getWhereClauseByCostCenter(request, false));
         String outerWhereClause = String.valueOf(getOuterWhereClauseByCostCenter(request));
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize());
+        String query = getAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, pageable);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
         if (!resultList.isEmpty()) {
             setCostCenterInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalCountAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId)).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            String totalQuery = getAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, null);
+            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -79,18 +84,17 @@ public class EvaluationCostCenterReportService implements IEvaluationCostCenterR
 
     @Override
     @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchFirstLevelByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, int count, int startIndex) {
+    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchFirstLevelByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, Pageable pageable) {
 
         List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
         String whereClause = String.valueOf(getWhereClauseByCostCenter(request, true));
         String outerWhereClause = String.valueOf(getOuterWhereClauseByCostCenter(request));
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize());
+        String query = getAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, pageable);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
         if (!resultList.isEmpty()) {
             setCostCenterInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalCountAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId)).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            String totalQuery = getAdminQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, null);
+            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -105,18 +109,17 @@ public class EvaluationCostCenterReportService implements IEvaluationCostCenterR
 
     @Override
     @Transactional(readOnly = true)
-    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchLastLevelByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, int count, int startIndex) {
+    public SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchLastLevelByCostCenter(SearchDTO.SearchRq request, Long statusCatalogId, Pageable pageable) {
 
         List<EvaluationDTO.CostCenterInfo> infoList = new ArrayList<>();
         String whereClause = String.valueOf(getWhereClauseByCostCenter(request, false));
         String outerWhereClause = String.valueOf(getOuterWhereClauseByCostCenter(request));
-        Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        String query = getLastLevelQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize());
+        String query = getLastLevelQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, pageable);
         List<?> resultList = entityManager.createNativeQuery(query).getResultList();
         if (!resultList.isEmpty()) {
             setCostCenterInfoList(infoList, resultList);
-            List totalResultList = entityManager.createNativeQuery(getTotalCountLastLevelQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId)).getResultList();
-            Long totalCount = !totalResultList.isEmpty() ? Long.parseLong(totalResultList.get(0).toString()) : 0;
+            String totalQuery = getLastLevelQueryByCostCenter(whereClause, outerWhereClause, statusCatalogId, null);
+            Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -131,9 +134,24 @@ public class EvaluationCostCenterReportService implements IEvaluationCostCenterR
 
     @Override
     @Transactional(readOnly = true)
-    public ExcelGenerator.ExcelDownload downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        byte[] body = BaseService.exportExcel(repository, mapper::entityToDtoExcel, criteria, null, "گزارش ارزیابی سازمان");
-        return new ExcelGenerator.ExcelDownload(body);
+    public ResponseEntity<byte[]> exportExcelCostCenterReport(List<FilterDTO> criteria) {
+
+        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> costCenterInfoSearchRs = new SearchDTO.SearchRs<>();
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
+        Long statusCatalogId = catalogService.getByCode(FINALIZED).getId();
+        if (SecurityUtil.isAdmin())
+            costCenterInfoSearchRs = this.searchAdminByCostCenter(request, statusCatalogId, null);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_COST_CENTER_REPORT_LAST_LEVEL")))
+            costCenterInfoSearchRs = this.searchLastLevelByCostCenter(request, statusCatalogId, null);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_COST_CENTER_REPORT_FIRST_LEVEL")))
+            costCenterInfoSearchRs = this.searchFirstLevelByCostCenter(request, statusCatalogId, null);
+
+        byte[] body = BaseService.exportExcelByList(mapper.infoToDtoExcelList(costCenterInfoSearchRs.getList()), null, "گزارش ارزیابی سازمان");
+        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
     }
 
     private StringBuilder getWhereClauseByCostCenter(SearchDTO.SearchRq request, boolean firstLevel) {
@@ -177,48 +195,12 @@ public class EvaluationCostCenterReportService implements IEvaluationCostCenterR
         return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
     }
 
-    private String getAdminQueryByCostCenter(String whereClause, String outerWhereClause, Long statusCatalogId, int pageNumber, int pageSize) {
+    private String getAdminQueryByCostCenter(String whereClause, String outerWhereClause, Long statusCatalogId, Pageable pageable) {
+        if (Objects.nonNull(pageable))
+            outerWhereClause = MessageFormat.format("{0}{1}", outerWhereClause, String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));
         return String.format("""
                         SELECT
                             *
-                        FROM
-                            (
-                                SELECT
-                                    evaluation.cost_center_code,
-                                    evaluation.cost_center_title,
-                                    evaluation.evaluation_period_id,
-                                    COUNT(DISTINCT evaluation.id)                                   AS person_count,
-                                    SUM(evaluation.avg_behavioral) / COUNT(DISTINCT evaluation.id)  AS average_behavioral,
-                                    SUM(evaluation.avg_development) / COUNT(DISTINCT evaluation.id) AS average_development,
-                                    SUM(evaluation.avg_operational) / COUNT(DISTINCT evaluation.id) AS average_operational,
-                                    SUM(evaluation.average_score) / COUNT(DISTINCT evaluation.id)   AS average_score
-                                FROM
-                                    (
-                                        SELECT
-                                            eval.*
-                                        FROM
-                                            view_evaluation_general_report eval
-                                        WHERE
-                                            eval.status_catalog_id = %s
-                                            %s
-                                    ) evaluation
-                                GROUP BY
-                                    evaluation.evaluation_period_id,
-                                    evaluation.cost_center_code,
-                                    evaluation.cost_center_title
-                            )
-                        WHERE
-                            1 = 1
-                            %s
-                        OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
-                        """
-                , statusCatalogId, whereClause, outerWhereClause, pageNumber, pageSize);
-    }
-
-    private String getTotalCountAdminQueryByCostCenter(String whereClause, String outerWhereClause, Long statusCatalogId) {
-        return String.format("""
-                        SELECT
-                            COUNT(DISTINCT cost_center_title)
                         FROM
                             (
                                 SELECT
@@ -252,72 +234,12 @@ public class EvaluationCostCenterReportService implements IEvaluationCostCenterR
                 , statusCatalogId, whereClause, outerWhereClause);
     }
 
-    private String getLastLevelQueryByCostCenter(String whereClause, String outerWhereClause, Long statusCatalogId, int pageNumber, int pageSize) {
+    private String getLastLevelQueryByCostCenter(String whereClause, String outerWhereClause, Long statusCatalogId, Pageable pageable) {
+        if (Objects.nonNull(pageable))
+            outerWhereClause = MessageFormat.format("{0}{1}", outerWhereClause, String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));
         return String.format("""
                         SELECT
                             *
-                        FROM
-                            (
-                                SELECT
-                                    evaluation.cost_center_code,
-                                    evaluation.cost_center_title,
-                                    evaluation.evaluation_period_id,
-                                    COUNT(DISTINCT evaluation.id)                                   AS person_count,
-                                    SUM(evaluation.avg_behavioral) / COUNT(DISTINCT evaluation.id)  AS average_behavioral,
-                                    SUM(evaluation.avg_development) / COUNT(DISTINCT evaluation.id) AS average_development,
-                                    SUM(evaluation.avg_operational) / COUNT(DISTINCT evaluation.id) AS average_operational,
-                                    SUM(evaluation.average_score) / COUNT(DISTINCT evaluation.id)   AS average_score
-                                FROM
-                                    (
-                                        SELECT
-                                            eval.*
-                                        FROM
-                                            view_evaluation_general_report eval
-                                        WHERE
-                                            c_assessor_post_code IN (
-                                                SELECT
-                                                    *
-                                                FROM
-                                                    (
-                                                        SELECT
-                                                            post_code
-                                                        FROM
-                                                            view_organization_tree
-                                                        START WITH
-                                                            post_code = (
-                                                                SELECT
-                                                                    post_code
-                                                                FROM
-                                                                    view_organization_tree
-                                                                WHERE
-                                                                    national_code = %s
-                                                            )
-                                                        CONNECT BY
-                                                            PRIOR post_code = post_parent_code
-                                                        ORDER BY
-                                                            level
-                                                    )
-                                            )
-                                            AND eval.status_catalog_id = %s
-                                            %s
-                                    ) evaluation
-                                GROUP BY
-                                    evaluation.evaluation_period_id,
-                                    evaluation.cost_center_code,
-                                    evaluation.cost_center_title
-                            )
-                        WHERE
-                            1 = 1
-                            %s
-                        OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
-                        """
-                , SecurityUtil.getNationalCode(), statusCatalogId, whereClause, outerWhereClause, pageNumber, pageSize);
-    }
-
-    private String getTotalCountLastLevelQueryByCostCenter(String whereClause, String outerWhereClause, Long statusCatalogId) {
-        return String.format("""
-                        SELECT
-                            COUNT(DISTINCT cost_center_title)
                         FROM
                             (
                                 SELECT

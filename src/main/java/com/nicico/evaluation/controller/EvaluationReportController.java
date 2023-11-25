@@ -32,7 +32,7 @@ public class EvaluationReportController {
 
     private final IEvaluationViewService evaluationViewService;
     private final IEvaluationGeneralReportService evaluationGeneralReportService;
-    private final IEvaluationCostCenterReportService evaluationCostCenterReportViewService;
+    private final IEvaluationCostCenterReportService evaluationCostCenterReportService;
 
     /**
      * @param count      is the number of entity to every page
@@ -133,7 +133,7 @@ public class EvaluationReportController {
                                                                                  @RequestParam(value = "count", required = false, defaultValue = "30") Integer count,
                                                                                  @RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationCostCenterReportViewService.searchByCostCenter(request, count, startIndex);
+        SearchDTO.SearchRs<EvaluationDTO.CostCenterInfo> data = evaluationCostCenterReportService.searchByCostCenter(request, count, startIndex);
         final EvaluationDTO.Response response = new EvaluationDTO.Response();
         final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
         response.setData(data.getList())
@@ -149,12 +149,8 @@ public class EvaluationReportController {
      * @return byte[] is the Excel of EvaluationDTO.CostCenterExcel entity that match the criteria
      */
     @PostMapping(value = "/export-excel/cost-center")
-    public ResponseEntity<byte[]> exportExcel(@RequestBody List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
-        ExcelGenerator.ExcelDownload excelDownload = evaluationCostCenterReportViewService.downloadExcel(criteria);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                .body(excelDownload.getContent());
+    public ResponseEntity<byte[]> exportExcelCostCenterReport(@RequestBody List<FilterDTO> criteria) {
+        return evaluationCostCenterReportService.exportExcelCostCenterReport(criteria);
     }
 
     /**
