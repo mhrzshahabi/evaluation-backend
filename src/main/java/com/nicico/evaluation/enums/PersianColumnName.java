@@ -62,6 +62,19 @@ public enum PersianColumnName {
     TYPECATALOG("نوع تاثیر"),
     FIRSTNAME("نام"),
     LASTNAME("نام خانوادگی"),
+    AVGBEHAVIORAL("نمره رفتاری"),
+    AVGDEVELOPMENT("نمره شایستگی"),
+    AVGOPERATIONAL("نمره نتیجه ای"),
+    WEIGHTBEHAVIORAL("ضریب رفتاری"),
+    WEIGHTDEVELOPMENT("ضریب شایستگی"),
+    WEIGHTOPERATIONAL("ضریب نتیجه ای"),
+    COUNTITEM("تعداد افراد ارزیابی شده"),
+    EVALID("شناسه ارزیابی"),
+    MERITCODE("کد مولفه"),
+    MERITTITLE("عنوان مولفه"),
+    EFFECTIVESCORE("نمره موثر"),
+    KPITITLE("نوع"),
+    MERITWEIGHT("ضریب مولفه"),
     PERSONNELCODE("شماره پرسنلی");
 
     private String persianName;

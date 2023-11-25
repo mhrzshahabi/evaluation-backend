@@ -15,7 +15,9 @@ import com.nicico.evaluation.repository.EvaluationViewGeneralReportRepository;
 import com.nicico.evaluation.utility.CriteriaUtil;
 import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -84,19 +86,17 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new HashMap<>());
         List<EvaluationGeneralReportDTO.Info> infoList = modelMapper.map(resultList, new TypeReference<List<EvaluationGeneralReportDTO.Info>>() {
         }.getType());
+        SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(new ArrayList<>());
+        searchRs.setTotalCount(0L);
         if (!resultList.isEmpty()) {
             String totalQuery = getGeneralReportQuery(whereClause, null);
             Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
-            SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
             return searchRs;
-        } else {
-            SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
-            searchRs.setTotalCount(0L);
-            return searchRs;
         }
+        return searchRs;
     }
 
     @Override
@@ -109,19 +109,15 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new MapSqlParameterSource());
         List<EvaluationGeneralReportDTO.DetailInfo> infoList = modelMapper.map(resultList, new TypeReference<List<EvaluationGeneralReportDTO.DetailInfo>>() {
         }.getType());
+        SearchDTO.SearchRs<EvaluationGeneralReportDTO.DetailInfo> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(new ArrayList<>());
         if (!resultList.isEmpty()) {
             String totalQuery = getGeneralReportDetailQuery(whereClause, null);
             Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
-            SearchDTO.SearchRs<EvaluationGeneralReportDTO.DetailInfo> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
-            return searchRs;
-        } else {
-            SearchDTO.SearchRs<EvaluationGeneralReportDTO.DetailInfo> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
-            searchRs.setTotalCount(0L);
-            return searchRs;
         }
+        return searchRs;
     }
 
     @Override
@@ -142,14 +138,85 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                 .setOperator(EOperator.and)
                 .setCriteria(criteriaRqList);
         request.setCriteria(criteriaRq);
-
+        SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> infoSearchRs = new SearchDTO.SearchRs<>();
         if (SecurityUtil.isAdmin())
-            return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
-        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_FIRST_LEVEL")))
-            return this.searchByParent(request);
+            infoSearchRs = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_LAST_LEVEL")))
-            return this.searchEvaluationComprehensive(request, count, startIndex);
-        return null;
+            infoSearchRs = this.searchEvaluationComprehensive(request, count, startIndex);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_FIRST_LEVEL")))
+            infoSearchRs = this.searchByParent(request);
+        return infoSearchRs;
+    }
+
+    @SneakyThrows
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) {
+
+        FilterDTO filterDTO = new FilterDTO();
+        filterDTO.setField("statusCatalogId");
+        filterDTO.setType("null");
+        filterDTO.setOperator(String.valueOf(EOperator.equals));
+        filterDTO.setValues(Collections.singletonList(catalogService.getByCode(FINALIZED).getId()));
+        criteria.add(filterDTO);
+        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
+        SearchDTO.SearchRs<EvaluationGeneralReportDTO.Info> searchRsData = new SearchDTO.SearchRs<>();
+        if (SecurityUtil.isAdmin())
+            searchRsData = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_LAST_LEVEL")))
+            searchRsData = this.searchEvaluationComprehensive(request, 0, Integer.MAX_VALUE);
+        else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_FIRST_LEVEL")))
+            searchRsData = this.searchByParent(request);
+
+        if (!searchRsData.getList().isEmpty())
+            return generateReportExcel(searchRsData.getList(), request);
+        else
+            return ResponseEntity.noContent().build();
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @SneakyThrows
+    @NotNull
+    private ResponseEntity<byte[]> generateReportExcel(List<EvaluationGeneralReportDTO.Info> masterData, SearchDTO.SearchRq request) {
+
+        List<EvaluationGeneralReportDTO.Excel> detailList = getDetailInfoExcel(masterData, request);
+        List<EvaluationGeneralReportDTO.Excel> dataList = detailList.stream().sorted(Comparator.comparing(EvaluationGeneralReportDTO.Excel::getEvalId)).toList();
+        dataList.forEach(detail -> {
+            if (masterData.stream().anyMatch(q -> Objects.equals(q.getId(), detail.getEvalId()))) {
+                EvaluationGeneralReportDTO.Info masterInfo = masterData.stream().filter(q -> Objects.equals(q.getId(), detail.getEvalId())).findFirst().get();
+                mapper.setExcelDto(detail, masterInfo);
+            }
+        });
+        byte[] body = BaseService.exportExcelByList(dataList, "گزارش مولفه های ارزیابی", "گزارش مولفه های ارزیابی");
+        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
+                .body(excelDownload.getContent());
+    }
+
+    private List<EvaluationGeneralReportDTO.Excel> getDetailInfoExcel(List<EvaluationGeneralReportDTO.Info> masterData, SearchDTO.SearchRq request) {
+        List<Long> evaluationIds = masterData.stream().map(EvaluationGeneralReportDTO.Info::getId).toList();
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq evalIdsCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.inSet)
+                .setFieldName("evaluationIds")
+                .setValue(evaluationIds);
+
+        criteriaRqList.add(evalIdsCriteriaRq);
+        if (Objects.nonNull(request.getCriteria()) && !request.getCriteria().getCriteria().isEmpty())
+            criteriaRqList.addAll(request.getCriteria().getCriteria());
+
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        request.setCriteria(criteriaRq);
+
+        String whereClause = String.valueOf(getGeneralReportDetailWhereClause(request));
+        String query = getGeneralReportDetailQuery(whereClause, null);
+        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new HashMap<>());
+        return modelMapper.map(resultList, new TypeReference<List<EvaluationGeneralReportDTO.Excel>>() {
+        }.getType());
     }
 
     private String getGeneralReportQuery(String whereClause, Pageable pageable) {
@@ -213,6 +280,7 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         return String.format(" " +
                         " SELECT " +
                         " distinct " +
+                        "    evalItem.evaluation_id \"evalId\" , " +
                         "    merit.c_code \"meritCode\" , " +
                         "    merit.c_title  \"meritTitle\" , " +
                         "    catalog.c_value \"effectiveScore\" , " +
@@ -263,7 +331,7 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                     case "weightOperational" -> whereClause.append(" and ").append("eval.weight_operational").append(" like '%").append(criteria.getValue()).append("%'");
                 }
             });
-        return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
+        return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
     }
 
     private StringBuilder getGeneralReportDetailWhereClause(SearchDTO.SearchRq request) {
@@ -278,26 +346,9 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
                     case "kpiTitle" -> whereClause.append(" and ").append("kpiTitle").append(" like '%").append(criteria.getValue().toString()).append("%'");
                     case "description" -> whereClause.append(" and ").append("evalItem.c_description").append(" like '%").append(criteria.getValue().toString()).append("%'");
                     case "meritWeight" -> whereClause.append(" and ").append("meritWeight").append(" like '%").append(criteria.getValue().toString()).append("%'");
+                    case "evaluationIds" -> whereClause.append(" and ").append("evalItem.evaluation_id").append(" in (").append(criteria.getValue().toString()).append(")");
                 }
             });
-        return new StringBuilder(String.valueOf(whereClause).replaceAll("[|]", ""));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ResponseEntity<byte[]> downloadExcel(List<FilterDTO> criteria) {
-        SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
-        String whereClause = String.valueOf(getGeneralReportWhereClause(request));
-        String query = getGeneralReportQuery(whereClause, null);
-        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new HashMap<>());
-        List<EvaluationDTO.Excel> excelList = modelMapper.map(resultList, new TypeReference<List<EvaluationGeneralReportDTO.Info>>() {
-        }.getType());
-        byte[] body = BaseService.exportExcelByList(excelList, "گزارش مولفه های ارزیابی", "گزارش مولفه های ارزیابی");
-        ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, excelDownload.getHeaderValue())
-                .body(excelDownload.getContent());
-
+        return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
     }
 }

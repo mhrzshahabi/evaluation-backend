@@ -50,6 +50,7 @@ public class EvaluationGeneralReportDTO {
     @ApiModel("EvaluationGeneralReportDetailInfo")
     public static class DetailInfo {
 
+        Long evalId;
         String meritCode;
         String meritTitle;
         String effectiveScore;
@@ -65,23 +66,30 @@ public class EvaluationGeneralReportDTO {
     public static class Excel {
         private String assessFullName;
         private String assessPostCode;
-        private String assessPostTitle;
-        private String assessorFullName;
-        private String assessorPostCode;
-        private String assessorPostTitle;
-        private String evaluationPeriodTitle;
-        private String evaluationPeriodStartDateAssessment;
-        private String evaluationPeriodEndDateAssessment;
-        private Long averageScore;
+        private String personnelCode;
         private String costCenterCode;
         private String costCenterTitle;
-        private String postGradeTitle;
         private String mojtamaTitle;
         private String moavenatTitle;
         private String omoorTitle;
         private String ghesmatTitle;
-        private String description;
-        private String statusCatalogTitle;
+        private Long averageScore;
+        private String avgBehavioral;
+        private String avgDevelopment;
+        private String avgOperational;
+        private String weightBehavioral;
+        private String weightDevelopment;
+        private String weightOperational;
+        private Long countItem;
+
+        Long   evalId;
+        String meritCode;
+        String meritTitle;
+        String effectiveScore;
+        String kpiTitle;
+        String description;
+        String meritWeight;
+
     }
 
     @Getter
