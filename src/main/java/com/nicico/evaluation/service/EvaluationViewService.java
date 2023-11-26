@@ -27,7 +27,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -111,7 +110,7 @@ public class EvaluationViewService implements IEvaluationViewService {
     @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE')")
     public ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria) {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
-        SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = this.searchEvaluationComprehensive(request, 0, Integer.MAX_VALUE);
+        SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = this.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0);
         if (!searchRs.getList().isEmpty()) {
             List<EvaluationDTO.Excel> excelList = mapper.infoDtoToDtoExcelList(searchRs.getList());
             byte[] body = BaseService.exportExcelByList(excelList, "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
