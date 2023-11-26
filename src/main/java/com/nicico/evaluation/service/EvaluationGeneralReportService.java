@@ -164,7 +164,7 @@ public class EvaluationGeneralReportService implements IEvaluationGeneralReportS
         if (SecurityUtil.isAdmin())
             searchRsData = BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_LAST_LEVEL")))
-            searchRsData = this.searchEvaluationComprehensive(request, 0, Integer.MAX_VALUE);
+            searchRsData = this.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0);
         else if (Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATION_GENERAL_REPORT_FIRST_LEVEL")))
             searchRsData = this.searchByParent(request);
 
