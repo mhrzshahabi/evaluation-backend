@@ -75,7 +75,9 @@ public enum PersianColumnName {
     EFFECTIVESCORE("نمره موثر"),
     KPITITLE("نوع"),
     MERITWEIGHT("ضریب مولفه"),
-    PERSONNELCODE("شماره پرسنلی");
+    PERSONNELCODE("شماره پرسنلی"),
+    ASSESSORNATIONALCODE("کد ملی ارزیابی کننده"),
+    ASSESSNATIONALCODE("کد ملی ارزیابی شونده");
 
     private String persianName;
 

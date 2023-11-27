@@ -3,6 +3,7 @@ package com.nicico.evaluation.controller;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationGeneralReportDTO;
+import com.nicico.evaluation.dto.EvaluationViewDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.IEvaluationCostCenterReportService;
 import com.nicico.evaluation.iservice.IEvaluationGeneralReportService;
@@ -63,13 +64,13 @@ public class EvaluationReportController {
      * @return TotalResponse<EvaluationDTO.Info> is the list of EvaluationInfo entity that match the criteria
      */
     @PostMapping(value = "/spec-list/comprehensive")
-    public ResponseEntity<EvaluationDTO.SpecResponse> searchEvaluationComprehensive(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
-                                                                                    @RequestParam(value = "count", required = false) Integer count,
-                                                                                    @RequestBody List<FilterDTO> criteria) {
+    public ResponseEntity<EvaluationViewDTO.SpecResponse> searchEvaluationComprehensive(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
+                                                                                        @RequestParam(value = "count", required = false) Integer count,
+                                                                                        @RequestBody List<FilterDTO> criteria) {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationDTO.Info> data = evaluationViewService.searchEvaluationComprehensive(request, count, startIndex);
-        final EvaluationDTO.Response response = new EvaluationDTO.Response();
-        final EvaluationDTO.SpecResponse specRs = new EvaluationDTO.SpecResponse();
+        SearchDTO.SearchRs<EvaluationViewDTO.Info> data = evaluationViewService.searchEvaluationComprehensive(request, count, startIndex);
+        final EvaluationViewDTO.Response response = new EvaluationViewDTO.Response();
+        final EvaluationViewDTO.SpecResponse specRs = new EvaluationViewDTO.SpecResponse();
         response.setData(data.getList())
                 .setStartRow(startIndex)
                 .setEndRow(startIndex + data.getList().size())

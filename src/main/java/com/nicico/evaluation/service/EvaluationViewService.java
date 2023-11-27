@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.EvaluationDTO;
+import com.nicico.evaluation.dto.EvaluationViewDTO;
 import com.nicico.evaluation.dto.FilterDTO;
 import com.nicico.evaluation.iservice.ICatalogService;
 import com.nicico.evaluation.iservice.IEvaluationViewService;
@@ -85,15 +86,15 @@ public class EvaluationViewService implements IEvaluationViewService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE')")
-    public SearchDTO.SearchRs<EvaluationDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex) {
+    public SearchDTO.SearchRs<EvaluationViewDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex) {
 
         String whereClause = String.valueOf(getWhereClause(request));
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
         String query = getSubAssessorQuery(whereClause, pageable);
         List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new HashMap<>());
-        List<EvaluationDTO.Info> infoList = modelMapper.map(resultList, new TypeReference<List<EvaluationDTO.Info>>() {
+        List<EvaluationViewDTO.Info> infoList = modelMapper.map(resultList, new TypeReference<List<EvaluationViewDTO.Info>>() {
         }.getType());
-        SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        SearchDTO.SearchRs<EvaluationViewDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setList(new ArrayList<>());
         searchRs.setTotalCount(0L);
         if (!resultList.isEmpty()) {
@@ -110,10 +111,9 @@ public class EvaluationViewService implements IEvaluationViewService {
     @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE')")
     public ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria) {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
-        SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = this.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0);
+        SearchDTO.SearchRs<EvaluationViewDTO.Info> searchRs = this.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0);
         if (!searchRs.getList().isEmpty()) {
-            List<EvaluationDTO.Excel> excelList = mapper.infoDtoToDtoExcelList(searchRs.getList());
-            byte[] body = BaseService.exportExcelByList(excelList, "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
+            byte[] body = BaseService.exportExcelByList(searchRs.getList(), "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
             ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(excelDownload.getContentType()))
@@ -194,12 +194,32 @@ public class EvaluationViewService implements IEvaluationViewService {
         if (Objects.nonNull(pageable))
             whereClause = MessageFormat.format("{0}{1}", whereClause, String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));
         return String.format(" SELECT  " +
-                        "                 eval.*, " +
-                        "                 evalPeriod.c_title, " +
-                        "                 evalPeriod.c_start_date_assessment, " +
-                        "                 evalPeriod.c_end_date_assessment,  " +
-                        "                 catalog.c_title status_catalog_title, " +
-                        "                 catalog.c_code status_catalog_code " +
+                        "                 eval.id      \"id\"  , " +
+                        "                 eval.c_assess_full_name     \"assessFullName\"  , " +
+                        "                 eval.c_assess_national_code     \"assessNationalCode\"  , " +
+                        "                 eval.c_assessor_full_name     \"assessorFullName\"  , " +
+                        "                 eval.c_assessor_national_code     \"assessorNationalCode\"  , " +
+                        "                 eval.c_assess_post_code    \"assessPostCode\"  , " +
+                        "                 eval.c_assess_post_code    \"assessPostCode\"  , " +
+                        "                 eval.c_assessor_post_code    \"assessorPostCode\"  , " +
+                        "                 eval.post_title    \"assessPostTitle\"  , " +
+                        "                 eval.assessor_post_title    \"assessorPostTitle\"  , " +
+                        "                 eval.cost_center_code  \"costCenterCode\"  , " +
+                        "                 eval.cost_center_title \"costCenterTitle\" , " +
+                        "                 eval.mojtama_title \"mojtamaTitle\"    , " +
+                        "                 eval.moavenat_title \"moavenatTitle\"   , " +
+                        "                 eval.omoor_title \"omoorTitle\"  , " +
+                        "                 eval.ghesmat_title \"ghesmatTitle\"    , " +
+                        "                 eval.average_score \"averageScore\"    , " +
+                        "                 eval.post_grade_title \"postGradeTitle\"    , " +
+                        "                 eval.c_description \"description\"    , " +
+                        "                 eval.status_catalog_id \"statusCatalogId\" , " +
+                        "                 eval.evaluation_period_id \"evaluationPeriodId\"  , " +
+                        "                 evalPeriod.c_title  \"evaluationPeriodTitle\" , " +
+                        "                 evalPeriod.c_start_date_assessment   \"evaluationPeriodStartDateAssessment\" , " +
+                        "                 evalPeriod.c_end_date_assessment  \"evaluationPeriodEndDateAssessment\" ,  " +
+                        "                 catalog.c_title   \"statusCatalogTitle\" , " +
+                        "                 catalog.c_code   \"statusCatalogCode\"  " +
                         "            FROM  " +
                         "                view_evaluation  eval" +
                         "                join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.evaluation_period_id " +
