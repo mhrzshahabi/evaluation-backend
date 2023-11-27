@@ -24,4 +24,6 @@ public interface IOrganizationTreeService {
 
     OrganizationTreeDTO.InfoTree getByPostCode(String postCode);
 
+    OrganizationTreeDTO.InfoTree getByNationalCode(String nationalCode);
+
 }

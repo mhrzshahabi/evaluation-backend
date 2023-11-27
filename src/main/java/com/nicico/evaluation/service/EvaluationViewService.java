@@ -1,6 +1,5 @@
 package com.nicico.evaluation.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
@@ -18,6 +17,7 @@ import com.nicico.evaluation.utility.ExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -90,10 +90,12 @@ public class EvaluationViewService implements IEvaluationViewService {
 
         String whereClause = String.valueOf(getWhereClause(request));
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
+
         String query = getSubAssessorQuery(whereClause, pageable);
-        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new HashMap<>());
-        List<EvaluationViewDTO.Info> infoList = modelMapper.map(resultList, new TypeReference<List<EvaluationViewDTO.Info>>() {
+        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new LinkedHashMap<>());
+        List<EvaluationViewDTO.Info> infoList = modelMapper.map(resultList, new TypeToken<List<EvaluationViewDTO.Info>>() {
         }.getType());
+
         SearchDTO.SearchRs<EvaluationViewDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setList(new ArrayList<>());
         searchRs.setTotalCount(0L);
@@ -174,9 +176,9 @@ public class EvaluationViewService implements IEvaluationViewService {
                     case "assessorFullName" -> whereClause.append(" and ").append("eval.c_assessor_full_name").append(" like '%").append(criteria.getValue()).append("%'");
                     case "assessorPostCode" -> whereClause.append(" and ").append("eval.c_assessor_post_code").append(" like '%").append(criteria.getValue()).append("%'");
                     case "assessorPostTitle" -> whereClause.append(" and ").append("eval.assessor_post_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "evaluationPeriod.id" -> whereClause.append(" and ").append("evalPeriod.id").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "evaluationPeriod.startDateAssessment" -> whereClause.append(" and ").append("evalPeriod.c_start_date_assessment").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "evaluationPeriod.endDateAssessment" -> whereClause.append(" and ").append("evalPeriod.c_end_date_assessment").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "evaluationPeriodId" -> whereClause.append(" and ").append("evalPeriod.id").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "evaluationPeriodStartDateAssessment" -> whereClause.append(" and ").append("evalPeriod.c_start_date_assessment").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "evaluationPeriodSndDateAssessment" -> whereClause.append(" and ").append("evalPeriod.c_end_date_assessment").append(" like '%").append(criteria.getValue()).append("%'");
                     case "averageScore" -> whereClause.append(" and ").append("eval.average_score").append(" like '%").append(criteria.getValue()).append("%'");
                     case "postGradeTitle" -> whereClause.append(" and ").append("eval.post_grade_title").append(" like '%").append(criteria.getValue()).append("%'");
                     case "mojtamaTitle" -> whereClause.append(" and ").append("eval.mojtama_title").append(" like '%").append(criteria.getValue()).append("%'");
@@ -184,7 +186,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                     case "omoorTitle" -> whereClause.append(" and ").append("eval.omoor_title").append(" like '%").append(criteria.getValue()).append("%'");
                     case "ghesmatTitle" -> whereClause.append(" and ").append("eval.ghesmat_title").append(" like '%").append(criteria.getValue()).append("%'");
                     case "description" -> whereClause.append(" and ").append("eval.c_description").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "statusCatalog.id" -> whereClause.append(" and ").append("eval.status_catalog_id").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "statusCatalogId" -> whereClause.append(" and ").append("eval.status_catalog_id").append(" like '%").append(criteria.getValue()).append("%'");
                 }
             });
         return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
@@ -218,8 +220,10 @@ public class EvaluationViewService implements IEvaluationViewService {
                         "                 evalPeriod.c_title  \"evaluationPeriodTitle\" , " +
                         "                 evalPeriod.c_start_date_assessment   \"evaluationPeriodStartDateAssessment\" , " +
                         "                 evalPeriod.c_end_date_assessment  \"evaluationPeriodEndDateAssessment\" ,  " +
+                        "                 catalog.id   \"statusCatalog.id\" , " +
                         "                 catalog.c_title   \"statusCatalogTitle\" , " +
-                        "                 catalog.c_code   \"statusCatalogCode\"  " +
+                        "                 catalog.c_code   \"statusCatalogCode\"  ," +
+                        "                 catalog.id   \"statusCatalogId\"  " +
                         "            FROM  " +
                         "                view_evaluation  eval" +
                         "                join tbl_evaluation_period evalPeriod on evalPeriod.id = eval.evaluation_period_id " +

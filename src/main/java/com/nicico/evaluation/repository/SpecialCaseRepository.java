@@ -8,12 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SpecialCaseRepository extends JpaRepository<SpecialCase, Long>, JpaSpecificationExecutor<SpecialCase> {
 
     List<SpecialCase> findByAssessNationalCodeAndStatusCatalogId(String nationalCode, Long statusCatalogId);
+
+    List<SpecialCase> findByAssessNationalCodeAndAssessorNationalCodeAndStartDateAndEndDateAndAssessRealPostCodeAndStatusCatalogIdNot(String assessNationalCode, String assessorNationalCode,
+                                                                                                                                   String startDate, String endDate, String assessRealPostCode,
+                                                                                                                                   Long statusCatalogId);
 
     List<SpecialCase> findByAssessNationalCodeAndStatusCatalogIdAndIdNotIn(String nationalCode, Long statusCatalogId, List<Long> id);
 
