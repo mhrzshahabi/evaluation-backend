@@ -37,7 +37,8 @@ public class EvaluationViewDTO {
         private String ghesmatTitle;
         private String description;
         private String statusCatalogTitle;
-
+        private String statusCatalogCode;
+        private Long statusCatalogId;
     }
 
     @Getter
