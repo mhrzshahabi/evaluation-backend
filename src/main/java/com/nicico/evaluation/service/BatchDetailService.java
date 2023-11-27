@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
@@ -44,6 +45,7 @@ public class BatchDetailService implements IBatchDetailService {
     private final IInstanceService instanceService;
     private final ISpecialCaseService specialCaseService;
     private final IMeritComponentService meritComponentService;
+    private final IOrganizationTreeService organizationTreeService;
     private final IPostMeritInstanceService postMeritInstanceService;
     private final IInstanceGroupTypeMeritService instanceGroupTypeMeritService;
 
@@ -257,8 +259,15 @@ public class BatchDetailService implements IBatchDetailService {
             case BATCH_CREATE_SPECIAL_CASE_EXCEL -> batchDetailList.forEach(detail -> {
                 try {
                     SpecialCaseDTO.BatchCreate batchCreate = objectMapper.readValue(detail.getInputDTO(), SpecialCaseDTO.BatchCreate.class);
-                    BaseResponse response = specialCaseService.batchCreate(batchCreate);
+                    String assessParentNationalCode = organizationTreeService.getByNationalCode(batchCreate.getAssessNationalCode()).getNationalCodeParent();
+                    if (Objects.nonNull(assessParentNationalCode) && assessParentNationalCode.equals(batchCreate.getAssessorNationalCode()))
+                        return;
 
+                    boolean specialCaseExist = specialCaseService.checkSpecialCaseExist(batchCreate.getAssessNationalCode(), batchCreate.getAssessorNationalCode(),
+                            batchCreate.getStartDate(), batchCreate.getEndDate(), batchCreate.getAssessRealPostCode());
+                    if (Boolean.TRUE.equals(specialCaseExist))
+                        return;
+                    BaseResponse response = specialCaseService.batchCreate(batchCreate);
                     String description = "کد ملی ارزیاب کننده: " + batchCreate.getAssessorNationalCode() + " کد ملی ارزیاب شونده : " + batchCreate.getAssessNationalCode() ;
                     if (response.getStatus() == 200)
                         updateStatusAndExceptionTitleAndDescription(detail.getId(), successCatalogId, null, description);

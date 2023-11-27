@@ -29,5 +29,8 @@ public interface ISpecialCaseService {
     BaseResponse changeAllStatus(SpecialCaseDTO.ChangeAllStatusDTO changeAllStatusDTO);
 
     BaseResponse changeStatus(SpecialCaseDTO.ChangeStatusDTO changeStatusDTO);
+
+    boolean checkSpecialCaseExist(String assessNationalCode, String assessorNationalCode,
+                                     String startDate, String endDate, String assessRealPostCode);
 }
     

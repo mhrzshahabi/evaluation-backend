@@ -163,8 +163,17 @@ public class OrganizationTreeService implements IOrganizationTreeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public OrganizationTreeDTO.InfoTree getByPostCode(String postCode) {
         OrganizationTree organizationTree = repository.findFirstByPostCode(postCode)
+                .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        return mapper.entityToDtoInfo(organizationTree);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrganizationTreeDTO.InfoTree getByNationalCode(String nationalCode) {
+        OrganizationTree organizationTree = repository.findFirstByNationalCode(nationalCode)
                 .orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
         return mapper.entityToDtoInfo(organizationTree);
     }

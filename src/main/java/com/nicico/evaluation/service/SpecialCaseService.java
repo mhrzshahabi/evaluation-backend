@@ -264,5 +264,18 @@ public class SpecialCaseService implements ISpecialCaseService {
             return response;
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean checkSpecialCaseExist(String assessNationalCode, String assessorNationalCode,
+                                            String startDate, String endDate, String assessRealPostCode) {
+        Long revokeStatusId = catalogService.getByCode(SPECIAL_REVOKED).getId();
+        List<SpecialCase> specialCaseList = repository.findByAssessNationalCodeAndAssessorNationalCodeAndStartDateAndEndDateAndAssessRealPostCodeAndStatusCatalogIdNot(assessNationalCode, assessorNationalCode,
+                startDate, endDate, assessRealPostCode, revokeStatusId);
+        if (specialCaseList.isEmpty())
+            return false;
+        else
+            return true;
+    }
 }
     
