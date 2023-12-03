@@ -27,5 +27,7 @@ public interface IWorkSpaceService {
 
     List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId);
 
+    List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(Long periodId);
+
     List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId);
 }

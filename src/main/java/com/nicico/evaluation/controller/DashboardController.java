@@ -84,6 +84,11 @@ public class DashboardController {
         return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId);
     }
 
+    @GetMapping("/finalized-average-by-assessor-and-period/{evaluationPeriodId}")
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(@PathVariable Long evaluationPeriodId) {
+        return workSpaceService.getFinalizedAverageByAssessorAndPeriodEvaluation(evaluationPeriodId);
+    }
+
     @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}")
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex) {
         return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId);

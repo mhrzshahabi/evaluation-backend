@@ -87,7 +87,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                                     JOIN tbl_kpi_type              kpitype ON kpitype.id = grouptype.kpi_type_id
                                     JOIN tbl_evaluation_period     evalperiod ON evalperiod.id = eval.evaluation_period_id
                                 WHERE
-                                    post.OMOOR_CODE = :omoorCode
+                                    post.OMOOR_CODE in ( :omoorCode)
                                     AND eval.status_catalog_id = (select id from tbl_catalog  where c_code = 'Finalized')
                                     AND evalPeriod.id = :periodId
                                 GROUP BY
@@ -130,7 +130,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                                                                           AND merit.rev = evalitem.merit_component_audit_rev
                                     JOIN tbl_evaluation_period      evalperiod ON evalperiod.id = eval.evaluation_period_id
                                 WHERE
-                                    post.OMOOR_CODE = :omoorCode
+                                    post.OMOOR_CODE in (:omoorCode)
                                     AND eval.status_catalog_id = (select id from tbl_catalog  where c_code = 'Finalized')
                                     AND kpitype.LEVEL_DEF_ID =  (select id from tbl_catalog  where c_code = 'organizationalPosition')
                                     AND evalPeriod.id = :periodId
@@ -147,7 +147,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                         GROUP BY
                             kpi_type_title
             """, nativeQuery = true)
-    List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId, String omoorCode);
+    List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId, List<String> omoorCode);
 
     @Query(value = """
             SELECT
@@ -161,6 +161,19 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                 and eval.status_catalog_id = (select id from tbl_catalog  where c_code = 'Finalized')
             """, nativeQuery = true)
     String getOmoorCodeByAssessNationalCodeAndPeriodId(String assessNationalCode, Long periodId);
+
+    @Query(value = """
+            SELECT
+                post.omoor_code
+            FROM
+                tbl_evaluation   eval
+                JOIN view_post        post ON post.post_code = eval.c_assess_post_code
+            WHERE
+                eval.c_assessor_national_code = :assessorNationalCode 
+                and eval.EVALUATION_PERIOD_ID = :periodId
+                and eval.status_catalog_id = (select id from tbl_catalog  where c_code = 'Finalized')
+            """, nativeQuery = true)
+    List<String> getOmoorCodeByAssessorNationalCodeAndPeriodId(String assessorNationalCode, Long periodId);
 
     @Query(value = """
             SELECT

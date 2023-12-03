@@ -43,6 +43,8 @@ public interface IEvaluationService {
 
     List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId);
 
+    List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(Long periodId);
+
     List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId);
 
     ResponseEntity<byte[]> downloadInvalidPostExcel(List<Long> evaluationIds) throws NoSuchFieldException, IllegalAccessException;

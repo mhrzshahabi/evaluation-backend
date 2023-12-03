@@ -125,6 +125,12 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(Long periodId) {
+        return evaluationService.getFinalizedAverageByAssessorAndPeriodEvaluation(periodId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId) {
         final Pageable pageable = pageableMapper.toPageable(count, startIndex);
         return evaluationService.getBestAssessesByOmoor(pageable.getPageSize(), pageable.getPageNumber(), periodId);

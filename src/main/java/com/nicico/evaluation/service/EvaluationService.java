@@ -607,6 +607,13 @@ public class EvaluationService implements IEvaluationService {
     @Transactional(readOnly = true)
     public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId) {
         String omoorCode = repository.getOmoorCodeByAssessNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
+        return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, Collections.singletonList(omoorCode));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(Long periodId) {
+        List<String> omoorCode = repository.getOmoorCodeByAssessorNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
         return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, omoorCode);
     }
 
