@@ -105,6 +105,13 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
+    public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByAssessor(Long evaluationPeriodId) {
+        String userNationalCode = SecurityUtil.getNationalCode();
+        return evaluationService.getEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationPerOmoor(Long evaluationPeriodId) {
         Long finalizedStatusCatalogId = catalogService.getByCode("Finalized").getId();
         return evaluationService.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);

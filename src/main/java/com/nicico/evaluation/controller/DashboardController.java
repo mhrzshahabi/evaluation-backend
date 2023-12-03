@@ -88,4 +88,12 @@ public class DashboardController {
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex) {
         return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId);
     }
+
+    /**
+     * @return that result of my assesses evaluation by evaluationPeriodId
+     */
+    @GetMapping(value = "/my-assesses-evaluation/{evaluationPeriodId}")
+    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByAssessor(@PathVariable Long evaluationPeriodId) {
+        return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByAssessor(evaluationPeriodId), HttpStatus.OK);
+    }
 }

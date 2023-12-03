@@ -35,6 +35,8 @@ public interface IEvaluationService {
 
     EvaluationDTO.EvaluationAverageScoreData getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId);
 
+    EvaluationDTO.EvaluationAverageScoreData getEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId);
+
     List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationInFinalizedEvaluationPerOmoor(Long evaluationPeriodId, Long finalizedStatusCatalogId);
 
     List<String> sendNotification();

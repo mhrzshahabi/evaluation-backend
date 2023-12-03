@@ -1,5 +1,6 @@
 package com.nicico.evaluation.repository;
 
+import com.nicico.evaluation.dto.EvaluationItemDTO;
 import com.nicico.evaluation.model.EvaluationItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,8 +17,8 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
             " join Evaluation eval on eval.id = evalItem.evaluationId " +
             " join PostMeritComponent postMerit on postMerit.id  = evalItem.postMeritComponentId " +
             " join MeritComponent merit on merit.id = postMerit.meritComponentId " +
-            " where eval.id = :evaluationId")
-    List<EvaluationItem> getAllPostMeritByEvalId(@Param("evaluationId") Long evaluationId);
+            " where eval.id in (:evaluationIds )")
+    List<EvaluationItem> getAllPostMeritByEvalId(@Param("evaluationIds") List<Long> evaluationIds);
 
     @Query("from EvaluationItem  evalItem " +
             " join Evaluation eval on eval.id = evalItem.evaluationId " +
@@ -44,4 +45,24 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
                 tbl_group_type.n_weight
                           """, nativeQuery = true)
     Long getGroupTypeAverageScoreByEvaluationId(Long evaluationId, String kpiTypeTitle);
+
+    @Query(value = """
+            SELECT
+                SUM(tbl_evaluation_item.questionnaire_answer_catalog_value) * 100 / tbl_group_type.n_weight as averageScore,
+                MAX(tbl_kpi_type.c_title) as kpiTitle
+            FROM
+                tbl_evaluation_item left
+                JOIN tbl_group_type_merit ON tbl_group_type_merit.id = tbl_evaluation_item.group_type_merit_id
+                LEFT JOIN tbl_group_type ON tbl_group_type.id = tbl_group_type_merit.group_type_id
+                LEFT JOIN tbl_kpi_type ON tbl_kpi_type.id = tbl_group_type.kpi_type_id
+            WHERE
+                evaluation_id IN (
+                    :evaluationIds
+                )
+            GROUP BY
+                tbl_group_type.id,
+                tbl_group_type.n_weight,
+                tbl_kpi_type.id
+                """, nativeQuery = true)
+    List<EvaluationItemDTO.GroupTypeAverageScoreDto> getAllGroupTypeAverageScoreByEvaluationIds(List<Long> evaluationIds);
 }

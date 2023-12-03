@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.LEVEL_DEF_POST;
@@ -91,8 +92,8 @@ public abstract class EvaluationMapper {
     @Named("getOperationalAverageScore")
     Double getOperationalAverageScore(Long id) {
         String assessPostCode = Arrays.stream(evaluationService.getById(id).getAssessPostCode().split("/")).findFirst().get();
-        Long groupTypeWeight = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST).stream().findFirst().get().getWeight();
-        List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(id);
+        Long groupTypeWeight = groupTypeService.getTypeByAssessPostCode(Collections.singletonList(assessPostCode), LEVEL_DEF_POST).stream().findFirst().get().getWeight();
+        List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(Collections.singletonList(id));
         return postMeritTupleDTOList.stream().mapToDouble(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum() * 100 / groupTypeWeight;
     }
 

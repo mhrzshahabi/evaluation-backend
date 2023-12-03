@@ -23,6 +23,8 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
 
     Optional<Evaluation> findFirstByAssessNationalCodeAndEvaluationPeriodId(String assessNationalCode, Long evaluationPeriodId);
 
+    List<Evaluation> findByAssessorNationalCodeAndEvaluationPeriodId(String assessorNationalCode, Long evaluationPeriodId);
+
     @Query(value = """
             SELECT
                 tbl_evaluation.c_assess_post_code

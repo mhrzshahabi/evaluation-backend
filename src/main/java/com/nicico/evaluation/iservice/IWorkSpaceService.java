@@ -21,6 +21,8 @@ public interface IWorkSpaceService {
 
     EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId);
 
+    EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByAssessor(Long evaluationPeriodId);
+
     List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationPerOmoor(Long evaluationPeriodId);
 
     List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId);
