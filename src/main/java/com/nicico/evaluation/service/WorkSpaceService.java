@@ -17,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static com.nicico.evaluation.utility.EvaluationConstant.FINALIZED;
-import static com.nicico.evaluation.utility.EvaluationConstant.PERIOD_FINALIZED;
+import static com.nicico.evaluation.utility.EvaluationConstant.*;
 
 @RequiredArgsConstructor
 @Service
@@ -98,16 +98,12 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId) {
+    public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId, String dashboardCategory) {
         String userNationalCode = SecurityUtil.getNationalCode();
-        return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByAssessor(Long evaluationPeriodId) {
-        String userNationalCode = SecurityUtil.getNationalCode();
-        return evaluationService.getEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
+        if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD))
+            return evaluationService.getEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
+        else
+            return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
     }
 
     @Override
@@ -119,14 +115,11 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId) {
-        return evaluationService.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(Long periodId) {
-        return evaluationService.getFinalizedAverageByAssessorAndPeriodEvaluation(periodId);
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId, String dashboardCategory) {
+        if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD))
+            return evaluationService.getFinalizedAverageByAssessorAndPeriodEvaluation(periodId);
+        else
+            return evaluationService.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
     }
 
     @Override

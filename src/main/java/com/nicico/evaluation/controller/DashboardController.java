@@ -62,14 +62,16 @@ public class DashboardController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+    // ارزیابی من
 
     /**
      * @return that result of my evaluation by evaluationPeriodId
      */
-    @GetMapping(value = "/my-evaluation/{evaluationPeriodId}")
-    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId) {
-        return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId), HttpStatus.OK);
+    @GetMapping(value = "/my-evaluation/{evaluationPeriodId}/{dashboardCategory}")
+    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId, @PathVariable String dashboardCategory) {
+        return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId, dashboardCategory), HttpStatus.OK);
     }
+    // برترین امور مشارکت کننده
 
     /**
      * @return that result of most Participation Per Omoor by evaluationPeriodId
@@ -79,26 +81,16 @@ public class DashboardController {
         return new ResponseEntity<>(workSpaceService.mostParticipationPerOmoor(evaluationPeriodId), HttpStatus.OK);
     }
 
-    @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}")
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@PathVariable Long evaluationPeriodId) {
-        return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId);
+    // میانگین ارزیابی امور
+    @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}/{dashboardCategory}")
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@PathVariable Long evaluationPeriodId, @PathVariable String dashboardCategory) {
+        return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId, dashboardCategory);
     }
 
-    @GetMapping("/finalized-average-by-assessor-and-period/{evaluationPeriodId}")
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(@PathVariable Long evaluationPeriodId) {
-        return workSpaceService.getFinalizedAverageByAssessorAndPeriodEvaluation(evaluationPeriodId);
-    }
-
+    // برترین ارزیابی شوندگان
     @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}")
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex) {
         return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId);
     }
 
-    /**
-     * @return that result of my assesses evaluation by evaluationPeriodId
-     */
-    @GetMapping(value = "/my-assesses-evaluation/{evaluationPeriodId}")
-    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByAssessor(@PathVariable Long evaluationPeriodId) {
-        return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByAssessor(evaluationPeriodId), HttpStatus.OK);
-    }
 }
