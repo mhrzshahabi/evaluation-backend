@@ -2,6 +2,7 @@ package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.dto.EvaluationViewDTO;
 import com.nicico.evaluation.iservice.IEvaluationItemService;
 import com.nicico.evaluation.iservice.IEvaluationService;
 import com.nicico.evaluation.iservice.IGroupTypeService;
@@ -71,6 +72,10 @@ public abstract class EvaluationMapper {
             @Mapping(target = "operationalAverageScore", source = "id", qualifiedByName = "getOperationalAverageScore")
     })
     public abstract EvaluationDTO.EvaluationAverageScoreData entityToDtoAverageScoreData(Evaluation entity);
+
+    public abstract List<Evaluation> viewDtoToEntityList(List<EvaluationViewDTO.Info> viewDto);
+
+    public abstract Evaluation viewDtoToEntity(EvaluationViewDTO.Info viewDto);
 
     public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
 

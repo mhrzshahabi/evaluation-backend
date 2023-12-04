@@ -211,13 +211,13 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
                    join view_personnel personnel on personnel.POST_CODE = post.post_code
                    JOIN tbl_evaluation_period  evalperiod ON evalperiod.id = eval.evaluation_period_id
                WHERE
-                   post.omoor_code = :omoorCode
+                   post.omoor_code in (:omoorCode)
                    AND eval.status_catalog_id = ( SELECT  id  FROM tbl_catalog  WHERE c_code = 'Finalized')
                    AND evalperiod.id = :periodId
                    order by eval.average_score desc
                  OFFSET :pageNumber ROWS FETCH NEXT :pageSize ROWS ONLY
             """, nativeQuery = true)
-    List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(Long periodId, String omoorCode, int pageNumber, int pageSize);
+    List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(Long periodId, List<String> omoorCode, int pageNumber, int pageSize);
 
     List<Evaluation> findAllByIdIn(List<Long> ids);
 

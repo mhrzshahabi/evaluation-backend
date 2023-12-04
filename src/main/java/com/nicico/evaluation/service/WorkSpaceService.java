@@ -100,9 +100,12 @@ public class WorkSpaceService implements IWorkSpaceService {
     @Transactional(readOnly = true)
     public EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId, String dashboardCategory) {
         String userNationalCode = SecurityUtil.getNationalCode();
-        if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD))
+        if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD)) {
             return evaluationService.getEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
-        else
+        } else if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_EVALUATIONS_OF_ASSESSES_DASHBOARD) &&
+                SecurityUtil.hasAuthority("R_EVALUATIONS_OF_MY_ASSESSES_DASHBOARD")) {
+            return evaluationService.getSubEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(evaluationPeriodId);
+        } else
             return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
     }
 
@@ -115,17 +118,17 @@ public class WorkSpaceService implements IWorkSpaceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId, String dashboardCategory) {
-        if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD))
-            return evaluationService.getFinalizedAverageByAssessorAndPeriodEvaluation(periodId);
-        else
-            return evaluationService.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId) {
+        return evaluationService.getFinalizedAverageByGradeAndPeriodEvaluation(periodId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId) {
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId, String dashboardCategory) {
         final Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        return evaluationService.getBestAssessesByOmoor(pageable.getPageSize(), pageable.getPageNumber(), periodId);
+        if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD)) {
+            return evaluationService.getBestAssessesByAssessorAndPeriodEvaluation(pageable.getPageSize(), pageable.getPageNumber(), periodId);
+        } else
+            return evaluationService.getBestAssessesByOmoor(pageable.getPageSize(), pageable.getPageNumber(), periodId);
     }
 }

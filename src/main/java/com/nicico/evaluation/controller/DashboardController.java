@@ -81,16 +81,16 @@ public class DashboardController {
         return new ResponseEntity<>(workSpaceService.mostParticipationPerOmoor(evaluationPeriodId), HttpStatus.OK);
     }
 
-    // میانگین ارزیابی امور
+    // میانگین ارزیابی امور من
     @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}/{dashboardCategory}")
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@PathVariable Long evaluationPeriodId, @PathVariable String dashboardCategory) {
-        return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId, dashboardCategory);
+    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@PathVariable Long evaluationPeriodId) {
+        return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId);
     }
 
     // برترین ارزیابی شوندگان
-    @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}")
-    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex) {
-        return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId);
+    @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}/{dashboardCategory}")
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex, @PathVariable String dashboardCategory) {
+        return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId,dashboardCategory);
     }
 
 }

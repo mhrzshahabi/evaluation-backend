@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
@@ -72,6 +73,7 @@ public class EvaluationService implements IEvaluationService {
     private final IKPITypeService kpiTypeService;
     private final IGroupTypeMeritService groupTypeMeritService;
     private final IPostMeritComponentService postMeritComponentService;
+    private final IEvaluationViewService evaluationViewService;
 
     @Autowired
     public void setEvaluationItemService(@Lazy IEvaluationItemService evaluationItemService) {
@@ -470,8 +472,31 @@ public class EvaluationService implements IEvaluationService {
     @Override
     @Transactional(readOnly = true)
     public EvaluationDTO.EvaluationAverageScoreData getEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(String assessorNationalCode, Long evaluationPeriodId) {
-        EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreData = new EvaluationDTO.EvaluationAverageScoreData();
         List<Evaluation> evaluationList = repository.findByAssessorNationalCodeAndEvaluationPeriodId(assessorNationalCode, evaluationPeriodId);
+        return calculateAverageScore(evaluationList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EvaluationDTO.EvaluationAverageScoreData getSubEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(Long evaluationPeriodId) {
+        final List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        final SearchDTO.CriteriaRq evaluationPeriodCriteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.equals)
+                .setFieldName("evaluationPeriodId")
+                .setValue(evaluationPeriodId);
+        criteriaRqList.add(evaluationPeriodCriteriaRq);
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq()
+                .setOperator(EOperator.and)
+                .setCriteria(criteriaRqList);
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        request.setCriteria(criteriaRq);
+        List<EvaluationViewDTO.Info> infoList = evaluationViewService.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0).getList();
+        List<Evaluation> evaluationList = mapper.viewDtoToEntityList(infoList);
+        return calculateAverageScore(evaluationList);
+    }
+
+    private EvaluationDTO.EvaluationAverageScoreData calculateAverageScore(List<Evaluation> evaluationList) {
+        EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreData = new EvaluationDTO.EvaluationAverageScoreData();
         List<Long> evaluationIds = evaluationList.stream().map(Evaluation::getId).toList();
         List<EvaluationItemDTO.GroupTypeAverageScoreDto> averageScoreByEvaluationIds = evaluationItemService.getAllGroupTypeAverageScoreByEvaluationIds(evaluationIds);
         List<EvaluationItemDTO.GroupTypeAverageScoreDto> behavioralAverageScoreDto = averageScoreByEvaluationIds.stream().filter(q -> Objects.nonNull(q.getKpiTitle())
@@ -612,9 +637,10 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByAssessorAndPeriodEvaluation(Long periodId) {
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByAssessorAndPeriodEvaluation(int count, int startIndex, Long periodId) {
         List<String> omoorCode = repository.getOmoorCodeByAssessorNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
-        return repository.getFinalizedAverageByGradeAndPeriodEvaluation(periodId, omoorCode);
+       final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        return repository.getBestAssessesByOmoor(periodId, omoorCode, pageable.getPageNumber(), pageable.getPageSize());
     }
 
     @Override
@@ -622,7 +648,7 @@ public class EvaluationService implements IEvaluationService {
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId) {
         String omoorCode = repository.getOmoorCodeByAssessNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
         final Pageable pageable = pageableMapper.toPageable(count, startIndex);
-        return repository.getBestAssessesByOmoor(periodId, omoorCode, pageable.getPageNumber(), pageable.getPageSize());
+        return repository.getBestAssessesByOmoor(periodId, Collections.singletonList(omoorCode), pageable.getPageNumber(), pageable.getPageSize());
     }
 
     @SneakyThrows
