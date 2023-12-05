@@ -23,4 +23,6 @@ public interface ISensitiveEventsService {
 
     void delete(Long id);
 
+    List<SensitiveEventsDTO.LevelEffectData> getLevelEffectDataForEvaluation(String nationalCode, String startDate, String endDate);
+
 }

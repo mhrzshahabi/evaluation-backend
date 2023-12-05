@@ -563,6 +563,16 @@ public class EvaluationPeriodService implements IEvaluationPeriodService {
         return HttpStatus.OK.toString();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public EvaluationPeriodDTO.DateInfo getDateInfo(Long id) {
+        EvaluationPeriod evaluationPeriod = evaluationPeriodRepository.findById(id).orElseThrow(() -> new EvaluationHandleException(EvaluationHandleException.ErrorType.NotFound));
+        EvaluationPeriodDTO.DateInfo dateInfo = new EvaluationPeriodDTO.DateInfo();
+        dateInfo.setStartDate(evaluationPeriod.getStartDate());
+        dateInfo.setEndDate(evaluationPeriod.getEndDate());
+        return dateInfo;
+    }
+
     private List<EvaluationPeriodDTO.Excel> getExcelList(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
         SearchDTO.SearchRs<EvaluationPeriodDTO.InfoWithPost> searchRs =

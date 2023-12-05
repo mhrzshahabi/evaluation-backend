@@ -95,6 +95,7 @@ public abstract class EvaluationItemDTO {
         private MeritComponentDTO.Info meritComponent;
         private Long weight;
         private List<InstanceTupleDTO> instances;
+        private Double totalLevelEffect;
         private List<CatalogDTO.Info> answerInfo;
         private List<CatalogDTO.Info> answerConvertedInfo;
         private List<CatalogDTO.Info> totalItemWeightConvertedByCatalog;
@@ -130,6 +131,14 @@ public abstract class EvaluationItemDTO {
         private Long id;
         private Long instanceId;
 
+    }
+
+    @ApiModel("GroupTypeAverageScoreDto")
+    public interface GroupTypeAverageScoreDto {
+
+        Long getAverageScore();
+
+        String getKpiTitle();
     }
 
     @Getter

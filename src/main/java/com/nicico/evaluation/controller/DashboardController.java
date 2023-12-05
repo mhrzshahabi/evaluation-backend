@@ -62,14 +62,16 @@ public class DashboardController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+    // ارزیابی من
 
     /**
      * @return that result of my evaluation by evaluationPeriodId
      */
-    @GetMapping(value = "/my-evaluation/{evaluationPeriodId}")
-    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId) {
-        return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId), HttpStatus.OK);
+    @GetMapping(value = "/my-evaluation/{evaluationPeriodId}/{dashboardCategory}")
+    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId, @PathVariable String dashboardCategory) {
+        return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId, dashboardCategory), HttpStatus.OK);
     }
+    // برترین امور مشارکت کننده
 
     /**
      * @return that result of most Participation Per Omoor by evaluationPeriodId
@@ -79,13 +81,16 @@ public class DashboardController {
         return new ResponseEntity<>(workSpaceService.mostParticipationPerOmoor(evaluationPeriodId), HttpStatus.OK);
     }
 
-    @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}")
+    // میانگین ارزیابی امور من
+    @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}/{dashboardCategory}")
     public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@PathVariable Long evaluationPeriodId) {
         return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId);
     }
 
-    @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}")
-    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex) {
-        return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId);
+    // برترین ارزیابی شوندگان
+    @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}/{dashboardCategory}")
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex, @PathVariable String dashboardCategory) {
+        return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId,dashboardCategory);
     }
+
 }

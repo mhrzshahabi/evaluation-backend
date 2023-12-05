@@ -475,6 +475,14 @@
     {
       "code": "R_EVALUATION_COST_CENTER_REPORT_LAST_LEVEL",
       "title": "گزارش مولفه های سازمان -تا آخرین سطح"
+    },
+    {
+      "code": "R_MY_ASSESSES_DASHBOARD",
+      "title": "نمایش داشبورد ارزیاب شونده های من"
+    },
+    {
+      "code": "R_EVALUATIONS_OF_MY_ASSESSES_DASHBOARD",
+      "title": "نمایش داشبورد ارزیابی های ارزیابی شونده های من"
     }
   ]
 }

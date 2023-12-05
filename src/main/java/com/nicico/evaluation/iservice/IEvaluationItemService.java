@@ -13,11 +13,13 @@ public interface IEvaluationItemService {
 
     List<EvaluationItemDTO.Info> getByEvalId(Long evaluationId);
 
-    List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId);
+    List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(List<Long> evaluationId);
 
     List<EvaluationItemDTO.MeritTupleDTO> getAllGroupTypeMeritByEvalId(Long evaluationId, List<Long> groupTypeMeritIds);
 
     Long getGroupTypeAverageScoreByEvaluationId(Long evaluationId, String kpiTypeTitle);
+
+    List<EvaluationItemDTO.GroupTypeAverageScoreDto> getAllGroupTypeAverageScoreByEvaluationIds(List<Long> evaluationIds);
 
     EvaluationItemDTO.Info create(EvaluationItemDTO.Create dto);
 

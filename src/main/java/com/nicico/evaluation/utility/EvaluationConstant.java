@@ -46,5 +46,12 @@ public class EvaluationConstant {
     public static final String KPI_TYPE_TITLE_OPERATIONAL = "نتیجه ای";
     public static final String KPI_TYPE_TITLE_DEVELOPMENT = "توسعه شایستگی ها";
     public static final String KPI_TYPE_TITLE_BEHAVIORAL = "رفتاری";
+    
+    public static final String MY_ASSESSES_DASHBOARD = "my-assesses";
+    public static final String MY_EVALUATIONS_OF_ASSESSES_DASHBOARD = "my-evaluations-of-assesses";
+
+    public static final String Positive = "Positive";
+    public static final String Negative = "Negative";
+
 
 }

@@ -1,7 +1,7 @@
 package com.nicico.evaluation.service;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.core.SecurityUtil;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
 import com.nicico.evaluation.exception.EvaluationHandleException;
@@ -21,10 +21,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
@@ -41,6 +43,8 @@ public class EvaluationItemService implements IEvaluationItemService {
     private final EvaluationItemRepository repository;
     private final IEvaluationService evaluationService;
     private final IGroupTypeMeritService groupTypeMeritService;
+    private final ISensitiveEventsService sensitiveEventsService;
+    private final IEvaluationPeriodService evaluationPeriodService;
     private final IPostMeritComponentService postMeritComponentService;
     private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
@@ -84,8 +88,8 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('R_EVALUATION_ITEM')")
-    public List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(Long evaluationId) {
-        List<EvaluationItem> allPostMeritByEvalId = repository.getAllPostMeritByEvalId(evaluationId);
+    public List<EvaluationItemDTO.PostMeritTupleDTO> getAllPostMeritByEvalId(List<Long> evaluationIds) {
+        List<EvaluationItem> allPostMeritByEvalId = repository.getAllPostMeritByEvalId(evaluationIds);
         return mapper.entityToPostMeritInfoDtoList(allPostMeritByEvalId);
     }
 
@@ -101,6 +105,12 @@ public class EvaluationItemService implements IEvaluationItemService {
     @Transactional(readOnly = true)
     public Long getGroupTypeAverageScoreByEvaluationId(Long evaluationId, String kpiTypeTitle) {
         return repository.getGroupTypeAverageScoreByEvaluationId(evaluationId, kpiTypeTitle);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EvaluationItemDTO.GroupTypeAverageScoreDto> getAllGroupTypeAverageScoreByEvaluationIds(List<Long> evaluationIds) {
+        return repository.getAllGroupTypeAverageScoreByEvaluationIds(evaluationIds);
     }
 
     @Override
@@ -300,7 +310,7 @@ public class EvaluationItemService implements IEvaluationItemService {
     }
 
     private void getGroupTypeMeritInfo(EvaluationItemDTO.CreateInfo request, Long statusCatalogId, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
-        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(request.getAssessPostCode(), LEVEL_DEF_GROUP);
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(Collections.singletonList(request.getAssessPostCode()), LEVEL_DEF_GROUP);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
@@ -318,7 +328,7 @@ public class EvaluationItemService implements IEvaluationItemService {
     }
 
     private void getPostMeritInfo(EvaluationItemDTO.CreateInfo request, Long statusCatalogId, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
-        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(request.getAssessPostCode(), LEVEL_DEF_POST);
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(Collections.singletonList(request.getAssessPostCode()), LEVEL_DEF_POST);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS;
@@ -331,7 +341,6 @@ public class EvaluationItemService implements IEvaluationItemService {
 
             createItemInfo.setMeritTuple(meritTupleDTOS);
             createItemInfoList.add(createItemInfo);
-
         });
     }
 
@@ -347,12 +356,13 @@ public class EvaluationItemService implements IEvaluationItemService {
         getGroupTypeMeritInfoForUpdate(id, assessPostCode, createItemInfoList);
         getPostMeritInfoForUpdate(id, assessPostCode, createItemInfoList);
         calculateAndSetTotalWeight(createItemInfoList);
+        calculateAndSetTotalLevelEffect(id, createItemInfoList);
         return createItemInfoList;
     }
 
     private void getGroupTypeMeritInfoForUpdate(Long evaluationId, String
             assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
-        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_GROUP);
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(Collections.singletonList(assessPostCode), LEVEL_DEF_GROUP);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
@@ -377,15 +387,37 @@ public class EvaluationItemService implements IEvaluationItemService {
         });
     }
 
+    private void calculateAndSetTotalLevelEffect(Long id, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+
+        EvaluationDTO.Info evaluationInfo = evaluationService.get(id);
+        EvaluationPeriodDTO.DateInfo evaluationPeriodDateInfo = evaluationPeriodService.getDateInfo(evaluationInfo.getEvaluationPeriodId());
+        List<SensitiveEventsDTO.LevelEffectData> effectDataList = sensitiveEventsService.getLevelEffectDataForEvaluation(evaluationInfo.getAssessNationalCode(), evaluationPeriodDateInfo.getStartDate(),
+                evaluationPeriodDateInfo.getEndDate());
+
+        createItemInfoList.forEach(item -> item.getMeritTuple().forEach(merit -> {
+            List<SensitiveEventsDTO.LevelEffectData> filterDataList = effectDataList.stream().filter(data -> data.getMeritComponentTitle().equals(merit.getMeritComponent().getTitle())).collect(Collectors.toList());
+            if (filterDataList.size() != 0) {
+                AtomicDouble totalLevelEffect = new AtomicDouble(0.0);
+                filterDataList.forEach(effectData -> {
+                    switch (effectData.getTypeCode()) {
+                        case Positive -> totalLevelEffect.addAndGet(effectData.getLevelEffect().doubleValue());
+                        case Negative -> totalLevelEffect.addAndGet(-effectData.getLevelEffect().doubleValue()) ;
+                    }
+                });
+                merit.setTotalLevelEffect(totalLevelEffect.doubleValue() / filterDataList.size());
+            }
+        }));
+    }
+
     private void getPostMeritInfoForUpdate(Long evaluationId, String
             assessPostCode, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
 
-        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST);
+        List<GroupType> groupType = groupTypeService.getTypeByAssessPostCode(Collections.singletonList(assessPostCode), LEVEL_DEF_POST);
         groupType.forEach(gType -> {
             EvaluationItemDTO.CreateItemInfo createItemInfo = new EvaluationItemDTO.CreateItemInfo();
             createItemInfo.setGroupTypeWeight(gType.getWeight());
             createItemInfo.setTypeTitle(gType.getKpiType().getTitle());
-            List<EvaluationItemDTO.PostMeritTupleDTO> meritTupleDtoList = getAllPostMeritByEvalId(evaluationId);
+            List<EvaluationItemDTO.PostMeritTupleDTO> meritTupleDtoList = getAllPostMeritByEvalId(Collections.singletonList(evaluationId));
             List<EvaluationItemDTO.MeritTupleDTO> meritTupleDTOS = mapper.entityToMeritTupleInfoList(meritTupleDtoList);
 
             meritTupleDTOS.forEach(meritTupleDTO -> {
