@@ -2,6 +2,7 @@ package com.nicico.evaluation.mapper;
 
 import com.nicico.evaluation.dto.EvaluationDTO;
 import com.nicico.evaluation.dto.EvaluationItemDTO;
+import com.nicico.evaluation.dto.EvaluationViewDTO;
 import com.nicico.evaluation.iservice.IEvaluationItemService;
 import com.nicico.evaluation.iservice.IEvaluationService;
 import com.nicico.evaluation.iservice.IGroupTypeService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.LEVEL_DEF_POST;
@@ -71,6 +73,10 @@ public abstract class EvaluationMapper {
     })
     public abstract EvaluationDTO.EvaluationAverageScoreData entityToDtoAverageScoreData(Evaluation entity);
 
+    public abstract List<Evaluation> viewDtoToEntityList(List<EvaluationViewDTO.Info> viewDto);
+
+    public abstract Evaluation viewDtoToEntity(EvaluationViewDTO.Info viewDto);
+
     public abstract void update(@MappingTarget Evaluation entity, EvaluationDTO.Update dto);
 
     @Named("getAssessorPostTitle")
@@ -91,8 +97,8 @@ public abstract class EvaluationMapper {
     @Named("getOperationalAverageScore")
     Double getOperationalAverageScore(Long id) {
         String assessPostCode = Arrays.stream(evaluationService.getById(id).getAssessPostCode().split("/")).findFirst().get();
-        Long groupTypeWeight = groupTypeService.getTypeByAssessPostCode(assessPostCode, LEVEL_DEF_POST).stream().findFirst().get().getWeight();
-        List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(id);
+        Long groupTypeWeight = groupTypeService.getTypeByAssessPostCode(Collections.singletonList(assessPostCode), LEVEL_DEF_POST).stream().findFirst().get().getWeight();
+        List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(Collections.singletonList(id));
         return postMeritTupleDTOList.stream().mapToDouble(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum() * 100 / groupTypeWeight;
     }
 

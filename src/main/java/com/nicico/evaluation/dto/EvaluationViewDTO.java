@@ -16,6 +16,7 @@ public class EvaluationViewDTO {
     @Setter
     @ApiModel(" EvaluationViewInfo")
     public static class Info extends EvaluationViewDTO {
+        private Long id;
         private String assessFullName;
         private String assessNationalCode;
         private String assessPostCode;

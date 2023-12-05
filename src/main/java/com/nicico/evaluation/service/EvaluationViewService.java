@@ -176,7 +176,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                     case "assessorFullName" -> whereClause.append(" and ").append("eval.c_assessor_full_name").append(" like '%").append(criteria.getValue()).append("%'");
                     case "assessorPostCode" -> whereClause.append(" and ").append("eval.c_assessor_post_code").append(" like '%").append(criteria.getValue()).append("%'");
                     case "assessorPostTitle" -> whereClause.append(" and ").append("eval.assessor_post_title").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "evaluationPeriodId" -> whereClause.append(" and ").append("evalPeriod.id").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "evaluationPeriodId" -> whereClause.append(" and ").append("evalPeriod.id").append(" =").append(criteria.getValue());
                     case "evaluationPeriodStartDateAssessment" -> whereClause.append(" and ").append("evalPeriod.c_start_date_assessment").append(" like '%").append(criteria.getValue()).append("%'");
                     case "evaluationPeriodSndDateAssessment" -> whereClause.append(" and ").append("evalPeriod.c_end_date_assessment").append(" like '%").append(criteria.getValue()).append("%'");
                     case "averageScore" -> whereClause.append(" and ").append("eval.average_score").append(" like '%").append(criteria.getValue()).append("%'");
@@ -186,7 +186,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                     case "omoorTitle" -> whereClause.append(" and ").append("eval.omoor_title").append(" like '%").append(criteria.getValue()).append("%'");
                     case "ghesmatTitle" -> whereClause.append(" and ").append("eval.ghesmat_title").append(" like '%").append(criteria.getValue()).append("%'");
                     case "description" -> whereClause.append(" and ").append("eval.c_description").append(" like '%").append(criteria.getValue()).append("%'");
-                    case "statusCatalogId" -> whereClause.append(" and ").append("eval.status_catalog_id").append(" like '%").append(criteria.getValue()).append("%'");
+                    case "statusCatalogId" -> whereClause.append(" and ").append("eval.status_catalog_id").append("=").append(criteria.getValue());
                 }
             });
         return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));

@@ -19,11 +19,12 @@ public interface IWorkSpaceService {
 
    SearchDTO.SearchRs<EvaluationPeriodDTO.Info> evaluationPeriodListByUser(int count, int startIndex);
 
-    EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId);
+    EvaluationDTO.EvaluationAverageScoreData evaluationAverageScoreDataByUser(Long evaluationPeriodId, String dashboardCategory);
 
     List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationPerOmoor(Long evaluationPeriodId);
 
     List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(Long periodId);
 
-    List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId);
+    List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(int count, int startIndex, Long periodId, String dashboardCategory);
+
 }

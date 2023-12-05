@@ -132,6 +132,14 @@ public abstract class EvaluationItemDTO {
 
     }
 
+    @ApiModel("GroupTypeAverageScoreDto")
+    public interface GroupTypeAverageScoreDto {
+
+        Long getAverageScore();
+
+        String getKpiTitle();
+    }
+
     @Getter
     @Setter
     @ApiModel("EvaluationItemInstanceTuple")
