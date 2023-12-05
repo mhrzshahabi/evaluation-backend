@@ -127,4 +127,12 @@ public class EvaluationPeriodDTO {
         private String statusCatalog;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("EvaluationPeriodDateInfo")
+    public static class DateInfo {
+        private String startDate;
+        private String endDate;
+    }
+
 }

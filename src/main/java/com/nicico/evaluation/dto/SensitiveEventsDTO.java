@@ -72,6 +72,18 @@ public abstract class SensitiveEventsDTO {
 
     @Getter
     @Setter
+    @ApiModel("SensitiveEventsLevelEffectData")
+    public static class LevelEffectData {
+        private Long levelEffect;
+        private String eventDate;
+        private String nationalCode;
+        private String meritComponentCode;
+        private String meritComponentTitle;
+        private String typeCode;
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("SensitiveEventsCreateRq")
     public static class Create extends SensitiveEventsDTO {

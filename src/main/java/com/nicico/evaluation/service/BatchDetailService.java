@@ -267,6 +267,7 @@ public class BatchDetailService implements IBatchDetailService {
                             batchCreate.getStartDate(), batchCreate.getEndDate(), batchCreate.getAssessRealPostCode());
                     if (Boolean.TRUE.equals(specialCaseExist))
                         return;
+
                     BaseResponse response = specialCaseService.batchCreate(batchCreate);
                     String description = "کد ملی ارزیاب کننده: " + batchCreate.getAssessorNationalCode() + " کد ملی ارزیاب شونده : " + batchCreate.getAssessNationalCode() ;
                     if (response.getStatus() == 200)

@@ -48,4 +48,7 @@ public interface IEvaluationPeriodService {
     ResponseEntity<byte[]> downloadInvalidPostExcel(Long evaluationPeriodId) throws NoSuchFieldException, IllegalAccessException;
 
     String downloadExcel(List<FilterDTO> criteria) throws NoSuchFieldException, IllegalAccessException, IOException;
+
+    EvaluationPeriodDTO.DateInfo getDateInfo(Long id);
+
 }

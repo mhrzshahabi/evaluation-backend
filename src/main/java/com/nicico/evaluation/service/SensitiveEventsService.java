@@ -11,23 +11,26 @@ import com.nicico.evaluation.mapper.SensitiveEventsMapper;
 import com.nicico.evaluation.model.SensitiveEvents;
 import com.nicico.evaluation.repository.SensitiveEventsRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 public class SensitiveEventsService implements ISensitiveEventsService {
 
+    private final ModelMapper modelMapper;
     private final SensitiveEventsMapper mapper;
     private final PageableMapper pageableMapper;
     private final SensitiveEventsRepository repository;
+    private final NamedParameterJdbcTemplate parameterJdbcTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -128,6 +131,41 @@ public class SensitiveEventsService implements ISensitiveEventsService {
     @PreAuthorize("hasAuthority('R_SENSITIVE_EVENTS')")
     public SearchDTO.SearchRs<SensitiveEventsDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
         return BaseService.optimizedSearch(repository, mapper::entityToDtoInfo, request);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SensitiveEventsDTO.LevelEffectData> getLevelEffectDataForEvaluation(String nationalCode, String startDate, String endDate) {
+        String whereClause = String.valueOf(getDateWhereClause(startDate, endDate));
+        String query = getLevelEffectDataForEvaluationQuery(nationalCode, whereClause);
+        List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new LinkedHashMap<>());
+        return modelMapper.map(resultList, new TypeToken<List<SensitiveEventsDTO.LevelEffectData>>() {
+        }.getType());
+    }
+
+    private StringBuilder getDateWhereClause(String startDate, String endDate) {
+        StringBuilder whereClause = new StringBuilder();
+        whereClause.append(" AND ").append("se.d_event_date BETWEEN ").append("'").append(startDate).append("' AND '").append(endDate).append("'");
+        return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
+    }
+
+    private String getLevelEffectDataForEvaluationQuery(String nationalCode, String whereClause) {
+        return String.format("SELECT\n" +
+                        "    se.n_level_effect   \"levelEffect\",\n" +
+                        "    se.d_event_date     \"eventDate\",\n" +
+                        "    sep.c_national_code \"nationalCode\",\n" +
+                        "    mc.c_code           \"meritComponentCode\",\n" +
+                        "    mc.c_title          \"meritComponentTitle\",\n" +
+                        "    tc.c_code           \"typeCode\"\n" +
+                        "FROM\n" +
+                        "    tbl_sensitive_events se\n" +
+                        "    JOIN tbl_sensitive_event_person sep ON sep.sensitive_event_id = se.id\n" +
+                        "    JOIN tbl_catalog                tc ON tc.id = se.type_catalog_id\n" +
+                        "    JOIN tbl_merit_component        mc ON mc.id = sep.merit_component_id\n" +
+                        "WHERE\n" +
+                        "    sep.c_national_code = %s\n" +
+                        "    %s"
+                , nationalCode, whereClause);
     }
 
 }

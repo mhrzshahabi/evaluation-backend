@@ -50,4 +50,8 @@ public class EvaluationConstant {
     public static final String MY_ASSESSES_DASHBOARD = "my-assesses";
     public static final String MY_EVALUATIONS_OF_ASSESSES_DASHBOARD = "my-evaluations-of-assesses";
 
+    public static final String Positive = "Positive";
+    public static final String Negative = "Negative";
+
+
 }

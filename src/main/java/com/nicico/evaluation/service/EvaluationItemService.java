@@ -1,5 +1,6 @@
 package com.nicico.evaluation.service;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.evaluation.common.PageableMapper;
 import com.nicico.evaluation.dto.*;
@@ -21,6 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.nicico.evaluation.utility.EvaluationConstant.*;
@@ -37,6 +43,8 @@ public class EvaluationItemService implements IEvaluationItemService {
     private final EvaluationItemRepository repository;
     private final IEvaluationService evaluationService;
     private final IGroupTypeMeritService groupTypeMeritService;
+    private final ISensitiveEventsService sensitiveEventsService;
+    private final IEvaluationPeriodService evaluationPeriodService;
     private final IPostMeritComponentService postMeritComponentService;
     private final IEvaluationItemInstanceService evaluationItemInstanceService;
 
@@ -333,7 +341,6 @@ public class EvaluationItemService implements IEvaluationItemService {
 
             createItemInfo.setMeritTuple(meritTupleDTOS);
             createItemInfoList.add(createItemInfo);
-
         });
     }
 
@@ -349,6 +356,7 @@ public class EvaluationItemService implements IEvaluationItemService {
         getGroupTypeMeritInfoForUpdate(id, assessPostCode, createItemInfoList);
         getPostMeritInfoForUpdate(id, assessPostCode, createItemInfoList);
         calculateAndSetTotalWeight(createItemInfoList);
+        calculateAndSetTotalLevelEffect(id, createItemInfoList);
         return createItemInfoList;
     }
 
@@ -377,6 +385,28 @@ public class EvaluationItemService implements IEvaluationItemService {
             createItemInfoList.add(createItemInfo);
 
         });
+    }
+
+    private void calculateAndSetTotalLevelEffect(Long id, List<EvaluationItemDTO.CreateItemInfo> createItemInfoList) {
+
+        EvaluationDTO.Info evaluationInfo = evaluationService.get(id);
+        EvaluationPeriodDTO.DateInfo evaluationPeriodDateInfo = evaluationPeriodService.getDateInfo(evaluationInfo.getEvaluationPeriodId());
+        List<SensitiveEventsDTO.LevelEffectData> effectDataList = sensitiveEventsService.getLevelEffectDataForEvaluation(evaluationInfo.getAssessNationalCode(), evaluationPeriodDateInfo.getStartDate(),
+                evaluationPeriodDateInfo.getEndDate());
+
+        createItemInfoList.forEach(item -> item.getMeritTuple().forEach(merit -> {
+            List<SensitiveEventsDTO.LevelEffectData> filterDataList = effectDataList.stream().filter(data -> data.getMeritComponentTitle().equals(merit.getMeritComponent().getTitle())).collect(Collectors.toList());
+            if (filterDataList.size() != 0) {
+                AtomicDouble totalLevelEffect = new AtomicDouble(0.0);
+                filterDataList.forEach(effectData -> {
+                    switch (effectData.getTypeCode()) {
+                        case Positive -> totalLevelEffect.addAndGet(effectData.getLevelEffect().doubleValue());
+                        case Negative -> totalLevelEffect.addAndGet(-effectData.getLevelEffect().doubleValue()) ;
+                    }
+                });
+                merit.setTotalLevelEffect(totalLevelEffect.doubleValue() / filterDataList.size());
+            }
+        }));
     }
 
     private void getPostMeritInfoForUpdate(Long evaluationId, String
