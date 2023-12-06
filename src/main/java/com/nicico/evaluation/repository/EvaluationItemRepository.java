@@ -48,11 +48,11 @@ public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, 
 
     @Query(value = """
             SELECT
-                SUM(tbl_evaluation_item.questionnaire_answer_catalog_value) * 100 / tbl_group_type.n_weight as averageScore,
+                SUM(item.questionnaire_answer_catalog_value) * 100 / tbl_group_type.n_weight as averageScore,
                 MAX(tbl_kpi_type.c_title) as kpiTitle
             FROM
-                tbl_evaluation_item left
-                JOIN tbl_group_type_merit ON tbl_group_type_merit.id = tbl_evaluation_item.group_type_merit_id
+                tbl_evaluation_item item
+                LEFT JOIN tbl_group_type_merit ON tbl_group_type_merit.id = item.group_type_merit_id
                 LEFT JOIN tbl_group_type ON tbl_group_type.id = tbl_group_type_merit.group_type_id
                 LEFT JOIN tbl_kpi_type ON tbl_kpi_type.id = tbl_group_type.kpi_type_id
             WHERE

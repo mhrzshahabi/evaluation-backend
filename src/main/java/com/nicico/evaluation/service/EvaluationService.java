@@ -490,7 +490,7 @@ public class EvaluationService implements IEvaluationService {
                 .setCriteria(criteriaRqList);
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setCriteria(criteriaRq);
-        List<EvaluationViewDTO.Info> infoList = evaluationViewService.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0).getList();
+        List<EvaluationViewDTO.Info> infoList = evaluationViewService.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0, null).getList();
         List<Evaluation> evaluationList = mapper.viewDtoToEntityList(infoList);
         return calculateAverageScore(evaluationList);
     }
@@ -502,18 +502,18 @@ public class EvaluationService implements IEvaluationService {
         List<EvaluationItemDTO.GroupTypeAverageScoreDto> behavioralAverageScoreDto = averageScoreByEvaluationIds.stream().filter(q -> Objects.nonNull(q.getKpiTitle())
                 && q.getKpiTitle().equals(KPI_TYPE_TITLE_BEHAVIORAL)).toList();
         behavioralAverageScoreDto.stream().findFirst().ifPresent(q ->
-                evaluationAverageScoreData.setBehavioralAverageScore(q.getAverageScore())
+                evaluationAverageScoreData.setBehavioralAverageScore(q.getAverageScore() / evaluationIds.size())
         );
         List<EvaluationItemDTO.GroupTypeAverageScoreDto> developmentAverageScoreDto = averageScoreByEvaluationIds.stream().filter(q -> Objects.nonNull(q.getKpiTitle())
                 && q.getKpiTitle().equals(KPI_TYPE_TITLE_DEVELOPMENT)).toList();
         developmentAverageScoreDto.stream().findFirst().ifPresent(q ->
-                evaluationAverageScoreData.setDevelopmentAverageScore(q.getAverageScore())
+                evaluationAverageScoreData.setDevelopmentAverageScore(q.getAverageScore() / evaluationIds.size())
         );
-        List<String> assessPostCodes = evaluationList.stream().map(Evaluation::getAssessPostCode).toList().stream().map(s -> Arrays.stream(s.split("/")).findFirst().orElseThrow()).toList();
+        List<String> assessPostCodes = evaluationList.stream().map(Evaluation::getAssessPostCode).toList().stream().map(s -> Arrays.stream("/".split(s)).findFirst().orElseThrow()).toList();
         groupTypeService.getTypeByAssessPostCode(assessPostCodes, LEVEL_DEF_POST).stream().findFirst().ifPresent(q -> {
             List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(evaluationIds);
             double operationalAverageScore = postMeritTupleDTOList.stream().mapToDouble(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum() * 100 / q.getWeight();
-            evaluationAverageScoreData.setOperationalAverageScore((long) operationalAverageScore);
+            evaluationAverageScoreData.setOperationalAverageScore((long) operationalAverageScore / evaluationIds.size());
         });
         if (!evaluationList.isEmpty()) {
             long averageScore = evaluationList.stream().mapToLong(Evaluation::getAverageScore).sum() / evaluationList.size();
@@ -525,20 +525,7 @@ public class EvaluationService implements IEvaluationService {
     @Override
     @Transactional(readOnly = true)
     public List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationInFinalizedEvaluationPerOmoor(Long evaluationPeriodId, Long finalizedStatusCatalogId) {
-        List<EvaluationDTO.MostParticipationInFinalizedEvaluation> data = new ArrayList<>();
-        List<?> queryData = repository.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);
-        if (queryData != null) {
-            for (Object evaluationData : queryData) {
-                Object[] evaluation = (Object[]) evaluationData;
-                if (!Objects.isNull(evaluation[1])) {
-                    EvaluationDTO.MostParticipationInFinalizedEvaluation mostParticipation = new EvaluationDTO.MostParticipationInFinalizedEvaluation();
-                    mostParticipation.setOmoorFinalizedNumber(evaluation[0] == null ? null : Integer.parseInt(evaluation[0].toString()));
-                    mostParticipation.setOmoorTitle(evaluation[1].toString());
-                    data.add(mostParticipation);
-                }
-            }
-        }
-        return data;
+        return repository.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);
     }
 
     @Scheduled(cron = "0 30 0 * * *")
@@ -639,7 +626,7 @@ public class EvaluationService implements IEvaluationService {
     @Transactional(readOnly = true)
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByAssessorAndPeriodEvaluation(int count, int startIndex, Long periodId) {
         List<String> omoorCode = repository.getOmoorCodeByAssessorNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
-       final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
         return repository.getBestAssessesByOmoor(periodId, omoorCode, pageable.getPageNumber(), pageable.getPageSize());
     }
 

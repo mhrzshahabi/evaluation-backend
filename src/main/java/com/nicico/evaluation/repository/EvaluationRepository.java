@@ -177,7 +177,8 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
 
     @Query(value = """
             SELECT
-                *
+                omoor_finalized_number as omoorFinalizedNumber,
+                omoor_title as omoorTitle
             FROM
                 (
                     SELECT DISTINCT
@@ -196,7 +197,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, J
             WHERE
                 ROWNUM <= 6
                           """, nativeQuery = true)
-    List<?> mostParticipationInFinalizedEvaluationPerOmoor(Long evaluationPeriodId, Long finalizedStatusCatalogId);
+    List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationInFinalizedEvaluationPerOmoor(Long evaluationPeriodId, Long finalizedStatusCatalogId);
 
     @Query(value = """
              SELECT distinct

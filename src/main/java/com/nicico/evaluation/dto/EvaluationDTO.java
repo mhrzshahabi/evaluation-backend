@@ -135,13 +135,12 @@ public class EvaluationDTO {
         private Long operationalAverageScore;
     }
 
-    @Getter
-    @Setter
     @Accessors(chain = true)
     @ApiModel("MostParticipationInFinalizedEvaluationRq")
-    public static class MostParticipationInFinalizedEvaluation {
-        private Integer omoorFinalizedNumber;
-        private String omoorTitle;
+    public interface MostParticipationInFinalizedEvaluation {
+        Integer getOmoorFinalizedNumber();
+
+        Setter getOmoorTitle();
     }
 
     @Getter

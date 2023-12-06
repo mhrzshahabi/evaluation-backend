@@ -66,9 +66,10 @@ public class EvaluationReportController {
     @PostMapping(value = "/spec-list/comprehensive")
     public ResponseEntity<EvaluationViewDTO.SpecResponse> searchEvaluationComprehensive(@RequestParam(value = "startIndex", required = false, defaultValue = "0") Integer startIndex,
                                                                                         @RequestParam(value = "count", required = false) Integer count,
+                                                                                        @RequestParam(value = "orderBy", required = false) String orderBy,
                                                                                         @RequestBody List<FilterDTO> criteria) {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, count, startIndex);
-        SearchDTO.SearchRs<EvaluationViewDTO.Info> data = evaluationViewService.searchEvaluationComprehensive(request, count, startIndex);
+        SearchDTO.SearchRs<EvaluationViewDTO.Info> data = evaluationViewService.searchEvaluationComprehensive(request, count, startIndex, orderBy);
         final EvaluationViewDTO.Response response = new EvaluationViewDTO.Response();
         final EvaluationViewDTO.SpecResponse specRs = new EvaluationViewDTO.SpecResponse();
         response.setData(data.getList())

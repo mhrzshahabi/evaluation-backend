@@ -40,6 +40,7 @@ public class EvaluationViewDTO {
         private String statusCatalogTitle;
         private String statusCatalogCode;
         private Long statusCatalogId;
+        private String personnelCode;
     }
 
     @Getter
