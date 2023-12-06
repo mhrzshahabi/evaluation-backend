@@ -502,18 +502,18 @@ public class EvaluationService implements IEvaluationService {
         List<EvaluationItemDTO.GroupTypeAverageScoreDto> behavioralAverageScoreDto = averageScoreByEvaluationIds.stream().filter(q -> Objects.nonNull(q.getKpiTitle())
                 && q.getKpiTitle().equals(KPI_TYPE_TITLE_BEHAVIORAL)).toList();
         behavioralAverageScoreDto.stream().findFirst().ifPresent(q ->
-                evaluationAverageScoreData.setBehavioralAverageScore(q.getAverageScore())
+                evaluationAverageScoreData.setBehavioralAverageScore(q.getAverageScore()/evaluationIds.size())
         );
         List<EvaluationItemDTO.GroupTypeAverageScoreDto> developmentAverageScoreDto = averageScoreByEvaluationIds.stream().filter(q -> Objects.nonNull(q.getKpiTitle())
                 && q.getKpiTitle().equals(KPI_TYPE_TITLE_DEVELOPMENT)).toList();
         developmentAverageScoreDto.stream().findFirst().ifPresent(q ->
-                evaluationAverageScoreData.setDevelopmentAverageScore(q.getAverageScore())
+                evaluationAverageScoreData.setDevelopmentAverageScore(q.getAverageScore()/evaluationIds.size())
         );
         List<String> assessPostCodes = evaluationList.stream().map(Evaluation::getAssessPostCode).toList().stream().map(s -> Arrays.stream(s.split("/")).findFirst().orElseThrow()).toList();
         groupTypeService.getTypeByAssessPostCode(assessPostCodes, LEVEL_DEF_POST).stream().findFirst().ifPresent(q -> {
             List<EvaluationItemDTO.PostMeritTupleDTO> postMeritTupleDTOList = evaluationItemService.getAllPostMeritByEvalId(evaluationIds);
             double operationalAverageScore = postMeritTupleDTOList.stream().mapToDouble(EvaluationItemDTO.PostMeritTupleDTO::getQuestionnaireAnswerCatalogValue).sum() * 100 / q.getWeight();
-            evaluationAverageScoreData.setOperationalAverageScore((long) operationalAverageScore);
+            evaluationAverageScoreData.setOperationalAverageScore((long) operationalAverageScore / evaluationIds.size());
         });
         if (!evaluationList.isEmpty()) {
             long averageScore = evaluationList.stream().mapToLong(Evaluation::getAverageScore).sum() / evaluationList.size();
