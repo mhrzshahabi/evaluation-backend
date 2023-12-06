@@ -525,20 +525,7 @@ public class EvaluationService implements IEvaluationService {
     @Override
     @Transactional(readOnly = true)
     public List<EvaluationDTO.MostParticipationInFinalizedEvaluation> mostParticipationInFinalizedEvaluationPerOmoor(Long evaluationPeriodId, Long finalizedStatusCatalogId) {
-        List<EvaluationDTO.MostParticipationInFinalizedEvaluation> data = new ArrayList<>();
-        List<?> queryData = repository.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);
-        if (queryData != null) {
-            for (Object evaluationData : queryData) {
-                Object[] evaluation = (Object[]) evaluationData;
-                if (!Objects.isNull(evaluation[1])) {
-                    EvaluationDTO.MostParticipationInFinalizedEvaluation mostParticipation = new EvaluationDTO.MostParticipationInFinalizedEvaluation();
-                    mostParticipation.setOmoorFinalizedNumber(evaluation[0] == null ? null : Integer.parseInt(evaluation[0].toString()));
-                    mostParticipation.setOmoorTitle(evaluation[1].toString());
-                    data.add(mostParticipation);
-                }
-            }
-        }
-        return data;
+        return repository.mostParticipationInFinalizedEvaluationPerOmoor(evaluationPeriodId, finalizedStatusCatalogId);
     }
 
     @Scheduled(cron = "0 30 0 * * *")
