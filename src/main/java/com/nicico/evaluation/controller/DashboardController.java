@@ -68,8 +68,8 @@ public class DashboardController {
     /**
      * @return that result of my evaluation by evaluationPeriodId
      */
-    @GetMapping(value = "/my-evaluation/{evaluationPeriodId}/{dashboardCategory}")
-    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId, @PathVariable String dashboardCategory) {
+    @GetMapping(value = "/my-evaluation/{evaluationPeriodId}")
+    public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId, @RequestParam(value = "dashboardCategory", required = false)  String dashboardCategory) {
         return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId, dashboardCategory), HttpStatus.OK);
     }
 
@@ -84,14 +84,14 @@ public class DashboardController {
     }
 
     // میانگین ارزیابی امور من
-    @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}/{dashboardCategory}")
+    @GetMapping("/finalized-average-by-grade-and-period/{evaluationPeriodId}")
     public List<EvaluationDTO.AverageWeightDTO> getFinalizedAverageByGradeAndPeriodEvaluation(@PathVariable Long evaluationPeriodId) {
         return workSpaceService.getFinalizedAverageByGradeAndPeriodEvaluation(evaluationPeriodId);
     }
 
     // برترین ارزیابی شوندگان
-    @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}/{dashboardCategory}")
-    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex, @PathVariable String dashboardCategory) {
+    @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}")
+    public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex, @RequestParam(value = "dashboardCategory", required = false) String dashboardCategory) {
         return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId, dashboardCategory);
     }
 
