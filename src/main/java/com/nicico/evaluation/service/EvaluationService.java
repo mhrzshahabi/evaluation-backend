@@ -490,7 +490,7 @@ public class EvaluationService implements IEvaluationService {
                 .setCriteria(criteriaRqList);
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setCriteria(criteriaRq);
-        List<EvaluationViewDTO.Info> infoList = evaluationViewService.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0).getList();
+        List<EvaluationViewDTO.Info> infoList = evaluationViewService.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0, null).getList();
         List<Evaluation> evaluationList = mapper.viewDtoToEntityList(infoList);
         return calculateAverageScore(evaluationList);
     }
@@ -639,7 +639,7 @@ public class EvaluationService implements IEvaluationService {
     @Transactional(readOnly = true)
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByAssessorAndPeriodEvaluation(int count, int startIndex, Long periodId) {
         List<String> omoorCode = repository.getOmoorCodeByAssessorNationalCodeAndPeriodId(SecurityUtil.getNationalCode(), periodId);
-       final Pageable pageable = pageableMapper.toPageable(count, startIndex);
+        final Pageable pageable = pageableMapper.toPageable(count, startIndex);
         return repository.getBestAssessesByOmoor(periodId, omoorCode, pageable.getPageNumber(), pageable.getPageSize());
     }
 

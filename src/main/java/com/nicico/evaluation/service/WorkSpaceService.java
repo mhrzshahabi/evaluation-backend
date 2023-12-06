@@ -128,6 +128,9 @@ public class WorkSpaceService implements IWorkSpaceService {
         final Pageable pageable = pageableMapper.toPageable(count, startIndex);
         if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD)) {
             return evaluationService.getBestAssessesByAssessorAndPeriodEvaluation(pageable.getPageSize(), pageable.getPageNumber(), periodId);
+        } else if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_EVALUATIONS_OF_ASSESSES_DASHBOARD) &&
+                SecurityUtil.hasAuthority("R_EVALUATIONS_OF_MY_ASSESSES_DASHBOARD")) {
+            return evaluationService.getBestAssessesByAssessorAndPeriodEvaluation(pageable.getPageSize(), pageable.getPageNumber(), periodId);
         } else
             return evaluationService.getBestAssessesByOmoor(pageable.getPageSize(), pageable.getPageNumber(), periodId);
     }
