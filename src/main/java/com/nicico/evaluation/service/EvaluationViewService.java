@@ -85,13 +85,14 @@ public class EvaluationViewService implements IEvaluationViewService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE')")
-    public SearchDTO.SearchRs<EvaluationViewDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex) {
+    @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE') or hasAuthority('R_EVALUATIONS_OF_MY_ASSESSES_DASHBOARD')")
+    public SearchDTO.SearchRs<EvaluationViewDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex, String orderBy) {
 
         String whereClause = String.valueOf(getWhereClause(request));
+        String sortBy = Objects.nonNull(orderBy) ? getOrderBy(orderBy) : null;
         Pageable pageable = pageableMapper.toPageable(count, startIndex);
 
-        String query = getSubAssessorQuery(whereClause, pageable);
+        String query = getSubAssessorQuery(whereClause, pageable, sortBy);
         List<Map<String, Object>> resultList = parameterJdbcTemplate.queryForList(query, new LinkedHashMap<>());
         List<EvaluationViewDTO.Info> infoList = modelMapper.map(resultList, new TypeToken<List<EvaluationViewDTO.Info>>() {
         }.getType());
@@ -100,7 +101,7 @@ public class EvaluationViewService implements IEvaluationViewService {
         searchRs.setList(new ArrayList<>());
         searchRs.setTotalCount(0L);
         if (!resultList.isEmpty()) {
-            String totalQuery = getSubAssessorQuery(whereClause, null);
+            String totalQuery = getSubAssessorQuery(whereClause, null, sortBy);
             Long totalCount = jdbcTemplate.queryForObject(MessageFormat.format(" Select count(*) from ({0})", totalQuery), Long.class);
             searchRs.setList(infoList);
             searchRs.setTotalCount(totalCount);
@@ -113,7 +114,7 @@ public class EvaluationViewService implements IEvaluationViewService {
     @PreAuthorize("hasAuthority('R_EVALUATION_COMPREHENSIVE')")
     public ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria) {
         SearchDTO.SearchRq request = CriteriaUtil.ConvertCriteriaToSearchRequest(criteria, null, null);
-        SearchDTO.SearchRs<EvaluationViewDTO.Info> searchRs = this.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0);
+        SearchDTO.SearchRs<EvaluationViewDTO.Info> searchRs = this.searchEvaluationComprehensive(request, Integer.MAX_VALUE, 0, null);
         if (!searchRs.getList().isEmpty()) {
             byte[] body = BaseService.exportExcelByList(searchRs.getList(), "گزارش ارزیابی جامع", "گزارش ارزیابی جامع");
             ExcelGenerator.ExcelDownload excelDownload = new ExcelGenerator.ExcelDownload(body);
@@ -192,9 +193,20 @@ public class EvaluationViewService implements IEvaluationViewService {
         return new StringBuilder(String.valueOf(whereClause).replaceAll("\\[|\\]", ""));
     }
 
-    private String getSubAssessorQuery(String whereClause, Pageable pageable) {
-        if (Objects.nonNull(pageable))
-            whereClause = MessageFormat.format("{0}{1}", whereClause, String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));
+    private String getOrderBy(String orderBy) {
+        switch (orderBy) {
+            case "averageScore" -> orderBy = "eval.average_score";
+        }
+        return orderBy;
+    }
+
+    private String getSubAssessorQuery(String whereClause, Pageable pageable, String orderBy) {
+
+        orderBy = Objects.nonNull(orderBy) ? " order by %s desc".formatted(orderBy) : " order by eval.id desc ";
+        if (Objects.nonNull(pageable)) {
+            orderBy = MessageFormat.format("{0}{1}", orderBy,
+                    String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", pageable.getPageNumber() * pageable.getPageSize(), pageable.getPageSize()));
+        }
         return String.format(" SELECT  " +
                         "                 eval.id      \"id\"  , " +
                         "                 eval.c_assess_full_name     \"assessFullName\"  , " +
@@ -253,7 +265,7 @@ public class EvaluationViewService implements IEvaluationViewService {
                         "                                level  " +
                         "                        )  " +
                         "                )" +
-                        "               %s "
-                , SecurityUtil.getNationalCode(), whereClause);
+                        "               %s  %s "
+                , SecurityUtil.getNationalCode(), whereClause, orderBy);
     }
 }

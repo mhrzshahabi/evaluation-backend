@@ -15,7 +15,7 @@ public interface IEvaluationViewService {
 
     SearchDTO.SearchRs<EvaluationDTO.Info> searchByParent(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
-    SearchDTO.SearchRs<EvaluationViewDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex);
+    SearchDTO.SearchRs<EvaluationViewDTO.Info> searchEvaluationComprehensive(SearchDTO.SearchRq request, int count, int startIndex, String orderBy);
 
     ResponseEntity<byte[]> downloadExcelEvaluationComprehensive(List<FilterDTO> criteria);
 

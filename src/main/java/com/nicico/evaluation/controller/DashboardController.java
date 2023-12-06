@@ -62,6 +62,7 @@ public class DashboardController {
         specRs.setResponse(response);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
     // ارزیابی من
 
     /**
@@ -71,6 +72,7 @@ public class DashboardController {
     public ResponseEntity<EvaluationDTO.EvaluationAverageScoreData> evaluationAverageScoreDataByUser(@PathVariable Long evaluationPeriodId, @PathVariable String dashboardCategory) {
         return new ResponseEntity<>(workSpaceService.evaluationAverageScoreDataByUser(evaluationPeriodId, dashboardCategory), HttpStatus.OK);
     }
+
     // برترین امور مشارکت کننده
 
     /**
@@ -90,7 +92,7 @@ public class DashboardController {
     // برترین ارزیابی شوندگان
     @GetMapping("/best-assess-by-omoor/{evaluationPeriodId}/{dashboardCategory}")
     public List<EvaluationDTO.BestAssessAverageScoreDTO> getBestAssessesByOmoor(@PathVariable Long evaluationPeriodId, @RequestParam int count, @RequestParam int startIndex, @PathVariable String dashboardCategory) {
-        return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId,dashboardCategory);
+        return workSpaceService.getBestAssessesByOmoor(count, startIndex, evaluationPeriodId, dashboardCategory);
     }
 
 }
