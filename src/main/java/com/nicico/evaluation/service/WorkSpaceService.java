@@ -103,7 +103,7 @@ public class WorkSpaceService implements IWorkSpaceService {
         if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_ASSESSES_DASHBOARD)) {
             return evaluationService.getEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
         } else if (Objects.nonNull(dashboardCategory) && dashboardCategory.equals(MY_EVALUATIONS_OF_ASSESSES_DASHBOARD) &&
-                SecurityUtil.hasAuthority("R_EVALUATIONS_OF_MY_ASSESSES_DASHBOARD")) {
+                Boolean.TRUE.equals(SecurityUtil.hasAuthority("R_EVALUATIONS_OF_MY_ASSESSES_DASHBOARD"))) {
             return evaluationService.getSubEvaluationAverageScoreDataByAssessorNationalCodeAndEvaluationPeriodId(evaluationPeriodId);
         } else
             return evaluationService.getEvaluationAverageScoreDataByAssessNationalCodeAndEvaluationPeriodId(userNationalCode, evaluationPeriodId);
