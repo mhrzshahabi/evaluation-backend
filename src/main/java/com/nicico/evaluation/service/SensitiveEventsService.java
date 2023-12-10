@@ -154,6 +154,7 @@ public class SensitiveEventsService implements ISensitiveEventsService {
                         "    se.n_level_effect   \"levelEffect\",\n" +
                         "    se.d_event_date     \"eventDate\",\n" +
                         "    sep.c_national_code \"nationalCode\",\n" +
+                        "    mc.id               \"meritComponentId\",\n" +
                         "    mc.c_code           \"meritComponentCode\",\n" +
                         "    mc.c_title          \"meritComponentTitle\",\n" +
                         "    tc.c_code           \"typeCode\"\n" +

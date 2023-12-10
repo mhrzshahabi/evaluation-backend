@@ -77,6 +77,7 @@ public abstract class SensitiveEventsDTO {
         private Long levelEffect;
         private String eventDate;
         private String nationalCode;
+        private Long meritComponentId;
         private String meritComponentCode;
         private String meritComponentTitle;
         private String typeCode;
