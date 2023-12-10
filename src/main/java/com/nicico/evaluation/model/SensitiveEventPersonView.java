@@ -81,4 +81,7 @@ public class SensitiveEventPersonView {
     @Column(name = "personnel_code")
     private String personnelCode;
 
+    @Column(name = "merit_component_id")
+    private String meritComponentId;
+
 }

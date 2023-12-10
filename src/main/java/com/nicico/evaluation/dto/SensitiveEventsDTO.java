@@ -53,6 +53,7 @@ public abstract class SensitiveEventsDTO {
         private String firstName;
         private String lastName;
         private String personnelCode;
+        private String meritComponentTitle;
     }
 
     @Getter
