@@ -391,7 +391,7 @@ public class EvaluationItemService implements IEvaluationItemService {
                 evaluationPeriodDateInfo.getEndDate());
 
         createItemInfoList.forEach(item -> item.getMeritTuple().forEach(merit -> {
-            List<SensitiveEventsDTO.LevelEffectData> filterDataList = effectDataList.stream().filter(data -> data.getMeritComponentTitle().equals(merit.getMeritComponent().getTitle())).collect(Collectors.toList());
+            List<SensitiveEventsDTO.LevelEffectData> filterDataList = effectDataList.stream().filter(data -> data.getMeritComponentId().equals(merit.getMeritComponent().getId())).collect(Collectors.toList());
             if (filterDataList.size() != 0) {
                 AtomicDouble totalLevelEffect = new AtomicDouble(0.0);
                 filterDataList.forEach(effectData -> {
