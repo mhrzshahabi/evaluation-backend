@@ -139,8 +139,7 @@ public class EvaluationDTO {
     @ApiModel("MostParticipationInFinalizedEvaluationRq")
     public interface MostParticipationInFinalizedEvaluation {
         Integer getOmoorFinalizedNumber();
-
-        Setter getOmoorTitle();
+        String getOmoorTitle();
     }
 
     @Getter
