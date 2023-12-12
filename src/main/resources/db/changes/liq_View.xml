@@ -1300,4 +1300,67 @@
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1702380379">
+        <createView viewName="view_sensitive_event_person" replaceIfExists="true">
+            <![CDATA[
+                    SELECT
+                        ROWNUM AS id,
+                        sensitiveeventperson.*
+                    FROM
+                        (
+                            SELECT
+                                sens.*
+                            FROM
+                                (
+                                    SELECT DISTINCT
+                                        se.id                            AS sensitive_event_id,
+                                        se.c_title,
+                                        se.d_event_date,
+                                        se.d_to_date,
+                                        se.n_level_effect,
+                                        se.type_catalog_id,
+                                        se.event_policy_catalog_id,
+                                        se.status_catalog_id,
+                                        se.c_description,
+                                        se.c_national_code               AS creator_national_code,
+                                        sep.id                           AS sensitive_event_person_id,
+                                        sep.c_national_code,
+                                        sep.merit_component_id           AS merit_component_id,
+                                        MAX(meritaudit.rev)
+                                        OVER(PARTITION BY meritaudit.id) AS max_rev,
+                                        CASE
+                                        WHEN meritaudit.rev = MAX(meritaudit.rev)
+                                                              OVER(PARTITION BY meritaudit.id) THEN
+                                        meritaudit.c_title
+                                        END                              AS merit_component_title,
+                                        per.first_name,
+                                        per.last_name,
+                                        per.personnel_code
+                                    FROM
+                                        tbl_sensitive_events       se
+                                        LEFT JOIN tbl_sensitive_event_person sep ON se.id = sep.sensitive_event_id
+                                        LEFT JOIN view_person                per ON per.national_code = sep.c_national_code
+                                        LEFT JOIN (
+                                            SELECT
+                                                *
+                                            FROM
+                                                tbl_merit_component_aud
+                                            WHERE
+                                                status_catalog_id = (
+                                                    SELECT
+                                                        cat.id
+                                                    FROM
+                                                        tbl_catalog cat
+                                                    WHERE
+                                                        cat.c_code = 'Active-Merit'
+                                                )
+                                        )                          meritaudit ON meritaudit.id = sep.merit_component_id
+                                ) sens
+                            WHERE
+                                sens.merit_component_title IS NOT NULL
+                        ) sensitiveeventperson
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
