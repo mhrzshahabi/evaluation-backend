@@ -45,6 +45,7 @@ public abstract class GroupTypeMeritDTO {
         private Long id;
         private MeritComponentDTO.Info meritComponent;
         private GroupTypeDTO.Info groupType;
+        private Boolean hasInstance;
         private List<InstanceGroupTypeMeritDTO.InstanceTupleDTO> instanceGroupTypeMerits;
         private Long totalComponentWeight;
     }
